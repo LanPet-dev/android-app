@@ -7,20 +7,20 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("kotlin-kapt")
+                apply("com.google.devtools.ksp")
                 apply("dagger.hilt.android.plugin")
             }
 
             dependencies {
                 add("implementation", libs.findLibrary("hilt.android").get())
-                add("kapt", libs.findLibrary("hilt.android.compiler").get())
+                add("ksp", libs.findLibrary("hilt.android.compiler").get())
                 add("implementation", libs.findLibrary("hilt.navigation").get())
 
                 // Test dependencies
                 add("androidTestImplementation", libs.findLibrary("hilt.testing").get())
-                add("kaptAndroidTest", libs.findLibrary("hilt.android.compiler").get())
+                add("kspAndroidTest", libs.findLibrary("hilt.android.compiler").get())
                 add("testImplementation", libs.findLibrary("hilt.testing").get())
-                add("kaptTest", libs.findLibrary("hilt.android.compiler").get())
+                add("kspTest", libs.findLibrary("hilt.android.compiler").get())
             }
         }
     }

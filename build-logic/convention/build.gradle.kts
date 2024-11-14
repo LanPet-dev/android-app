@@ -20,6 +20,7 @@ kotlin {
 dependencies {
     compileOnly(libs.gradle)
     compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.com.google.devtools.ksp.gradle.plugin)
 }
 
 gradlePlugin {
