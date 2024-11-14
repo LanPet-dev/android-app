@@ -1,4 +1,5 @@
 pluginManagement {
+
     repositories {
         google {
             content {
@@ -20,5 +21,23 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LanPetApp"
+
+// feature
+include(":feature:auth")
+
+// data
+include(":data:repository")
+
+// domain
+include(":domain:usecase")
+include(":domain:repository")
+include(":domain:model")
+
+// core
+include(":core:navigation")
+include(":core:designsystem")
+include(":data:dto")
 include(":app")
- 
+
+// build-logic
+includeBuild("build-logic")
