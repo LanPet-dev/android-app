@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">designsystem</string>
+    <string name="text_landing_heading_1">포스팅을 통해\n전문성 있는 정보를 한눈에</string>
+    <string name="text_landing_subheading_1">직접 포스팅을 작성하고 공유할 수 있어요!</string>
 </resources>

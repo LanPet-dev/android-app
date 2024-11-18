@@ -19,11 +19,13 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "LanPetApp"
 
 // feature
 include(":feature:auth")
+include(":feature:landing")
 
 // data
 include(":data:repository")
@@ -35,9 +37,9 @@ include(":domain:model")
 
 // core
 include(":core:navigation")
-include(":core:designsystem")
 include(":data:dto")
 include(":app")
+include(":core:designsystem")
 
 // build-logic
 includeBuild("build-logic")

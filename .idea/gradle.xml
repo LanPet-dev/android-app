@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/domain/usecase" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/auth" />
+            <option value="$PROJECT_DIR$/feature/landing" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

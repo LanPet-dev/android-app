@@ -6,6 +6,7 @@
       <module name="build-logic.test" target="21" />
       <module name="LanPetApp.Ap" target="21" />
       <module name="LanPetApp.Ap.myapplication" target="21" />
+      <module name="LanPetApp.core.designsystem2" target="21" />
       <module name="LanPetApp.data.dto.test" target="11" />
       <module name="LanPetApp.feature.main" target="21" />
     </bytecodeTargetLevel>
