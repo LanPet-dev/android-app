@@ -56,5 +56,4 @@ dependencies {
 
     implementation(project(":domain:model"))
     implementation(project(":core:navigation"))
-    implementation(projects.core.designsystem)
 }

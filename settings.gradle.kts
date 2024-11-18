@@ -39,7 +39,7 @@ include(":domain:model")
 include(":core:navigation")
 include(":data:dto")
 include(":app")
-include(":core:designsystem")
 
 // build-logic
 includeBuild("build-logic")
+include(":core:designsystem")
