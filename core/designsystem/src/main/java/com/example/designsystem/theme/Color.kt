@@ -13,3 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 object GrayColor {
     val Medium = Color(0xff555555)
 }
+
+object PurpleColor{
+    val Medium = Color(0xff6608E1)
+}

@@ -1,6 +1,7 @@
 package com.example.designsystem.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,7 +28,7 @@ fun Typography.landingHead(): TextStyle {
 }
 
 fun Typography.landingLabel(): TextStyle {
-    return this.labelLarge
+    return this.labelLarge.copy(Color.Gray)
 }
 
 val Typography = Typography(
