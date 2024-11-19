@@ -1,4 +1,5 @@
 pluginManagement {
+
     repositories {
         google {
             content {
@@ -18,7 +19,28 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "LanPetApp"
+
+// feature
+include(":feature:auth")
+include(":feature:landing")
+
+// data
+include(":data:repository")
+
+// domain
+include(":domain:usecase")
+include(":domain:repository")
+include(":domain:model")
+
+// core
+include(":core:navigation")
+include(":data:dto")
 include(":app")
- 
+
+// build-logic
+includeBuild("build-logic")
+include(":core:designsystem")
+include(":core:di")
