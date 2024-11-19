@@ -1,11 +1,11 @@
 package com.example.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.auth.navigation.authNavGraph
-import com.example.landing.navigation.LandingNavigation
+import com.example.auth.navigation.navigateToLoginScreen
+import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
 
 
@@ -16,10 +16,11 @@ fun AppNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = LandingNavigation.Route.LANDING
+        startDestination = Landing
     ) {
         landingNavGraph {
             println("navigate to login screen")
+            navController.navigateToLoginScreen()
         }
         authNavGraph()
     }

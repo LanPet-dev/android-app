@@ -1,7 +1,9 @@
 import com.example.convention.utils.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 
 class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {

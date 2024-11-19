@@ -1,22 +1,30 @@
 package com.example.landing.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.example.landing.LandingScreen
+import kotlinx.serialization.Serializable
 
 
 fun NavGraphBuilder.landingNavGraph(
     onNavigateToLogin: () -> Unit,
 ) {
-    composable(route = LandingNavigation.Route.LANDING) {
+    composable<Landing> {
         LandingScreen(
             onNavigateToLogin = onNavigateToLogin
         )
     }
 }
 
-object LandingNavigation {
-    object Route {
-        const val LANDING = "landing"
-    }
+fun NavController.navigateToLandingScreen() {
+    navigate(Landing, navOptions {
+        popUpToId
+    })
 }
+
+@Serializable
+object Landing
+

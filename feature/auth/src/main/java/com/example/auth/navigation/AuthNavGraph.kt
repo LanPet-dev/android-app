@@ -1,19 +1,25 @@
 package com.example.auth.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.example.auth.LoginScreen
+import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.authNavGraph(
 ) {
-    composable(route = AuthNavigation.Route.LOGIN) {
-        LoginScreen(
-        )
+    composable<Login> {
+        LoginScreen()
     }
 }
 
-object AuthNavigation {
-    object Route {
-        const val LOGIN = "login"
-    }
+fun NavController.navigateToLoginScreen(){
+    this.navigate(Login, navOptions {
+        popUpToId
+    })
 }
+
+@Serializable
+object Login
+
