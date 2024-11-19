@@ -1,4 +1,22 @@
 package com.example.landing.navigation
 
-class LandingNavGraph {
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.example.landing.LandingScreen
+
+
+fun NavGraphBuilder.landingNavGraph(
+    onNavigateToLogin: suspend () -> Unit,
+) {
+    composable(route = LandingNavigation.Route.LANDING) {
+        LandingScreen(
+            onNavigateToLogin = onNavigateToLogin
+        )
+    }
+}
+
+object LandingNavigation {
+    object Route {
+        const val LANDING = "landing"
+    }
 }

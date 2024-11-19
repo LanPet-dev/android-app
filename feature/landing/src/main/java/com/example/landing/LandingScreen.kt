@@ -2,6 +2,7 @@ package com.example.landing
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +19,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.PurpleColor
 import com.example.designsystem.theme.landingLabel
-import java.nio.file.WatchEvent
+import kotlinx.coroutines.launch
 
 @Composable
-fun LandingScreen() {
+fun LandingScreen(
+    onNavigateToLogin: suspend () -> Unit,
+) {
     Scaffold {
         Surface(
             modifier = Modifier
@@ -47,7 +48,11 @@ fun LandingScreen() {
                 listOf(
                     { LandingPage1() },
                     { LandingPage2() },
-                    { LandingPage3() },
+                    {
+                        LandingPage3(
+                            navigateToLogin = onNavigateToLogin
+                        )
+                    },
                 )
             )
         }
@@ -137,10 +142,17 @@ fun LandingPage2() {
 }
 
 @Composable
-fun LandingPage3() {
+fun LandingPage3(navigateToLogin: suspend () -> Unit) {
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable(onClick = {
+               scope.launch{
+                   navigateToLogin()
+               }
+            }),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -180,13 +192,14 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 
 @Composable
 fun ImageSection(modifier: Modifier = Modifier) {
-    Image(
-        painter = painterResource(com.example.designsystem.R.drawable.ic_launcher_background),
-        contentDescription = null,
-        modifier = modifier
-            .size(240.dp)
-            .clip(shape = CircleShape)
-    )
+    Text("IMAGE TEXT")
+//    Image(
+//        painter = painterResource(com.example.designsystem.R.drawable.ic_launcher_background),
+//        contentDescription = null,
+//        modifier = modifier
+//            .size(240.dp)
+//            .clip(shape = CircleShape)
+//    )
 }
 
 @Composable
@@ -205,5 +218,5 @@ fun LandingIndicatorItem(isActive: Boolean) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewLandingScreen() {
-    LandingScreen()
+    LandingScreen {}
 }
