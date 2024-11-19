@@ -43,3 +43,4 @@ include(":app")
 // build-logic
 includeBuild("build-logic")
 include(":core:designsystem")
+include(":core:di")
