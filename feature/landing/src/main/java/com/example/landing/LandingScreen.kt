@@ -83,14 +83,8 @@ fun PageView(
         ) {
             repeat(pages.size) { iteration ->
                 key(iteration) {
-                    val color =
-                        if (pagerState.currentPage == iteration) PurpleColor.Medium else Color.LightGray
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .size(8.dp)
+                    LandingIndicatorItem(
+                        isActive = pagerState.currentPage == iteration
                     )
                 }
             }
@@ -196,8 +190,16 @@ fun ImageSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LandingIndicator() {
-
+fun LandingIndicatorItem(isActive: Boolean) {
+    val color =
+        if (isActive) PurpleColor.Medium else Color.LightGray
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .clip(CircleShape)
+            .background(color)
+            .size(8.dp)
+    )
 }
 
 @Preview(showBackground = true)
