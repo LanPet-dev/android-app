@@ -10,6 +10,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 apply("convention.android.hilt")
 //                apply("convention.android.ui.compose")
             }
+            //TODO("Satoshi"): android build config
+            //ex) compileSdk, minSdk etc...
 
             dependencies {
                 add("implementation", project(":core:designsystem"))
@@ -19,11 +21,11 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
                 add("implementation", libs.findLibrary("androidx.navigation.compose").get())
 
-//                add("testImplementation", libs.findLibrary("androidx.navigation.testing").get())
-//                add(
-//                    "androidTestImplementation",
-//                    libs.findLibrary("androidx.lifecycle.runtimeTesting").get()
-//                )
+                add("testImplementation", libs.findLibrary("androidx.navigation.testing").get())
+                add(
+                    "androidTestImplementation",
+                    libs.findLibrary("androidx.lifecycle.runtimeTesting").get()
+                )
             }
         }
     }
