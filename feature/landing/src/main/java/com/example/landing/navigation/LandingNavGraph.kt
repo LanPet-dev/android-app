@@ -6,7 +6,7 @@ import com.example.landing.LandingScreen
 
 
 fun NavGraphBuilder.landingNavGraph(
-    onNavigateToLogin: suspend () -> Unit,
+    onNavigateToLogin: () -> Unit,
 ) {
     composable(route = LandingNavigation.Route.LANDING) {
         LandingScreen(

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LandingScreen(
-    onNavigateToLogin: suspend () -> Unit,
+    onNavigateToLogin: () -> Unit,
 ) {
     Scaffold {
         Surface(
@@ -142,16 +142,13 @@ fun LandingPage2() {
 }
 
 @Composable
-fun LandingPage3(navigateToLogin: suspend () -> Unit) {
-    val scope = rememberCoroutineScope()
+fun LandingPage3(navigateToLogin: () -> Unit) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .clickable(onClick = {
-               scope.launch{
-                   navigateToLogin()
-               }
+                navigateToLogin()
             }),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
