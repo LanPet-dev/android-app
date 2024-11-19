@@ -71,3 +71,5 @@ ksp = {id="com.google.devtools.ksp", version.ref = "comGoogleDevtoolsKspGradlePl
 convention-feature = {id = "convention.android.feature"}
 convention-hilt = {id = "convention.android.hilt"}
 convention-ui-compose = {id = "convention.android.ui.compose"}
+convention-app-build = {id = "convention.andriod.app.build"}
+convention-lib-build = {id = "convention.andriod.lib.build"}

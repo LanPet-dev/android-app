@@ -37,5 +37,13 @@ gradlePlugin {
             id = "convention.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
+        register("androidApplicationBuild"){
+            id = "convention.andriod.app.build"
+            implementationClass = "AndroidApplicationBuildConventionPlugin"
+        }
+        register("androidLibraryBuild"){
+            id = "convention.andriod.lib.build"
+            implementationClass = "AndroidLibraryBuildConventionPlugin"
+        }
     }
 }
