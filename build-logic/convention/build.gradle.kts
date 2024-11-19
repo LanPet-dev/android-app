@@ -25,6 +25,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("androidUiCompose") {
+            id = "convention.android.ui.compose"
+            implementationClass = "AndroidUiComposeConventionPlugin"
+        }
         register("androidHilt") {
             id = "convention.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"

@@ -8,6 +8,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("convention.android.hilt")
+//                apply("convention.android.ui.compose")
             }
 
             dependencies {
