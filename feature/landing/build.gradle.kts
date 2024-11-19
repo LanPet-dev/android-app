@@ -39,6 +39,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:model"))
-    implementation(project(":core:navigation"))
+    implementation(projects.domain.model)
+    implementation(projects.core.navigation)
 }
