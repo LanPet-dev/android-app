@@ -1,0 +1,8 @@
+<resources>
+    <string name="heading_profile_create_has_pet">현재 반려동물을 키우고 계신가요? </string>
+    <string name="no_pet_profile_create_has_pet">키우고 있지 않아요!</string>
+    <string name="yes_pet_profile_create_has_pet">키우고 있어요!</string>
+
+    <string name="heading_profile_create_desc_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
+    <string name="heading_profile_create_desc_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
+</resources>
