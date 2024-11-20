@@ -1,6 +1,5 @@
 package com.example.landing
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,19 +19,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.PurpleColor
 import com.example.designsystem.theme.landingLabel
-import kotlinx.coroutines.launch
 
 @Composable
 fun LandingScreen(
@@ -202,7 +198,7 @@ fun ImageSection(modifier: Modifier = Modifier) {
 @Composable
 fun LandingIndicatorItem(isActive: Boolean) {
     val color =
-        if (isActive) PurpleColor.Medium else Color.LightGray
+        if (isActive) PurpleColor.MEDIUM else Color.LightGray
     Box(
         modifier = Modifier
             .padding(2.dp)
