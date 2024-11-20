@@ -19,6 +19,7 @@ android {
 dependencies {
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
+    implementation(projects.feature.profile)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
