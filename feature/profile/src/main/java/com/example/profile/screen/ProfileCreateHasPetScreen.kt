@@ -83,7 +83,7 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
             )
     ) {
         Image(
-            painter = painterResource(com.example.designsystem.R.drawable.dummy),
+            painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
             contentDescription = null,
             modifier = Modifier
                 .size(

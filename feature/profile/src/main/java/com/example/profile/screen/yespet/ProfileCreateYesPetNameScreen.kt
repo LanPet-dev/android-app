@@ -3,12 +3,9 @@ package com.example.profile.screen.yespet
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -19,23 +16,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.rememberAsyncImagePainter
 import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.crop
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.designsystem.theme.widgets.TextFieldWithDeleteButton
 import com.example.profile.R
 import com.example.profile.widget.Heading
 import com.example.profile.widget.HeadingHint
+import com.example.profile.widget.ImagePickerView
 import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +75,6 @@ fun ImagePickSection() {
         mutableStateOf(null)
     }
 
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -92,26 +83,13 @@ fun ImagePickSection() {
         }
     }
 
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+    ImagePickerView(
+        imageUri
     ) {
-        Image(
-            painter = if (imageUri != null) {
-                rememberAsyncImagePainter(imageUri)
-            } else {
-                painterResource(DS_R.drawable.dummy)
-            },
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.crop {
-                launcher.launch("image/*")
-            }
-        )
+        launcher.launch("image/*")
     }
 }
+
 
 @Composable
 fun PetNameInputSection() {
@@ -137,4 +115,10 @@ fun PetNameInputSection() {
 @Composable
 fun PreviewProfileCreateYesPetNameScreen() {
     ProfileCreateYesPetNameScreen()
+}
+
+@Preview
+@Composable
+fun PreviewImagePickSection() {
+    ImagePickSection()
 }

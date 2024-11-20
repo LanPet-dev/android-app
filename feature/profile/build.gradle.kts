@@ -19,4 +19,6 @@ dependencies {
     implementation(projects.domain.model)
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.network.okhttp)
 }
