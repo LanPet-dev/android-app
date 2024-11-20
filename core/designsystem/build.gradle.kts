@@ -2,10 +2,16 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.convention.lib.build)
+    alias(libs.plugins.convention.ui.compose)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.example.designsystem"
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
