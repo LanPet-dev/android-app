@@ -31,10 +31,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.designsystem.theme.LanPetDimensions
+import com.example.designsystem.theme.crop
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.designsystem.theme.widgets.TextFieldWithDeleteButton
@@ -108,18 +111,9 @@ fun ImagePickSection() {
             },
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(
-                    126.dp
-                )
-                .clip(
-                    CircleShape
-                )
-                .clickable(
-                    onClick = {
-                        launcher.launch("image/*")
-                    }
-                )
+            modifier = Modifier.crop {
+                launcher.launch("image/*")
+            }
         )
     }
 }
