@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designsystem.theme.BlackColor
 import com.example.designsystem.theme.GrayColor
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.WhiteColor
 
 @Composable
@@ -36,10 +37,12 @@ fun HeadingHint(modifier: Modifier = Modifier, title: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHeading() {
-    Column {
-        Heading(title = "This is Heading")
-        Heading(title = "이것은 헤딩입니다.")
-        HeadingHint(title = "This is Heading hint.")
-        HeadingHint(title = "이것은 헤딩 힌트입니다.")
+    LanPetAppTheme {
+        Column {
+            Heading(title = "This is Heading")
+            Heading(title = "이것은 헤딩입니다.")
+            HeadingHint(title = "This is Heading hint.")
+            HeadingHint(title = "이것은 헤딩 힌트입니다.")
+        }
     }
 }

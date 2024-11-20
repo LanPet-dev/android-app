@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
@@ -114,11 +115,7 @@ fun PetNameInputSection() {
 @Preview()
 @Composable
 fun PreviewProfileCreateYesPetNameScreen() {
-    ProfileCreateYesPetNameScreen()
-}
-
-@Preview
-@Composable
-fun PreviewImagePickSection() {
-    ImagePickSection()
+    LanPetAppTheme {
+        ProfileCreateYesPetNameScreen()
+    }
 }

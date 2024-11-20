@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.R as DS_R
 import com.example.designsystem.theme.crop
 
@@ -54,7 +55,9 @@ fun ImagePickerView(imageUri: Uri?, onEditButtonClick: () -> Unit) {
 @Preview
 @Composable
 fun PreviewImageWithEdit() {
-    ImagePickerView(
-        imageUri = null
-    ) { }
+    LanPetAppTheme {
+        ImagePickerView(
+            imageUri = null
+        ) { }
+    }
 }

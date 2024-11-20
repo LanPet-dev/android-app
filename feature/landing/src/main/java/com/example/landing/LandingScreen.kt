@@ -1,5 +1,6 @@
 package com.example.landing
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +16,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -23,11 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.theme.LanPetAppTheme
+import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.PurpleColor
+import com.example.designsystem.theme.crop
 import com.example.designsystem.theme.landingLabel
 
 @Composable
@@ -35,10 +39,14 @@ fun LandingScreen(
     onNavigateToLogin: () -> Unit,
 ) {
     Scaffold {
-        Surface(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
+                .padding(
+                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                    vertical = LanPetDimensions.Margin.Layout.vertical,
+                )
         ) {
             PageView(
                 listOf(
@@ -139,7 +147,6 @@ fun LandingPage2() {
 
 @Composable
 fun LandingPage3(navigateToLogin: () -> Unit) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -185,14 +192,13 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 
 @Composable
 fun ImageSection(modifier: Modifier = Modifier) {
-    Text("IMAGE TEXT")
-//    Image(
-//        painter = painterResource(com.example.designsystem.R.drawable.ic_launcher_background),
-//        contentDescription = null,
-//        modifier = modifier
-//            .size(240.dp)
-//            .clip(shape = CircleShape)
-//    )
+    Image(
+        painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
+        contentDescription = null,
+        modifier = modifier.crop(
+            size = 220.dp
+        )
+    )
 }
 
 @Composable
@@ -211,5 +217,7 @@ fun LandingIndicatorItem(isActive: Boolean) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewLandingScreen() {
-    LandingScreen {}
+    LanPetAppTheme {
+        LandingScreen {}
+    }
 }

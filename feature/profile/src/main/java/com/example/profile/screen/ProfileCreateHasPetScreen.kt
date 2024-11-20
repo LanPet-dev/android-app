@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.profile.R
@@ -99,10 +100,12 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
     }
 }
 
-@Preview(showBackground = true, widthDp = 500, heightDp = 700)
+@Preview
 @Composable
 fun PreviewProfileCreateHasPetScreen() {
-    ProfileCreateHasPetScreen(
-        {}, {}
-    )
+    LanPetAppTheme {
+        ProfileCreateHasPetScreen(
+            {}, {}
+        )
+    }
 }
