@@ -10,10 +10,22 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-object GrayColor {
-    val Medium = Color(0xff555555)
+object BlackColor {
+    val HARD = Color(0xff000000)
+    val MEDIUM = Color(0xff101010)
 }
 
-object PurpleColor{
-    val Medium = Color(0xff6608E1)
+object GrayColor {
+    val LIGHT = Color(0xffDBDBDB)
+    val LIGHT_MEDIUM = Color(0xffBFBFBF)
+    val MEDIUM = Color(0xff555555)
+}
+
+object PurpleColor {
+    val MEDIUM = Color(0xff6608E1)
+}
+
+object WhiteColor {
+    val LIGHT = Color(0xffffffff)
+    val MEDIUM = Color(0xdfdfdf)
 }

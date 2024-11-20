@@ -24,11 +24,13 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "LanPetApp"
 
 // feature
-include(":feature:auth")
 include(":feature:landing")
+include(":feature:auth")
+include(":feature:profile")
 
 // data
 include(":data:repository")
+include(":data:dto")
 
 // domain
 include(":domain:usecase")
@@ -37,10 +39,9 @@ include(":domain:model")
 
 // core
 include(":core:navigation")
-include(":data:dto")
+include(":core:designsystem")
+include(":core:di")
 include(":app")
 
 // build-logic
 includeBuild("build-logic")
-include(":core:designsystem")
-include(":core:di")

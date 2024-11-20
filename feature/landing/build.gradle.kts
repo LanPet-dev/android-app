@@ -17,5 +17,5 @@ android {
 
 dependencies {
     implementation(projects.domain.model)
-    implementation(projects.core.navigation)
+    implementation(libs.androidx.lifecycle.viewmodel.android)
 }
