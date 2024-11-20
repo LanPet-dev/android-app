@@ -1,12 +1,16 @@
 package com.example.designsystem.theme.widgets
 
+import android.R.color.black
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -19,8 +23,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.UiMode
+import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.GrayColor
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
+import com.example.designsystem.theme.customColorScheme
 
 @Composable
 fun TextFieldWithDeleteButton(
@@ -43,6 +52,10 @@ fun TextFieldWithDeleteButton(
             unfocusedPlaceholderColor = GrayColor.MEDIUM,
             disabledPlaceholderColor = GrayColor.MEDIUM,
             cursorColor = GrayColor.MEDIUM,
+            focusedContainerColor = MaterialTheme.customColorScheme.buttonBackground,
+            unfocusedContainerColor = MaterialTheme.customColorScheme.buttonBackground,
+            disabledContainerColor = MaterialTheme.customColorScheme.buttonBackground,
+            errorContainerColor = MaterialTheme.customColorScheme.buttonBackground
         ),
         singleLine = singleLine,
         onValueChange = onValueChange,
@@ -81,31 +94,38 @@ private fun DeleteButton(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xffffff)
+
+@PreviewLightDark
 @Composable
 fun PreviewTextFieldWithDeleteButton() {
-    Column {
-        TextFieldWithDeleteButton(
-            value = "value",
-            onValueChange = {},
-            placeholder = "placeholder",
-            modifier = Modifier
-        )
-        TextFieldWithDeleteButton(
-            value = "",
-            onValueChange = {},
-            placeholder = "placeholder",
-            modifier = Modifier
-        )
+    LanPetAppTheme {
+        Column(Modifier.padding(16.dp)) {
+            TextFieldWithDeleteButton(
+                value = "value",
+                onValueChange = {},
+                placeholder = "placeholder",
+                modifier = Modifier
+            )
+            Spacer(Modifier.padding(8.dp))
+            TextFieldWithDeleteButton(
+                value = "",
+                onValueChange = {},
+                placeholder = "placeholder",
+                modifier = Modifier
+            )
+        }
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewDeleteButton() {
-    Column {
-        DeleteButton(true) { }
-        DeleteButton(false) { }
+    LanPetAppTheme {
+        Column {
+            DeleteButton(true) { }
+            DeleteButton(false) { }
+        }
     }
 }
+
 

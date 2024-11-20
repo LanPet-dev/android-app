@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.customColorScheme
 
@@ -37,12 +39,14 @@ fun CommonButton(modifier: Modifier = Modifier, title: String, onClick: (() -> U
     }
 }
 
-@Preview()
+@PreviewLightDark
 @Composable()
 fun PreviewCommonButton() {
-    CommonButton(
-        title = "This is title",
-        modifier = Modifier,
-        onClick = {}
-    )
+    LanPetAppTheme {
+        CommonButton(
+            title = "This is title",
+            modifier = Modifier,
+            onClick = {}
+        )
+    }
 }
