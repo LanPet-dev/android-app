@@ -2,14 +2,12 @@ package com.example.profile.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.profile.screen.ProfileCreateHasPetScreen
+import com.example.profile.screen.nopet.ProfileCreateNoPetNameScreen
 import com.example.profile.screen.yespet.ProfileCreateYesPetNameScreen
 import kotlinx.serialization.Serializable
 
@@ -58,6 +56,25 @@ fun NavGraphBuilder.profileNavGraph(
     ) {
         ProfileCreateYesPetNameScreen()
     }
+    composable<ProfileCreateNoPet>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(350)
+            )
+        },
+        exitTransition = {
+            fadeOut()
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(350)
+            )
+        }
+    ) {
+        ProfileCreateNoPetNameScreen()
+    }
 }
 
 fun NavController.navigateToProfileCreateHasPet() {
@@ -69,7 +86,7 @@ fun NavController.navigateToProfileCreateYesPet() {
 }
 
 fun NavController.navigateToProfileCreateNoPet() {
-    this.navigate(ProfileCreateYesPet)
+    this.navigate(ProfileCreateNoPet)
 }
 
 @Serializable

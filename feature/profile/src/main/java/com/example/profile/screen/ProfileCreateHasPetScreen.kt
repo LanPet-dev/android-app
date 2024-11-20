@@ -57,12 +57,12 @@ fun ProfileCreateHasPetScreen(
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             ) {
                 HasPetSelectButton(
-                    onNavigateToYesPetScreen,
+                    onNavigateToNoPetScreen,
                     title = stringResource(R.string.yes_pet_profile_create_has_pet)
                 )
                 Spacer(Modifier.padding(vertical = LanPetDimensions.Margin.medium))
                 HasPetSelectButton(
-                    onNavigateToNoPetScreen,
+                    onNavigateToYesPetScreen,
                     title = stringResource(R.string.no_pet_profile_create_has_pet)
                 )
             }
