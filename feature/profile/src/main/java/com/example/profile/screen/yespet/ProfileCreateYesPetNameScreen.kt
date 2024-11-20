@@ -20,13 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.LanPetSpacing
-import com.example.designsystem.theme.baseHorizontalMargin
+import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.designsystem.theme.widgets.TextFieldWithDeleteButton
@@ -51,13 +49,16 @@ fun ProfileCreateYesPetNameScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = MaterialTheme.baseHorizontalMargin())
+                .padding(
+                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                    vertical = LanPetDimensions.Margin.Layout.vertical,
+                )
         ) {
-            Spacer(Modifier.padding(LanPetSpacing.xLarge))
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
-            Spacer(Modifier.padding(LanPetSpacing.xxSmall))
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             HeadingHint(title = stringResource(R.string.sub_heading_profile_create_yes_pet_name))
-            Spacer(Modifier.padding(LanPetSpacing.xLarge))
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             Image(
                 painter = painterResource(DS_R.drawable.dummy),
                 contentDescription = null,
@@ -68,7 +69,7 @@ fun ProfileCreateYesPetNameScreen() {
                         shape = CircleShape
                     )
             )
-            Spacer(Modifier.padding(LanPetSpacing.xLarge))
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             PetNameInputSection()
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {}
@@ -87,7 +88,7 @@ fun PetNameInputSection() {
         stringResource(R.string.name_input_label_profile_create_yes_pet_name),
         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
     )
-    Spacer(modifier = Modifier.padding(bottom = LanPetSpacing.small))
+    Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
     TextFieldWithDeleteButton(
         value = nameInput,
         placeholder = stringResource(R.string.name_input_placeholder_profile_create_yes_pet_name),
@@ -97,7 +98,7 @@ fun PetNameInputSection() {
 
 }
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun PreviewProfileCreateYesPetNameScreen() {
     ProfileCreateYesPetNameScreen()

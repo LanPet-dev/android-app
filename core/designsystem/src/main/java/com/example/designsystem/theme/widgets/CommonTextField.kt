@@ -19,9 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.designsystem.theme.BlackColor
 import com.example.designsystem.theme.GrayColor
-import com.example.designsystem.theme.cornerRadiusLight
+import com.example.designsystem.theme.LanPetDimensions
 
 @Composable
 fun TextFieldWithDeleteButton(
@@ -34,8 +33,8 @@ fun TextFieldWithDeleteButton(
     OutlinedTextField(
         modifier = modifier,
         value = value,
-        textStyle = MaterialTheme.typography.bodyMedium.copy(color = BlackColor.MEDIUM),
-        shape = RoundedCornerShape(cornerRadiusLight),
+        textStyle = MaterialTheme.typography.bodyMedium,
+        shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         colors = OutlinedTextFieldDefaults.colors().copy(
             unfocusedIndicatorColor = GrayColor.LIGHT,
             focusedIndicatorColor = GrayColor.LIGHT,

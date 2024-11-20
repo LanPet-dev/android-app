@@ -24,7 +24,7 @@ fun LanPetTopAppBar(
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors().copy(
-        containerColor = WhiteColor.LIGHT
+        containerColor = MaterialTheme.colorScheme.background,
     ),
     modifier: Modifier = Modifier,
 ) {

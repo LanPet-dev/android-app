@@ -1,5 +1,11 @@
 package com.example.profile.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -11,13 +17,45 @@ fun NavGraphBuilder.profileNavGraph(
     onNavigateToYesPetScreen: () -> Unit,
     onNavigateToNoPetScreen: () -> Unit,
 ) {
-    composable<ProfileCreateHasPet>() {
+    composable<ProfileCreateHasPet>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(350)
+            )
+        },
+        exitTransition = {
+            fadeOut()
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(350)
+            )
+        }
+    ) {
         ProfileCreateHasPetScreen(
             onNavigateToYesPetScreen = onNavigateToYesPetScreen,
             onNavigateToNoPetScreen = onNavigateToNoPetScreen,
         )
     }
-    composable<ProfileCreateYesPet>() {
+    composable<ProfileCreateYesPet>(
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(350)
+            )
+        },
+        exitTransition = {
+            fadeOut()
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(350)
+            )
+        }
+    ) {
         ProfileCreateYesPetNameScreen()
     }
 }
