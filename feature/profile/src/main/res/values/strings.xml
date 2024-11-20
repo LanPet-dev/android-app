@@ -1,8 +1,16 @@
 <resources>
+    <string name="appbar_title_profile_create">프로필 만들기</string>
+
     <string name="heading_profile_create_has_pet">현재 반려동물을 키우고 계신가요? </string>
     <string name="no_pet_profile_create_has_pet">키우고 있지 않아요!</string>
     <string name="yes_pet_profile_create_has_pet">키우고 있어요!</string>
 
     <string name="heading_profile_create_desc_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
     <string name="heading_profile_create_desc_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
+
+    <string name="heading_profile_create_yes_pet_name">프로필 이름을 입력해주세요</string>
+    <string name="sub_heading_profile_create_yes_pet_name">사진 등록은 넘어가도 괜찮아요!</string>
+    <string name="name_input_label_profile_create_yes_pet_name">반려동물 이름은 무엇인가요?</string>
+    <string name="name_input_placeholder_profile_create_yes_pet_name">이름을 입력해주세요</string>
+
 </resources>

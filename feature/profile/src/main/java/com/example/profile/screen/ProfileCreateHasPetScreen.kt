@@ -1,7 +1,6 @@
 package com.example.profile.screen
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,21 +9,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.GrayColor
+import com.example.designsystem.theme.BlackColor
 import com.example.designsystem.theme.baseHorizontalMargin
+import com.example.designsystem.theme.cornerRadiusLight
+import com.example.designsystem.theme.marginHard
 import com.example.designsystem.theme.marginLight
-import com.example.designsystem.theme.marginMedium
+import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.profile.R
 import com.example.profile.widget.Heading
 
@@ -35,7 +38,11 @@ fun ProfileCreateHasPetScreen(
     onNavigateToNoPetScreen: () -> Unit,
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = {}) }
+        topBar = {
+            LanPetTopAppBar(
+                title = {},
+            )
+        },
     ) {
         Column(
             modifier = Modifier
@@ -54,7 +61,7 @@ fun ProfileCreateHasPetScreen(
                     onNavigateToYesPetScreen,
                     title = stringResource(R.string.yes_pet_profile_create_has_pet)
                 )
-                Spacer(Modifier.padding(vertical = marginMedium))
+                Spacer(Modifier.padding(vertical = marginHard))
                 HasPetSelectButton(
                     onNavigateToNoPetScreen,
                     title = stringResource(R.string.no_pet_profile_create_has_pet)
@@ -73,21 +80,27 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
         modifier = Modifier
             .wrapContentSize()
             .clickable(
-                onClick = onClick
+                onClick = onClick,
             )
     ) {
-        Canvas(
+        Image(
+            painter = painterResource(com.example.designsystem.R.drawable.dummy),
+            contentDescription = null,
             modifier = Modifier
-                .size(70.dp)
-                .background(GrayColor.MEDIUM)
-        ) {
-        }
+                .size(
+                    110.dp
+                )
+                .clip(
+                    RoundedCornerShape(cornerRadiusLight)
+                ),
+
+            )
         Spacer(Modifier.padding(vertical = marginLight))
         Text(title, style = MaterialTheme.typography.labelLarge)
     }
 }
 
-@Preview(showBackground = true, widthDp = 300, heightDp = 500)
+@Preview(showBackground = true, widthDp = 500, heightDp = 700)
 @Composable
 fun PreviewProfileCreateHasPetScreen() {
     ProfileCreateHasPetScreen(

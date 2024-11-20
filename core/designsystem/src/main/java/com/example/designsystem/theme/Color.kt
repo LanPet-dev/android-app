@@ -16,14 +16,16 @@ object BlackColor {
 }
 
 object GrayColor {
+    val LIGHT = Color(0xffDBDBDB)
+    val LIGHT_MEDIUM = Color(0xffBFBFBF)
     val MEDIUM = Color(0xff555555)
 }
 
-object PurpleColor{
+object PurpleColor {
     val MEDIUM = Color(0xff6608E1)
 }
 
 object WhiteColor {
     val LIGHT = Color(0xffffffff)
-    val MEDIUM =  Color(0xdfdfdf)
+    val MEDIUM = Color(0xdfdfdf)
 }

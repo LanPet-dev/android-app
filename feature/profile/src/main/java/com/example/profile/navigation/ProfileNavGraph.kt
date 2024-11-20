@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.profile.screen.ProfileCreateHasPetScreen
+import com.example.profile.screen.yespet.ProfileCreateYesPetNameScreen
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.profileNavGraph(
@@ -16,6 +17,9 @@ fun NavGraphBuilder.profileNavGraph(
             onNavigateToNoPetScreen = onNavigateToNoPetScreen,
         )
     }
+    composable<ProfileCreateYesPet>() {
+        ProfileCreateYesPetNameScreen()
+    }
 }
 
 fun NavController.navigateToProfileCreateHasPet() {
@@ -23,11 +27,11 @@ fun NavController.navigateToProfileCreateHasPet() {
 }
 
 fun NavController.navigateToProfileCreateYesPet() {
-    this.navigate(ProfileCreateHasPet)
+    this.navigate(ProfileCreateYesPet)
 }
 
 fun NavController.navigateToProfileCreateNoPet() {
-    this.navigate(ProfileCreateHasPet)
+    this.navigate(ProfileCreateYesPet)
 }
 
 @Serializable
