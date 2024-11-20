@@ -12,6 +12,7 @@ android {
     namespace = "com.example.app"
     buildFeatures {
         compose = true
+
     }
 }
 
@@ -19,6 +20,7 @@ dependencies {
     implementation(projects.core.navigation)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
+    implementation(projects.feature.profile)
     implementation(projects.core.designsystem)
 
     implementation(libs.hilt.android)
@@ -32,6 +34,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.network.okhttp)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,4 +1,4 @@
-package com.example.profile.screen.yespet
+package com.example.profile.screen.nopet
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,7 +33,7 @@ import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateYesPetNameScreen() {
+fun ProfileCreateNoPetNameScreen() {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -56,9 +56,9 @@ fun ProfileCreateYesPetNameScreen() {
                 )
         ) {
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
+            Heading(title = stringResource(R.string.heading_profile_create_no_pet_name))
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-            HeadingHint(title = stringResource(R.string.sub_heading_profile_create_yes_pet_name))
+            HeadingHint(title = stringResource(R.string.sub_heading_profile_create_no_pet_name))
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             ImagePickSection()
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
@@ -99,23 +99,23 @@ fun PetNameInputSection() {
     }
 
     Text(
-        stringResource(R.string.name_input_label_profile_create_yes_pet_name),
+        stringResource(R.string.name_input_label_profile_create_no_pet_name),
         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
     )
     Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
     TextFieldWithDeleteButton(
         value = nameInput,
-        placeholder = stringResource(R.string.name_input_placeholder_profile_create_yes_pet_name),
+        placeholder = stringResource(R.string.name_input_placeholder_profile_create_no_pet_name),
     ) {
         nameInput = it
     }
 
 }
 
-@Preview()
+@Preview
 @Composable
-fun PreviewProfileCreateYesPetNameScreen() {
+fun PreviewProfileCreateNesPetNameScreen() {
     LanPetAppTheme {
-        ProfileCreateYesPetNameScreen()
+        ProfileCreateNoPetNameScreen()
     }
 }

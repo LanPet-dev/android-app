@@ -22,11 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.BlackColor
-import com.example.designsystem.theme.baseHorizontalMargin
-import com.example.designsystem.theme.cornerRadiusLight
-import com.example.designsystem.theme.marginHard
-import com.example.designsystem.theme.marginLight
+import com.example.designsystem.theme.LanPetAppTheme
+import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.profile.R
 import com.example.profile.widget.Heading
@@ -48,7 +45,10 @@ fun ProfileCreateHasPetScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = MaterialTheme.baseHorizontalMargin())
+                .padding(
+                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                    vertical = LanPetDimensions.Margin.Layout.vertical,
+                )
         ) {
             Spacer(Modifier.weight(0.1f))
             Heading(title = stringResource(R.string.heading_profile_create_has_pet))
@@ -58,12 +58,12 @@ fun ProfileCreateHasPetScreen(
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             ) {
                 HasPetSelectButton(
-                    onNavigateToYesPetScreen,
+                    onNavigateToNoPetScreen,
                     title = stringResource(R.string.yes_pet_profile_create_has_pet)
                 )
-                Spacer(Modifier.padding(vertical = marginHard))
+                Spacer(Modifier.padding(vertical = LanPetDimensions.Margin.medium))
                 HasPetSelectButton(
-                    onNavigateToNoPetScreen,
+                    onNavigateToYesPetScreen,
                     title = stringResource(R.string.no_pet_profile_create_has_pet)
                 )
             }
@@ -84,26 +84,28 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
             )
     ) {
         Image(
-            painter = painterResource(com.example.designsystem.R.drawable.dummy),
+            painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
             contentDescription = null,
             modifier = Modifier
                 .size(
                     110.dp
                 )
                 .clip(
-                    RoundedCornerShape(cornerRadiusLight)
+                    RoundedCornerShape(LanPetDimensions.Corner.small)
                 ),
 
             )
-        Spacer(Modifier.padding(vertical = marginLight))
+        Spacer(Modifier.padding(vertical = LanPetDimensions.Margin.small))
         Text(title, style = MaterialTheme.typography.labelLarge)
     }
 }
 
-@Preview(showBackground = true, widthDp = 500, heightDp = 700)
+@Preview
 @Composable
 fun PreviewProfileCreateHasPetScreen() {
-    ProfileCreateHasPetScreen(
-        {}, {}
-    )
+    LanPetAppTheme {
+        ProfileCreateHasPetScreen(
+            {}, {}
+        )
+    }
 }

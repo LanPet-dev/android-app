@@ -27,5 +27,5 @@ object PurpleColor {
 
 object WhiteColor {
     val LIGHT = Color(0xffffffff)
-    val MEDIUM = Color(0xdfdfdf)
+    val MEDIUM = Color(0xffdfdfdf)
 }
