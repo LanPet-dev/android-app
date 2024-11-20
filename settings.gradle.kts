@@ -26,6 +26,7 @@ rootProject.name = "LanPetApp"
 // feature
 include(":feature:landing")
 include(":feature:auth")
+include(":feature:profile")
 
 // data
 include(":data:repository")
