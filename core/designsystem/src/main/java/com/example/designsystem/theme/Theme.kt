@@ -36,7 +36,7 @@ data class CustomColorScheme(
 
 
 val LightCustomColors = CustomColorScheme(
-    buttonBackground = BlackColor.MEDIUM,
+    buttonBackground = PrimaryColor,
     buttonText = WhiteColor.LIGHT,
     textFieldBackground = WhiteColor.LIGHT,
     textFieldText = BlackColor.MEDIUM,

@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -68,25 +70,29 @@ fun ProfileCreateNoPetIntroScreen(
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xxxLarge))
                 ImageSection()
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.large))
-                Text(buildAnnotatedString {
-                    withStyle(
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            color = GrayColor.LIGHT_MEDIUM,
-                            lineHeight = 28.sp, textAlign = TextAlign.Center
-                        ).toParagraphStyle()
-                    ) {
-                        append(
-                            desc1
-                        )
-                    }
-                    withStyle(
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            lineHeight = 28.sp, textAlign = TextAlign.Center
-                        ).toParagraphStyle()
-                    ) {
-                        append(desc2)
-                    }
-                }, modifier = Modifier.fillMaxWidth())
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                color = GrayColor.LIGHT_MEDIUM,
+                            ).toSpanStyle(),
+                        ) {
+                            append(
+                                desc1 + "\n"
+                            )
+                        }
+                        withStyle(
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            ).toSpanStyle()
+                        ) {
+                            append(desc2)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp)
+                )
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(R.string.appbar_title_profile_create)) {
                     onNavigateToNoPetNameScreen()
@@ -111,7 +117,11 @@ fun ImageSection() {
             modifier = Modifier
                 .crop(100.dp)
         )
-        Text(" > ", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 24.dp))
+        Text(
+            " > ",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
         // 반려동물 이미지
         Image(
             painter = painterResource(DS_R.drawable.img_dummy),
