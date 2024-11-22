@@ -55,7 +55,7 @@ fun ProfileCreateNoPetNameScreen() {
                     vertical = LanPetDimensions.Margin.Layout.vertical,
                 )
         ) {
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
             Heading(title = stringResource(R.string.heading_profile_create_no_pet_name))
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             HeadingHint(title = stringResource(R.string.sub_heading_profile_create_no_pet_name))

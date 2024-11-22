@@ -64,7 +64,7 @@ fun ProfileCreateNoPetIntroScreen(
             val desc2 = stringResource(R.string.desc2_profile_create_intro_no_pet)
 
             Column {
-                Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
                 Heading(title = stringResource(R.string.heading_profile_create_intro_no_pet))
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xxxLarge))
                 ImageSection()
