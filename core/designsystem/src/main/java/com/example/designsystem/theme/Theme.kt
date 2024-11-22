@@ -28,6 +28,7 @@ val LightColorScheme = lightColorScheme(
 )
 
 data class CustomColorScheme(
+    val heading: Color,
     val buttonBackground: Color,
     val buttonText: Color,
     val textFieldBackground: Color,
@@ -49,6 +50,7 @@ val LightCustomColors = CustomColorScheme(
     selectedContainer = SubPrimaryColor.VIOLET50,
     unSelectedText = GrayColor.LIGHT_MEDIUM,
     unSelectedContainer = WhiteColor.LIGHT,
+    heading = BlackColor.MEDIUM
 )
 
 val DarkCustomColors = CustomColorScheme(
@@ -60,6 +62,7 @@ val DarkCustomColors = CustomColorScheme(
     selectedContainer = SubPrimaryColor.VIOLET50,
     unSelectedText = GrayColor.LIGHT_MEDIUM,
     unSelectedContainer = BlackColor.MEDIUM,
+    heading = WhiteColor.MEDIUM
 )
 
 
