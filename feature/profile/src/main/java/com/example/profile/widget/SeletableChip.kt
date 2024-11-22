@@ -25,13 +25,19 @@ fun SelectableChip(isSelected: Boolean, title: String, onSelectValueChanged: (Bo
     Box(
         Modifier
             .padding(horizontal = 4.dp, vertical = 2.dp)
-            .border(
-                border = BorderStroke(1.dp, GrayColor.MEDIUM), shape = RoundedCornerShape(
+            .background(
+                color = if (isSelected) MaterialTheme.customColorScheme.selectedContainer else MaterialTheme.customColorScheme.unSelectedContainer,
+                shape = RoundedCornerShape(
                     LanPetDimensions.Corner.xLarge
                 )
             )
-            .background(
-                color = if (isSelected) MaterialTheme.customColorScheme.selectedContainer else MaterialTheme.customColorScheme.unSelectedContainer
+            .border(
+                border = BorderStroke(
+                    1.dp,
+                    if (isSelected) MaterialTheme.customColorScheme.selectedContainer else GrayColor.LIGHT
+                ), shape = RoundedCornerShape(
+                    LanPetDimensions.Corner.xLarge
+                )
             )
             .clickable(
                 onClick = {
