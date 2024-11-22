@@ -1,5 +1,6 @@
 package com.example.designsystem.theme
 
+import android.R
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -31,15 +32,23 @@ data class CustomColorScheme(
     val buttonText: Color,
     val textFieldBackground: Color,
     val textFieldText: Color,
+    val selectedText: Color,
+    val selectedContainer: Color,
+    val unSelectedText: Color,
+    val unSelectedContainer: Color,
     //TODO("Satoshi"): define another colors
 )
 
 
 val LightCustomColors = CustomColorScheme(
-    buttonBackground = PrimaryColor,
+    buttonBackground = PrimaryColor.PRIMARY,
     buttonText = WhiteColor.LIGHT,
     textFieldBackground = WhiteColor.LIGHT,
     textFieldText = BlackColor.MEDIUM,
+    selectedText = PrimaryColor.PRIMARY,
+    selectedContainer = SubPrimaryColor.VIOLET50,
+    unSelectedText = GrayColor.LIGHT_MEDIUM,
+    unSelectedContainer = WhiteColor.LIGHT,
 )
 
 val DarkCustomColors = CustomColorScheme(
@@ -47,6 +56,10 @@ val DarkCustomColors = CustomColorScheme(
     buttonText = BlackColor.MEDIUM,
     textFieldBackground = BlackColor.MEDIUM,
     textFieldText = WhiteColor.MEDIUM,
+    selectedText = PrimaryColor.PRIMARY,
+    selectedContainer = SubPrimaryColor.VIOLET50,
+    unSelectedText = GrayColor.LIGHT_MEDIUM,
+    unSelectedContainer = BlackColor.MEDIUM,
 )
 
 
@@ -72,8 +85,8 @@ fun LanPetAppTheme(
     // 테마에 따라 window 배경색 설정
     DisposableEffect(darkTheme) {
         window?.setBackgroundDrawableResource(
-            if (darkTheme) android.R.color.black
-            else android.R.color.white
+            if (darkTheme) R.color.black
+            else R.color.white
         )
         onDispose {}
     }
