@@ -48,7 +48,6 @@ fun ProfileCreateNoPetIntroScreen(
             LanPetTopAppBar(
                 title = {},
                 actions = {
-                    Text("1/4 ")
                 }
             )
         },

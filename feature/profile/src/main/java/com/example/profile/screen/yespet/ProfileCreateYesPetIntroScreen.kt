@@ -43,7 +43,6 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
             LanPetTopAppBar(
                 title = {},
                 actions = {
-                    Text("1/4 ")
                 }
             )
         },
