@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.auth.navigation.authNavGraph
-import com.example.auth.navigation.navigateToLoginScreen
 import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
-import com.example.profile.navigation.ProfileCreateHasPet
 import com.example.profile.navigation.navigateToProfileCreateHasPet
-import com.example.profile.navigation.navigateToProfileCreateNoPet
-import com.example.profile.navigation.navigateToProfileCreateYesPet
+import com.example.profile.navigation.navigateToProfileCreateNoPetName
+import com.example.profile.navigation.navigateToProfileCreateYesPetName
+import com.example.profile.navigation.navigateToProfileIntroNoPet
+import com.example.profile.navigation.navigateToProfileIntroYesPet
 import com.example.profile.navigation.profileNavGraph
 
 
@@ -30,11 +30,17 @@ fun AppNavigation(
         }
         authNavGraph()
         profileNavGraph(
-            onNavigateToYesPetScreen = {
-                navController.navigateToProfileCreateYesPet()
+            onNavigateToYesPetNameScreen = {
+                navController.navigateToProfileCreateYesPetName()
             },
-            onNavigateToNoPetScreen = {
-                navController.navigateToProfileCreateNoPet()
+            onNavigateToNoPetNameScreen = {
+                navController.navigateToProfileCreateNoPetName()
+            },
+            onNavigateToYesPetIntroScreen = {
+                navController.navigateToProfileIntroYesPet()
+            },
+            onNavigateToNoPetIntroScreen = {
+                navController.navigateToProfileIntroNoPet()
             },
         )
     }

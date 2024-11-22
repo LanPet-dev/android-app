@@ -46,7 +46,7 @@ val DarkCustomColors = CustomColorScheme(
     buttonBackground = WhiteColor.LIGHT,
     buttonText = BlackColor.MEDIUM,
     textFieldBackground = BlackColor.MEDIUM,
-    textFieldText = WhiteColor.LIGHT,
+    textFieldText = WhiteColor.MEDIUM,
 )
 
 
@@ -54,10 +54,6 @@ val LocalCustomColorScheme = staticCompositionLocalOf<CustomColorScheme> {
     LightCustomColors
 }
 
-
-
-
-// extension fun
 val MaterialTheme.customColorScheme: CustomColorScheme
     @Composable
     get() = LocalCustomColorScheme.current

@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
@@ -65,7 +64,10 @@ fun ProfileCreateNoPetNameScreen() {
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             PetNameInputSection()
             Spacer(Modifier.weight(1f))
-            CommonButton(title = stringResource(DS_R.string.next_button_string)) {}
+            CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+
+            }
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         }
 
     }

@@ -52,10 +52,10 @@ fun TextFieldWithDeleteButton(
             unfocusedPlaceholderColor = GrayColor.MEDIUM,
             disabledPlaceholderColor = GrayColor.MEDIUM,
             cursorColor = GrayColor.MEDIUM,
-            focusedContainerColor = MaterialTheme.customColorScheme.buttonBackground,
-            unfocusedContainerColor = MaterialTheme.customColorScheme.buttonBackground,
-            disabledContainerColor = MaterialTheme.customColorScheme.buttonBackground,
-            errorContainerColor = MaterialTheme.customColorScheme.buttonBackground
+            focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+            unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+            disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+            errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground
         ),
         singleLine = singleLine,
         onValueChange = onValueChange,

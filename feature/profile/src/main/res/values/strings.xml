@@ -5,12 +5,12 @@
     <string name="no_pet_profile_create_has_pet">키우고 있지 않아요!</string>
     <string name="yes_pet_profile_create_has_pet">키우고 있어요!</string>
 
-    <string name="heading_profile_create_desc_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
-    <string name="desc1_profile_create_desc_yes_pet">반려동물을 의인화 해서 마치 나의 반려동물이\n커뮤니티 활동을 하는 것 같은 경험을 제공해줘요</string>
-    <string name="desc2_profile_create_desc_yes_pet">내가 나의 반려동물이 돼서 활동해요!!</string>>
-    <string name="heading_profile_create_desc_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
-    <string name="desc1_profile_create_desc_no_pet">반려동물을 키우고 있지 않지만\n동물에 대한 정보를 얻고 싶다면 랜집사 프로필로 설정돼요</string>
-    <string name="desc2_profile_create_desc_no_pet">나중에 반려동물이 생긴다면\n반려동물 프로필로 전환이 가능해요!</string>>
+    <string name="heading_profile_create_intro_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
+    <string name="desc1_profile_create_intro_yes_pet">반려동물을 의인화 해서 마치 나의 반려동물이\n커뮤니티 활동을 하는 것 같은 경험을 제공해줘요</string>
+    <string name="desc2_profile_create_intro_yes_pet">내가 나의 반려동물이 돼서 활동해요!!</string>>
+    <string name="heading_profile_create_intro_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
+    <string name="desc1_profile_create_intro_no_pet">반려동물을 키우고 있지 않지만\n동물에 대한 정보를 얻고 싶다면 랜집사 프로필로 설정돼요</string>
+    <string name="desc2_profile_create_intro_no_pet">나중에 반려동물이 생긴다면\n반려동물 프로필로 전환이 가능해요!</string>>
 
     <string name="heading_profile_create_yes_pet_name">프로필 이름을 입력해주세요</string>
     <string name="sub_heading_profile_create_yes_pet_name">사진 등록은 넘어가도 괜찮아요!</string>

@@ -66,6 +66,7 @@ fun ProfileCreateYesPetNameScreen() {
             PetNameInputSection()
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {}
+            Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         }
 
     }
