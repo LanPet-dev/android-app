@@ -26,7 +26,7 @@
     <string name="sub_heading_profile_create_category_yes_pet">카테고리를 선택해주세요</string>
 
     <string name="heading_profile_create_human_age_no_pet">나이를 설정해주세요</string>>
-    <string name="sub_heading_profile_create_human_age_yes_pet">해당 연령대를 선택해주세요!</string>>
+    <string name="sub_heading_profile_create_human_age_no_pet">해당 연령대를 선택해주세요!</string>>
 
     <string name="heading_profile_create_species_yes_pet">반려동물의 종은 무엇인가요?</string>>
     <string name="species_dropdown_label_profile_create_species_yes_pet">종을 입력해주세요</string>
