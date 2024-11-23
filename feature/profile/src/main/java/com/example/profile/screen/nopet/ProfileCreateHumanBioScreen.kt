@@ -36,7 +36,7 @@ import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ProfileCreateHumanBioScreen() {
+fun ProfileCreateHumanBioScreen(onNavigateToDone: () -> Unit = { }) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -66,7 +66,9 @@ fun ProfileCreateHumanBioScreen() {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 BioInputSection()
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) { }
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToDone()
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
         }

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.R as DS_R
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
@@ -22,11 +21,11 @@ import com.example.profile.R
 import com.example.profile.widget.Heading
 import com.example.profile.widget.HeadingHint
 import com.example.profile.widget.SelectableChip
-
+import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ProfileCreatePetCategoryScreen() {
+fun ProfileCreatePetCategoryScreen(onNavigateToPetSpecies: () -> Unit) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -35,17 +34,18 @@ fun ProfileCreatePetCategoryScreen() {
                 },
                 actions = {
                     Text("2/4 ")
-                }
+                },
             )
         },
     ) {
         Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
@@ -56,47 +56,49 @@ fun ProfileCreatePetCategoryScreen() {
                 FlowRow {
                     SelectableChip(
                         title = "고양이",
-                        isSelected = true
+                        isSelected = true,
                     ) { }
                     SelectableChip(
                         title = "강아지",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "햄스터",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "도마뱀",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "앵무새",
-                        isSelected = true
+                        isSelected = true,
                     ) { }
                     SelectableChip(
                         title = "물고기",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "뱀",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "거미",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "양서류",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                     SelectableChip(
                         title = "기타",
-                        isSelected = false
+                        isSelected = false,
                     ) { }
                 }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) { }
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToPetSpecies()
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
         }
@@ -107,6 +109,6 @@ fun ProfileCreatePetCategoryScreen() {
 @Composable
 fun PreviewProfileCreatePetCategoryScreen() {
     LanPetAppTheme {
-        ProfileCreatePetCategoryScreen()
+        ProfileCreatePetCategoryScreen({})
     }
 }

@@ -34,10 +34,9 @@ import com.example.profile.widget.Heading
 import com.example.profile.widget.HeadingHint
 import com.example.designsystem.R as DS_R
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ProfileCreatePetBioScreen() {
+fun ProfileCreatePetBioScreen(onNavigateToDone: () -> Unit = { }) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -46,17 +45,18 @@ fun ProfileCreatePetBioScreen() {
                 },
                 actions = {
                     Text("4/4 ")
-                }
+                },
             )
         },
     ) {
         Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
@@ -66,7 +66,9 @@ fun ProfileCreatePetBioScreen() {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 BioInputSection()
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) { }
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToDone()
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
         }
@@ -75,7 +77,7 @@ fun ProfileCreatePetBioScreen() {
 
 @Composable
 fun BioInputSection() {
-    var input by rememberSaveable() {
+    var input by rememberSaveable {
         mutableStateOf("")
     }
 
@@ -88,19 +90,20 @@ fun BioInputSection() {
             textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
             minLines = 7,
-            colors = OutlinedTextFieldDefaults.colors().copy(
-                unfocusedIndicatorColor = GrayColor.LIGHT,
-                focusedIndicatorColor = GrayColor.LIGHT,
-                disabledIndicatorColor = GrayColor.LIGHT,
-                focusedPlaceholderColor = GrayColor.MEDIUM,
-                unfocusedPlaceholderColor = GrayColor.MEDIUM,
-                disabledPlaceholderColor = GrayColor.MEDIUM,
-                cursorColor = GrayColor.MEDIUM,
-                focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors().copy(
+                    unfocusedIndicatorColor = GrayColor.LIGHT,
+                    focusedIndicatorColor = GrayColor.LIGHT,
+                    disabledIndicatorColor = GrayColor.LIGHT,
+                    focusedPlaceholderColor = GrayColor.MEDIUM,
+                    unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                    disabledPlaceholderColor = GrayColor.MEDIUM,
+                    cursorColor = GrayColor.MEDIUM,
+                    focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                ),
             singleLine = false,
             onValueChange = { newText ->
                 if (newText.length <= maxLength) {
@@ -110,20 +113,21 @@ fun BioInputSection() {
             placeholder = {
                 Text(
                     stringResource(R.string.bio_input_placeholder_profile_create_pet_bio_yes_pet),
-                    style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
                 )
-            }
+            },
         )
 
         Box(
-            modifier = Modifier
-                .matchParentSize()
-                .padding(bottom = 16.dp, end = 16.dp),
-            contentAlignment = Alignment.BottomEnd
+            modifier =
+                Modifier
+                    .matchParentSize()
+                    .padding(bottom = 16.dp, end = 16.dp),
+            contentAlignment = Alignment.BottomEnd,
         ) {
             Text(
                 text = "${input.length}/$maxLength",
-                style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT)
+                style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
             )
         }
     }

@@ -25,7 +25,7 @@ import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ProfileCreateHumanAgeScreen() {
+fun ProfileCreateHumanAgeScreen(onNavigateToPreferPet: () -> Unit = { }) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -76,7 +76,9 @@ fun ProfileCreateHumanAgeScreen() {
                     ) { }
                 }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) { }
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToPreferPet()
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
         }

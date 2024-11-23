@@ -33,7 +33,7 @@ import com.example.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateYesPetNameScreen() {
+fun ProfileCreateYesPetNameScreen(onNavigateToPetCategory: () -> Unit = { }) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -65,7 +65,9 @@ fun ProfileCreateYesPetNameScreen() {
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
             PetNameInputSection()
             Spacer(Modifier.weight(1f))
-            CommonButton(title = stringResource(DS_R.string.next_button_string)) {}
+            CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                onNavigateToPetCategory()
+            }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         }
     }

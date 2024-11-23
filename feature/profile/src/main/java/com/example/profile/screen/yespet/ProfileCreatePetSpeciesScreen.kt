@@ -28,7 +28,9 @@ import com.example.profile.widget.Heading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreatePetSpeciesScreen() {
+fun ProfileCreatePetSpeciesScreen(
+    onNavigateToPetBio: () -> Unit = { }
+) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -55,7 +57,9 @@ fun ProfileCreatePetSpeciesScreen() {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
                 PetSpeciesInputSection()
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) { }
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToPetBio()
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
         }

@@ -5,8 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.profile.screen.ProfileCreateDoneScreen
 import com.example.profile.screen.ProfileCreateHasPetScreen
+import com.example.profile.screen.nopet.ProfileCreateHumanAgeScreen
+import com.example.profile.screen.nopet.ProfileCreateHumanBioScreen
 import com.example.profile.screen.nopet.ProfileCreateNoPetIntroScreen
 import com.example.profile.screen.nopet.ProfileCreateNoPetNameScreen
+import com.example.profile.screen.nopet.ProfileCreatePreferPetScreen
+import com.example.profile.screen.yespet.ProfileCreatePetBioScreen
+import com.example.profile.screen.yespet.ProfileCreatePetCategoryScreen
+import com.example.profile.screen.yespet.ProfileCreatePetSpeciesScreen
 import com.example.profile.screen.yespet.ProfileCreateYesPetIntroScreen
 import com.example.profile.screen.yespet.ProfileCreateYesPetNameScreen
 import kotlinx.serialization.Serializable
@@ -16,6 +22,13 @@ fun NavGraphBuilder.profileNavGraph(
     onNavigateToNoPetNameScreen: () -> Unit,
     onNavigateToYesPetIntroScreen: () -> Unit,
     onNavigateToNoPetIntroScreen: () -> Unit,
+    onNavigateToHumanBio: () -> Unit,
+    onNavigateToPetBio: () -> Unit,
+    onNavigateToPetCategory: () -> Unit,
+    onNavigateToPetSpecies: () -> Unit,
+    onNavigateToHumanAge: () -> Unit,
+    onNavigateToDone: () -> Unit,
+    onNavigateToPreferPet: () -> Unit,
 ) {
     composable<ProfileCreateHasPet> {
         ProfileCreateHasPetScreen(
@@ -24,10 +37,14 @@ fun NavGraphBuilder.profileNavGraph(
         )
     }
     composable<ProfileCreateYesPetName> {
-        ProfileCreateYesPetNameScreen()
+        ProfileCreateYesPetNameScreen(
+            onNavigateToPetCategory = onNavigateToPetCategory,
+        )
     }
     composable<ProfileCreateNoPetName> {
-        ProfileCreateNoPetNameScreen()
+        ProfileCreateNoPetNameScreen(
+            onNavigateToHumanAge = onNavigateToHumanAge,
+        )
     }
     composable<ProfileIntroNoPet> {
         ProfileCreateNoPetIntroScreen(
@@ -41,6 +58,42 @@ fun NavGraphBuilder.profileNavGraph(
     }
     composable<ProfileCreateDone> {
         ProfileCreateDoneScreen()
+    }
+
+    composable<ProfileCreateHumanBio> {
+        ProfileCreateHumanBioScreen(
+            onNavigateToDone = onNavigateToDone,
+        )
+    }
+
+    composable<ProfileCreatePetBio> {
+        ProfileCreatePetBioScreen(
+            onNavigateToDone = onNavigateToDone,
+        )
+    }
+
+    composable<ProfileCreatePetCategory> {
+        ProfileCreatePetCategoryScreen(
+            onNavigateToPetSpecies = onNavigateToPetSpecies,
+        )
+    }
+
+    composable<ProfileCreatePetSpecies> {
+        ProfileCreatePetSpeciesScreen(
+            onNavigateToPetBio = onNavigateToPetBio,
+        )
+    }
+
+    composable<ProfileCreateHumanAge> {
+        ProfileCreateHumanAgeScreen(
+            onNavigateToPreferPet = onNavigateToPreferPet,
+        )
+    }
+
+    composable<ProfileCreatePreferPet> {
+        ProfileCreatePreferPetScreen(
+            onNavigateToHumanBio = onNavigateToHumanBio,
+        )
     }
 }
 
@@ -88,6 +141,10 @@ fun NavController.navigateToProfileCreateHumanAge() {
     this.navigate(ProfileCreateHumanAge)
 }
 
+fun NavController.navigateToProfileCreatePreferPet() {
+    this.navigate(ProfileCreatePreferPet)
+}
+
 @Serializable
 object ProfileCreateHasPet
 
@@ -120,3 +177,6 @@ object ProfileCreatePetSpecies
 
 @Serializable
 object ProfileCreateHumanAge
+
+@Serializable
+object ProfileCreatePreferPet
