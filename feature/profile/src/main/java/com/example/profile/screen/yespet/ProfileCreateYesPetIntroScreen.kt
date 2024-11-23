@@ -43,17 +43,18 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
             LanPetTopAppBar(
                 title = {},
                 actions = {
-                }
+                },
             )
         },
     ) {
         Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             val desc1 = stringResource(R.string.desc1_profile_create_intro_yes_pet)
             val desc2 = stringResource(R.string.desc2_profile_create_intro_yes_pet)
@@ -67,25 +68,30 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
                 Text(
                     buildAnnotatedString {
                         withStyle(
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                color = GrayColor.LIGHT_MEDIUM,
-                            ).toSpanStyle(),
+                            style =
+                                MaterialTheme.typography.labelLarge
+                                    .copy(
+                                        color = GrayColor.LIGHT_MEDIUM,
+                                    ).toSpanStyle(),
                         ) {
                             append(
-                                desc1 + "\n"
+                                desc1 + "\n",
                             )
                         }
                         withStyle(
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            ).toSpanStyle()
+                            style =
+                                MaterialTheme.typography.labelLarge
+                                    .copy(
+                                        fontWeight = FontWeight.Bold,
+                                    ).toSpanStyle(),
                         ) {
                             append(desc2)
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp),
                 )
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(R.string.appbar_title_profile_create)) {
@@ -102,30 +108,31 @@ fun ImageSection() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         // 나(집사) 이미지
         Image(
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
-            modifier = Modifier
-                .crop(100.dp)
+            modifier =
+                Modifier
+                    .crop(100.dp),
         )
         Text(
             " = ",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
         // 반려동물 이미지
         Image(
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
-            modifier = Modifier
-                .crop(100.dp)
+            modifier =
+                Modifier
+                    .crop(100.dp),
         )
     }
 }
-
 
 @PreviewLightDark
 @Composable

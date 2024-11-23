@@ -30,6 +30,7 @@
 
     <string name="heading_profile_create_species_yes_pet">반려동물의 종은 무엇인가요?</string>>
     <string name="species_dropdown_label_profile_create_species_yes_pet">종을 입력해주세요</string>
+    <string name="placeholder_profile_create_species_input">ex)푸들, 먼치킨, 파이쏜</string>
 
     <string name="heading_profile_create_prefer_pet_no_pet">선호하는 반려동물을 선택해주세요</string>>
     <string name="sub_heading_profile_create_prefer_pet_no_pet">중복 선택이 가능해요!</string>>
@@ -41,4 +42,8 @@
     <string name="heading_profile_create_pet_human_no_pet">간단한 자기소개를 작성해주세요</string>>
     <string name="sub_heading_profile_create_human_bio_no_pet">가벼운 인사정도만 작성해도 좋아요!</string>>
     <string name="bio_input_placeholder_profile_create_human_bio_no_pet">간단한 소개를 작성해주세요</string>>
+
+    <string name="heading_profile_create_done1">프로필이 완료되었어요!</string>
+    <string name="heading_profile_create_done2">LanPet 주민이 되신 걸 환영해요</string>
+    <string name="sub_heading_profile_create_done">다양한 정보도 얻고 소통의 재미를 느끼시길 바랄게요</string>>
 </resources>

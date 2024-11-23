@@ -42,18 +42,19 @@ fun ProfileCreateNoPetNameScreen() {
                 },
                 actions = {
                     Text("1/4 ")
-                }
+                },
             )
         },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                )
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
             Heading(title = stringResource(R.string.heading_profile_create_no_pet_name))
@@ -65,11 +66,9 @@ fun ProfileCreateNoPetNameScreen() {
             PetNameInputSection()
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-
             }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         }
-
     }
 }
 
@@ -79,25 +78,25 @@ fun ImagePickSection() {
         mutableStateOf(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            imageUri = it
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) { uri: Uri? ->
+            uri?.let {
+                imageUri = it
+            }
         }
-    }
 
     ImagePickerView(
-        imageUri
+        imageUri,
     ) {
         launcher.launch("image/*")
     }
 }
 
-
 @Composable
 fun PetNameInputSection() {
-    var nameInput by rememberSaveable() {
+    var nameInput by rememberSaveable {
         mutableStateOf("")
     }
 
@@ -112,7 +111,6 @@ fun PetNameInputSection() {
     ) {
         nameInput = it
     }
-
 }
 
 @PreviewLightDark

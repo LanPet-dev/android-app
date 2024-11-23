@@ -1,11 +1,9 @@
 package com.example.profile.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.profile.screen.ProfileCreateDoneScreen
 import com.example.profile.screen.ProfileCreateHasPetScreen
 import com.example.profile.screen.nopet.ProfileCreateNoPetIntroScreen
 import com.example.profile.screen.nopet.ProfileCreateNoPetNameScreen
@@ -19,107 +17,30 @@ fun NavGraphBuilder.profileNavGraph(
     onNavigateToYesPetIntroScreen: () -> Unit,
     onNavigateToNoPetIntroScreen: () -> Unit,
 ) {
-    composable<ProfileCreateHasPet>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(350)
-            )
-        },
-        exitTransition = {
-            fadeOut()
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(350)
-            )
-        }
-    ) {
+    composable<ProfileCreateHasPet> {
         ProfileCreateHasPetScreen(
             onNavigateToYesPetScreen = onNavigateToYesPetIntroScreen,
             onNavigateToNoPetScreen = onNavigateToNoPetIntroScreen,
         )
     }
-    composable<ProfileCreateYesPetName>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(350)
-            )
-        },
-        exitTransition = {
-            fadeOut()
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(350)
-            )
-        }
-    ) {
+    composable<ProfileCreateYesPetName> {
         ProfileCreateYesPetNameScreen()
     }
-    composable<ProfileCreateNoPetName>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(350)
-            )
-        },
-        exitTransition = {
-            fadeOut()
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(350)
-            )
-        }
-    ) {
+    composable<ProfileCreateNoPetName> {
         ProfileCreateNoPetNameScreen()
     }
-    composable<ProfileIntroNoPet>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(350)
-            )
-        },
-        exitTransition = {
-            fadeOut()
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(350)
-            )
-        }
-    ) {
+    composable<ProfileIntroNoPet> {
         ProfileCreateNoPetIntroScreen(
-            onNavigateToNoPetNameScreen = onNavigateToNoPetNameScreen
+            onNavigateToNoPetNameScreen = onNavigateToNoPetNameScreen,
         )
     }
-    composable<ProfileIntroYesPet>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(350)
-            )
-        },
-        exitTransition = {
-            fadeOut()
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(350)
-            )
-        }
-    ) {
+    composable<ProfileIntroYesPet> {
         ProfileCreateYesPetIntroScreen(
-            onNavigateToYesPetNameScreen = onNavigateToYesPetNameScreen
+            onNavigateToYesPetNameScreen = onNavigateToYesPetNameScreen,
         )
+    }
+    composable<ProfileCreateDone> {
+        ProfileCreateDoneScreen()
     }
 }
 
@@ -143,6 +64,30 @@ fun NavController.navigateToProfileIntroNoPet() {
     this.navigate(ProfileIntroNoPet)
 }
 
+fun NavController.navigateToProfileCreateDone() {
+    this.navigate(ProfileCreateDone)
+}
+
+fun NavController.navigateToProfileCreateHumanBio() {
+    this.navigate(ProfileCreateHumanBio)
+}
+
+fun NavController.navigateToProfileCreatePetBio() {
+    this.navigate(ProfileCreatePetBio)
+}
+
+fun NavController.navigateToProfileCreatePetCategory() {
+    this.navigate(ProfileCreatePetCategory)
+}
+
+fun NavController.navigateToProfileCreatePetSpecies() {
+    this.navigate(ProfileCreatePetSpecies)
+}
+
+fun NavController.navigateToProfileCreateHumanAge() {
+    this.navigate(ProfileCreateHumanAge)
+}
+
 @Serializable
 object ProfileCreateHasPet
 
@@ -157,3 +102,21 @@ object ProfileIntroYesPet
 
 @Serializable
 object ProfileIntroNoPet
+
+@Serializable
+object ProfileCreateDone
+
+@Serializable
+object ProfileCreateHumanBio
+
+@Serializable
+object ProfileCreatePetBio
+
+@Serializable
+object ProfileCreatePetCategory
+
+@Serializable
+object ProfileCreatePetSpecies
+
+@Serializable
+object ProfileCreateHumanAge

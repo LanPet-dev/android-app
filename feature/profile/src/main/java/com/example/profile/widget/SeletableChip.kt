@@ -21,38 +21,50 @@ import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.customColorScheme
 
 @Composable
-fun SelectableChip(isSelected: Boolean, title: String, onSelectValueChanged: (Boolean) -> Unit) {
+fun SelectableChip(
+    isSelected: Boolean,
+    title: String,
+    onSelectValueChanged: (Boolean) -> Unit,
+) {
     Box(
         Modifier
-            .padding(horizontal = 4.dp, vertical = 2.dp)
+            .padding(horizontal = 4.dp, vertical = 4.dp)
             .background(
                 color = if (isSelected) MaterialTheme.customColorScheme.selectedContainer else MaterialTheme.customColorScheme.unSelectedContainer,
-                shape = RoundedCornerShape(
-                    LanPetDimensions.Corner.xLarge
-                )
-            )
-            .border(
-                border = BorderStroke(
-                    1.dp,
-                    if (isSelected) MaterialTheme.customColorScheme.selectedContainer else GrayColor.LIGHT
-                ), shape = RoundedCornerShape(
-                    LanPetDimensions.Corner.xLarge
-                )
-            )
-            .clickable(
+                shape =
+                    RoundedCornerShape(
+                        LanPetDimensions.Corner.xLarge,
+                    ),
+            ).border(
+                border =
+                    BorderStroke(
+                        1.dp,
+                        if (isSelected) MaterialTheme.customColorScheme.selectedContainer else GrayColor.LIGHT,
+                    ),
+                shape =
+                    RoundedCornerShape(
+                        LanPetDimensions.Corner.xLarge,
+                    ),
+            ).clickable(
                 onClick = {
                     onSelectValueChanged(!isSelected)
-                }
-            ), Alignment.Center
+                },
+            ),
+        Alignment.Center,
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge.copy(
-                color = if (isSelected) MaterialTheme.customColorScheme.selectedText else
-                    MaterialTheme.customColorScheme.unSelectedText
-            ),
+            style =
+                MaterialTheme.typography.labelLarge.copy(
+                    color =
+                        if (isSelected) {
+                            MaterialTheme.customColorScheme.selectedText
+                        } else {
+                            MaterialTheme.customColorScheme.unSelectedText
+                        },
+                ),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
         )
     }
 }
