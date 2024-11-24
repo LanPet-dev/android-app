@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lanpet.profile"
+    namespace = "com.lanpet.myprofile"
 
     buildFeatures {
         compose = true

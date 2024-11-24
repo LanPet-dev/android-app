@@ -6,19 +6,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.auth.navigation.authNavGraph
 import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
-import com.example.profile.navigation.navigateToProfileCreateDone
-import com.example.profile.navigation.navigateToProfileCreateHasPet
-import com.example.profile.navigation.navigateToProfileCreateHumanAge
-import com.example.profile.navigation.navigateToProfileCreateHumanBio
-import com.example.profile.navigation.navigateToProfileCreateNoPetName
-import com.example.profile.navigation.navigateToProfileCreatePetBio
-import com.example.profile.navigation.navigateToProfileCreatePetCategory
-import com.example.profile.navigation.navigateToProfileCreatePetSpecies
-import com.example.profile.navigation.navigateToProfileCreatePreferPet
-import com.example.profile.navigation.navigateToProfileCreateYesPetName
-import com.example.profile.navigation.navigateToProfileIntroNoPet
-import com.example.profile.navigation.navigateToProfileIntroYesPet
-import com.example.profile.navigation.profileNavGraph
+import com.lanpet.profile.navigation.navigateToProfileCreateDone
+import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
+import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
+import com.lanpet.profile.navigation.navigateToProfileCreateHumanBio
+import com.lanpet.profile.navigation.navigateToProfileCreateNoPetName
+import com.lanpet.profile.navigation.navigateToProfileCreatePetBio
+import com.lanpet.profile.navigation.navigateToProfileCreatePetCategory
+import com.lanpet.profile.navigation.navigateToProfileCreatePetSpecies
+import com.lanpet.profile.navigation.navigateToProfileCreatePreferPet
+import com.lanpet.profile.navigation.navigateToProfileCreateYesPetName
+import com.lanpet.profile.navigation.navigateToProfileIntroNoPet
+import com.lanpet.profile.navigation.navigateToProfileIntroYesPet
+import com.lanpet.profile.navigation.profileNavGraph
 
 @Composable
 fun AppNavigation() {
@@ -34,6 +34,7 @@ fun AppNavigation() {
             navController.navigateToProfileCreateHasPet()
         }
         authNavGraph()
+
         profileNavGraph(
             onNavigateToYesPetNameScreen = {
                 navController.navigateToProfileCreateYesPetName()
@@ -54,6 +55,7 @@ fun AppNavigation() {
             onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
             onNavigateToDone = { navController.navigateToProfileCreateDone() },
             onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
+            navController = navController
         )
     }
 }

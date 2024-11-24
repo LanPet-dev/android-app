@@ -45,3 +45,4 @@ include(":app")
 
 // build-logic
 includeBuild("build-logic")
+include(":feature:myprofile")

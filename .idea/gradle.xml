@@ -39,6 +39,7 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/landing" />
+            <option value="$PROJECT_DIR$/feature/myprofile" />
             <option value="$PROJECT_DIR$/feature/profile" />
           </set>
         </option>
