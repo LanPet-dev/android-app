@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,10 +10,19 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app"
+    namespace = "com.lanpet.app"
+    version = "1.0.0"
+
+    defaultConfig {
+        applicationId = "com.lanpet.app"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
     buildFeatures {
         compose = true
-
     }
 }
 
@@ -21,6 +31,9 @@ dependencies {
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
     implementation(projects.feature.profile)
+    implementation(projects.feature.free)
+    implementation(projects.feature.myprofile)
+    implementation(projects.feature.wiki)
     implementation(projects.core.designsystem)
 
     implementation(libs.hilt.android)

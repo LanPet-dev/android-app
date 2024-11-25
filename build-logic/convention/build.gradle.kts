@@ -37,13 +37,17 @@ gradlePlugin {
             id = "convention.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
-        register("androidApplicationBuild"){
-            id = "convention.andriod.app.build"
+        register("androidApplicationBuild") {
+            id = "convention.android.app.build"
             implementationClass = "AndroidApplicationBuildConventionPlugin"
         }
-        register("androidLibraryBuild"){
-            id = "convention.andriod.lib.build"
+        register("androidLibraryBuild") {
+            id = "convention.android.lib.build"
             implementationClass = "AndroidLibraryBuildConventionPlugin"
+        }
+        register("androidCoilLibraryBuild") {
+            id = "convention.android.lib.coil"
+            implementationClass = "AndroidCoilLibConventionPlugin"
         }
     }
 }

@@ -54,7 +54,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
-kotlinx-serialization-json = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization"}
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
@@ -75,13 +75,14 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-jetbrains-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "jetbrainsKotlinSerialization"}
+jetbrains-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "jetbrainsKotlinSerialization" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-ksp = {id="com.google.devtools.ksp", version.ref = "comGoogleDevtoolsKspGradlePlugin"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "comGoogleDevtoolsKspGradlePlugin" }
 
 # convention plugins
-convention-feature = {id = "convention.android.feature"}
-convention-hilt = {id = "convention.android.hilt"}
-convention-ui-compose = {id = "convention.android.ui.compose"}
-convention-app-build = {id = "convention.andriod.app.build"}
-convention-lib-build = {id = "convention.andriod.lib.build"}
+convention-feature = { id = "convention.android.feature" }
+convention-hilt = { id = "convention.android.hilt" }
+convention-ui-compose = { id = "convention.android.ui.compose" }
+convention-app-build = { id = "convention.android.app.build" }
+convention-lib-build = { id = "convention.android.lib.build" }
+convention-lib-coil = { id = "convention.android.lib.coil" }

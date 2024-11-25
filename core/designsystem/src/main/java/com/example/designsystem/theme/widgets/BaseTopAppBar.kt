@@ -2,7 +2,6 @@ package com.example.designsystem.theme.widgets
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,6 +14,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.example.designsystem.theme.LanPetAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,33 +33,7 @@ fun LanPetTopAppBar(
         navigationIcon = { navigationIcon },
         actions = actions,
         colors = colors,
-        modifier = modifier
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LanPetTopAppBar(
-    title: String,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    LanPetTopAppBar(
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -66,8 +41,8 @@ fun LanPetTopAppBar(
 @Composable
 fun LanPetCloseableTopAppBar(
     title: String,
-    onCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onCloseClick: () -> Unit,
 ) {
     LanPetTopAppBar(
         title = {
@@ -88,21 +63,24 @@ fun LanPetCloseableTopAppBar(
     )
 }
 
-// Preview
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@PreviewLightDark
 @Composable
 private fun LanPetTopAppBarPreview() {
-    LanPetTopAppBar(
-        title = { Text("Title") }
-    )
+    LanPetAppTheme {
+        LanPetTopAppBar(
+            title = { Text("Title") }
+        )
+    }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
+@PreviewLightDark
 @Composable
 private fun LanPetTopAppBarWithBackPreview() {
-    LanPetTopAppBar(
-        title = "Title",
-        onBackClick = {}
-    )
+    LanPetAppTheme {
+        LanPetCloseableTopAppBar(
+            title = "Title",
+        ) {}
+    }
 }

@@ -5,12 +5,12 @@
     <string name="no_pet_profile_create_has_pet">키우고 있지 않아요!</string>
     <string name="yes_pet_profile_create_has_pet">키우고 있어요!</string>
 
-    <string name="heading_profile_create_desc_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
-    <string name="desc1_profile_create_desc_yes_pet">반려동물을 의인화 해서 마치 나의 반려동물이\n커뮤니티 활동을 하는 것 같은 경험을 제공해줘요</string>
-    <string name="desc2_profile_create_desc_yes_pet">내가 나의 반려동물이 돼서 활동해요!!</string>>
-    <string name="heading_profile_create_desc_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
-    <string name="desc1_profile_create_desc_no_pet">반려동물을 키우고 있지 않지만\n동물에 대한 정보를 얻고 싶다면 랜집사 프로필로 설정돼요</string>
-    <string name="desc2_profile_create_desc_no_pet">나중에 반려동물이 생긴다면\n반려동물 프로필로 전환이 가능해요!</string>>
+    <string name="heading_profile_create_intro_yes_pet">반려동물을 키우고 있다면,\n반려동물 프로필로 활동이 진행돼요!</string>
+    <string name="desc1_profile_create_intro_yes_pet">반려동물을 의인화 해서 마치 나의 반려동물이\n커뮤니티 활동을 하는 것 같은 경험을 제공해줘요</string>
+    <string name="desc2_profile_create_intro_yes_pet">내가 나의 반려동물이 돼서 활동해요!!</string>>
+    <string name="heading_profile_create_intro_no_pet">반려동물을 키우고 있지 않다면,\n랜집사 프로필로 활동이 진행돼요!</string>
+    <string name="desc1_profile_create_intro_no_pet">반려동물을 키우고 있지 않지만\n동물에 대한 정보를 얻고 싶다면 랜집사 프로필로 설정돼요</string>
+    <string name="desc2_profile_create_intro_no_pet">나중에 반려동물이 생긴다면\n반려동물 프로필로 전환이 가능해요!</string>>
 
     <string name="heading_profile_create_yes_pet_name">프로필 이름을 입력해주세요</string>
     <string name="sub_heading_profile_create_yes_pet_name">사진 등록은 넘어가도 괜찮아요!</string>
@@ -26,10 +26,11 @@
     <string name="sub_heading_profile_create_category_yes_pet">카테고리를 선택해주세요</string>
 
     <string name="heading_profile_create_human_age_no_pet">나이를 설정해주세요</string>>
-    <string name="sub_heading_profile_create_human_age_yes_pet">해당 연령대를 선택해주세요!</string>>
+    <string name="sub_heading_profile_create_human_age_no_pet">해당 연령대를 선택해주세요!</string>>
 
     <string name="heading_profile_create_species_yes_pet">반려동물의 종은 무엇인가요?</string>>
     <string name="species_dropdown_label_profile_create_species_yes_pet">종을 입력해주세요</string>
+    <string name="placeholder_profile_create_species_input">ex)푸들, 먼치킨, 파이쏜</string>
 
     <string name="heading_profile_create_prefer_pet_no_pet">선호하는 반려동물을 선택해주세요</string>>
     <string name="sub_heading_profile_create_prefer_pet_no_pet">중복 선택이 가능해요!</string>>
@@ -41,4 +42,8 @@
     <string name="heading_profile_create_pet_human_no_pet">간단한 자기소개를 작성해주세요</string>>
     <string name="sub_heading_profile_create_human_bio_no_pet">가벼운 인사정도만 작성해도 좋아요!</string>>
     <string name="bio_input_placeholder_profile_create_human_bio_no_pet">간단한 소개를 작성해주세요</string>>
+
+    <string name="heading_profile_create_done1">프로필이 완료되었어요!</string>
+    <string name="heading_profile_create_done2">LanPet 주민이 되신 걸 환영해요</string>
+    <string name="sub_heading_profile_create_done">다양한 정보도 얻고 소통의 재미를 느끼시길 바랄게요</string>>
 </resources>

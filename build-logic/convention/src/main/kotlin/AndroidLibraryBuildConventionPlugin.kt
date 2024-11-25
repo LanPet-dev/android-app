@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,13 +16,17 @@ class AndroidLibraryBuildConventionPlugin : Plugin<Project> {
                 configureAndroidCommon(this)
 
                 buildTypes {
-                    //TODO("Satoshi"): Flavors (release, debug, qa, etc...)
+                    // TODO("Satoshi"): Flavors (release, debug, qa, etc...)
                     release {
                         isMinifyEnabled = false
                         proguardFiles(
                             getDefaultProguardFile("proguard-android-optimize.txt"),
-                            "proguard-rules.pro"
+                            "proguard-rules.pro",
                         )
+                    }
+                    debug {
+                        isMinifyEnabled = false
+                        signingConfig = signingConfigs.getByName("debug.key")
                     }
                 }
             }

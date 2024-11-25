@@ -5,10 +5,11 @@ plugins {
     alias(libs.plugins.convention.feature)
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.convention.lib.build)
+    alias(libs.plugins.convention.lib.coil)
 }
 
 android {
-    namespace = "com.example.profile"
+    namespace = "com.lanpet.profile"
 
     buildFeatures {
         compose = true
@@ -18,7 +19,4 @@ android {
 dependencies {
     implementation(projects.domain.model)
     implementation(libs.androidx.lifecycle.viewmodel.android)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.svg)
-    implementation(libs.coil.network.okhttp)
 }
