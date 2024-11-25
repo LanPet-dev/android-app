@@ -1,3 +1,8 @@
+package com.example.designsystem.theme.widgets
+
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -5,11 +10,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -36,11 +45,30 @@ enum class BottomNavItem(val title: String, val selectedIcon: Int, val unselecte
 }
 
 @Composable
-fun LanPetBottomNavItem(isSelected: Boolean, bottomNavItem: BottomNavItem, onClick: () -> Unit) {
+fun LanPetBottomNavItem(
+    isSelected: Boolean,
+    bottomNavItem: BottomNavItem,
+    onClick: (BottomNavItem) -> Unit
+) {
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.16f else 1f,
+        // reference: https://developer.android.com/develop/ui/compose/animation/customize?hl=ko
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "scale animation"
+    )
+
     Column(
         modifier = Modifier
             .sizeIn(minHeight = 64.dp, minWidth = 64.dp)
-            .clickable(onClick = onClick),
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(CircleShape)
+            .clickable(onClick = { onClick(bottomNavItem) }),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
