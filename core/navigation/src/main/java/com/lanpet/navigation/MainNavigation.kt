@@ -32,6 +32,14 @@ import com.lanpet.wiki.navigation.navigateToWikiScreen
 import com.lanpet.wiki.navigation.wikiNavGraph
 import kotlinx.serialization.Serializable
 
+/**
+ * Main screen of the app
+ * This screen has child NavHost whose navController is independent from parent navHost.
+ * Because of this, we have to use child's navController and parent's navController properly.
+ * For instance, if you use child's navController to navigate to a screen that is dependent on parent's navigation graph not to child's navigation graph,
+ * then, you may face an issue saying that the destination is not found.
+ * TODO: refactor such a difficult management of navigation. fuck.
+ */
 @Composable
 fun MainScreen(selectedNavItem: BottomNavItem, parentNavController: NavHostController) {
     val navController = rememberNavController()
