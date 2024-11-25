@@ -20,25 +20,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.navigation.NavController
 import com.example.designsystem.theme.LanPetAppTheme
+import com.example.landing.navigation.Landing
+import com.example.landing.navigation.navigateToLandingScreen
 import com.lanpet.free.navigation.FreeBoardBaseRoute
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardScreen
 import com.lanpet.myprofile.navigation.navigateToMyProfile
+import com.lanpet.profile.navigation.navigateToProfileCreatePetBio
 import com.lanpet.wiki.navigation.WikiBaseRoute
 import com.lanpet.wiki.navigation.navigateToWikiScreen
 import com.lanpet.wiki.navigation.wikiNavGraph
 import kotlinx.serialization.Serializable
 
 @Composable
-fun MainScreen(selectedNavItem: BottomNavItem) {
+fun MainScreen(selectedNavItem: BottomNavItem, parentNavController: NavHostController) {
     val navController = rememberNavController()
 
-    var _selectedNavItem by rememberSaveable {
+    var navItem by rememberSaveable {
         mutableStateOf(selectedNavItem)
     }
 
-    LaunchedEffect(_selectedNavItem) {
-        when (_selectedNavItem) {
+    LaunchedEffect(navItem) {
+        when (navItem) {
             BottomNavItem.Wiki -> {
                 navController.navigateToWikiScreen()
             }
@@ -56,7 +59,7 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
     Scaffold(
         bottomBar = {
             LanPetBottomNavBar(
-                selectedBottomNavItem = _selectedNavItem,
+                selectedBottomNavItem = navItem,
                 bottomNavItemList = listOf(
                     BottomNavItem.Wiki,
                     BottomNavItem.Free,
@@ -64,7 +67,7 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
                 ),
                 onItemSelected = { item ->
                     println("selected bottom nav item: $item")
-                    _selectedNavItem = item
+                    navItem = item
                 }
             )
         }
@@ -74,6 +77,7 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
         ) {
             MainNavigation(
                 navController = navController,
+                parentNavController = parentNavController,
                 startDestination = selectedNavItem
             )
         }
@@ -84,6 +88,7 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
 @Composable
 fun MainNavigation(
     navController: NavHostController,
+    parentNavController: NavHostController,
     startDestination: BottomNavItem,
     modifier: Modifier = Modifier
 ) {
@@ -104,7 +109,11 @@ fun MainNavigation(
 }
 
 fun NavController.navigateToMainScreen(bottomNavItem: BottomNavItem = BottomNavItem.MyPage) {
-    navigate(MainNavigationRoute(bottomNavItem))
+    navigate(MainNavigationRoute(bottomNavItem)) {
+        popUpTo(0) {
+            inclusive = true
+        }
+    }
 }
 
 @Serializable
@@ -115,6 +124,6 @@ data class MainNavigationRoute(val selectedNavItem: BottomNavItem)
 @PreviewLightDark
 fun MainScreenPreview() {
     LanPetAppTheme {
-        MainScreen(selectedNavItem = BottomNavItem.MyPage)
+        MainScreen(selectedNavItem = BottomNavItem.MyPage, rememberNavController())
     }
 }
