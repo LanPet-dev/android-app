@@ -14,14 +14,16 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.CommonButton
-import com.example.profile.R
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.example.designsystem.R as DS_R
+import com.lanpet.profile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateDoneScreen() {
+fun ProfileCreateDoneScreen(
+    onNavigateToMyProfile: () -> Unit
+) {
     Scaffold(
     ) {
         Box(
@@ -45,7 +47,9 @@ fun ProfileCreateDoneScreen() {
                 Spacer(Modifier.weight(1f))
                 CommonButton(
                     title = stringResource(DS_R.string.start_button_string)
-                ) { }
+                ) {
+                    onNavigateToMyProfile()
+                }
                 Spacer(Modifier.padding(bottom = LanPetDimensions.Spacing.xxSmall))
             }
         }
@@ -56,6 +60,8 @@ fun ProfileCreateDoneScreen() {
 @Composable
 fun PreviewProfileCreateDoneScreen() {
     LanPetAppTheme {
-        ProfileCreateDoneScreen()
+        ProfileCreateDoneScreen() {
+
+        }
     }
 }

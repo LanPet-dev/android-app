@@ -31,7 +31,7 @@ import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.crop
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
-import com.example.profile.R
+import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 import com.example.designsystem.R as DS_R
 

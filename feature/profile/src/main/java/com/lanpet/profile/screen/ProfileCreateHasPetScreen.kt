@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
-import com.example.profile.R
 import com.lanpet.profile.widget.Heading
+import com.lanpet.profile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

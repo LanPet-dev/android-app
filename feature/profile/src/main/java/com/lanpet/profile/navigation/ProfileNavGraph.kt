@@ -34,6 +34,7 @@ fun NavGraphBuilder.profileNavGraph(
     onNavigateToHumanAge: () -> Unit,
     onNavigateToDone: () -> Unit,
     onNavigateToPreferPet: () -> Unit,
+    onNavigateToMain: () -> Unit,
     navController: NavController
 ) {
     composable<ProfileCreateHasPet> {
@@ -42,34 +43,19 @@ fun NavGraphBuilder.profileNavGraph(
             onNavigateToNoPetScreen = onNavigateToNoPetIntroScreen,
         )
     }
-    composable<ProfileIntroNoPet> {
-        ProfileCreateNoPetIntroScreen(
-            onNavigateToNoPetNameScreen = onNavigateToNoPetNameScreen,
-        )
-    }
 
-    composable<ProfileIntroYesPet> {
-        ProfileCreateYesPetIntroScreen(
-            onNavigateToYesPetNameScreen = onNavigateToYesPetNameScreen,
-        )
-    }
 
-    navigation<ProfileBaseRoute>(
-        startDestination = toString(),
+    navigation<ProfileNoPetBaseRoute>(
+        startDestination = ProfileIntroNoPet,
     ) {
-
-        composable<ProfileCreateYesPetName> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
-            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
-
-            ProfileCreateYesPetNameScreen(
-                onNavigateToPetCategory = onNavigateToPetCategory,
-                petProfileCreateViewModel = viewModel
+        composable<ProfileIntroNoPet> {
+            ProfileCreateNoPetIntroScreen(
+                onNavigateToNoPetNameScreen = onNavigateToNoPetNameScreen,
             )
         }
 
         composable<ProfileCreateNoPetName> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
+            val parentEntry = remember { navController.getBackStackEntry(ProfileNoPetBaseRoute) }
             val viewModel = hiltViewModel<ManProfileCreateViewModel>(parentEntry)
 
             ProfileCreateNoPetNameScreen(
@@ -80,11 +66,13 @@ fun NavGraphBuilder.profileNavGraph(
 
 
         composable<ProfileCreateDone> {
-            ProfileCreateDoneScreen()
+            ProfileCreateDoneScreen(
+                onNavigateToMyProfile = onNavigateToMain
+            )
         }
 
         composable<ProfileCreateHumanBio> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
+            val parentEntry = remember { navController.getBackStackEntry(ProfileNoPetBaseRoute) }
             val viewModel = hiltViewModel<ManProfileCreateViewModel>(parentEntry)
 
             ProfileCreateHumanBioScreen(
@@ -93,38 +81,9 @@ fun NavGraphBuilder.profileNavGraph(
             )
         }
 
-        composable<ProfileCreatePetBio> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
-            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
-
-            ProfileCreatePetBioScreen(
-                onNavigateToDone = onNavigateToDone,
-                petProfileCreateViewModel = viewModel,
-            )
-        }
-
-        composable<ProfileCreatePetCategory> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
-            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
-
-            ProfileCreatePetCategoryScreen(
-                onNavigateToPetSpecies = onNavigateToPetSpecies,
-                petProfileCreateViewModel = viewModel,
-            )
-        }
-
-        composable<ProfileCreatePetSpecies> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
-            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
-
-            ProfileCreatePetSpeciesScreen(
-                onNavigateToPetBio = onNavigateToPetBio,
-                petProfileCreateViewModel = viewModel,
-            )
-        }
 
         composable<ProfileCreateHumanAge> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
+            val parentEntry = remember { navController.getBackStackEntry(ProfileNoPetBaseRoute) }
             val viewModel = hiltViewModel<ManProfileCreateViewModel>(parentEntry)
 
             ProfileCreateHumanAgeScreen(
@@ -134,12 +93,67 @@ fun NavGraphBuilder.profileNavGraph(
         }
 
         composable<ProfileCreatePreferPet> { backStackEntry ->
-            val parentEntry = remember { navController.getBackStackEntry(ProfileBaseRoute) }
+            val parentEntry = remember { navController.getBackStackEntry(ProfileNoPetBaseRoute) }
             val viewModel = hiltViewModel<ManProfileCreateViewModel>(parentEntry)
 
             ProfileCreatePreferPetScreen(
                 onNavigateToHumanBio = onNavigateToHumanBio,
                 manProfileCreateViewModel = viewModel,
+            )
+        }
+    }
+
+    navigation<ProfileYesPetBaseRoute>(
+        startDestination = ProfileIntroYesPet,
+    ) {
+        composable<ProfileIntroYesPet> {
+            ProfileCreateYesPetIntroScreen(
+                onNavigateToYesPetNameScreen = onNavigateToYesPetNameScreen,
+            )
+        }
+        composable<ProfileCreateYesPetName> { backStackEntry ->
+            val parentEntry = remember { navController.getBackStackEntry(ProfileYesPetBaseRoute) }
+            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
+
+            ProfileCreateYesPetNameScreen(
+                onNavigateToPetCategory = onNavigateToPetCategory,
+                petProfileCreateViewModel = viewModel
+            )
+        }
+
+        composable<ProfileCreateDone> {
+            ProfileCreateDoneScreen(
+                onNavigateToMyProfile = onNavigateToMain
+            )
+        }
+
+        composable<ProfileCreatePetBio> { backStackEntry ->
+            val parentEntry = remember { navController.getBackStackEntry(ProfileYesPetBaseRoute) }
+            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
+
+            ProfileCreatePetBioScreen(
+                onNavigateToDone = onNavigateToDone,
+                petProfileCreateViewModel = viewModel,
+            )
+        }
+
+        composable<ProfileCreatePetCategory> { backStackEntry ->
+            val parentEntry = remember { navController.getBackStackEntry(ProfileYesPetBaseRoute) }
+            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
+
+            ProfileCreatePetCategoryScreen(
+                onNavigateToPetSpecies = onNavigateToPetSpecies,
+                petProfileCreateViewModel = viewModel,
+            )
+        }
+
+        composable<ProfileCreatePetSpecies> { backStackEntry ->
+            val parentEntry = remember { navController.getBackStackEntry(ProfileYesPetBaseRoute) }
+            val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
+
+            ProfileCreatePetSpeciesScreen(
+                onNavigateToPetBio = onNavigateToPetBio,
+                petProfileCreateViewModel = viewModel,
             )
         }
     }
@@ -194,7 +208,10 @@ fun NavController.navigateToProfileCreatePreferPet() {
 }
 
 @Serializable
-object ProfileBaseRoute
+object ProfileNoPetBaseRoute
+
+@Serializable
+object ProfileYesPetBaseRoute
 
 @Serializable
 object ProfileCreateHasPet

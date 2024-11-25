@@ -24,7 +24,7 @@ import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.widgets.CommonButton
 import com.example.designsystem.theme.widgets.LanPetTopAppBar
 import com.example.designsystem.theme.widgets.TextFieldWithDeleteButton
-import com.example.profile.R
+import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
 

@@ -27,6 +27,8 @@ rootProject.name = "LanPetApp"
 include(":feature:landing")
 include(":feature:auth")
 include(":feature:profile")
+include(":feature:myprofile")
+include(":feature:free")
 
 // data
 include(":data:repository")
@@ -45,4 +47,3 @@ include(":app")
 
 // build-logic
 includeBuild("build-logic")
-include(":feature:myprofile")
