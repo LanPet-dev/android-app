@@ -29,6 +29,7 @@ include(":feature:auth")
 include(":feature:profile")
 include(":feature:myprofile")
 include(":feature:free")
+include(":feature:wiki")
 
 // data
 include(":data:repository")

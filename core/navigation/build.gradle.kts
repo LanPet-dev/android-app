@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
+    implementation(projects.feature.wiki)
     implementation(projects.feature.profile)
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)

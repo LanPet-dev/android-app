@@ -33,6 +33,7 @@ dependencies {
     implementation(projects.feature.profile)
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)
+    implementation(projects.feature.wiki)
     implementation(projects.core.designsystem)
 
     implementation(libs.hilt.android)

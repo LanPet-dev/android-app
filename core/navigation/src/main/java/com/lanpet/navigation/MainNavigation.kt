@@ -19,7 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.navigation.NavController
+import com.example.designsystem.theme.LanPetAppTheme
+import com.lanpet.free.navigation.FreeBoardBaseRoute
+import com.lanpet.free.navigation.freeNavGraph
+import com.lanpet.free.navigation.navigateToFreeBoardScreen
 import com.lanpet.myprofile.navigation.navigateToMyProfile
+import com.lanpet.wiki.navigation.WikiBaseRoute
+import com.lanpet.wiki.navigation.navigateToWikiScreen
+import com.lanpet.wiki.navigation.wikiNavGraph
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -31,9 +38,19 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
     }
 
     LaunchedEffect(_selectedNavItem) {
-        //only for test
-        navController.navigateToMyProfile()
-        //TODO: navigate to selectedNavItem
+        when (_selectedNavItem) {
+            BottomNavItem.Wiki -> {
+                navController.navigateToWikiScreen()
+            }
+
+            BottomNavItem.Free -> {
+                navController.navigateToFreeBoardScreen()
+            }
+
+            BottomNavItem.MyPage -> {
+                navController.navigateToMyProfile()
+            }
+        }
     }
 
     Scaffold(
@@ -57,6 +74,7 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
         ) {
             MainNavigation(
                 navController = navController,
+                startDestination = selectedNavItem
             )
         }
     }
@@ -66,14 +84,22 @@ fun MainScreen(selectedNavItem: BottomNavItem) {
 @Composable
 fun MainNavigation(
     navController: NavHostController,
+    startDestination: BottomNavItem,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = MyProfileBaseRoute,
+        startDestination =
+        when (startDestination) {
+            BottomNavItem.MyPage -> MyProfileBaseRoute
+            BottomNavItem.Free -> FreeBoardBaseRoute
+            BottomNavItem.Wiki -> WikiBaseRoute
+        },
         modifier = modifier
     ) {
         myProfileNavGraph()
+        freeNavGraph()
+        wikiNavGraph()
     }
 }
 
@@ -88,5 +114,7 @@ data class MainNavigationRoute(val selectedNavItem: BottomNavItem)
 @Composable
 @PreviewLightDark
 fun MainScreenPreview() {
-    MainScreen(selectedNavItem = BottomNavItem.MyPage)
+    LanPetAppTheme {
+        MainScreen(selectedNavItem = BottomNavItem.MyPage)
+    }
 }
