@@ -44,6 +44,7 @@ include(":domain:model")
 include(":core:navigation")
 include(":core:designsystem")
 include(":core:di")
+include(":core:auth")
 include(":app")
 
 // build-logic
