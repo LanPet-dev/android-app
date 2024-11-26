@@ -14,12 +14,15 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import java.util.UUID
 
-object GoogleAuth {
-
-    const val TAG = "GoogleAuth"
+class GoogleAuth private constructor(
+    private val googleOauthClientKey: String,
+    private val context: Context
+) : SocialAuth() {
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun signIn(googleOauthClientKey: String, context: Context) {
+    override suspend fun login(): SocialAuthToken? {
+        var resultToken: SocialAuthToken? = null
+
         val googleIdOption =
             GetGoogleIdOption.Builder()
                 .setServerClientId(googleOauthClientKey)
@@ -38,22 +41,17 @@ object GoogleAuth {
                 context = context
             )
 
-            handleSignIn(result)
+            resultToken = handleSignIn(result)
+
 
         } catch (e: GetCredentialException) {
             e.printStackTrace()
         }
+
+        return resultToken
     }
 
-    fun signOut() {
-        TODO("Not yet implemented")
-    }
-
-    fun getToken(): SocialAuthToken? {
-        TODO("Not yet implemented")
-    }
-
-    private fun saveToken(token: SocialAuthToken) {
+    override fun logout() {
         TODO("Not yet implemented")
     }
 
@@ -61,8 +59,7 @@ object GoogleAuth {
         return UUID.randomUUID().toString()
     }
 
-
-    fun handleSignIn(result: GetCredentialResponse) {
+    fun handleSignIn(result: GetCredentialResponse): SocialAuthToken? {
         val credential = result.credential
 
         when (credential) {
@@ -80,22 +77,33 @@ object GoogleAuth {
                                 .toString()
                         )
 
-                        println(googleAuthToken)
 
-                        saveToken(googleAuthToken)
+                        return googleAuthToken
+//                        saveToken(googleAuthToken)
                         //TODO("Satoshi"): auth process to cognito
 
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Received an invalid google id token response", e)
+                        return null
                     }
                 } else {
                     Log.e(TAG, "Unexpected type of credential")
+                    return null
                 }
             }
 
             else -> {
                 Log.e(TAG, "Unexpected type of credential")
+                return null
             }
+        }
+    }
+
+    companion object {
+        private const val TAG = "GoogleAuth"
+
+        internal fun newInstance(googleOauthClientKey: String, context: Context): GoogleAuth {
+            return GoogleAuth(googleOauthClientKey, context)
         }
     }
 }

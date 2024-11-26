@@ -30,7 +30,12 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
             minSdk = 24
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-            resValue("string", "GOOGLE_OAUTH_CLIENT_KEY", properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY"))
+//            resValue("string", "GOOGLE_OAUTH_CLIENT_KEY", properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY"))
+            buildConfigField("String", "GOOGLE_OAUTH_CLIENT_KEY", "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}")
+        }
+
+        buildFeatures {
+            buildConfig = true
         }
 
         signingConfigs {

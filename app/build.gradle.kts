@@ -33,6 +33,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     implementation(projects.core.navigation)
+    implementation(projects.core.di)
     implementation(projects.core.auth)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
