@@ -30,10 +30,10 @@ android {
 }
 
 dependencies {
-    // Support for Java 8 features
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     implementation(projects.core.navigation)
+    implementation(projects.core.auth)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
     implementation(projects.feature.profile)
@@ -56,14 +56,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.coil.network.okhttp)
-
-    // aws amplify
-    implementation(libs.authenticator)
-
-    //google auth
-    implementation( "androidx.credentials:credentials:1.2.2 ")
-    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
