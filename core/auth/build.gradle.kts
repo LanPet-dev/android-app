@@ -1,5 +1,4 @@
-import java.util.Properties
-import kotlin.apply
+import org.gradle.kotlin.dsl.android
 
 plugins {
     alias(libs.plugins.android.library)
@@ -8,6 +7,7 @@ plugins {
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.convention.hilt)
+    alias(libs.plugins.convention.feature)
 }
 
 
@@ -26,6 +26,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     // aws amplify
     implementation(libs.amplify.authenticator)

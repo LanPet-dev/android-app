@@ -8,14 +8,9 @@ import com.example.auth.LoginScreen
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.authNavGraph(
-    onNavigateToHome: () -> Unit,
-    onNavigateToEnroll: () -> Unit
 ) {
     composable<Login> {
-        LoginScreen(
-            onNavigateToHome = onNavigateToHome,
-            onNavigateToEnroll = onNavigateToEnroll
-        )
+        LoginScreen()
     }
 }
 

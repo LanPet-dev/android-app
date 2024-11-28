@@ -1,7 +1,7 @@
-package com.example.auth
+package com.lanpet.auth
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.example.auth.viewmodel.AuthViewModel
+import com.lanpet.auth.viewmodel.AuthViewModel
 
 
 val LocalAuthViewModel =

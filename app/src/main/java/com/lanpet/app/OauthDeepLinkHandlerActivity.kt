@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import com.example.auth.viewmodel.AuthViewModel
+import com.lanpet.auth.viewmodel.AuthViewModel
 import com.lanpet.auth.AuthStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.auth.viewmodel.AuthViewModel
+import com.lanpet.auth.viewmodel.AuthViewModel
 import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
 import com.example.designsystem.theme.crop
@@ -32,20 +32,8 @@ import com.example.model.AuthState
 import com.lanpet.auth.CognitoAuthManager
 
 @Composable
-fun LoginScreen(
-    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
-    onNavigateToHome: () -> Unit,
-    onNavigateToEnroll: () -> Unit
-) {
+fun LoginScreen() {
     val context = LocalContext.current
-
-    val authState = authViewModel.authState.collectAsState()
-
-    LaunchedEffect(authState.value) {
-        if (authState.value is AuthState.Success) {
-            onNavigateToHome()
-        }
-    }
 
     Scaffold {
         Column(
@@ -119,10 +107,7 @@ fun ImageSection(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewLoginScreen() {
     LanPetAppTheme {
-        LoginScreen(
-            onNavigateToHome = {},
-            onNavigateToEnroll = {}
-        )
+        LoginScreen()
 
     }
 }

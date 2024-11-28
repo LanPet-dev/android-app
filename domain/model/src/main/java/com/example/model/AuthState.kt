@@ -5,6 +5,7 @@ sealed class AuthState {
         val isSignedIn: Boolean,
         val socialAuthToken: SocialAuthToken?
     ) : AuthState()
+
     object Fail : AuthState()
     object Initial : AuthState()
     object Loading : AuthState()

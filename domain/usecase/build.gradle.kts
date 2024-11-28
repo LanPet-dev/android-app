@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(projects.data.repository)
     implementation(projects.domain.repository)
+    implementation(projects.domain.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
