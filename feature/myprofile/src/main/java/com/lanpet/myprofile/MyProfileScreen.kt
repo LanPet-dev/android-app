@@ -4,11 +4,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.navigation.NavController
-import com.example.designsystem.theme.LanPetAppTheme
-import com.lanpet.auth.AuthStateHolder
-import com.lanpet.auth.LocalAuthViewModel
-import javax.inject.Inject
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.auth.LocalAuthViewModel
 
 @Composable
 fun MyProfileScreen() {

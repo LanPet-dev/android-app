@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.designsystem.theme.GrayColor
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.GrayColor
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
 fun Heading(

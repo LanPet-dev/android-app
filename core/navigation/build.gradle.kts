@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lanpet.navigation"
+    namespace = "com.lanpet.core.navigation"
 
     buildFeatures {
         compose = true

@@ -12,8 +12,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,14 +20,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.auth.viewmodel.AuthViewModel
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.crop
-import com.example.designsystem.theme.landingLabel
-import com.example.model.AuthState
-import com.lanpet.auth.CognitoAuthManager
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.designsystem.theme.landingLabel
+import com.lanpet.core.auth.CognitoAuthManager
 
 @Composable
 fun LoginScreen() {
@@ -95,7 +90,7 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 @Composable
 fun ImageSection(modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
+        painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
         contentDescription = null,
         modifier = modifier.crop(
             size = 160.dp

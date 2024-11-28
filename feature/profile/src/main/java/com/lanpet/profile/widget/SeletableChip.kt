@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.GrayColor
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.GrayColor
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
 fun SelectableChip(

@@ -14,9 +14,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.R as DS_R
-import com.example.designsystem.theme.crop
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.R as DS_R
+import com.lanpet.core.designsystem.theme.crop
 
 @Composable
 fun ImagePickerView(imageUri: Uri?, onEditButtonClick: () -> Unit) {

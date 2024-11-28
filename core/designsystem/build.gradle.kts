@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.designsystem"
+    namespace = "com.lanpet.core.designsystem"
 
     buildFeatures {
         compose = true

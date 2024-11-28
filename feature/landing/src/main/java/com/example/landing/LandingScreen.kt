@@ -28,11 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.PurpleColor
-import com.example.designsystem.theme.crop
-import com.example.designsystem.theme.landingLabel
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.PurpleColor
+import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.designsystem.theme.landingLabel
 
 @Composable
 fun LandingScreen(
@@ -193,7 +193,7 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 @Composable
 fun ImageSection(modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
+        painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
         contentDescription = null,
         modifier = modifier.crop(
             size = 220.dp
