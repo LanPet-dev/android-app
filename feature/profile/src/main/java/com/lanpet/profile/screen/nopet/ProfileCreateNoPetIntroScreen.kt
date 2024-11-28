@@ -25,15 +25,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.designsystem.theme.GrayColor
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.crop
-import com.example.designsystem.theme.widgets.CommonButton
-import com.example.designsystem.theme.widgets.LanPetTopAppBar
+import com.lanpet.core.designsystem.theme.GrayColor
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.designsystem.theme.widgets.CommonButton
+import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
-import com.example.designsystem.R as DS_R
+import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

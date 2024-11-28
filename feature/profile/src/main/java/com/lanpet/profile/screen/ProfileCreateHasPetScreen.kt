@@ -22,9 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.widgets.LanPetTopAppBar
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.R
 
@@ -84,7 +84,7 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
             )
     ) {
         Image(
-            painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
+            painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
             contentDescription = null,
             modifier = Modifier
                 .size(

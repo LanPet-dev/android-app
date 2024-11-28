@@ -13,7 +13,7 @@ plugins {
 
 
 android {
-    namespace = "com.lanpet.auth"
+    namespace = "com.lanpet.core.auth"
 
 
     compileOptions {

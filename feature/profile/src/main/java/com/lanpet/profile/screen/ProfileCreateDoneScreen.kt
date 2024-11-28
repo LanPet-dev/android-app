@@ -11,12 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.example.designsystem.theme.LanPetAppTheme
-import com.example.designsystem.theme.LanPetDimensions
-import com.example.designsystem.theme.widgets.CommonButton
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.widgets.CommonButton
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
-import com.example.designsystem.R as DS_R
+import com.lanpet.core.designsystem.R as DS_R
 import com.lanpet.profile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
