@@ -4,14 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.auth.LocalAuthViewModel
+import com.lanpet.auth.viewmodel.AuthViewModel
 import com.example.designsystem.theme.LanPetAppTheme
-import com.lanpet.auth.CognitoAuthManager
 import com.lanpet.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -21,16 +21,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            LanPetAppTheme {
-                Column {
-                    Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
-                    Button(
-                        onClick = {
-                            CognitoAuthManager(this@MainActivity).startGoogleSignIn()
-                        }
-                    ) {
-                        Text("Google \nLogin")
-                    }
+            CompositionLocalProvider(LocalAuthViewModel provides hiltViewModel<AuthViewModel>()) {
+                LanPetAppTheme {
                     AppNavigation()
                 }
             }
