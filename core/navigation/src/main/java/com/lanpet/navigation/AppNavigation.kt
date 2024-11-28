@@ -1,11 +1,14 @@
 package com.lanpet.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.auth.navigation.authNavGraph
+import com.example.auth.navigation.navigateToLoginScreen
+import com.example.auth.viewmodel.AuthViewModel
 import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfile
@@ -26,6 +29,7 @@ import com.lanpet.profile.navigation.profileNavGraph
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val authViewModel = hiltViewModel<AuthViewModel>()
 
     NavHost(
         navController = navController,
@@ -33,11 +37,17 @@ fun AppNavigation() {
     ) {
         landingNavGraph {
             println("navigate to login screen")
-//            navController.navigateToLoginScreen()
-            navController.navigateToProfileCreateHasPet()
+            navController.navigateToLoginScreen()
         }
-        authNavGraph()
 
+        authNavGraph(
+            onNavigateToHome = {
+                navController.navigateToMainScreen()
+            },
+            onNavigateToEnroll = {
+                navController.navigateToProfileCreateHasPet()
+            }
+        )
 
         profileNavGraph(
             onNavigateToYesPetNameScreen = {

@@ -21,4 +21,5 @@ dependencies {
     implementation(projects.domain.repository)
 
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(project(":core:auth"))
 }

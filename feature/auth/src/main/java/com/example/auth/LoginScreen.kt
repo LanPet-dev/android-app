@@ -1,35 +1,128 @@
 package com.example.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.auth.viewmodel.AuthViewModel
 import com.example.designsystem.theme.LanPetAppTheme
 import com.example.designsystem.theme.LanPetDimensions
+import com.example.designsystem.theme.crop
+import com.example.designsystem.theme.landingLabel
+import com.example.model.AuthState
+import com.lanpet.auth.CognitoAuthManager
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
+    onNavigateToHome: () -> Unit,
+    onNavigateToEnroll: () -> Unit
+) {
+    val context = LocalContext.current
+
+    val authState = authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState.value) {
+        if (authState.value is AuthState.Success) {
+            onNavigateToHome()
+        }
+    }
+
     Scaffold {
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(it)
                 .padding(
                     horizontal = LanPetDimensions.Margin.Layout.horizontal,
                     vertical = LanPetDimensions.Margin.Layout.horizontal
-                )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("LoginScreen")
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxLarge))
+            Heading(
+                text = stringResource(R.string.heading_login_screen)
+            )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxLarge))
+            ImageSection()
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(
+                shape = RoundedCornerShape(
+                    LanPetDimensions.Corner.xSmall
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    CognitoAuthManager(context).startGoogleSignIn()
+
+                },
+            ) {
+                Text(
+                    text = stringResource(R.string.button_login_with_google),
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
+}
+
+@Composable
+fun Heading(modifier: Modifier = Modifier, text: String) {
+    Text(
+        text,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+        style = MaterialTheme.typography.headlineMedium
+    )
+}
+
+@Composable
+fun SubHeading(modifier: Modifier = Modifier, text: String) {
+    Text(
+        text,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+        style = MaterialTheme.typography.landingLabel()
+    )
+}
+
+@Composable
+fun ImageSection(modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(com.example.designsystem.R.drawable.img_dummy),
+        contentDescription = null,
+        modifier = modifier.crop(
+            size = 160.dp
+        )
+    )
 }
 
 @PreviewLightDark
 @Composable
 fun PreviewLoginScreen() {
     LanPetAppTheme {
-        LoginScreen()
+        LoginScreen(
+            onNavigateToHome = {},
+            onNavigateToEnroll = {}
+        )
+
     }
 }

@@ -2,14 +2,16 @@ package com.example.di
 
 import com.example.repository.AuthRepository
 import com.lanpet.AuthRepositoryImpl
+import com.lanpet.auth.AuthStateHolder
 import com.lanpet.service.AuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jakarta.inject.Named
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,5 +36,11 @@ object AuthModule {
     @Named("BaseUrl")
     fun provideBaseUrl(): String {
         return "https://lanpet.auth.ap-northeast-2.amazoncognito.com/"
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthStateHolder(): AuthStateHolder {
+        return AuthStateHolder()
     }
 }

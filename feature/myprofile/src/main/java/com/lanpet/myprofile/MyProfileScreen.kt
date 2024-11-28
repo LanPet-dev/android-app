@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.navigation.NavController
 import com.example.designsystem.theme.LanPetAppTheme
+import com.lanpet.auth.AuthStateHolder
+import javax.inject.Inject
 
 @Composable
-fun MyProfileScreen(
-) {
+fun MyProfileScreen() {
     Text(text = "MyProfileScreen")
     Button(onClick = {
+        println()
     }) { }
 }
 
