@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -20,7 +23,7 @@ android {
         versionName = "1.0.0"
     }
 
-    compileOptions{
+    compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -30,7 +33,20 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.amplify.authenticator)
+    implementation(libs.amplify.core)
+    implementation("com.amplifyframework:aws-auth-cognito:2.24.0")
+    implementation("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.72.0")
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     implementation(projects.core.navigation)
     implementation(projects.core.di)
@@ -42,6 +58,7 @@ dependencies {
     implementation(projects.feature.myprofile)
     implementation(projects.feature.wiki)
     implementation(projects.core.designsystem)
+    implementation(projects.domain.model)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

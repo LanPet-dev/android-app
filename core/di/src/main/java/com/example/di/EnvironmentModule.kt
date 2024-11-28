@@ -2,7 +2,6 @@ package com.example.di
 
 import com.lanpet.auth.BuildConfig
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Named

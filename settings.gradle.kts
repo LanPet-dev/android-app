@@ -34,6 +34,7 @@ include(":feature:wiki")
 // data
 include(":data:repository")
 include(":data:dto")
+include(":data:service")
 
 // domain
 include(":domain:usecase")

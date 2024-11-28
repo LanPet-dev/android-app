@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,8 +10,11 @@ plugins {
     alias(libs.plugins.convention.hilt)
 }
 
+
+
 android {
     namespace = "com.lanpet.auth"
+
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -22,7 +28,9 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     // aws amplify
-    implementation(libs.authenticator)
+    implementation(libs.amplify.authenticator)
+
+    implementation(projects.domain.model)
 
     //google auth
     implementation(libs.androidx.credentials)

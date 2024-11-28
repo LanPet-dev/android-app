@@ -1,18 +1,8 @@
 package com.lanpet.auth
 
+import com.example.model.SocialAuthToken
+
 abstract class SocialAuth {
     abstract suspend fun login(): SocialAuthToken?
     abstract fun logout()
 }
-
-enum class SocialAuthType {
-    GOOGLE,
-    APPLE
-}
-
-data class SocialAuthToken(
-    val socialAuthType: SocialAuthType,
-    val accessToken: String?,
-    val refreshToken: String?,
-    val email: String?
-)
