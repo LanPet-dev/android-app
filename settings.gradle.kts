@@ -34,6 +34,7 @@ include(":feature:wiki")
 // data
 include(":data:repository")
 include(":data:dto")
+include(":data:service")
 
 // domain
 include(":domain:usecase")
@@ -44,6 +45,7 @@ include(":domain:model")
 include(":core:navigation")
 include(":core:designsystem")
 include(":core:di")
+include(":core:auth")
 include(":app")
 
 // build-logic

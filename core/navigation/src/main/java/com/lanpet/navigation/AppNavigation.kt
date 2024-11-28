@@ -59,14 +59,14 @@ fun AppNavigation() {
             onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
             onNavigateToDone = { navController.navigateToProfileCreateDone() },
             onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
-            onNavigateToMain= { navController.navigateToMainScreen() },
+            onNavigateToMain = { navController.navigateToMainScreen() },
             navController = navController
         )
 
         composable<MainNavigationRoute> {
             val selectedNavItem = it.toRoute<MainNavigationRoute>().selectedNavItem
 
-            MainScreen(selectedNavItem)
+            MainScreen(selectedNavItem, navController)
         }
 
     }
