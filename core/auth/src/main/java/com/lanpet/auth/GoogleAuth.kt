@@ -9,6 +9,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
+import com.example.model.SocialAuthToken
+import com.example.model.SocialAuthType
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -22,7 +24,7 @@ class GoogleAuth private constructor(
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun login(): SocialAuthToken? {
-        if(context.get() == null) {
+        if (context.get() == null) {
             Log.e(TAG, "Context is null")
             return null
         }
@@ -75,11 +77,9 @@ class GoogleAuth private constructor(
                             .createFrom(credential.data)
 
                         val googleAuthToken = SocialAuthToken(
-                            SocialAuthType.GOOGLE,
-                            googleIdTokenCredential.idToken,
-                            null,
-                            googleIdTokenCredential.data.get("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID")
-                                .toString()
+                            accessToken = googleIdTokenCredential.idToken,
+                            refreshToken = "",
+                            socialAuthType = SocialAuthType.GOOGLE
                         )
 
                         println(googleAuthToken)

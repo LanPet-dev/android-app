@@ -7,11 +7,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dto"
+    namespace = "com.lanpet.service"
 }
 
 dependencies {
     implementation(projects.domain.model)
+    implementation(projects.data.dto)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

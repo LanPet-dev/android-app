@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -42,8 +45,8 @@ dependencies {
     implementation("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.72.0")
 
     // Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     implementation(projects.core.navigation)
     implementation(projects.core.di)
@@ -55,6 +58,7 @@ dependencies {
     implementation(projects.feature.myprofile)
     implementation(projects.feature.wiki)
     implementation(projects.core.designsystem)
+    implementation(projects.domain.model)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

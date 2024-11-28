@@ -24,14 +24,20 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
         load(project.rootProject.file("local.properties").inputStream())
     }
 
+
     commonExtension.apply {
         compileSdk = 35
         defaultConfig {
             minSdk = 24
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-//            resValue("string", "GOOGLE_OAUTH_CLIENT_KEY", properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY"))
-            buildConfigField("String", "GOOGLE_OAUTH_CLIENT_KEY", "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}")
+        }
+        defaultConfig{
+            buildConfigField(
+                "String",
+                "GOOGLE_OAUTH_CLIENT_KEY",
+                "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}"
+            )
         }
 
         buildFeatures {
