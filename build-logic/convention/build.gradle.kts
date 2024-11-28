@@ -49,5 +49,9 @@ gradlePlugin {
             id = "convention.android.lib.coil"
             implementationClass = "AndroidCoilLibConventionPlugin"
         }
+        register("androidRetrofitLibraryBuild") {
+            id = "convention.android.lib.retrofit"
+            implementationClass = "AndroidRetrofitConventionPlugin"
+        }
     }
 }

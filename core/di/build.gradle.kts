@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.hilt)
+    alias(libs.plugins.convention.lib.retrofit)
 }
 
 android {

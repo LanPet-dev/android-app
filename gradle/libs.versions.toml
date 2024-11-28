@@ -2,10 +2,12 @@
 agp = "8.7.2"
 amplifyAuthenticator = "1.4.0"
 amplifyCore = "2.24.0"
+browser = "1.8.0"
 coilCompose = "2.7.0"
 coilNetworkOkhttp = "3.0.3"
 coilSvg = "3.0.3"
 comGoogleDevtoolsKspGradlePlugin = "2.0.21-1.0.25"
+converterGson = "2.11.0"
 credentialsPlayServicesAuth = "1.3.0"
 credentials = "1.3.0"
 desugar_jdk_libs = "2.1.3"
@@ -35,8 +37,10 @@ lifecycleViewmodelAndroid = "2.8.7"
 kotlinxSerialization = "1.7.3"
 awsCore = "2.24.0"
 activity = "1.9.3"
+retrofit = "2.11.0"
 
 [libraries]
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
@@ -47,6 +51,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilSvg" }
 com-google-devtools-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "comGoogleDevtoolsKspGradlePlugin" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -82,6 +87,7 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 material3 = { module = "androidx.compose.material3:material3" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 
 [plugins]
@@ -101,3 +107,4 @@ convention-ui-compose = { id = "convention.android.ui.compose" }
 convention-app-build = { id = "convention.android.app.build" }
 convention-lib-build = { id = "convention.android.lib.build" }
 convention-lib-coil = { id = "convention.android.lib.coil" }
+convention-lib-retrofit = { id = "convention.android.lib.retrofit" }

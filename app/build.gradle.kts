@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.browser:browser:1.8.0")
+    implementation(libs.androidx.browser)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -40,6 +40,10 @@ dependencies {
     implementation(libs.amplify.core)
     implementation("com.amplifyframework:aws-auth-cognito:2.24.0")
     implementation("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.72.0")
+
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
 
     implementation(projects.core.navigation)
     implementation(projects.core.di)
