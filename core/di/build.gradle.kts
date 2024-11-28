@@ -12,7 +12,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.di"
+    namespace = "com.lanpet.core.di"
 
 }
 

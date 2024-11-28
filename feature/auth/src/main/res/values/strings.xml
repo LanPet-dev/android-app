@@ -1,0 +1,4 @@
+<resources>
+    <string name="heading_login_screen">다양한 반려동물 커뮤니티\nLanpet과 함께해요!</string>
+    <string name="button_login_with_google">구글 로그인</string>
+</resources>

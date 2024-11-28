@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lanpet.navigation"
+    namespace = "com.lanpet.core.navigation"
 
     buildFeatures {
         compose = true
@@ -26,6 +26,9 @@ dependencies {
     implementation(projects.feature.myprofile)
 
     implementation(libs.hilt.android)
+    implementation(project(":domain:model"))
+    implementation(project(":core:auth"))
+    implementation(project(":data:dto"))
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.navigation.compose)

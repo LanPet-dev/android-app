@@ -4,15 +4,19 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import com.example.auth.viewmodel.AuthViewModel
+import com.lanpet.core.auth.viewmodel.AuthViewModel
+import com.lanpet.core.auth.AuthStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// 딥링크를 처리할 액티비티
 @AndroidEntryPoint
-class OauthDeepLinkHandlerActivity @Inject constructor() : ComponentActivity() {
+class OauthDeepLinkHandlerActivity :
+    ComponentActivity() {
 
     val authViewModel: AuthViewModel by viewModels()
+
+    @Inject
+    lateinit var authStateHolder: AuthStateHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +39,7 @@ class OauthDeepLinkHandlerActivity @Inject constructor() : ComponentActivity() {
         // TODO("Satoshi"): 인증 코드 처리
         // TODO("Satoshi"): auth viewmodel 에 인증정보 저장
         authViewModel.handleAuthCode(code)
+        println(authStateHolder.authState.value)
     }
 
     private fun handleAuthError() {
