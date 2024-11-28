@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.material)
     implementation(projects.core.navigation)
     implementation(projects.core.auth)
-    implementation(libs.aws.core)
+    implementation(libs.amplify.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

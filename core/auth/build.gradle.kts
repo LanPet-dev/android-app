@@ -22,7 +22,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     // aws amplify
-    implementation(libs.authenticator)
+    implementation(libs.amplify.authenticator)
 
     //google auth
     implementation(libs.androidx.credentials)

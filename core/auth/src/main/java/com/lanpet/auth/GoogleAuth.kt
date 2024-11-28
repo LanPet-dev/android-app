@@ -12,15 +12,21 @@ import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import java.lang.ref.WeakReference
 import java.util.UUID
 
 class GoogleAuth private constructor(
     private val googleOauthClientKey: String,
-    private val context: Context
+    private val context: WeakReference<Context>
 ) : SocialAuth() {
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun login(): SocialAuthToken? {
+        if(context.get() == null) {
+            Log.e(TAG, "Context is null")
+            return null
+        }
+
         var resultToken: SocialAuthToken? = null
 
         val googleIdOption =
@@ -33,16 +39,15 @@ class GoogleAuth private constructor(
             .addCredentialOption(googleIdOption)
             .build()
 
-        val credentialManager = CredentialManager.create(context)
+        val credentialManager = CredentialManager.create(context.get()!!)
 
         try {
             val result = credentialManager.getCredential(
                 request = request,
-                context = context
+                context = context.get()!!
             )
 
             resultToken = handleSignIn(result)
-
 
         } catch (e: GetCredentialException) {
             e.printStackTrace()
@@ -77,6 +82,7 @@ class GoogleAuth private constructor(
                                 .toString()
                         )
 
+                        println(googleAuthToken)
 
                         return googleAuthToken
 //                        saveToken(googleAuthToken)
@@ -103,7 +109,7 @@ class GoogleAuth private constructor(
         private const val TAG = "GoogleAuth"
 
         internal fun newInstance(googleOauthClientKey: String, context: Context): GoogleAuth {
-            return GoogleAuth(googleOauthClientKey, context)
+            return GoogleAuth(googleOauthClientKey, WeakReference(context))
         }
     }
 }
