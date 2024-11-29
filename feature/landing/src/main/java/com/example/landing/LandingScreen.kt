@@ -32,6 +32,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
 import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.core.designsystem.theme.landingLabel
 
 @Composable
@@ -52,11 +53,7 @@ fun LandingScreen(
                 listOf(
                     { LandingPage1() },
                     { LandingPage2() },
-                    {
-                        LandingPage3(
-                            navigateToLogin = onNavigateToLogin
-                        )
-                    },
+                    { LandingPage3(navigateToLogin = onNavigateToLogin) },
                 )
             )
         }
@@ -176,7 +173,7 @@ fun Heading(modifier: Modifier = Modifier, text: String) {
         text,
         textAlign = TextAlign.Center,
         modifier = modifier,
-        style = MaterialTheme.typography.headlineMedium
+        style = MaterialTheme.customTypography().title1SemiBoldMulti,
     )
 }
 
@@ -186,7 +183,7 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
         text,
         textAlign = TextAlign.Center,
         modifier = modifier,
-        style = MaterialTheme.typography.landingLabel()
+        style = MaterialTheme.customTypography().body1RegularMulti
     )
 }
 
@@ -207,7 +204,7 @@ fun LandingIndicatorItem(isActive: Boolean) {
         if (isActive) PurpleColor.MEDIUM else Color.LightGray
     Box(
         modifier = Modifier
-            .padding(2.dp)
+            .padding(6.dp)
             .clip(CircleShape)
             .background(color)
             .size(8.dp)
