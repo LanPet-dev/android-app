@@ -33,7 +33,6 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
 import com.lanpet.core.designsystem.theme.crop
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.core.designsystem.theme.landingLabel
 
 @Composable
 fun LandingScreen(

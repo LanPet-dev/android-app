@@ -38,6 +38,7 @@ kotlinxSerialization = "1.7.3"
 awsCore = "2.24.0"
 activity = "1.9.3"
 retrofit = "2.11.0"
+animationCore = "1.0.1"
 
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
@@ -88,6 +89,7 @@ material3 = { module = "androidx.compose.material3:material3" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
 
 
 [plugins]

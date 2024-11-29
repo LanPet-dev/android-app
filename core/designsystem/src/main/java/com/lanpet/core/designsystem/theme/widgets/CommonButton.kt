@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,7 +61,36 @@ fun CommonButton(
 }
 
 @Composable
-internal fun CommonButtonSmall(modifier: Modifier = Modifier, title: String, onClick: (() -> Unit)?) {
+internal fun CommonButtonSmall(
+    modifier: Modifier = Modifier,
+    title: String,
+    onClick: (() -> Unit)?
+) {
+    Button(
+        shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        onClick = {
+            onClick?.invoke()
+        },
+        colors = ButtonDefaults.buttonColors().copy(
+            containerColor = MaterialTheme.customColorScheme.buttonBackground
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+    ) {
+        Text(
+            title,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+internal fun CommonButtonMedium(
+    modifier: Modifier = Modifier,
+    title: String,
+    onClick: (() -> Unit)?
+) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
@@ -72,38 +102,21 @@ internal fun CommonButtonSmall(modifier: Modifier = Modifier, title: String, onC
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .sizeIn(minHeight = 54.dp),
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
 
 @Composable
-internal fun CommonButtonMedium(modifier: Modifier = Modifier, title: String, onClick: (() -> Unit)?) {
-    Button(
-        shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
-        onClick = {
-            onClick?.invoke()
-        },
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = MaterialTheme.customColorScheme.buttonBackground
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .sizeIn(minHeight = 54.dp)
-    ) {
-        Text(
-            title,
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
-
-@Composable
-internal fun CommonButtonLarge(modifier: Modifier = Modifier, title: String, onClick: (() -> Unit)?) {
+internal fun CommonButtonLarge(
+    modifier: Modifier = Modifier,
+    title: String,
+    onClick: (() -> Unit)?
+) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {

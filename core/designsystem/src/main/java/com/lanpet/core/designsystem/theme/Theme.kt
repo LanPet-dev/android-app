@@ -38,6 +38,8 @@ data class CustomColorScheme(
     val selectedContainer: Color,
     val unSelectedText: Color,
     val unSelectedContainer: Color,
+    val errorText: Color,
+    val confirmText: Color,
     // TODO("Satoshi"): define another colors
 )
 
@@ -52,6 +54,8 @@ val LightCustomColors =
         unSelectedText = GrayColor.LIGHT_MEDIUM,
         unSelectedContainer = WhiteColor.LIGHT,
         heading = BlackColor.MEDIUM,
+        errorText = Color.Red,
+        confirmText = Color.Blue,
     )
 
 val DarkCustomColors =
@@ -65,6 +69,8 @@ val DarkCustomColors =
         unSelectedText = GrayColor.LIGHT_MEDIUM,
         unSelectedContainer = BlackColor.MEDIUM,
         heading = WhiteColor.MEDIUM,
+        errorText = Color.Red,
+        confirmText = Color.Blue,
     )
 
 val LocalCustomColorScheme =

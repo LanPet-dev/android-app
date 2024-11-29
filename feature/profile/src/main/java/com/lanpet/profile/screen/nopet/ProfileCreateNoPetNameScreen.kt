@@ -4,9 +4,15 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,13 +22,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.core.designsystem.theme.widgets.CommonButton
 import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.widgets.TextFieldWithDeleteButton
@@ -107,17 +118,78 @@ fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
         mutableStateOf("")
     }
 
+    var nicknameDuplicateCheckStatus by rememberSaveable {
+        mutableStateOf<Boolean?>(true)
+    }
+
+    Column {
+        Text(
+            stringResource(R.string.name_input_label_profile_create_no_pet_name),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        )
+        Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TextFieldWithDeleteButton(
+                modifier = Modifier.weight(3f),
+                value = nameInput,
+                placeholder = stringResource(R.string.name_input_placeholder_profile_create_no_pet_name),
+            ) {
+                nameInput = it
+                viewModel.setNickName(it)
+            }
+            Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xxSmall))
+            CommonButton(
+                modifier = Modifier.width(100.dp),
+                title = stringResource(R.string.check_duplicated_nickname_button_string),
+                onClick = {
+                },
+            )
+        }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+        nicknameDuplicateCheckStatus?.let {
+            if (it) {
+                DuplicatedNicknameOkText()
+            } else {
+                DuplicatedNicknameErrorText()
+            }
+        }
+    }
+}
+
+@Composable
+fun DuplicatedNicknameOkText() {
     Text(
-        stringResource(R.string.name_input_label_profile_create_no_pet_name),
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        stringResource(R.string.check_duplicated_nickname_ok_string),
+        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.confirmText),
     )
-    Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
-    TextFieldWithDeleteButton(
-        value = nameInput,
-        placeholder = stringResource(R.string.name_input_placeholder_profile_create_no_pet_name),
-    ) {
-        nameInput = it
-        viewModel.setNickName(it)
+}
+
+@Composable
+fun DuplicatedNicknameErrorText() {
+    Text(
+        stringResource(R.string.check_duplicated_nickname_error_string),
+        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.errorText),
+    )
+}
+
+@PreviewLightDark
+@Composable
+fun PreviewErrorConfirmedText() {
+    LanPetAppTheme {
+        Column {
+            DuplicatedNicknameOkText()
+            DuplicatedNicknameErrorText()
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+fun PreviewPetNameInputSection() {
+    LanPetAppTheme {
+        PetNameInputSection(hiltViewModel())
     }
 }
 
