@@ -32,7 +32,7 @@ object AppTypography {
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.84.sp
+        lineHeight = (24 * 1.16).sp  // 116%
     )
 
     val title1SemiBoldSingle = TextStyle(
@@ -40,7 +40,7 @@ object AppTypography {
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.84.sp
+        lineHeight = (24 * 1.16).sp  // 116%
     )
 
     val title1BoldMulti = TextStyle(
@@ -48,7 +48,7 @@ object AppTypography {
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 32.16.sp
+        lineHeight = (24 * 1.34).sp  // 134%
     )
 
     val title1SemiBoldMulti = TextStyle(
@@ -56,7 +56,7 @@ object AppTypography {
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 32.16.sp
+        lineHeight = (24 * 1.34).sp  // 134%
     )
 
     // Title2 스타일
@@ -65,7 +65,7 @@ object AppTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 23.6.sp
+        lineHeight = (20 * 1.18).sp  // 118%
     )
 
     val title2SemiBoldSingle = TextStyle(
@@ -73,7 +73,7 @@ object AppTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 23.6.sp
+        lineHeight = (20 * 1.18).sp  // 118%
     )
 
     val title2BoldMulti = TextStyle(
@@ -81,7 +81,7 @@ object AppTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.6.sp
+        lineHeight = (20 * 1.38).sp  // 138%
     )
 
     val title2SemiBoldMulti = TextStyle(
@@ -89,7 +89,7 @@ object AppTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.6.sp
+        lineHeight = (20 * 1.38).sp  // 138%
     )
 
     // Title3 스타일
@@ -98,7 +98,7 @@ object AppTypography {
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 21.6.sp
+        lineHeight = (18 * 1.20).sp  // 120%
     )
 
     val title3SemiBoldSingle = TextStyle(
@@ -106,7 +106,7 @@ object AppTypography {
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 21.6.sp
+        lineHeight = (18 * 1.20).sp  // 120%
     )
 
     val title3BoldMulti = TextStyle(
@@ -114,7 +114,7 @@ object AppTypography {
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.36.sp
+        lineHeight = (18 * 1.52).sp  // 152%
     )
 
     val title3SemiBoldMulti = TextStyle(
@@ -122,7 +122,7 @@ object AppTypography {
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.36.sp
+        lineHeight = (18 * 1.52).sp  // 152%
     )
 
     val title3MediumMulti = TextStyle(
@@ -130,7 +130,7 @@ object AppTypography {
         fontSize = 18.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 27.36.sp
+        lineHeight = (18 * 1.52).sp  // 152%
     )
 
     // Body1 스타일
@@ -139,7 +139,7 @@ object AppTypography {
         fontSize = 16.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 19.52.sp
+        lineHeight = (16 * 1.22).sp  // 122%
     )
 
     val body1RegularSingle = TextStyle(
@@ -147,7 +147,7 @@ object AppTypography {
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 19.52.sp
+        lineHeight = (16 * 1.22).sp  // 122%
     )
 
     val body1SemiBoldMulti = TextStyle(
@@ -155,7 +155,7 @@ object AppTypography {
         fontSize = 16.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 25.6.sp
+        lineHeight = (16 * 1.60).sp  // 160%
     )
 
     val body1RegularMulti = TextStyle(
@@ -163,7 +163,7 @@ object AppTypography {
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 25.6.sp
+        lineHeight = (16 * 1.60).sp  // 160%
     )
 
     // Body2 스타일
@@ -172,7 +172,7 @@ object AppTypography {
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 17.5.sp
+        lineHeight = (14 * 1.25).sp  // 125%
     )
 
     val body2MediumSingle = TextStyle(
@@ -180,7 +180,7 @@ object AppTypography {
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 17.5.sp
+        lineHeight = (14 * 1.25).sp  // 125%
     )
 
     val body2SemiBoldMulti = TextStyle(
@@ -188,7 +188,7 @@ object AppTypography {
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 24.08.sp
+        lineHeight = (14 * 1.72).sp  // 172%
     )
 
     val body2MediumMulti = TextStyle(
@@ -196,7 +196,7 @@ object AppTypography {
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 24.08.sp
+        lineHeight = (14 * 1.72).sp  // 172%
     )
 
     // Body3 스타일
@@ -205,7 +205,7 @@ object AppTypography {
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 14.4.sp
+        lineHeight = (12 * 1.20).sp  // 120%
     )
 
     val body3MediumSingle = TextStyle(
@@ -213,7 +213,7 @@ object AppTypography {
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 14.4.sp
+        lineHeight = (12 * 1.20).sp  // 120%
     )
 
     val body3SemiBoldMulti = TextStyle(
@@ -221,7 +221,7 @@ object AppTypography {
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 19.8.sp
+        lineHeight = (12 * 1.65).sp  // 165%
     )
 
     val body3MediumMulti = TextStyle(
@@ -229,7 +229,7 @@ object AppTypography {
         fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 19.8.sp
+        lineHeight = (12 * 1.65).sp  // 165%
     )
 
     // Sub1 스타일
@@ -238,7 +238,7 @@ object AppTypography {
         fontSize = 10.sp,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 12.8.sp
+        lineHeight = (10 * 1.28).sp  // 128%
     )
 
     val sub1MediumSingle = TextStyle(
@@ -246,7 +246,7 @@ object AppTypography {
         fontSize = 10.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = COMMON_LETTER_SPACING.em,
-        lineHeight = 12.sp
+        lineHeight = (10 * 1.20).sp  // 120%
     )
 }
 
