@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_appbar_my_profile">마이페이지</string>
+    <string name="sub_title_activity_list_my_profile">활동내역</string>
+</resources>
