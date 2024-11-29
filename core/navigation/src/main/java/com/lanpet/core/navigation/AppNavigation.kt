@@ -1,7 +1,6 @@
 package com.lanpet.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,36 +35,9 @@ fun AppNavigation() {
     val authViewModel = LocalAuthViewModel.current
 
     val authState = authViewModel.authState.collectAsState()
-    var currentAuthState: AuthState by remember {
-        mutableStateOf(AuthState.Initial)
-    }
 
-    /**
-     * AuthState 에 따른 Screen 이동 처리를 담당한다.
-     * AuthState 가 변경되면, 이전 AuthState 와 비교하여 Screen 이동을 처리함.
-     */
-    LaunchedEffect(authState.value) {
-        // 이전 상태와 변경된 상태가 같다면, 아무것도 하지 않음
-        if ((currentAuthState is AuthState.Fail && authState.value is AuthState.Fail)
-            || (currentAuthState is AuthState.Success && authState.value is AuthState.Success || (
-                    currentAuthState is AuthState.Loading && authState.value is AuthState.Loading
-                    ) || (currentAuthState is AuthState.Initial && authState.value is AuthState.Initial)
-                    )
-        ) {
-            return@LaunchedEffect
-        }
-
-        // Fail 또는 initial 상태에서 Success로 변경되었다면, 로그인 성공이므로 MainScreen 으로 이동
-        if (authState.value is AuthState.Success && (currentAuthState is AuthState.Fail || currentAuthState is AuthState.Initial)) {
-            navController.navigateToMainScreen()
-        } else if (// 현재상태가 Success 상태에서 Initial 또는 Fail 상태로 변경되었다면 로그인 실패 또는 로그아웃 이므로 Login screen 으로 이동
-            (authState.value is AuthState.Initial || authState.value is AuthState.Fail) && currentAuthState is AuthState.Success
-        ) {
-            navController.navigateToLoginScreen()
-        }
-
-        currentAuthState = authState.value
-    }
+    // Handling navigation by AuthState
+    rememberNavigationHandler(navController, authState.value)
 
     NavHost(
         navController = navController,
