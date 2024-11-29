@@ -1,5 +1,6 @@
 package com.lanpet.core.designsystem.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -25,6 +26,8 @@ object AppTypography {
 
     // 공통 letter spacing (-2%)
     private const val COMMON_LETTER_SPACING = -0.02f
+
+    // TODO("Satoshi"): 아래의 스타일은 Light mode 기준입니다. Dark 모드 textstyle 정의 필요함
 
     // Title1 스타일
     val title1BoldSingle = TextStyle(
@@ -374,3 +377,7 @@ val Typography = Typography(
         letterSpacing = (-2f).sp
     )
 )
+
+fun MaterialTheme.customTypography(): AppTypography {
+    return AppTypography
+}
