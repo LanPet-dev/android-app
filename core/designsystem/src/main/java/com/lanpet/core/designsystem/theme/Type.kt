@@ -268,21 +268,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     displayMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
         lineHeight = 52.sp,
-        letterSpacing = (-2f).sp
+                letterSpacing = (-0.02f).sp
     ),
     displaySmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
 
     // Headline
@@ -291,21 +291,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     headlineMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 36.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     headlineSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 32.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
 
     // Title
@@ -314,21 +314,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     titleMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     titleSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
 
     // Body
@@ -337,21 +337,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     bodyMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     bodySmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
 
     // Label
@@ -360,21 +360,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     labelMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     ),
     labelSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = (-0.02f).sp
     )
 )
 
