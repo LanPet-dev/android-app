@@ -2,7 +2,6 @@ package com.lanpet.profile.screen.yespet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.sp
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.crop
-import com.lanpet.core.designsystem.theme.widgets.CommonButton
-import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
+import com.lanpet.core.common.crop
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 import com.lanpet.core.designsystem.R as DS_R
@@ -47,14 +47,14 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
             )
         },
     ) {
-        Box(
+        Surface(
             modifier =
-                Modifier
-                    .padding(it)
-                    .padding(
-                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                        vertical = LanPetDimensions.Margin.Layout.vertical,
-                    ),
+            Modifier
+                .padding(it)
+                .padding(
+                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                    vertical = LanPetDimensions.Margin.Layout.vertical,
+                ),
         ) {
             val desc1 = stringResource(R.string.desc1_profile_create_intro_yes_pet)
             val desc2 = stringResource(R.string.desc2_profile_create_intro_yes_pet)
@@ -69,10 +69,10 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
                     buildAnnotatedString {
                         withStyle(
                             style =
-                                MaterialTheme.typography.labelLarge
-                                    .copy(
-                                        color = GrayColor.LIGHT_MEDIUM,
-                                    ).toSpanStyle(),
+                            MaterialTheme.typography.labelLarge
+                                .copy(
+                                    color = GrayColor.LIGHT_MEDIUM,
+                                ).toSpanStyle(),
                         ) {
                             append(
                                 desc1 + "\n",
@@ -80,17 +80,17 @@ fun ProfileCreateYesPetIntroScreen(onNavigateToYesPetNameScreen: () -> Unit) {
                         }
                         withStyle(
                             style =
-                                MaterialTheme.typography.labelLarge
-                                    .copy(
-                                        fontWeight = FontWeight.Bold,
-                                    ).toSpanStyle(),
+                            MaterialTheme.typography.labelLarge
+                                .copy(
+                                    fontWeight = FontWeight.Bold,
+                                ).toSpanStyle(),
                         ) {
                             append(desc2)
                         }
                     },
                     modifier =
-                        Modifier
-                            .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
                     style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp),
                 )
                 Spacer(Modifier.weight(1f))
@@ -115,8 +115,8 @@ fun ImageSection() {
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
             modifier =
-                Modifier
-                    .crop(100.dp),
+            Modifier
+                .crop(100.dp),
         )
         Text(
             " = ",
@@ -128,8 +128,8 @@ fun ImageSection() {
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
             modifier =
-                Modifier
-                    .crop(100.dp),
+            Modifier
+                .crop(100.dp),
         )
     }
 }

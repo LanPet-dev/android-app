@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
  */
 object LanPetDimensions {
     object Corner {
+        val xxxSmall = 2.dp
         val xxSmall = 4.dp
         val xSmall = 8.dp
         val small = 12.dp
@@ -17,6 +18,7 @@ object LanPetDimensions {
     }
 
     object Margin {
+        val xxxSmall = 2.dp
         val xxSmall = 4.dp
         val xSmall = 8.dp
         val small = 12.dp
@@ -32,6 +34,7 @@ object LanPetDimensions {
     }
 
     object Spacing {
+        val xxxSmall = 2.dp
         val xxSmall = 4.dp
         val xSmall = 8.dp
         val small = 12.dp

@@ -8,11 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.auth.navigation.authNavGraph
 import com.example.auth.navigation.navigateToLoginScreen
-import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
-import com.lanpet.profile.navigation.ProfileCreateDone
-import com.lanpet.profile.navigation.ProfileYesPetBaseRoute
+import com.lanpet.profile.navigation.ProfileCreateHasPet
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanBio
@@ -25,7 +23,6 @@ import com.lanpet.profile.navigation.navigateToProfileCreateYesPetName
 import com.lanpet.profile.navigation.navigateToProfileIntroNoPet
 import com.lanpet.profile.navigation.navigateToProfileIntroYesPet
 import com.lanpet.profile.navigation.profileNavGraph
-import com.lanpet.profile.screen.PreviewProfileCreateDoneScreen
 
 @Composable
 fun AppNavigation() {
@@ -39,7 +36,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = ProfileYesPetBaseRoute,
+        startDestination = ProfileCreateHasPet,
     ) {
         landingNavGraph {
             navController.navigateToLoginScreen()

@@ -1,8 +1,7 @@
 package com.lanpet.core.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -11,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.lanpet.core.designsystem.theme.widgets.BottomNavItem
-import com.lanpet.core.designsystem.theme.widgets.LanPetBottomNavBar
+import com.lanpet.core.common.widget.BottomNavItem
+import com.lanpet.core.common.widget.LanPetBottomNavBar
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.myProfileNavGraph
 import androidx.compose.runtime.getValue
@@ -38,7 +37,7 @@ import kotlinx.serialization.Serializable
  * TODO: refactor such a difficult management of navigation. fuck.
  */
 @Composable
-fun MainScreen(selectedNavItem: BottomNavItem, parentNavController: NavHostController) {
+fun MainScreen(selectedNavItem: com.lanpet.core.common.widget.BottomNavItem, parentNavController: NavHostController) {
     val navController = rememberNavController()
 
     var navItem by rememberSaveable {
@@ -47,63 +46,58 @@ fun MainScreen(selectedNavItem: BottomNavItem, parentNavController: NavHostContr
 
     LaunchedEffect(navItem) {
         when (navItem) {
-            BottomNavItem.Wiki -> {
+            com.lanpet.core.common.widget.BottomNavItem.Wiki -> {
                 navController.navigateToWikiScreen()
             }
 
-            BottomNavItem.Free -> {
+            com.lanpet.core.common.widget.BottomNavItem.Free -> {
                 navController.navigateToFreeBoardScreen()
             }
 
-            BottomNavItem.MyPage -> {
+            com.lanpet.core.common.widget.BottomNavItem.MyPage -> {
                 navController.navigateToMyProfile()
             }
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            LanPetBottomNavBar(
-                selectedBottomNavItem = navItem,
-                bottomNavItemList = listOf(
-                    BottomNavItem.Wiki,
-                    BottomNavItem.Free,
-                    BottomNavItem.MyPage,
-                ),
-                onItemSelected = { item ->
-                    println("selected bottom nav item: $item")
-                    navItem = item
-                }
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            MainNavigation(
-                navController = navController,
-                parentNavController = parentNavController,
-                startDestination = selectedNavItem
-            )
-        }
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        MainNavigation(
+            navController = navController,
+            parentNavController = parentNavController,
+            startDestination = selectedNavItem,
+            modifier = Modifier.weight(1f)
+        )
+        com.lanpet.core.common.widget.LanPetBottomNavBar(
+            selectedBottomNavItem = navItem,
+            bottomNavItemList = listOf(
+                com.lanpet.core.common.widget.BottomNavItem.Wiki,
+                com.lanpet.core.common.widget.BottomNavItem.Free,
+                com.lanpet.core.common.widget.BottomNavItem.MyPage,
+            ),
+            onItemSelected = { item ->
+                println("selected bottom nav item: $item")
+                navItem = item
+            }
+        )
     }
-
 }
 
 @Composable
 fun MainNavigation(
     navController: NavHostController,
     parentNavController: NavHostController,
-    startDestination: BottomNavItem,
+    startDestination: com.lanpet.core.common.widget.BottomNavItem,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
         startDestination =
         when (startDestination) {
-            BottomNavItem.MyPage -> MyProfileBaseRoute
-            BottomNavItem.Free -> FreeBoardBaseRoute
-            BottomNavItem.Wiki -> WikiBaseRoute
+            com.lanpet.core.common.widget.BottomNavItem.MyPage -> MyProfileBaseRoute
+            com.lanpet.core.common.widget.BottomNavItem.Free -> FreeBoardBaseRoute
+            com.lanpet.core.common.widget.BottomNavItem.Wiki -> WikiBaseRoute
         },
         modifier = modifier
     ) {
@@ -113,7 +107,7 @@ fun MainNavigation(
     }
 }
 
-fun NavController.navigateToMainScreen(bottomNavItem: BottomNavItem = BottomNavItem.MyPage) {
+fun NavController.navigateToMainScreen(bottomNavItem: com.lanpet.core.common.widget.BottomNavItem = com.lanpet.core.common.widget.BottomNavItem.MyPage) {
     navigate(MainNavigationRoute(bottomNavItem)) {
         popUpTo(0) {
             inclusive = true
@@ -122,13 +116,13 @@ fun NavController.navigateToMainScreen(bottomNavItem: BottomNavItem = BottomNavI
 }
 
 @Serializable
-data class MainNavigationRoute(val selectedNavItem: BottomNavItem)
+data class MainNavigationRoute(val selectedNavItem: com.lanpet.core.common.widget.BottomNavItem)
 
 
 @Composable
 @PreviewLightDark
 fun MainScreenPreview() {
     LanPetAppTheme {
-        MainScreen(selectedNavItem = BottomNavItem.MyPage, rememberNavController())
+        MainScreen(selectedNavItem = com.lanpet.core.common.widget.BottomNavItem.MyPage, rememberNavController())
     }
 }

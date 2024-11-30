@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.widgets.CommonButton
+import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,9 +24,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.widgets.CommonButton
-import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
-import com.lanpet.core.designsystem.theme.widgets.TextFieldWithDeleteButton
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -51,7 +52,7 @@ fun ProfileCreateYesPetNameScreen(
             )
         },
     ) {
-        Column(
+        Surface(
             modifier =
             Modifier
                 .fillMaxSize()
@@ -61,19 +62,22 @@ fun ProfileCreateYesPetNameScreen(
                     vertical = LanPetDimensions.Margin.Layout.vertical,
                 ),
         ) {
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
-            Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-            HeadingHint(title = stringResource(R.string.sub_heading_profile_create_yes_pet_name))
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            ImagePickSection(petProfileCreateViewModel)
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            PetNameInputSection(petProfileCreateViewModel)
-            Spacer(Modifier.weight(1f))
-            CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                onNavigateToPetCategory()
+            Column(
+            ) {
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
+                Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+                HeadingHint(title = stringResource(R.string.sub_heading_profile_create_yes_pet_name))
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
+                ImagePickSection(petProfileCreateViewModel)
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
+                PetNameInputSection(petProfileCreateViewModel)
+                Spacer(Modifier.weight(1f))
+                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    onNavigateToPetCategory()
+                }
+                Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             }
-            Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         }
     }
 }

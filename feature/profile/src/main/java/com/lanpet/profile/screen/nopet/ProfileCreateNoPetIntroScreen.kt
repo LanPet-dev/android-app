@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.sp
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.crop
-import com.lanpet.core.designsystem.theme.widgets.CommonButton
-import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
+import com.lanpet.core.common.crop
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 import com.lanpet.core.designsystem.R as DS_R
@@ -45,7 +45,7 @@ fun ProfileCreateNoPetIntroScreen(
             LanPetTopAppBar(
                 title = {},
                 actions = {
-                }
+                },
             )
         },
     ) {

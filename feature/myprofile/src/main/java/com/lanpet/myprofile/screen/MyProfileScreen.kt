@@ -1,8 +1,9 @@
-package com.lanpet.myprofile
+package com.lanpet.myprofile.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,41 +20,69 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.myiconpack.ArrowRight
+import com.lanpet.core.common.myiconpack.Bookmark
+import com.lanpet.core.common.myiconpack.File
+import com.lanpet.core.common.myiconpack.Message
+import com.lanpet.core.common.myiconpack.Setting
+import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.myprofile.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen() {
     Scaffold(
         topBar = {
-            Text(
-                style = MaterialTheme.customTypography().title2SemiBoldSingle,
-                text = stringResource(R.string.title_appbar_my_profile),
-                modifier = Modifier.padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                )
+            LanPetTopAppBar(
+                title = {
+                    Text(
+                        style = MaterialTheme.customTypography().title2SemiBoldSingle,
+                        text = stringResource(R.string.title_appbar_my_profile),
+                    )
+                },
+                actions = {
+                    Box(
+                        modifier = Modifier
+                            .crop(
+                                48.dp
+                            ) { },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            imageVector = MyIconPack.Setting,
+                            contentDescription = "Setting",
+                            colorFilter = ColorFilter.tint(
+                                MaterialTheme.customColorScheme.defaultIconColor,
+                            ),
+                        )
+                    }
+                },
             )
         }
     ) {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
+            Column() {
                 MyProfileCard()
                 Spacer(
                     modifier = Modifier
                         .padding(bottom = LanPetDimensions.Spacing.xLarge)
                         .fillMaxWidth()
-                        .size(LanPetDimensions.Spacing.xxSmall)
+                        .size(LanPetDimensions.Spacing.xxxSmall)
                         .background(
                             color = MaterialTheme.customColorScheme.spacerLine
                         ),
@@ -69,34 +99,43 @@ fun MyProfileScreen() {
                     ActivityListItem(
                         leadingContent = {
                             Image(
-                                painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_file),
-                                contentDescription = "Profile",
+                                imageVector = MyIconPack.File,
+                                contentDescription = "ic_file",
+                                colorFilter = ColorFilter.tint(
+                                    MaterialTheme.customColorScheme.defaultIconColor,
+                                ),
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        headlineContentText = "My Profile",
+                        headlineContentText = stringResource(R.string.my_profile_label_my_post),
                         onclick = { }
                     )
                     ActivityListItem(
                         leadingContent = {
                             Image(
-                                painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_message),
-                                contentDescription = "Profile",
+                                imageVector = MyIconPack.Message,
+                                contentDescription = "ic_message",
+                                colorFilter = ColorFilter.tint(
+                                    MaterialTheme.customColorScheme.defaultIconColor,
+                                ),
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        headlineContentText = "My Profile",
+                        headlineContentText = stringResource(R.string.my_profile_label_my_comment),
                         onclick = { }
                     )
                     ActivityListItem(
                         leadingContent = {
                             Image(
-                                painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_bookmark),
-                                contentDescription = "Profile",
+                                imageVector = MyIconPack.Bookmark,
+                                contentDescription = "ic_bookmark",
+                                colorFilter = ColorFilter.tint(
+                                    MaterialTheme.customColorScheme.defaultIconColor,
+                                ),
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        headlineContentText = "My Profile",
+                        headlineContentText = stringResource(R.string.my_profile_label_bookmark),
                         onclick = { }
                     )
                 }
@@ -120,7 +159,7 @@ private fun MyProfileCard() {
             modifier = Modifier.crop(
                 size = 88.dp
             ),
-            painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_file),
+            painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
             contentDescription = "Profile Picture"
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
@@ -136,13 +175,18 @@ private fun MyProfileCard() {
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_arrow_right),
+        Box(
             modifier = Modifier
-                .size(16.dp)
-                .clickable { },
-            contentDescription = "Arrow Right"
-        )
+                .crop(
+                    size = 36.dp,
+                ) { },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                imageVector = MyIconPack.ArrowRight,
+                contentDescription = "ic_arrow_right",
+            )
+        }
     }
 }
 
@@ -153,9 +197,8 @@ fun ActivityListItem(
     trailingContent: @Composable () -> Unit =
         {
             Image(
-                painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_arrow_right),
-                contentDescription = "Arrow Right",
-                modifier = Modifier.size(16.dp)
+                imageVector = MyIconPack.ArrowRight,
+                contentDescription = "ic_arrow_right",
             )
         },
     onclick: () -> Unit,

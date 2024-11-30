@@ -51,6 +51,7 @@ dependencies {
     implementation(projects.core.navigation)
     implementation(projects.core.di)
     implementation(projects.core.auth)
+    implementation(projects.core.common)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
     implementation(projects.feature.profile)
