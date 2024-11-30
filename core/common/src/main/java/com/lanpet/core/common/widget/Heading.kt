@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
 fun CommonHeading(
@@ -36,5 +37,29 @@ fun CommonHeadingHint(
             color =
             GrayColor.LIGHT_MEDIUM,
         ),
+    )
+}
+
+@Composable
+fun CommonSubHeading1(
+    modifier: Modifier = Modifier,
+    title: String,
+) {
+    Text(
+        title,
+        style =
+        MaterialTheme.customTypography().body1SemiBoldSingle,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun CommonAppBarTitle(
+    modifier: Modifier = Modifier,
+    title: String,
+) {
+    Text(
+        title,
+        modifier = modifier,
     )
 }

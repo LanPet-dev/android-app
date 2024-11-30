@@ -39,6 +39,7 @@ awsCore = "2.24.0"
 activity = "1.9.3"
 retrofit = "2.11.0"
 animationCore = "1.0.1"
+composeMaterial = "1.4.0"
 
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }

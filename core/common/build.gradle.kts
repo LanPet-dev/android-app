@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.convention.lib.coil)
 }
 
 android {

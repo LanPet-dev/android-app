@@ -2,6 +2,7 @@ package com.lanpet.myprofile.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.Plus
 import com.lanpet.core.common.widget.CommonHeading
 import com.lanpet.core.common.widget.CommonHeadingHint
+import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -44,28 +46,31 @@ import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileCreate(
-    onNavigateUp: (() -> Unit)? = null
+fun MyProfileCreateProfileScreen(
+    onNavigateUp: (() -> Unit)? = null,
+    onNavigateToAddProfile: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
                 navigationIcon = {
                     if (onNavigateUp != null)
-                        Box(
-                            modifier = Modifier.crop(48.dp) { },
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Image(
-                                imageVector = MyIconPack.ArrowLeft,
-                                contentDescription = "ic_arrow_left",
-                                modifier = Modifier.size(28.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
-                            )
-                        }
+                        CommonIconButtonBox(
+                            content = {
+                                Image(
+                                    imageVector = MyIconPack.ArrowLeft,
+                                    contentDescription = "ic_arrow_left",
+                                    modifier = Modifier.size(28.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
+                                )
+                            },
+                            onClick = { onNavigateUp() }
+                        )
                 },
                 title = {
-                    Text(stringResource(R.string.title_appbar_my_profile_create))
+                    Text(
+                        stringResource(R.string.title_appbar_my_profile_create),
+                    )
                 },
             )
         },
@@ -88,7 +93,9 @@ fun MyProfileCreate(
                     title = stringResource(R.string.heading_hint_my_profile_create),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
-                ProfileListCard()
+                ProfileListCard(
+                    onModifyClicked = onNavigateToAddProfile
+                )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 AddProfileCard()
             }
@@ -121,12 +128,16 @@ fun AddProfileCard(
             Image(
                 imageVector = MyIconPack.Plus,
                 contentDescription = "ic_plus",
-                colorFilter = ColorFilter.tint(GrayColor.Gray500),
+                colorFilter = ColorFilter.tint(GrayColor.Gray300),
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Text(
-                style = MaterialTheme.customTypography().body2MediumSingle,
-                text = stringResource(R.string.body_add_profile_profile_create),
+                style = MaterialTheme.customTypography().body2MediumSingle.copy(
+                    color = GrayColor.Gray300
+                ),
+                text = stringResource(
+                    R.string.body_add_profile_profile_create,
+                ),
             )
         }
     }
@@ -134,7 +145,7 @@ fun AddProfileCard(
 
 @Composable
 fun ProfileListCard(
-    onModifyClicked: () -> Unit = {}
+    onModifyClicked: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -178,23 +189,16 @@ fun ProfileListCard(
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
-                        .crop(
-                            size = 36.dp,
-                            shape = RoundedCornerShape(
-                                8
-                            )
-                        ) {
-                            onModifyClicked()
-                        }
                         .commonBorder(
                             shape = RoundedCornerShape(
                                 LanPetDimensions.Corner.xSmall,
-                            )
+                            ),
                         )
                         .padding(
-                            horizontal = 12.dp,
-                            vertical = 8.dp
-                        ),
+                            horizontal = LanPetDimensions.Margin.medium,
+                            vertical = LanPetDimensions.Margin.xSmall,
+                        )
+                        .clickable { onModifyClicked() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -212,7 +216,7 @@ fun ProfileListCard(
 
 @PreviewLightDark
 @Composable
-fun PreviewAddProfilecard() {
+fun PreviewAddProfileCard() {
     LanPetAppTheme {
         AddProfileCard()
     }
@@ -222,7 +226,7 @@ fun PreviewAddProfilecard() {
 @Composable
 fun PreviewMyProfileCreate() {
     LanPetAppTheme {
-        ProfileListCard()
+        ProfileListCard() {}
     }
 }
 
@@ -230,6 +234,6 @@ fun PreviewMyProfileCreate() {
 @Composable
 fun MyProfileCreatePreview() {
     LanPetAppTheme {
-        MyProfileCreate {}
+        MyProfileCreateProfileScreen {}
     }
 }

@@ -10,6 +10,8 @@ import com.example.auth.navigation.authNavGraph
 import com.example.auth.navigation.navigateToLoginScreen
 import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.myprofile.navigation.MyProfileAddProfile
+import com.lanpet.myprofile.screen.MyProfileAddProfileScreen
 import com.lanpet.profile.navigation.ProfileCreateHasPet
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
@@ -72,6 +74,15 @@ fun AppNavigation() {
             val selectedNavItem = it.toRoute<MainNavigationRoute>().selectedNavItem
 
             MainScreen(selectedNavItem, navController)
+        }
+
+        composable<MyProfileAddProfile> {
+            MyProfileAddProfileScreen(
+                onClose = {
+                    navController.navigateUp()
+                }
+            )
+
         }
 
     }

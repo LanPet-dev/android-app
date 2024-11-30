@@ -41,7 +41,9 @@ import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileScreen() {
+fun MyProfileScreen(
+    onNavigateToProfileCreate: () -> Unit = { }
+) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -56,7 +58,8 @@ fun MyProfileScreen() {
                         modifier = Modifier
                             .crop(
                                 48.dp
-                            ) { },
+                            ) {
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -77,7 +80,9 @@ fun MyProfileScreen() {
                 .padding(it)
         ) {
             Column() {
-                MyProfileCard()
+                MyProfileCard(
+                    onNavigateToProfileCreate = onNavigateToProfileCreate
+                )
                 Spacer(
                     modifier = Modifier
                         .padding(bottom = LanPetDimensions.Spacing.xLarge)
@@ -146,7 +151,9 @@ fun MyProfileScreen() {
 }
 
 @Composable
-private fun MyProfileCard() {
+private fun MyProfileCard(
+    onNavigateToProfileCreate: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -179,7 +186,9 @@ private fun MyProfileCard() {
             modifier = Modifier
                 .crop(
                     size = 36.dp,
-                ) { },
+                ) {
+                    onNavigateToProfileCreate()
+                },
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -223,7 +232,7 @@ fun ActivityListItem(
 fun MyProfileCardPreview() {
     LanPetAppTheme {
         Surface {
-            MyProfileCard()
+            MyProfileCard() {}
         }
     }
 }

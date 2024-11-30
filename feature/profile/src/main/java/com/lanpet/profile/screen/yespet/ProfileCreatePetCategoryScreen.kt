@@ -20,11 +20,11 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.example.model.PetCategory
+import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
-import com.lanpet.profile.widget.SelectableChip
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
