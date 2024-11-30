@@ -15,7 +15,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -31,19 +31,17 @@ import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
-import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.core.designsystem.theme.landingLabel
 
 @Composable
 fun LandingScreen(
     onNavigateToLogin: () -> Unit,
 ) {
-    Scaffold {
+    Surface {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
                 .padding(
                     horizontal = LanPetDimensions.Margin.Layout.horizontal,
                     vertical = LanPetDimensions.Margin.Layout.vertical,

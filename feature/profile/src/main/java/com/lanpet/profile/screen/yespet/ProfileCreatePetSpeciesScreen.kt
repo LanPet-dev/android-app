@@ -21,9 +21,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.designsystem.R as DS_R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.widgets.CommonButton
-import com.lanpet.core.designsystem.theme.widgets.LanPetTopAppBar
-import com.lanpet.core.designsystem.theme.widgets.TextFieldWithDeleteButton
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading

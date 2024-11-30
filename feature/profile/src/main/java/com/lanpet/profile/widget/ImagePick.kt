@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.R as DS_R
-import com.lanpet.core.designsystem.theme.crop
+import com.lanpet.core.common.crop
 
 @Composable
 fun ImagePickerView(imageUri: Uri?, onEditButtonClick: () -> Unit) {

@@ -17,6 +17,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.common)
     implementation(projects.core.auth)
     implementation(projects.domain.model)
     implementation(libs.androidx.lifecycle.viewmodel.android)

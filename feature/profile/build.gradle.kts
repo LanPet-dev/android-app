@@ -19,4 +19,7 @@ android {
 dependencies {
     implementation(projects.domain.model)
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.androidx.animation.core)
+    implementation(libs.androidx.animation.core)
+    implementation(libs.androidx.animation.core)
 }

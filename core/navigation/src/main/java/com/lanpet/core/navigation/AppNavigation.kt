@@ -2,20 +2,17 @@ package com.lanpet.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.auth.navigation.authNavGraph
 import com.example.auth.navigation.navigateToLoginScreen
-import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
-import com.example.model.AuthState
 import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.myprofile.navigation.MyProfileAddProfile
+import com.lanpet.myprofile.screen.MyProfileAddProfileScreen
+import com.lanpet.profile.navigation.ProfileCreateHasPet
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanBio
@@ -41,10 +38,9 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Landing,
+        startDestination = ProfileCreateHasPet,
     ) {
         landingNavGraph {
-            println("navigate to login screen")
             navController.navigateToLoginScreen()
         }
 
@@ -78,6 +74,15 @@ fun AppNavigation() {
             val selectedNavItem = it.toRoute<MainNavigationRoute>().selectedNavItem
 
             MainScreen(selectedNavItem, navController)
+        }
+
+        composable<MyProfileAddProfile> {
+            MyProfileAddProfileScreen(
+                onClose = {
+                    navController.navigateUp()
+                }
+            )
+
         }
 
     }

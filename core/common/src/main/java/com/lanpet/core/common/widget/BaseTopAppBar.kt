@@ -1,7 +1,11 @@
-package com.lanpet.core.designsystem.theme.widgets
+package com.lanpet.core.common.widget
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,11 +32,12 @@ fun LanPetTopAppBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
+        windowInsets = WindowInsets(0, 0, 0, 0),
         title = title,
-        navigationIcon = { navigationIcon },
+        navigationIcon = { navigationIcon?.invoke() },
         actions = actions,
         colors = colors,
-        modifier = modifier,
+        modifier = modifier.systemBarsPadding(),
     )
 }
 
@@ -67,9 +72,15 @@ fun LanPetCloseableTopAppBar(
 @Composable
 private fun LanPetTopAppBarPreview() {
     LanPetAppTheme {
-        LanPetTopAppBar(
-            title = { Text("Title") }
-        )
+        Column {
+            LanPetTopAppBar(
+                title = { Text("Title") }
+            )
+            LanPetTopAppBar(
+                navigationIcon = { Icon(Icons.Default.ArrowBack, contentDescription = "Close") },
+                title = { Text("Title") }
+            )
+        }
     }
 }
 

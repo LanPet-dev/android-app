@@ -15,7 +15,7 @@ class NavigationHandler(
      * 이전 AuthState
      * 현재 AuthState 와 비교하여 처리하기위해 필요함
      */
-    var previousAuthState: AuthState = AuthState.Initial
+    private var previousAuthState: AuthState = AuthState.Initial
 
     /**
      * AuthState 에 따른 Screen 이동 처리를 담당한다.

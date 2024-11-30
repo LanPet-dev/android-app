@@ -2,7 +2,6 @@ package com.lanpet.core.designsystem.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -13,7 +12,7 @@ import com.lanpet.core.designsystem.R
 
 
 object AppTypography {
-    val Pretendard = FontFamily(
+    internal val Pretendard = FontFamily(
         Font(R.font.pretendard_thin, FontWeight.Thin),
         Font(R.font.pretendard_light, FontWeight.Light),
         Font(R.font.pretendard_regular, FontWeight.Normal),
@@ -25,7 +24,7 @@ object AppTypography {
     )
 
     // 공통 letter spacing (-2%)
-    private const val COMMON_LETTER_SPACING = -0.02f
+    const val COMMON_LETTER_SPACING = -0.02f
 
     // TODO("Satoshi"): 아래의 스타일은 Light mode 기준입니다. Dark 모드 textstyle 정의 필요함
 
@@ -253,14 +252,6 @@ object AppTypography {
     )
 }
 
-fun Typography.landingHead(): TextStyle {
-    return this.headlineLarge
-}
-
-fun Typography.landingLabel(): TextStyle {
-    return this.labelLarge.copy(Color.Gray)
-}
-
 val Typography = Typography(
     // Display
     displayLarge = TextStyle(
@@ -268,21 +259,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     displayMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
         lineHeight = 52.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     displaySmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
 
     // Headline
@@ -291,21 +282,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     headlineMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 36.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     headlineSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 32.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
 
     // Title
@@ -314,21 +305,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     titleMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     titleSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
 
     // Body
@@ -337,21 +328,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     bodyMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     bodySmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
 
     // Label
@@ -360,21 +351,21 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     labelMedium = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     ),
     labelSmall = TextStyle(
         fontFamily = AppTypography.Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = (-2f).sp
+        letterSpacing = AppTypography.COMMON_LETTER_SPACING.em
     )
 )
 
