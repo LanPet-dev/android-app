@@ -19,4 +19,7 @@
     <string name="bio_hint_my_profile_add_profile">간단한 소개를 해주세요</string>
     <string name="bio_input_placeholder_my_profile_add_profile">간단한 소개를 작성해주세요</string>
     <string name="title_register_button">등록하기</string>
+    <string name="title_appbar_my_profile_modify_profile">수정하기</string>
+    <string name="nickname_check_error_string">중복되는 닉네임이 있어요</string>
+    <string name="nickname_check_ok_string">사용 가능한 닉네임이에요</string>
 </resources>

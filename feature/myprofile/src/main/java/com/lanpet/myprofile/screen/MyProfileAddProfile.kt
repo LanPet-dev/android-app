@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.model.Age
-import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.Close
 import com.lanpet.core.common.widget.CommonAppBarTitle
@@ -58,8 +57,6 @@ import com.lanpet.myprofile.R
 fun MyProfileAddProfileScreen(
     onClose: () -> Unit = { }
 ) {
-    val authViewModel = LocalAuthViewModel.current
-
     val verticalScrollState = rememberScrollState()
 
     Scaffold(
@@ -189,7 +186,7 @@ private fun BioInputSection() {
 }
 
 @Composable
-fun SelectPreferPetSection() {
+private fun SelectPreferPetSection() {
     CommonSubHeading1(
         title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile)
     )
@@ -207,8 +204,9 @@ fun SelectPreferPetSection() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SelectAgeSection() {
+private fun SelectAgeSection() {
     CommonSubHeading1(
         title = stringResource(R.string.age_hint_my_profile_add_profile)
     )
@@ -239,7 +237,7 @@ fun SelectAgeSection() {
 }
 
 @Composable
-fun NickNameSection() {
+private fun NickNameSection() {
     CommonSubHeading1(
         title = stringResource(R.string.nickname_hint_my_profile_add_profile)
     )

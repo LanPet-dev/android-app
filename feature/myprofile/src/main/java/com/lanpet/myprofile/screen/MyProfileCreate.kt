@@ -49,7 +49,8 @@ import com.lanpet.myprofile.R
 @Composable
 fun MyProfileCreateProfileScreen(
     onNavigateUp: (() -> Unit)? = null,
-    onNavigateToAddProfile: () -> Unit = {}
+    onNavigateToAddProfile: () -> Unit = {},
+    onNavigateToModifyProfile: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -95,10 +96,12 @@ fun MyProfileCreateProfileScreen(
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
                 ProfileListCard(
-                    onModifyClicked = onNavigateToAddProfile
+                    onModifyClicked = onNavigateToModifyProfile
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                AddProfileCard()
+                AddProfileCard(
+                    onAddProfileClicked = onNavigateToAddProfile
+                )
             }
         }
     }
@@ -112,12 +115,17 @@ fun AddProfileCard(
 
     Surface(
         modifier = Modifier
-            .clickable { onAddProfileClickedCallback() }
             .commonBorder(
                 shape = RoundedCornerShape(
                     LanPetDimensions.Corner.small
                 )
             )
+            .clip(
+                RoundedCornerShape(
+                    LanPetDimensions.Corner.small
+                )
+            )
+            .clickable { onAddProfileClickedCallback() }
             .fillMaxWidth()
             .wrapContentHeight()
     ) {

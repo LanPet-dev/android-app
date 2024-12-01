@@ -25,13 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.DuplicatedNicknameErrorText
+import com.lanpet.core.common.widget.DuplicatedNicknameOkText
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -113,7 +113,7 @@ fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
         mutableStateOf("")
     }
 
-    var nicknameDuplicateCheckStatus by rememberSaveable {
+    val nicknameDuplicateCheckStatus by rememberSaveable {
         mutableStateOf<Boolean?>(true)
     }
 
@@ -145,37 +145,30 @@ fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
         nicknameDuplicateCheckStatus?.let {
             if (it) {
-                DuplicatedNicknameOkText()
+                DuplicatedNicknameOkText(
+                    title = stringResource(R.string.check_duplicated_nickname_ok_string)
+                )
             } else {
-                DuplicatedNicknameErrorText()
+                DuplicatedNicknameErrorText(
+                    title = stringResource(R.string.check_duplicated_nickname_error_string)
+                )
             }
         }
     }
 }
 
-@Composable
-fun DuplicatedNicknameOkText() {
-    Text(
-        stringResource(R.string.check_duplicated_nickname_ok_string),
-        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.confirmText),
-    )
-}
-
-@Composable
-fun DuplicatedNicknameErrorText() {
-    Text(
-        stringResource(R.string.check_duplicated_nickname_error_string),
-        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.errorText),
-    )
-}
 
 @PreviewLightDark
 @Composable
 fun PreviewErrorConfirmedText() {
     LanPetAppTheme {
         Column {
-            DuplicatedNicknameOkText()
-            DuplicatedNicknameErrorText()
+            DuplicatedNicknameOkText(
+                "OK TITLE"
+            )
+            DuplicatedNicknameErrorText(
+                "ERROR TITLE"
+            )
         }
     }
 }
