@@ -38,89 +38,89 @@ import kotlinx.serialization.Serializable
  * then, you may face an issue saying that the destination is not found.
  * TODO: refactor such a difficult management of navigation. fuck.
  */
-@Composable
-fun MainScreen(
-    selectedNavItem: BottomNavItem,
-    parentNavController: NavHostController
-) {
-    val navController = rememberNavController()
-
-    var navItem by rememberSaveable {
-        mutableStateOf(selectedNavItem)
-    }
-
-    LaunchedEffect(navItem) {
-        when (navItem) {
-            BottomNavItem.Wiki -> {
-                navController.navigateToWikiScreen()
-            }
-
-            BottomNavItem.Free -> {
-                navController.navigateToFreeBoardScreen()
-            }
-
-            BottomNavItem.MyPage -> {
-                navController.navigateToMyProfile()
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        MainNavigation(
-            navController = navController,
-            parentNavController = parentNavController,
-            startDestination = selectedNavItem,
-            modifier = Modifier.weight(1f)
-        )
-        LanPetBottomNavBar(
-            selectedBottomNavItem = navItem,
-            bottomNavItemList = listOf(
-                BottomNavItem.Wiki,
-                BottomNavItem.Free,
-                BottomNavItem.MyPage,
-            ),
-            onItemSelected = { item ->
-                println("selected bottom nav item: $item")
-                navItem = item
-            }
-        )
-    }
-}
-
-@Composable
-fun MainNavigation(
-    navController: NavHostController,
-    parentNavController: NavHostController,
-    startDestination: BottomNavItem,
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController,
-        startDestination =
-        when (startDestination) {
-            BottomNavItem.MyPage -> MyProfileBaseRoute
-            BottomNavItem.Free -> FreeBoardBaseRoute
-            BottomNavItem.Wiki -> WikiBaseRoute
-        },
-        modifier = modifier
-    ) {
-        myProfileNavGraph(
-            onNavigateUp = {
-                navController.navigateUp()
-            },
-            onNavigateToMyProfileCreateProfile = {
-                navController.navigateToMyProfileCreateProfile()
-            },
-            onNavigateToMyProfileAddProfile = {
-                parentNavController.navigateToMyProfileAddProfile()
-            },
-        )
-        freeNavGraph()
-        wikiNavGraph()
-    }
-}
+//@Composable
+//fun MainScreen(
+//    selectedNavItem: BottomNavItem,
+//    parentNavController: NavHostController
+//) {
+//    val navController = rememberNavController()
+//
+//    var navItem by rememberSaveable {
+//        mutableStateOf(selectedNavItem)
+//    }
+//
+//    LaunchedEffect(navItem) {
+//        when (navItem) {
+//            BottomNavItem.Wiki -> {
+//                navController.navigateToWikiScreen()
+//            }
+//
+//            BottomNavItem.Free -> {
+//                navController.navigateToFreeBoardScreen()
+//            }
+//
+//            BottomNavItem.MyPage -> {
+//                navController.navigateToMyProfile()
+//            }
+//        }
+//    }
+//
+//    Column(
+//        modifier = Modifier.fillMaxSize()
+//    ) {
+//        MainNavigation(
+//            navController = navController,
+//            parentNavController = parentNavController,
+//            startDestination = selectedNavItem,
+//            modifier = Modifier.weight(1f)
+//        )
+//        LanPetBottomNavBar(
+//            selectedBottomNavItem = navItem,
+//            bottomNavItemList = listOf(
+//                BottomNavItem.Wiki,
+//                BottomNavItem.Free,
+//                BottomNavItem.MyPage,
+//            ),
+//            onItemSelected = { item ->
+//                println("selected bottom nav item: $item")
+//                navItem = item
+//            }
+//        )
+//    }
+//}
+//
+//@Composable
+//fun MainNavigation(
+//    navController: NavHostController,
+//    parentNavController: NavHostController,
+//    startDestination: BottomNavItem,
+//    modifier: Modifier = Modifier
+//) {
+//    NavHost(
+//        navController = navController,
+//        startDestination =
+//        when (startDestination) {
+//            BottomNavItem.MyPage -> MyProfileBaseRoute
+//            BottomNavItem.Free -> FreeBoardBaseRoute
+//            BottomNavItem.Wiki -> WikiBaseRoute
+//        },
+//        modifier = modifier
+//    ) {
+//        myProfileNavGraph(
+//            onNavigateUp = {
+//                navController.navigateUp()
+//            },
+//            onNavigateToMyProfileCreateProfile = {
+//                navController.navigateToMyProfileCreateProfile()
+//            },
+//            onNavigateToMyProfileAddProfile = {
+//                parentNavController.navigateToMyProfileAddProfile()
+//            },
+//        )
+//        freeNavGraph()
+//        wikiNavGraph()
+//    }
+//}
 
 fun NavController.navigateToMainScreen(bottomNavItem: BottomNavItem = BottomNavItem.MyPage) {
     navigate(MainNavigationRoute(bottomNavItem)) {
@@ -134,13 +134,13 @@ fun NavController.navigateToMainScreen(bottomNavItem: BottomNavItem = BottomNavI
 data class MainNavigationRoute(val selectedNavItem: BottomNavItem)
 
 
-@Composable
-@PreviewLightDark
-fun MainScreenPreview() {
-    LanPetAppTheme {
-        MainScreen(
-            selectedNavItem = BottomNavItem.MyPage,
-            rememberNavController()
-        )
-    }
-}
+//@Composable
+//@PreviewLightDark
+//fun MainScreenPreview() {
+//    LanPetAppTheme {
+//        MainScreen(
+//            selectedNavItem = BottomNavItem.MyPage,
+//            rememberNavController()
+//        )
+//    }
+//}

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -53,6 +55,11 @@ fun LanPetBottomNavBar(
             }
         }
     }
+}
+
+@Composable
+fun rememberBottomNavItem() = remember {
+    mutableStateOf(BottomNavItem.Initial)
 }
 
 @PreviewLightDark
