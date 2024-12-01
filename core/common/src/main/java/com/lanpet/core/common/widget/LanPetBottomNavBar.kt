@@ -59,7 +59,7 @@ fun LanPetBottomNavBar(
 
 @Composable
 fun rememberBottomNavItem() = remember {
-    mutableStateOf(BottomNavItem.Initial)
+    mutableStateOf(BottomNavItem.Wiki)
 }
 
 @PreviewLightDark
