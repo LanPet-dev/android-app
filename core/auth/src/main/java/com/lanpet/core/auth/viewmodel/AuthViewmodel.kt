@@ -28,7 +28,8 @@ class AuthViewModel @Inject constructor(
             result.onSuccess { socialAuthToken ->
                 authStateHolder.updateState(
                     AuthState.Success(
-                        socialAuthToken = socialAuthToken
+                        socialAuthToken = socialAuthToken,
+                        userProfile = null
                     )
                 )
             }.onFailure {

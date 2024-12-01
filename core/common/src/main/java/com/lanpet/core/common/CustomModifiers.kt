@@ -48,7 +48,6 @@ fun Modifier.commonBorder(
     shape: RoundedCornerShape = RoundedCornerShape(
         LanPetDimensions.Corner.xLarge,
     ),
-) = Modifier.border(
-    border = border,
-    shape = shape,
-)
+) = composed {
+    border(border, shape)
+}

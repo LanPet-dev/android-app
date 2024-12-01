@@ -28,8 +28,27 @@ fun NavGraphBuilder.myProfileNavGraph(
                 onNavigateUp = {
                     onNavigateUp()
                 },
-                onNavigateToAddProfile = onNavigateToMyProfileAddProfile
+                onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
             )
+        }
+        composable<MyProfileAddProfile> {
+            MyProfileAddProfileScreen(
+                onClose = {
+                    onNavigateUp()
+                }
+            )
+
+        }
+    }
+}
+
+fun NavController.navigateToMyProfileBaseRoute() {
+    navigate(
+        MyProfileBaseRoute,
+    ) {
+        launchSingleTop = true
+        popUpTo(0) {
+            inclusive = true
         }
     }
 }
@@ -37,22 +56,30 @@ fun NavGraphBuilder.myProfileNavGraph(
 fun NavController.navigateToMyProfileAddProfile() {
     navigate(
         MyProfileAddProfile,
-    )
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
 }
 
 fun NavController.navigateToMyProfileCreateProfile() {
     navigate(
         MyProfileCreateProfile,
-    )
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
 }
 
 fun NavController.navigateToMyProfile() {
     navigate(
         MyProfile,
     ) {
-        popUpTo(0) {
-            inclusive = true
-        }
+        launchSingleTop = true
+        restoreState = true
+//        popUpTo(0) {
+//            inclusive = true
+//        }
     }
 }
 
@@ -60,7 +87,11 @@ fun NavController.navigateToMyProfile() {
 object MyProfileBaseRoute
 
 @Serializable
-object MyProfile
+data object MyProfile {
+    override fun toString(): String {
+        return (this::class.java.toString()).split(" ").last()
+    }
+}
 
 @Serializable
 object MyProfileCreateProfile
