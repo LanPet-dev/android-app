@@ -1,6 +1,7 @@
 package com.lanpet.feature.settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -81,6 +82,7 @@ fun SettingsScreen(
                 SettingsBaseSection(
                     sectionLabel = stringResource(R.string.notification_label_settings)
                 ) {
+                    //TODO("Satoshi"): separate switch values
                     ListItem(
                         headlineContent = {
                             Text(
@@ -102,6 +104,7 @@ fun SettingsScreen(
                 ) {
                     Column {
                         ListItem(
+                            modifier = Modifier.clickable { },
                             headlineContent = {
                                 Text(
                                     "서비스 이용약관",
@@ -116,6 +119,7 @@ fun SettingsScreen(
                             }
                         )
                         ListItem(
+                            modifier = Modifier.clickable { },
                             headlineContent = {
                                 Text(
                                     "개인정보처리방침",
