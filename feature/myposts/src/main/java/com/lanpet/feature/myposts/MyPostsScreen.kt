@@ -3,11 +3,14 @@ package com.lanpet.feature.myposts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,8 +18,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -58,7 +63,6 @@ fun MyPostsScreen(
                     currentTabIndex = it
                 }
                 // TODO: content section. PageView with lists
-
             }
         }
     }
@@ -68,6 +72,18 @@ fun MyPostsScreen(
 private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> Unit) {
     TabRow(
         selectedTabIndex = currentTabIndex,
+        divider = {
+            HorizontalDivider(
+                color = Color.Transparent,
+            )
+        },
+        indicator = { tabPositions ->
+            SecondaryIndicator(
+                modifier = Modifier
+                    .tabIndicatorOffset(tabPositions[currentTabIndex])
+                    .padding(horizontal = 24.dp),
+            )
+        },
         //TODO: indicator
         tabs = {
             Tab(
