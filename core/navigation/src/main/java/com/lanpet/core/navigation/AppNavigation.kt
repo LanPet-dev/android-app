@@ -30,6 +30,7 @@ import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
@@ -178,6 +179,9 @@ fun AppNavigation() {
                     onNavigateToMyProfileAddProfile = {
                         navController.navigateToMyProfileAddProfile()
                     },
+                    onNavigateToSettings = {
+                        navController.navigateToSettings()
+                    }
                 )
                 freeNavGraph()
                 wikiNavGraph()
