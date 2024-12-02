@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_appbar_my_posts">내가 쓴 게시글</string>
+    <string name="tab_title_wiki">반려백과</string>
+    <string name="tab_title_freeboard">사랑방</string>
+</resources>
