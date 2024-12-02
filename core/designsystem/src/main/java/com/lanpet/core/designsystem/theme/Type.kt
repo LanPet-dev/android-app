@@ -185,6 +185,22 @@ object AppTypography {
         lineHeight = (14 * 1.25).sp  // 125%
     )
 
+    val body2RegularMulti = TextStyle(
+        fontFamily = Pretendard,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = COMMON_LETTER_SPACING.em,
+        lineHeight = (14 * 1.72).sp  // 125%
+    )
+
+    val body2RegularSingle = TextStyle(
+        fontFamily = Pretendard,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = COMMON_LETTER_SPACING.em,
+        lineHeight = (14 * 1.25).sp  // 125%
+    )
+
     val body2SemiBoldMulti = TextStyle(
         fontFamily = Pretendard,
         fontSize = 14.sp,

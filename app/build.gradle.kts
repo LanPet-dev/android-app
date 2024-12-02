@@ -41,8 +41,6 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.amplify.authenticator)
     implementation(libs.amplify.core)
-    implementation("com.amplifyframework:aws-auth-cognito:2.24.0")
-    implementation("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.72.0")
 
     // Retrofit
     implementation(libs.retrofit)
@@ -58,6 +56,7 @@ dependencies {
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)
     implementation(projects.feature.wiki)
+    implementation(projects.feature.settings)
     implementation(projects.core.designsystem)
     implementation(projects.domain.model)
 

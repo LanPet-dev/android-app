@@ -30,6 +30,7 @@ import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
@@ -181,8 +182,11 @@ fun AppNavigation() {
                 freeNavGraph()
                 wikiNavGraph()
             }
-
-
+            settingsNavGraph(
+                onNavigateUp = {
+                    navController.navigateUp()
+                }
+            )
         }
         AnimatedVisibility(
             visible = shouldShowBottomBar,

@@ -30,6 +30,7 @@ include(":feature:profile")
 include(":feature:myprofile")
 include(":feature:free")
 include(":feature:wiki")
+include(":feature:settings")
 
 // data
 include(":data:repository")
