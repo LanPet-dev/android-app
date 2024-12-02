@@ -42,7 +42,8 @@ import com.lanpet.myprofile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(
-    onNavigateToProfileCreate: () -> Unit = { }
+    onNavigateToProfileCreate: () -> Unit = { },
+    onNavigateToSettings: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -59,6 +60,7 @@ fun MyProfileScreen(
                             .crop(
                                 48.dp
                             ) {
+                                onNavigateToSettings()
                             },
                         contentAlignment = Alignment.Center
                     ) {

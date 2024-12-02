@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_appbar_settings">설정</string>
+    <string name="notification_label_settings">알림</string>
+    <string name="tos_label_settings">이용약관</string>
+    <string name="information_label_settings">정보</string>
+    <string name="sns_label_settings">SNS 연동 계정</string>
+    <string name="title_notification_option_switch_settings">알림(Push) 전체 허용</string>
+</resources>

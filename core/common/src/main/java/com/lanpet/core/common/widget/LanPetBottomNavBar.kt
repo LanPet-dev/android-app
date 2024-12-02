@@ -57,10 +57,10 @@ fun LanPetBottomNavBar(
     }
 }
 
-@Composable
-fun rememberBottomNavItem() = remember {
-    mutableStateOf(BottomNavItem.Initial)
-}
+//@Composable
+//fun rememberBottomNavItem() = remember {
+//    mutableStateOf(BottomNavItem.Initial)
+//}
 
 @PreviewLightDark
 @Composable
