@@ -60,7 +60,7 @@ fun MyProfileScreen(
                             .crop(
                                 48.dp
                             ) {
-                                
+                                onNavigateToSettings()
                             },
                         contentAlignment = Alignment.Center
                     ) {
