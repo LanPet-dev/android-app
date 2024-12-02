@@ -1,4 +1,4 @@
-package com.lanpet.core.designsystem.theme.widgets
+package com.lanpet.core.common.widget
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState

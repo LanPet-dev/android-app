@@ -18,17 +18,19 @@ android {
 
 dependencies {
     implementation(projects.core.designsystem)
+    implementation(projects.core.common)
     implementation(projects.feature.auth)
+    implementation(projects.feature.settings)
     implementation(projects.feature.landing)
     implementation(projects.feature.wiki)
     implementation(projects.feature.profile)
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)
+    implementation(projects.domain.model)
+    implementation(projects.core.auth)
+    implementation(projects.data.dto)
 
     implementation(libs.hilt.android)
-    implementation(project(":domain:model"))
-    implementation(project(":core:auth"))
-    implementation(project(":data:dto"))
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.navigation.compose)

@@ -26,6 +26,7 @@ val LightColorScheme =
         secondary = PurpleGrey40,
         tertiary = Pink40,
         background = WhiteColor.LIGHT,
+        surface = WhiteColor.White,
     )
 
 data class CustomColorScheme(
@@ -38,6 +39,10 @@ data class CustomColorScheme(
     val selectedContainer: Color,
     val unSelectedText: Color,
     val unSelectedContainer: Color,
+    val errorText: Color,
+    val confirmText: Color,
+    val spacerLine: Color,
+    val defaultIconColor: Color,
     // TODO("Satoshi"): define another colors
 )
 
@@ -52,6 +57,10 @@ val LightCustomColors =
         unSelectedText = GrayColor.LIGHT_MEDIUM,
         unSelectedContainer = WhiteColor.LIGHT,
         heading = BlackColor.MEDIUM,
+        errorText = Color.Red,
+        confirmText = Color.Blue,
+        spacerLine = GrayColor.LIGHT,
+        defaultIconColor = BlackColor.MEDIUM,
     )
 
 val DarkCustomColors =
@@ -65,6 +74,10 @@ val DarkCustomColors =
         unSelectedText = GrayColor.LIGHT_MEDIUM,
         unSelectedContainer = BlackColor.MEDIUM,
         heading = WhiteColor.MEDIUM,
+        errorText = Color.Red,
+        confirmText = Color.Blue,
+        spacerLine = GrayColor.LIGHT,
+        defaultIconColor = WhiteColor.White,
     )
 
 val LocalCustomColorScheme =

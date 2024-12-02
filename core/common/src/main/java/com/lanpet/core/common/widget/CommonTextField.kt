@@ -1,4 +1,4 @@
-package com.lanpet.core.designsystem.theme.widgets
+package com.lanpet.core.common.widget
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

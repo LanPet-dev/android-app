@@ -17,13 +17,25 @@ fun NavGraphBuilder.wikiNavGraph() {
     }
 }
 
+fun NavController.navigateToWikiBaseRoute() {
+    navigate(
+        WikiBaseRoute,
+    ) {
+        launchSingleTop = true
+        popUpTo(0){
+            inclusive = true
+        }
+    }
+}
+
 fun NavController.navigateToWikiScreen() {
     navigate(
         Wiki,
     ) {
-        popUpTo(0) {
-            inclusive = true
-        }
+        launchSingleTop = true
+//        popUpTo(0) {
+//            inclusive = true
+//        }
     }
 }
 
@@ -31,4 +43,8 @@ fun NavController.navigateToWikiScreen() {
 object WikiBaseRoute
 
 @Serializable
-object Wiki
+data object Wiki {
+    override fun toString(): String {
+        return (this::class.java.toString()).split(" ").last()
+    }
+}

@@ -45,5 +45,8 @@
 
     <string name="heading_profile_create_done1">프로필이 완료되었어요!</string>
     <string name="heading_profile_create_done2">LanPet 주민이 되신 걸 환영해요</string>
-    <string name="sub_heading_profile_create_done">다양한 정보도 얻고 소통의 재미를 느끼시길 바랄게요</string>>
+    <string name="sub_heading_profile_create_done">다양한 정보도 얻고 소통의 재미를 느끼시길 바랄게요</string>
+    <string name="check_duplicated_nickname_button_string">중복 확인</string>
+    <string name="check_duplicated_nickname_ok_string">사용 가능한 닉네임이에요</string>>
+    <string name="check_duplicated_nickname_error_string">중복되는 닉네임이 있어요</string>>
 </resources>

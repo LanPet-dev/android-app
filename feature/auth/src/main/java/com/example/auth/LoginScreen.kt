@@ -22,8 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.crop
-import com.lanpet.core.designsystem.theme.landingLabel
+import com.lanpet.core.common.crop
 import com.lanpet.core.auth.CognitoAuthManager
 
 @Composable
@@ -32,7 +31,7 @@ fun LoginScreen() {
 
     Scaffold {
         Column(
-            modifier = Modifier
+             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
                 .padding(
@@ -83,7 +82,7 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
         text,
         textAlign = TextAlign.Center,
         modifier = modifier,
-        style = MaterialTheme.typography.landingLabel()
+//        style = MaterialTheme.typography.landingLabel()
     )
 }
 

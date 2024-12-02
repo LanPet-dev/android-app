@@ -13,10 +13,6 @@ class AuthStateHolder {
     val authState = _authState.asStateFlow()
 
     fun updateState(newState: AuthState) {
-        println(
-            hashCode().toString() + " " + this::class.simpleName + " " + this::class.qualifiedName + " " + _authState.value
-        )
-        Log.d("AuthStateHolder", "Updating state from ${_authState.value} to $newState")
         _authState.value = newState
     }
 }

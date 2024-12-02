@@ -17,13 +17,25 @@ fun NavGraphBuilder.freeNavGraph() {
     }
 }
 
+fun NavController.navigateToFreeBoardBaseRoute() {
+    navigate(
+        FreeBoardBaseRoute,
+    ) {
+        launchSingleTop = true
+        popUpTo(0){
+            inclusive = true
+        }
+    }
+}
+
 fun NavController.navigateToFreeBoardScreen() {
     navigate(
         FreeBoard,
     ) {
-        popUpTo(0) {
-            inclusive = true
-        }
+        launchSingleTop = true
+//        popUpTo(0) {
+//            inclusive = true
+//        }
     }
 }
 
@@ -31,4 +43,8 @@ fun NavController.navigateToFreeBoardScreen() {
 object FreeBoardBaseRoute
 
 @Serializable
-object FreeBoard
+data object FreeBoard {
+    override fun toString(): String {
+        return (this::class.java.toString()).split(" ").last()
+    }
+}

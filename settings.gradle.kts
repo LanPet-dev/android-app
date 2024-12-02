@@ -30,6 +30,7 @@ include(":feature:profile")
 include(":feature:myprofile")
 include(":feature:free")
 include(":feature:wiki")
+include(":feature:settings")
 
 // data
 include(":data:repository")
@@ -46,6 +47,7 @@ include(":core:navigation")
 include(":core:designsystem")
 include(":core:di")
 include(":core:auth")
+include(":core:common")
 include(":app")
 
 // build-logic
