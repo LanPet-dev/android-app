@@ -56,6 +56,7 @@ dependencies {
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)
     implementation(projects.feature.wiki)
+    implementation(projects.feature.myposts)
     implementation(projects.feature.settings)
     implementation(projects.core.designsystem)
     implementation(projects.domain.model)

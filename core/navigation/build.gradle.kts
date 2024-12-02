@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.core.common)
     implementation(projects.feature.auth)
+    implementation(projects.feature.myposts)
     implementation(projects.feature.settings)
     implementation(projects.feature.landing)
     implementation(projects.feature.wiki)
