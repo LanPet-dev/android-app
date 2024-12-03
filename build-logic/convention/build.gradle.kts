@@ -53,5 +53,9 @@ gradlePlugin {
             id = "convention.android.lib.retrofit"
             implementationClass = "AndroidRetrofitConventionPlugin"
         }
+        register("androidJunit5") {
+            id = "convention.android.test.junit5"
+            implementationClass = "AndroidJunit5ConventionPlugin"
+        }
     }
 }
