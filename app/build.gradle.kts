@@ -1,12 +1,10 @@
-import java.util.Properties
-import kotlin.apply
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.convention.hilt)
     alias(libs.plugins.convention.app.build)
+    alias(libs.plugins.convention.lib.junit5)
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
 }
@@ -76,11 +74,8 @@ dependencies {
     implementation(libs.coil.svg)
     implementation(libs.coil.network.okhttp)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
