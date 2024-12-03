@@ -1,7 +1,14 @@
 package com.lanpet.feature.myposts
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +20,10 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -23,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.common.widget.CommonNavigateUpButton
+import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -37,6 +48,19 @@ fun MyPostsScreen(
 ) {
     var currentTabIndex by rememberSaveable {
         mutableIntStateOf(0)
+    }
+
+    val pagerState = rememberPagerState(
+        pageCount = { 2 },
+        initialPage = 0
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        currentTabIndex = pagerState.currentPage
+    }
+
+    LaunchedEffect(currentTabIndex) {
+        pagerState.animateScrollToPage(currentTabIndex)
     }
 
     Scaffold(
@@ -63,6 +87,19 @@ fun MyPostsScreen(
                     currentTabIndex = it
                 }
                 // TODO: content section. PageView with lists
+                HorizontalPager(
+                    pageSize = PageSize.Fill,
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState
+                ) { index ->
+                    if (index == 0) {
+                        Column {
+                            Text("Wiki")
+                        }
+                    } else if (index == 1) {
+                        MyFreeBoardPosts()
+                    }
+                }
             }
         }
     }
@@ -119,11 +156,45 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
 }
 
 @Composable
+fun MyFreeBoardPosts() {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier
+            .padding(horizontal = LanPetDimensions.Margin.small)
+            .fillMaxSize(),
+    ) {
+        items(10) { index ->
+            key(index) {
+                FreeBoardListItem()
+
+                if (index < 10 - 1)
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        color = GrayColor.Gray100,
+                        thickness = 1.dp
+                    )
+            }
+        }
+
+    }
+}
+
+@Composable
 @PreviewLightDark
 fun PreviewMyPostsScreen() {
     LanPetAppTheme {
         MyPostsScreen(
             onNavigateUp = {}
         )
+    }
+}
+
+@PreviewLightDark
+@Composable
+fun PreviewMyFreeBoardPosts() {
+    LanPetAppTheme {
+        MyFreeBoardPosts()
     }
 }

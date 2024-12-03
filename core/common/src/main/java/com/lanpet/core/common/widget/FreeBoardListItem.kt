@@ -1,6 +1,7 @@
 package com.lanpet.core.common.widget
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,10 +30,15 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
-fun FreeBoardListItem() {
+fun FreeBoardListItem(
+    onClick: () -> Unit = {}
+) {
     Surface {
         Column(
             modifier = Modifier
+                .clickable {
+                    onClick()
+                }
                 .fillMaxWidth()
                 .padding(vertical = LanPetDimensions.Spacing.small)
         ) {
@@ -58,13 +64,13 @@ fun FreeBoardListItem() {
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.customTypography().body3RegularMulti.copy(
-                            color = GrayColor.Gray500
+//                            color = GrayColor.Gray500
                         )
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 Image(
-                    painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_dummy),
+                    painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
                     contentDescription = "Profile Image",
                     modifier = Modifier
                         .clip(

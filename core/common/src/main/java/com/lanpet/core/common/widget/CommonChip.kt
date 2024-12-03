@@ -24,7 +24,7 @@ fun CommonChip(title: String) {
                 shape = CircleShape
             )
             .background(color = GrayColor.Gray100)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
