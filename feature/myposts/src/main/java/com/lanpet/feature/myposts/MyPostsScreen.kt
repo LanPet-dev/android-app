@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +20,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,6 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.example.model.PetCategory
+import com.example.model.Post
+import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -44,15 +45,17 @@ import com.lanpet.core.designsystem.theme.customTypography
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPostsScreen(
-    onNavigateUp: (() -> Unit)? = null
+    onNavigateUp: (() -> Unit)? = null,
+    initialPage: Int = 0,
+    onNavigateToPostDetail: (postId: Int) -> Unit = {}
 ) {
     var currentTabIndex by rememberSaveable {
-        mutableIntStateOf(0)
+        mutableIntStateOf(initialPage)
     }
 
     val pagerState = rememberPagerState(
         pageCount = { 2 },
-        initialPage = 0
+        initialPage = initialPage
     )
 
     LaunchedEffect(pagerState.currentPage) {
@@ -97,7 +100,22 @@ fun MyPostsScreen(
                             Text("Wiki")
                         }
                     } else if (index == 1) {
-                        MyFreeBoardPosts()
+                        MyFreeBoardPosts(
+                            posts = List(10) {
+                                Post(
+                                    id = it,
+                                    title = "Title $it",
+                                    content = loremIpsum(),
+                                    petCategory = PetCategory.CAT,
+                                    tags = listOf("tag1", "tag2"),
+                                    images = listOf("https://picsum.photos/200/300"),
+                                    createdAt = "2021-10-10T10:00:00Z",
+                                    updatedAt = "",
+                                    likeCount = 10,
+                                    commentCount = 111,
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -121,7 +139,6 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
                     .padding(horizontal = 24.dp),
             )
         },
-        //TODO: indicator
         tabs = {
             Tab(
                 selected = currentTabIndex == 0,
@@ -156,7 +173,9 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
 }
 
 @Composable
-fun MyFreeBoardPosts() {
+fun MyFreeBoardPosts(
+    posts: List<Post> = emptyList()
+) {
     val listState = rememberLazyListState()
 
     LazyColumn(
@@ -165,9 +184,12 @@ fun MyFreeBoardPosts() {
             .padding(horizontal = LanPetDimensions.Margin.small)
             .fillMaxSize(),
     ) {
-        items(10) { index ->
-            key(index) {
-                FreeBoardListItem()
+        items(posts.size) { index ->
+            key(posts[index].id) {
+                FreeBoardListItem(
+                    post = posts[index],
+                    onClick = {}
+                )
 
                 if (index < 10 - 1)
                     HorizontalDivider(
@@ -183,18 +205,26 @@ fun MyFreeBoardPosts() {
 
 @Composable
 @PreviewLightDark
-fun PreviewMyPostsScreen() {
+fun PreviewMyPostWikiScreen() {
     LanPetAppTheme {
-        MyPostsScreen(
-            onNavigateUp = {}
-        )
+        Column {
+            MyPostsScreen(
+                onNavigateUp = {},
+                initialPage = 0
+            )
+        }
     }
 }
 
-@PreviewLightDark
 @Composable
-fun PreviewMyFreeBoardPosts() {
+@PreviewLightDark
+fun PreviewMyPostFreeBoardScreen() {
     LanPetAppTheme {
-        MyFreeBoardPosts()
+        Column {
+            MyPostsScreen(
+                onNavigateUp = {},
+                initialPage = 1
+            )
+        }
     }
 }
