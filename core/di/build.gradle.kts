@@ -28,8 +28,6 @@ dependencies {
     implementation(projects.data.service)
     implementation(projects.domain.repository)
     implementation(projects.data.repository)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.hilt.testing)
 }
