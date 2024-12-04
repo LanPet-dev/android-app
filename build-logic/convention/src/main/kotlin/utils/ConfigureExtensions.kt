@@ -30,9 +30,9 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
         defaultConfig {
             minSdk = 24
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         }
-        defaultConfig{
+
+        defaultConfig {
             buildConfigField(
                 "String",
                 "GOOGLE_OAUTH_CLIENT_KEY",
@@ -64,14 +64,19 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
         }
     }
 
-    configureDependencies()
     configurePlugins()
+    configureDependencies()
 }
 
 // common dependencies for configure
 internal fun Project.configureDependencies() {
     dependencies {
         "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
+
+        // JUnit 5
+//        "testImplementation"(libs.findLibrary("libs.junit.jupiter.api").get())
+//        "testRuntimeOnly"(libs.findLibrary("libs.junit.jupiter.engine").get())
+//        "testImplementation"(libs.findLibrary("libs.junit.jupiter.params").get())
         // TODO("Satoshi"): Add common dependencies
     }
 }
@@ -81,6 +86,13 @@ internal fun Project.configurePlugins() {
         apply(
             libs
                 .findPlugin("jetbrains.serialization")
+                .get()
+                .get()
+                .pluginId,
+        )
+        apply(
+            libs
+                .findPlugin("android-junit5")
                 .get()
                 .get()
                 .pluginId,

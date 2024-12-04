@@ -1,4 +1,4 @@
-package com.example.navigation
+package com.lanpet.feature.myposts
 
 import org.junit.Test
 

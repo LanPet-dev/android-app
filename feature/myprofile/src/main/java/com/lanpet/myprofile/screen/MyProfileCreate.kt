@@ -232,7 +232,7 @@ fun PreviewAddProfileCard() {
 @Composable
 fun PreviewMyProfileCreate() {
     LanPetAppTheme {
-        ProfileListCard() {}
+        ProfileListCard( ) {}
     }
 }
 
@@ -240,6 +240,8 @@ fun PreviewMyProfileCreate() {
 @Composable
 fun MyProfileCreatePreview() {
     LanPetAppTheme {
-        MyProfileCreateProfileScreen {}
+        MyProfileCreateProfileScreen(
+            onNavigateUp = {  },
+        ) {}
     }
 }

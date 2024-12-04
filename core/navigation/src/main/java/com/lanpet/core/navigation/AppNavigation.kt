@@ -30,11 +30,14 @@ import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.feature.myposts.navigation.myPostsNavGraph
+import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
+import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.MyProfileCreateProfile
@@ -181,14 +184,29 @@ fun AppNavigation() {
                     },
                     onNavigateToSettings = {
                         navController.navigateToSettings()
+                    },
+                    onNavigateToMyPosts = {
+                        navController.navigateToMyPosts()
+                    },
+                )
+                freeNavGraph(
+                    onNavigateUp = {
+                        navController.navigateUp()
                     }
                 )
-                freeNavGraph()
                 wikiNavGraph()
             }
             settingsNavGraph(
                 onNavigateUp = {
                     navController.navigateUp()
+                }
+            )
+            myPostsNavGraph(
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onNavigateToFreeBoardDetail = {
+                    navController.navigateToFreeBoardDetailScreen(it.toString())
                 }
             )
         }

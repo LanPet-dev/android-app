@@ -1,6 +1,7 @@
 package com.lanpet.app
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -23,6 +24,7 @@ class OauthDeepLinkHandlerActivity :
 
         // 딥링크로 전달된 데이터 처리
         intent?.data?.let { uri ->
+            Log.d("OauthDeepLinkHandlerActivity", "uri: $uri")
             val code = uri.getQueryParameter("code")
             if (code != null) {
                 handleAuthSuccess(code)

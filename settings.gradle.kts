@@ -31,6 +31,7 @@ include(":feature:myprofile")
 include(":feature:free")
 include(":feature:wiki")
 include(":feature:settings")
+include(":feature:myposts")
 
 // data
 include(":data:repository")
