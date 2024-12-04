@@ -1,14 +1,9 @@
 package com.lanpet.free
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +33,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,8 +52,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.model.FreeBoardComment
 import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.My
 import com.lanpet.core.common.myiconpack.Send
@@ -69,6 +69,8 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.free.viewmodel.FreeBoardDetailState
+import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,10 +78,14 @@ import com.lanpet.free.widgets.FreeBoardCommentItem
 fun FreeBoardDetailScreen(
     postId: Int,
     onNavigateUp: () -> Unit,
+    freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>()
 ) {
-    val verticalScrollState = rememberScrollState()
 
-    //TODO: Fetch Post Detail & Comment list
+    LaunchedEffect(postId) {
+        freeBoardDetailViewModel.init(postId)
+    }
+
+    val state = freeBoardDetailViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -97,183 +103,159 @@ fun FreeBoardDetailScreen(
                 .fillMaxSize()
                 .padding(it),
         ) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(
-                        state = verticalScrollState,
-                    )
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CommonChip("추천해요")
-                        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                        Text("강아지", style = MaterialTheme.customTypography().body3RegularSingle)
-                    }
-                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
-
-                    Text("Head Title", style = MaterialTheme.customTypography().title3SemiBoldMulti)
-                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_bottom_nav_mypage_unselected),
-                            contentDescription = "ic_profile",
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
-                        Text(
-                            "Nickname",
-                            style = MaterialTheme.customTypography().body3RegularSingle
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            "2일전", style = MaterialTheme.customTypography().body2RegularSingle.copy(
-                                color = GrayColor.Gray300
-                            )
-                        )
-                    }
-
+            when (state.value) {
+                is FreeBoardDetailState.Loading -> {
+                    LoadingUI()
                 }
 
-                //line
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = LanPetDimensions.Spacing.medium)
-                        .size(1.dp)
-                        .background(GrayColor.Gray50)
-                )
+                is FreeBoardDetailState.Success -> {
+                    ContentUI(state.value as FreeBoardDetailState.Success)
+                }
 
-                Text(
-                    loremIpsum(),
-                    style = MaterialTheme.customTypography().body2RegularMulti,
-                    modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
-                )
-
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
-                Image(
-                    painter = painterResource(id = R.drawable.img_dummy),
-                    contentDescription = "Profile Image",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-
-                //line
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = LanPetDimensions.Spacing.medium)
-                        .size(4.dp)
-                        .background(GrayColor.Gray50)
-                )
-                FreeBoardCommentSection(
-                    listOf(
-                        FreeBoardComment(
-                            id = 1,
-                            content = loremIpsum().slice(0..100),
-                            writer = "writer",
-                            writerImage = null,
-                            createdAt = "2021-01-01T00:00:00Z",
-                            updatedAt = "2021-01-01",
-                            freeBoardId = 1,
-                            likeCount = 1,
-                            commentCount = 3,
-                            subComments = listOf(
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum().slice(0..200),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    freeBoardId = 1,
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList()
-                                ),
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum().slice(0..50),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    freeBoardId = 1,
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList()
-                                ),
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum(),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    freeBoardId = 1,
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList()
-                                ),
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum().slice(0..100),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    freeBoardId = 1,
-                                    likeCount = 0,
-                                    commentCount = null,
-                                )
-                            ),
-                            ),
-                        FreeBoardComment(
-                            id = 1,
-                            content = loremIpsum().slice(0..100),
-                            writer = "writer",
-                            writerImage = null,
-                            createdAt = "2021-01-01T00:00:00Z",
-                            updatedAt = "2021-01-01",
-                            freeBoardId = 1,
-                            likeCount = 0,
-                            commentCount = null,
-                        ),
-                        FreeBoardComment(
-                            id = 1,
-                            content = loremIpsum().slice(0..100),
-                            writer = "writer",
-                            writerImage = null,
-                            createdAt = "2021-01-01T00:00:00Z",
-                            updatedAt = "2021-01-01",
-                            freeBoardId = 1,
-                            likeCount = 0,
-                            commentCount = null,
-                        )
-                    )
-                )
-                //line
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = LanPetDimensions.Spacing.medium)
-                        .size(4.dp)
-                        .background(GrayColor.Gray50)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                CommentInputSection()
-                Spacer(modifier = Modifier.navigationBarsPadding())
+                is FreeBoardDetailState.Error -> {
+                    Text((state.value as FreeBoardDetailState.Error).message)
+                }
             }
-
         }
     }
 }
+
+@Composable
+fun LoadingUI() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(36.dp)
+        )
+    }
+}
+
+@Composable
+fun ContentUI(state: FreeBoardDetailState.Success) {
+    val verticalScrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(
+                state = verticalScrollState,
+            )
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                state.postDetail.tags?.map {
+                    CommonChip(it)
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+                state.postDetail?.petCategory?.let {
+                    Text(
+                        it.value,
+                        style = MaterialTheme.customTypography().body3RegularSingle
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+
+            Text(
+                state.postDetail.title,
+                style = MaterialTheme.customTypography().title3SemiBoldMulti
+            )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (state.postDetail.writerImage != null) {
+                    AsyncImage(
+                        state.postDetail.writerImage,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(shape = CircleShape),
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_bottom_nav_mypage_unselected),
+                        contentDescription = "ic_profile",
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
+                state.postDetail.let {
+                    Text(
+                        it.writer,
+                        style = MaterialTheme.customTypography().body3RegularSingle
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    createdAtPostString(state.postDetail.createdAt),
+                    style = MaterialTheme.customTypography().body2RegularSingle.copy(
+                        color = GrayColor.Gray300
+                    )
+                )
+            }
+        }
+
+        //line
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = LanPetDimensions.Spacing.medium)
+                .size(1.dp)
+                .background(GrayColor.Gray50)
+        )
+
+        Text(
+            state.postDetail.content,
+            style = MaterialTheme.customTypography().body2RegularMulti,
+            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+        )
+
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+
+        state.postDetail.images.map {
+            AsyncImage(
+                model = it,
+                contentDescription = "post_image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth(),
+                error = painterResource(id = R.drawable.img_animals),
+            )
+        }
+
+        //line
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = LanPetDimensions.Spacing.medium)
+                .size(4.dp)
+                .background(GrayColor.Gray50)
+        )
+        FreeBoardCommentSection(
+            comments = state.comments
+        )
+        //line
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = LanPetDimensions.Spacing.medium)
+                .size(4.dp)
+                .background(GrayColor.Gray50)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        CommentInputSection()
+        Spacer(modifier = Modifier.navigationBarsPadding())
+    }
+}
+
 
 //TODO: Comment section UI
 @Composable
@@ -309,7 +291,6 @@ fun FreeBoardCommentSection(
 @Composable
 fun CommentInputSection() {
     var input by rememberSaveable() { mutableStateOf("") }
-    var showEmojiPicker by remember { mutableStateOf(false) }
 
     Column {
         Spacer(
@@ -365,27 +346,6 @@ fun CommentInputSection() {
                     colorFilter = ColorFilter.tint(color = GrayColor.Gray400),
                 )
             }
-
-//            AnimatedVisibility(
-//                visible = showEmojiPicker,
-//                enter = slideInVertically(initialOffsetY = { it }),
-//                exit = slideOutVertically(targetOffsetY = { it })
-//            ) {
-//                Surface(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(240.dp),
-//                    shadowElevation = 8.dp
-//                ) {
-//                    EmojiPicker(
-//                        onEmojiSelected = { emoji ->
-//                            input += emoji
-//                            showEmojiPicker = false
-//                        },
-//                        onDismiss = { showEmojiPicker = false }
-//                    )
-//                }
-//            }
         }
     }
 }

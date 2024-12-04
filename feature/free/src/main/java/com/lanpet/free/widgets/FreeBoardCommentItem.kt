@@ -142,19 +142,7 @@ fun FreeBoardCommentItem(
                         )
                     }
                 }
-//                LazyColumn(
-//                ) {
-//                    items(freeBoardComment.subComments.size) { comment ->
-//                        key(freeBoardComment.subComments.get(comment).id) {
-//                            FreeBoardCommentItem(
-//                                freeBoardComment.subComments.get(comment),
-//                                isSubComment = true
-//                            )
-//                        }
-//                    }
-//                }
             }
-
         }
     }
 }
