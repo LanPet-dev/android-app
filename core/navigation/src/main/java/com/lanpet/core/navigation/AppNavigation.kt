@@ -37,6 +37,7 @@ import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
+import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.MyProfileCreateProfile
@@ -188,7 +189,11 @@ fun AppNavigation() {
                         navController.navigateToMyPosts()
                     },
                 )
-                freeNavGraph()
+                freeNavGraph(
+                    onNavigateUp = {
+                        navController.navigateUp()
+                    }
+                )
                 wikiNavGraph()
             }
             settingsNavGraph(
@@ -199,6 +204,9 @@ fun AppNavigation() {
             myPostsNavGraph(
                 onNavigateUp = {
                     navController.navigateUp()
+                },
+                onNavigateToFreeBoardDetail = {
+                    navController.navigateToFreeBoardDetailScreen(it.toString())
                 }
             )
         }
