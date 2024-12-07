@@ -1,5 +1,8 @@
 package com.example.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class SocialAuthToken(
     val socialAuthType: SocialAuthType,
     val accessToken: String?,
@@ -10,6 +13,7 @@ data class SocialAuthToken(
     }
 }
 
+@Keep
 fun SocialAuthToken.fromString(): SocialAuthToken {
     val split = this.toString().split(" ")
     return SocialAuthToken(

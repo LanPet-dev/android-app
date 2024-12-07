@@ -1,7 +1,6 @@
 package com.lanpet.core.di
 
 import com.example.repository.AuthRepository
-import com.lanpet.AuthRepositoryImpl
 import com.lanpet.core.auth.AuthStateHolder
 import com.lanpet.service.AuthService
 import dagger.Module
@@ -12,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
+import com.lanpet.data.repository.AuthRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

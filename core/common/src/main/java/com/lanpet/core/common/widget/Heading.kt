@@ -9,6 +9,7 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 
+
 @Composable
 fun CommonHeading(
     modifier: Modifier = Modifier,

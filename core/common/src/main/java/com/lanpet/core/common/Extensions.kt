@@ -1,5 +1,6 @@
 package com.lanpet.core.common
 
+import androidx.annotation.Keep
 import androidx.compose.foundation.layout.WindowInsets
 import com.example.model.Post
 import java.text.SimpleDateFormat
@@ -7,11 +8,13 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@Keep
 fun WindowInsets.Companion.zero() = WindowInsets(
     0, 0, 0, 0
 )
 
 
+@Keep
 fun loremIpsum() = """
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
     Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
@@ -20,6 +23,7 @@ fun loremIpsum() = """
     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 """.trimIndent()
 
+@Keep
 fun createdAtPostString(
     createdAt: String,
     currentTime: Date = Date()

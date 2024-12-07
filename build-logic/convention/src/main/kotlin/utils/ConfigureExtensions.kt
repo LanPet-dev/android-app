@@ -32,11 +32,19 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
+
+        //TODO: move to specific module
         defaultConfig {
             buildConfigField(
                 "String",
                 "GOOGLE_OAUTH_CLIENT_KEY",
                 "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}"
+            )
+        }
+
+        kotlinOptions {
+            freeCompilerArgs = listOf(
+                "-Xstring-concat=inline"
             )
         }
 

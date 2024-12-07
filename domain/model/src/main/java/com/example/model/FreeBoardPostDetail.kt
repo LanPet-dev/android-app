@@ -1,5 +1,8 @@
 package com.example.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class FreeBoardPostDetail(
     val id: Int,
     val title: String,

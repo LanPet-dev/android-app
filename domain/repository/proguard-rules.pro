@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# @Inject 어노테이션이 있는 클래스 보존
+-keep class com.example.repository.* { *; }

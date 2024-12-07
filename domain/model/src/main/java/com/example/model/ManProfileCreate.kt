@@ -1,7 +1,9 @@
 package com.example.model
 
 import android.net.Uri
+import androidx.annotation.Keep
 
+@Keep
 data class ManProfileCreate(
     val profileImageUri: Uri?,
     val nickName: String,

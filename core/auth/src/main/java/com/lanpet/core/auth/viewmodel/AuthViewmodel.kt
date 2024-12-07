@@ -33,6 +33,7 @@ class AuthViewModel @Inject constructor(
                     )
                 )
             }.onFailure {
+                it.printStackTrace()
                 authStateHolder.updateState(
                     AuthState.Fail
                 )

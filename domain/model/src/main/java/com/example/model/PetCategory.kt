@@ -1,5 +1,8 @@
 package com.example.model
 
+import androidx.annotation.Keep
+
+@Keep
 enum class PetCategory(val value: String) {
     DOG("강아지"),
     CAT("고양이"),

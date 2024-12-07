@@ -14,7 +14,7 @@ import javax.inject.Inject
 class OauthDeepLinkHandlerActivity :
     ComponentActivity() {
 
-    val authViewModel: AuthViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     @Inject
     lateinit var authStateHolder: AuthStateHolder

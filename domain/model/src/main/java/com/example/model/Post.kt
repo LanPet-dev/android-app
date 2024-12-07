@@ -1,11 +1,13 @@
 package com.example.model
 
+import androidx.annotation.Keep
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@Keep
 data class Post(
     val id: Int,
     val petCategory: PetCategory,
@@ -36,6 +38,7 @@ data class Post(
         }
 }
 
+@Keep
 fun Post.createdAtPostString(
     currentTime: Date = Date()
 ): String {

@@ -9,6 +9,19 @@ plugins {
 
 android {
     namespace = "com.lanpet.core.common"
+
+
+    buildTypes {
+        // TODO("Satoshi"): Flavors (release, debug, qa, etc...)
+        release {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            consumerProguardFiles("consumer-rules.pro")
+        }
+    }
 }
 
 dependencies {

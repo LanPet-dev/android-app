@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# @Serializable 어노테이션이 있는 클래스 보존
+-keepclassmembers @kotlinx.serialization.Serializable class ** {
+    *;
+}

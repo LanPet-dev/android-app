@@ -1,5 +1,6 @@
 package com.lanpet.core.common.widget
 
+import androidx.annotation.Keep
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -26,6 +27,7 @@ import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
 
+@Keep
 enum class BottomNavItem(val title: String, val selectedIcon: Int, val unselectedIcon: Int) {
     Wiki(
         title = "반려백과",

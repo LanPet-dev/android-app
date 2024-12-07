@@ -1,10 +1,12 @@
 package com.example.model
 
+import androidx.annotation.Keep
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@Keep
 data class FreeBoardComment(
     val id: Int,
     val content: String,
@@ -18,6 +20,7 @@ data class FreeBoardComment(
     val subComments: List<FreeBoardComment> = emptyList()
 )
 
+@Keep
 fun FreeBoardComment.createdAtPostString(
     currentTime: Date = Date()
 ): String {

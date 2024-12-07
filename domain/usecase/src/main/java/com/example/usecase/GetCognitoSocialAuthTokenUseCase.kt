@@ -1,5 +1,6 @@
 package com.example.usecase
 
+import androidx.annotation.Keep
 import com.example.model.SocialAuthToken
 import com.example.repository.AuthRepository
 import javax.inject.Inject

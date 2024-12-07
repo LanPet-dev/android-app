@@ -1,5 +1,8 @@
 package com.example.model
 
+import androidx.annotation.Keep
+
+@Keep
 enum class Age(
     val value: String,
 ) {

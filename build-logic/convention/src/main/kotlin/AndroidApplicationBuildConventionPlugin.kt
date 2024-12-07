@@ -21,11 +21,12 @@ class AndroidApplicationBuildConventionPlugin : Plugin<Project> {
                 buildTypes {
                     // TODO("Satoshi"): Flavors (release, debug, qa, etc...)
                     release {
-                        isMinifyEnabled = false
+                        isMinifyEnabled = true
                         proguardFiles(
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro",
                         )
+                        signingConfig = signingConfigs.getByName("debug.key")
                     }
                     debug {
                         isMinifyEnabled = false

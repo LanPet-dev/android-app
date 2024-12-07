@@ -1,5 +1,8 @@
 package com.example.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class UserProfile(
     val id: String,
     val name: String,
