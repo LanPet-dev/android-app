@@ -3,12 +3,17 @@ package com.lanpet.core.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.model.AuthState
+import com.example.model.SocialAuthToken
 import com.example.usecase.GetAccountInformationUseCase
 import com.example.usecase.GetCognitoSocialAuthTokenUseCase
 import com.example.usecase.RegisterAccountUseCase
 import com.lanpet.core.manager.AuthStateHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,55 +28,47 @@ class AuthViewModel @Inject constructor(
 
     val authState = authStateHolder.authState
 
+    //TODO("Satoshi"): refactor to flow
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun handleAuthCode(code: String) {
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                getCognitoSocialAuthTokenUseCase(code)
-            }
+            flow {
+                val socialAuthToken = getCognitoSocialAuthTokenUseCase(code).getOrThrow()
 
-            result.onSuccess { socialAuthToken ->
                 authStateHolder.updateState(
                     AuthState.Loading(
                         socialAuthToken = socialAuthToken,
                     )
                 )
 
-                getAccountInformationUseCase().onSuccess {
-                    print("getAccountInformationUseCase success:: ${it.toString()}")
+                emit(socialAuthToken)
+            }.flatMapLatest { socialAuthToken ->
+                flow {
+                    val accountInformation = getAccountInformationUseCase().getOrThrow()
                     authStateHolder.updateState(
                         AuthState.Success(
                             socialAuthToken = socialAuthToken,
-                            account = it
+                            account = accountInformation
                         )
                     )
-                }.onFailure {
-                    println("getAccountInformationUseCase failed:: ${it.stackTraceToString()}")
-                    registerAccountUseCase().onSuccess {
-                        getAccountInformationUseCase().onSuccess { account ->
-                            authStateHolder.updateState(
-                                AuthState.Success(
-                                    socialAuthToken = socialAuthToken,
-                                    account = account
-                                )
-                            )
-                        }.onFailure {
-                            authStateHolder.updateState(
-                                AuthState.Fail
-                            )
-                        }
-                    }.onFailure {
-                        authStateHolder.updateState(
-                            AuthState.Fail
+                    emit(accountInformation)
+                }.catch {
+                    registerAccountUseCase().getOrThrow()
+                    val accountInformation = getAccountInformationUseCase().getOrThrow()
+
+                    authStateHolder.updateState(
+                        AuthState.Success(
+                            socialAuthToken = socialAuthToken,
+                            account = accountInformation
                         )
-                    }
+                    )
+                }.catch {
                     authStateHolder.updateState(
                         AuthState.Fail
                     )
                 }
-            }.onFailure {
-                authStateHolder.updateState(
-                    AuthState.Fail
-                )
+            }.collect{
+                // do nothing
             }
         }
     }
@@ -82,4 +79,3 @@ class AuthViewModel @Inject constructor(
         )
     }
 }
-
