@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.lanpet.core.auth.viewmodel.AuthViewModel
-import com.lanpet.core.auth.AuthStateHolder
+import com.lanpet.core.manager.AuthStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

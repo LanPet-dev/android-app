@@ -18,6 +18,9 @@ android {
 
 dependencies {
     implementation(libs.hilt.android)
+    implementation(projects.data.dto)
+    implementation(projects.domain.model)
+    implementation(projects.core.manager)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

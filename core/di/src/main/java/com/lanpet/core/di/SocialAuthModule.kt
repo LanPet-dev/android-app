@@ -2,7 +2,7 @@ package com.lanpet.core.di
 
 import com.example.repository.AuthRepository
 import com.lanpet.AuthRepositoryImpl
-import com.lanpet.core.auth.AuthStateHolder
+import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.service.AuthService
 import dagger.Module
 import dagger.Provides
@@ -17,7 +17,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AuthModule {
     @Provides
-    fun provideAuthService(@Named("BaseUrl") baseUrl: String): AuthService {
+    @Singleton
+    fun provideAuthService(@Named("AuthUrl") baseUrl: String): AuthService {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -26,6 +27,7 @@ object AuthModule {
     }
 
     @Provides
+    @Singleton
     fun provideAuthRepository(
         authService: AuthService
     ): AuthRepository {
@@ -33,7 +35,8 @@ object AuthModule {
     }
 
     @Provides
-    @Named("BaseUrl")
+    @Singleton
+    @Named("AuthUrl")
     fun provideBaseUrl(): String {
         return "https://lanpet.auth.ap-northeast-2.amazoncognito.com/"
     }

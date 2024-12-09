@@ -49,6 +49,7 @@ include(":core:designsystem")
 include(":core:di")
 include(":core:auth")
 include(":core:common")
+include(":core:manager")
 include(":app")
 
 // build-logic

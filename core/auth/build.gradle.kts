@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(projects.domain.model)
     implementation(projects.domain.usecase)
+    implementation(projects.core.manager)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     // aws amplify
     implementation(libs.amplify.authenticator)
