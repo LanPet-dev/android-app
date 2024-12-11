@@ -13,7 +13,6 @@ class AndroidApplicationBuildConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
-
             extensions.configure<ApplicationExtension> {
                 configureAndroidCommon(this)
 

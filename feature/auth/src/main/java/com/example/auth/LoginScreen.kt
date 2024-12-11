@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,7 +46,9 @@ fun LoginScreen() {
                 text = stringResource(R.string.heading_login_screen)
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxLarge))
-            ImageSection()
+            ImageSection(
+                imagePainter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_login1)
+            )
             Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(
                 shape = RoundedCornerShape(
@@ -87,12 +90,12 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 }
 
 @Composable
-fun ImageSection(modifier: Modifier = Modifier) {
+private fun ImageSection(modifier: Modifier = Modifier, imagePainter: Painter) {
     Image(
-        painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
+        painter = imagePainter,
         contentDescription = null,
         modifier = modifier.crop(
-            size = 160.dp
+            size = 300.dp
         )
     )
 }
