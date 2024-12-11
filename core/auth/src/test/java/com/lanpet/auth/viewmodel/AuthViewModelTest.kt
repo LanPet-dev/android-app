@@ -158,8 +158,6 @@ class AuthViewModelTest {
                 assert(viewModel.authState.value is AuthState.Fail)
             }
 
-            @Nested
-            inner class `유저정보를 등록`
 
             @Test
             fun `유저정보를 등록하고, 등록이 성공한 경우 인증상태는 AuthState_Success 을 반환한다`() = runTest {
@@ -169,17 +167,20 @@ class AuthViewModelTest {
                     emit(SocialAuthToken(SocialAuthType.GOOGLE, "accessToken", "refreshToken"))
                 }
 
-                coEvery { getAccountInformationUseCase() } returns flow {
-                    emit(
-                        Account(
-                            "accountId",
-                            "authId",
-                            authority = AuthorityType.USER,
-                            exitDate = null,
-                            exitReason = null
+                coEvery { getAccountInformationUseCase() } returnsMany listOf(
+                    flow {
+                        throw Exception("Failed to get account information")
+                    }, flow {
+                        emit(
+                            Account(
+                                "accountId",
+                                "authId",
+                                authority = AuthorityType.USER,
+                                exitDate = null,
+                                exitReason = null
+                            )
                         )
-                    )
-                }
+                    })
 
                 coEvery { registerAccountUseCase() } returns flow {
                     emit(AccountToken("accountId"))
