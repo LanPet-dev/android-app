@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -113,7 +114,9 @@ fun LandingPage1() {
             text = stringResource(R.string.text_landing_subheading_1),
         )
         Spacer(Modifier.weight(0.3f))
-        ImageSection()
+        ImageSection(
+            imagePainter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_landing2),
+        )
         Spacer(Modifier.weight(1f))
     }
 }
@@ -135,7 +138,9 @@ fun LandingPage2() {
             text = stringResource(R.string.text_landing_subheading_2),
         )
         Spacer(Modifier.weight(0.3f))
-        ImageSection()
+        ImageSection(
+           imagePainter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_landing1),
+        )
         Spacer(Modifier.weight(1f))
     }
 }
@@ -160,7 +165,9 @@ fun LandingPage3(navigateToLogin: () -> Unit) {
             text = stringResource(R.string.text_landing_subheading_3),
         )
         Spacer(Modifier.weight(0.3f))
-        ImageSection()
+        ImageSection(
+            imagePainter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_landing3),
+        )
         Spacer(Modifier.weight(1f))
     }
 }
@@ -186,12 +193,12 @@ fun SubHeading(modifier: Modifier = Modifier, text: String) {
 }
 
 @Composable
-fun ImageSection(modifier: Modifier = Modifier) {
+fun ImageSection(modifier: Modifier = Modifier, imagePainter: Painter) {
     Image(
-        painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
+        painter = imagePainter,
         contentDescription = null,
         modifier = modifier.crop(
-            size = 220.dp
+            size = 300.dp
         )
     )
 }

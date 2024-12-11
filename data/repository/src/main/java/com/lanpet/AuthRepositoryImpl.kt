@@ -6,13 +6,17 @@ import com.example.model.SocialAuthToken
 import com.example.model.SocialAuthType
 import com.example.repository.AuthRepository
 import com.lanpet.service.AuthService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService
 ) : AuthRepository {
-    override suspend fun getAuthToken(authCode: String): Result<SocialAuthToken> {
-        return try {
+    override suspend fun getAuthToken(authCode: String): Flow<SocialAuthToken> {
+        return flow {
             val response: TokenResponse = authService.getTokens(
                 grantType = "authorization_code",
                 code = authCode,
@@ -20,13 +24,11 @@ class AuthRepositoryImpl @Inject constructor(
                 redirectUri = "auth://lanpet.com"
             )
 
-            Result.success(
+            emit(
                 response.toSocialAuthToken(
                     socialAuthType = SocialAuthType.GOOGLE
                 )
             )
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }

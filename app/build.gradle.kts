@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.convention.hilt)
     alias(libs.plugins.convention.app.build)
     alias(libs.plugins.convention.lib.junit5)
+    alias(libs.plugins.convention.lib.coil)
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
 }
@@ -46,6 +47,7 @@ dependencies {
 
     implementation(projects.core.navigation)
     implementation(projects.core.di)
+    implementation(projects.core.manager)
     implementation(projects.core.auth)
     implementation(projects.core.common)
     implementation(projects.feature.auth)
@@ -70,9 +72,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.svg)
-    implementation(libs.coil.network.okhttp)
 
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
