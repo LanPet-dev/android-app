@@ -2,9 +2,9 @@ package com.lanpet.free.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.model.FreeBoardComment
-import com.example.model.FreeBoardPostDetail
-import com.example.model.PetCategory
+import com.lanpet.domain.model.FreeBoardComment
+import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.domain.model.PetCategory
 import com.lanpet.core.common.loremIpsum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

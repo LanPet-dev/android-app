@@ -1,14 +1,14 @@
 package com.lanpet.auth.viewmodel
 
-import com.example.model.AuthState
-import com.example.model.AuthorityType
-import com.example.model.SocialAuthToken
-import com.example.model.SocialAuthType
-import com.example.model.account.Account
-import com.example.model.account.AccountToken
-import com.example.usecase.GetAccountInformationUseCase
-import com.example.usecase.GetCognitoSocialAuthTokenUseCase
-import com.example.usecase.RegisterAccountUseCase
+import com.lanpet.domain.model.AuthState
+import com.lanpet.domain.model.AuthorityType
+import com.lanpet.domain.model.SocialAuthToken
+import com.lanpet.domain.model.SocialAuthType
+import com.lanpet.domain.model.account.Account
+import com.lanpet.domain.model.account.AccountToken
+import com.lanpet.domain.usecase.GetAccountInformationUseCase
+import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
+import com.lanpet.domain.usecase.RegisterAccountUseCase
 import com.lanpet.core.auth.viewmodel.AuthViewModel
 import com.lanpet.core.manager.AuthStateHolder
 import io.mockk.clearAllMocks

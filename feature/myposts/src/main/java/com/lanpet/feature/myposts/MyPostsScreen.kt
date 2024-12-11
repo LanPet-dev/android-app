@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.model.PetCategory
-import com.example.model.Post
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.Post
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem

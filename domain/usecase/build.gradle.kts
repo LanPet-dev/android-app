@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.usecase"
+    namespace = "com.lanpet.domain.usecase"
 }
 
 dependencies {

@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dto"
+    namespace = "com.lanpet.data.dto"
 }
 
 dependencies {

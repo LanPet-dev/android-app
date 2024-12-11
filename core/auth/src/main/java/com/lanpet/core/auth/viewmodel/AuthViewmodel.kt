@@ -2,16 +2,13 @@ package com.lanpet.core.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.model.AuthState
-import com.example.usecase.GetAccountInformationUseCase
-import com.example.usecase.GetCognitoSocialAuthTokenUseCase
-import com.example.usecase.RegisterAccountUseCase
+import com.lanpet.domain.model.AuthState
+import com.lanpet.domain.usecase.GetAccountInformationUseCase
+import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
+import com.lanpet.domain.usecase.RegisterAccountUseCase
 import com.lanpet.core.manager.AuthStateHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
@@ -28,31 +25,30 @@ class AuthViewModel @Inject constructor(
 
     val authState = authStateHolder.authState
 
-    //TODO("Satoshi"): refactor to flow
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @OptIn(FlowPreview::class)
     fun handleAuthCode(code: String) {
         viewModelScope.launch {
             try {
-                val token = getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).onEach {
-                    authStateHolder.updateState(
-                        AuthState.Loading(socialAuthToken = it)
-                    )
-                }.first()
+                val socialAuthToken =
+                    getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).single()
+                authStateHolder.updateState(
+                    AuthState.Loading(socialAuthToken = socialAuthToken)
+                )
 
                 try {
-                    val account = getAccountInformationUseCase().single()
+                    val account = getAccountInformationUseCase().timeout(5.seconds).single()
                     authStateHolder.updateState(
                         AuthState.Success(
-                            socialAuthToken = token,
+                            socialAuthToken = socialAuthToken,
                             account = account
                         )
                     )
                 } catch (e: Exception) {
-                    val accountToken = registerAccountUseCase().single()
-                    val account = getAccountInformationUseCase().single()
+                    val accountToken = registerAccountUseCase().timeout(5.seconds).single()
+                    val account = getAccountInformationUseCase().timeout(5.seconds).single()
                     authStateHolder.updateState(
                         AuthState.Success(
-                            socialAuthToken = token,
+                            socialAuthToken = socialAuthToken,
                             account = account
                         )
                     )

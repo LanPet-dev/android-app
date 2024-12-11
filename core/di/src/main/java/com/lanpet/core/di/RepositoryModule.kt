@@ -1,8 +1,8 @@
 package com.lanpet.core.di
 
-import com.example.repository.AccountRepository
-import com.lanpet.AccountRepositoryImpl
-import com.lanpet.service.AccountApiService
+import com.lanpet.domain.repository.AccountRepository
+import com.lanpet.data.repository.AccountRepositoryImpl
+import com.lanpet.data.service.AccountApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

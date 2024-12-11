@@ -9,8 +9,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
-import com.example.model.SocialAuthToken
-import com.example.model.SocialAuthType
+import com.lanpet.domain.model.SocialAuthToken
+import com.lanpet.domain.model.SocialAuthType
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException

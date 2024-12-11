@@ -2,8 +2,8 @@ package com.lanpet.profile.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.example.model.PetCategory
-import com.example.model.PetProfileCreate
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.PetProfileCreate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
