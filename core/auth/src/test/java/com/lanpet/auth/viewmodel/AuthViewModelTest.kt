@@ -23,6 +23,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -35,11 +36,8 @@ class AuthViewModelTest {
     private lateinit var getAccountInformationUseCase: GetAccountInformationUseCase
     private lateinit var authStateHolder: AuthStateHolder
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun beforeEach() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-
         getCognitoSocialAuthTokenUseCase = mockk<GetCognitoSocialAuthTokenUseCase>()
         registerAccountUseCase = mockk()
         getAccountInformationUseCase = mockk()
@@ -205,4 +203,14 @@ class AuthViewModelTest {
             }
         }
     }
+
+    companion object {
+        @OptIn(ExperimentalCoroutinesApi::class)
+        @BeforeAll
+        @JvmStatic
+        fun beforeAll() {
+            Dispatchers.setMain(UnconfinedTestDispatcher())
+        }
+    }
+
 }
