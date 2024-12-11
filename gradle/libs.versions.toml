@@ -23,6 +23,7 @@ kotlin = "2.0.21"
 coreKtx = "1.15.0"
 espressoCore = "3.6.1"
 kotlinGradlePlugin = "1.9.0"
+kotlinxCoroutinesTest = "1.7.3"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
@@ -31,6 +32,7 @@ material = "1.12.0"
 jetbrainsKotlinJvm = "2.0.21"
 jetbrainsKotlinSerialization = "2.0.21"
 constraintlayout = "2.2.0"
+mockkAndroid = "1.13.13"
 navigationFragmentKtx = "2.8.4"
 navigationUiKtx = "2.8.4"
 androidxLifecycle = "2.8.7"
@@ -47,6 +49,8 @@ junitJupiter = "5.10.2"
 androidJunit5 = "1.11.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+junitJupiterVersion = "5.8.1"
+turbine = "1.0.0"
 
 [libraries]
 android-test-core = { module = "de.mannodermaus.junit5:android-test-core", version.ref = "androidTestCore" }
@@ -84,6 +88,7 @@ junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.re
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterEngine" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterParams" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
@@ -98,11 +103,14 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 material3 = { module = "androidx.compose.material3:material3" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiterVersion" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 [plugins]
