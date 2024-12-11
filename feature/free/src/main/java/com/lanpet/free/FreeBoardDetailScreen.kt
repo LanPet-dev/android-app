@@ -327,14 +327,6 @@ fun CommentInputSection() {
                     unfocusedIndicatorColor = Color.Transparent,
                     cursorColor = GrayColor.Gray400,
                 ),
-                trailingIcon = {
-                    Image(
-                        imageVector = MyIconPack.My,
-                        contentDescription = "ic_my",
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(color = GrayColor.Gray400)
-                    )
-                },
             )
             IconButton(
                 onClick = {}
