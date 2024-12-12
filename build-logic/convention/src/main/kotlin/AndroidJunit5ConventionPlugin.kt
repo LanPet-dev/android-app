@@ -16,6 +16,9 @@ class AndroidJunit5ConventionPlugin : Plugin<Project> {
                 add("testImplementation", libs.findLibrary("junit.jupiter.params").get())
                 add("testRuntimeOnly", libs.findLibrary("junit.jupiter.engine").get())
                 add("testImplementation", libs.findLibrary("junit.jupiter").get())
+                add("testImplementation", libs.findLibrary("mockk.android").get())
+                add("testImplementation", libs.findLibrary("turbine").get())
+                add("testImplementation", project(":core:testing"))
             }
         }
     }
