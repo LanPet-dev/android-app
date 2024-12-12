@@ -1,4 +1,4 @@
-package com.lanpet.auth.viewmodel
+package com.lanpet.auth
 
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.manager.AuthStateHolder
