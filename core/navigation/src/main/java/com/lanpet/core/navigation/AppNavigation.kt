@@ -5,13 +5,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,18 +21,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.auth.navigation.authNavGraph
-import com.example.auth.navigation.navigateToLoginScreen
+import com.lanpet.feature.auth.navigation.authNavGraph
+import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.feature.myposts.navigation.myPostsNavGraph
+import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
+import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.MyProfileCreateProfile
@@ -181,14 +182,29 @@ fun AppNavigation() {
                     },
                     onNavigateToSettings = {
                         navController.navigateToSettings()
+                    },
+                    onNavigateToMyPosts = {
+                        navController.navigateToMyPosts()
+                    },
+                )
+                freeNavGraph(
+                    onNavigateUp = {
+                        navController.navigateUp()
                     }
                 )
-                freeNavGraph()
                 wikiNavGraph()
             }
             settingsNavGraph(
                 onNavigateUp = {
                     navController.navigateUp()
+                }
+            )
+            myPostsNavGraph(
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onNavigateToFreeBoardDetail = {
+                    navController.navigateToFreeBoardDetailScreen(it.toString())
                 }
             )
         }

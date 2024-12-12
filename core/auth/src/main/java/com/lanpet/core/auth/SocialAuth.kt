@@ -1,6 +1,6 @@
 package com.lanpet.core.auth
 
-import com.example.model.SocialAuthToken
+import com.lanpet.domain.model.SocialAuthToken
 
 abstract class SocialAuth {
     abstract suspend fun login(): SocialAuthToken?

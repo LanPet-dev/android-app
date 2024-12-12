@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import com.example.auth.navigation.navigateToLoginScreen
-import com.example.model.AuthState
+import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.domain.model.AuthState
 
 class NavigationHandler(
     private val navController: NavHostController
@@ -35,8 +35,8 @@ class NavigationHandler(
             return
         }
 
-        // Fail 또는 initial 상태에서 Success로 변경되었다면, 로그인 성공이므로 MainScreen 으로 이동
-        if (currentAuthState is AuthState.Success && (previousAuthState is AuthState.Fail || previousAuthState is AuthState.Initial)) {
+        // Fail, Loading 또는 initial 상태에서 Success로 변경되었다면, 로그인 성공이므로 MainScreen 으로 이동
+        if (currentAuthState is AuthState.Success && (previousAuthState is AuthState.Fail || previousAuthState is AuthState.Initial || previousAuthState is AuthState.Loading)) {
             navController.navigateToMainScreen()
         } else if (// 현재상태가 Success 상태에서 Initial 또는 Fail 상태로 변경되었다면 로그인 실패 또는 로그아웃 이므로 Login screen 으로 이동
             (currentAuthState is AuthState.Initial || currentAuthState is AuthState.Fail) && previousAuthState is AuthState.Success

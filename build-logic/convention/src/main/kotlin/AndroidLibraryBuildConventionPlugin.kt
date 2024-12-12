@@ -13,8 +13,10 @@ class AndroidLibraryBuildConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
             }
 
+
             extensions.configure<LibraryExtension> {
                 configureAndroidCommon(this)
+
 
                 buildTypes {
                     // TODO("Satoshi"): Flavors (release, debug, qa, etc...)

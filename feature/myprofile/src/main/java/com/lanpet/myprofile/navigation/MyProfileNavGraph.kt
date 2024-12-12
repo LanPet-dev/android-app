@@ -13,7 +13,8 @@ fun NavGraphBuilder.myProfileNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToMyProfileCreateProfile: () -> Unit,
     onNavigateToMyProfileAddProfile: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToMyPosts: () -> Unit,
 ) {
     navigation<MyProfileBaseRoute>(
         startDestination = MyProfile,
@@ -22,7 +23,8 @@ fun NavGraphBuilder.myProfileNavGraph(
         ) {
             MyProfileScreen(
                 onNavigateToProfileCreate = onNavigateToMyProfileCreateProfile,
-                onNavigateToSettings = onNavigateToSettings
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToMyPosts = onNavigateToMyPosts
             )
         }
         composable<MyProfileCreateProfile> {

@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.core.common)
     implementation(projects.feature.auth)
+    implementation(projects.feature.myposts)
     implementation(projects.feature.settings)
     implementation(projects.feature.landing)
     implementation(projects.feature.wiki)
@@ -39,8 +40,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.androidx.navigation.testing)
 }

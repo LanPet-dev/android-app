@@ -43,7 +43,8 @@ import com.lanpet.myprofile.R
 @Composable
 fun MyProfileScreen(
     onNavigateToProfileCreate: () -> Unit = { },
-    onNavigateToSettings: () -> Unit = { }
+    onNavigateToSettings: () -> Unit = { },
+    onNavigateToMyPosts: () -> Unit = { },
 ) {
     Scaffold(
         topBar = {
@@ -115,7 +116,9 @@ fun MyProfileScreen(
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_my_post),
-                        onclick = { }
+                        onclick = {
+                            onNavigateToMyPosts()
+                        }
                     )
                     ActivityListItem(
                         leadingContent = {

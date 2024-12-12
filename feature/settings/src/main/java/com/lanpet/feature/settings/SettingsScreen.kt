@@ -2,10 +2,12 @@ package com.lanpet.feature.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -15,13 +17,16 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.ArrowRight
+import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -34,6 +39,8 @@ import com.lanpet.core.designsystem.theme.customTypography
 fun SettingsScreen(
     onNavigateUp: (() -> Unit)? = null,
 ) {
+    val authViewModel = LocalAuthViewModel.current
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -75,6 +82,17 @@ fun SettingsScreen(
                             )
                         },
                         trailingContent = {
+                            Box(
+                                modifier = Modifier
+                                    .clip(
+                                        shape = CircleShape
+                                    )
+                                    .clickable {
+                                        authViewModel.logout()
+                                    }
+                            ) {
+                                CommonChip(stringResource(R.string.button_logout))
+                            }
                         }
                     )
                 }

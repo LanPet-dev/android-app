@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lanpet.service"
+    namespace = "com.lanpet.data.service"
 }
 
 dependencies {
@@ -16,7 +16,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+    implementation(projects.core.manager)
     androidTestImplementation(libs.androidx.espresso.core)
 }

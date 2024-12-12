@@ -18,6 +18,9 @@ android {
 
 dependencies {
     implementation(libs.hilt.android)
+    implementation(projects.data.dto)
+    implementation(projects.domain.model)
+    implementation(projects.core.manager)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -28,8 +31,6 @@ dependencies {
     implementation(projects.data.service)
     implementation(projects.domain.repository)
     implementation(projects.data.repository)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.hilt.testing)
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,14 +78,13 @@ private fun LanPetTopAppBarPreview() {
                 title = { Text("Title") }
             )
             LanPetTopAppBar(
-                navigationIcon = { Icon(Icons.Default.ArrowBack, contentDescription = "Close") },
+                navigationIcon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close") },
                 title = { Text("Title") }
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @PreviewLightDark
 @Composable
 private fun LanPetTopAppBarWithBackPreview() {

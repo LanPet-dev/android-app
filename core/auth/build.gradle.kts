@@ -8,17 +8,14 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.convention.hilt)
     alias(libs.plugins.convention.feature)
+    alias(libs.plugins.android.junit5)
+    alias(libs.plugins.convention.lib.junit5)
 }
-
 
 
 android {
     namespace = "com.lanpet.core.auth"
 
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
 
     buildFeatures {
         compose = true
@@ -29,12 +26,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(projects.domain.model)
     implementation(projects.domain.usecase)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-    // aws amplify
-    implementation(libs.amplify.authenticator)
-
+    implementation(projects.core.manager)
+    implementation(projects.core.testing)
     implementation(projects.domain.model)
 
+    implementation(libs.androidx.browser)
     //google auth
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
@@ -43,7 +39,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.hilt.testing)
+    testImplementation(libs.turbine)
+    testImplementation(projects.domain.repository)
 }

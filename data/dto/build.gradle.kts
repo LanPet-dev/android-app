@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dto"
+    namespace = "com.lanpet.data.dto"
 }
 
 dependencies {
@@ -15,7 +15,5 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

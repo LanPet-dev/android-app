@@ -34,6 +34,7 @@ object LanPetDimensions {
     }
 
     object Spacing {
+        val xxxxSmall = 2.dp
         val xxxSmall = 2.dp
         val xxSmall = 4.dp
         val xSmall = 8.dp

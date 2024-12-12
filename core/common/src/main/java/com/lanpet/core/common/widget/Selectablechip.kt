@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,11 @@ fun SelectableChip(
                     if (isSelected) MaterialTheme.customColorScheme.selectedContainer else GrayColor.LIGHT,
                 ),
                 shape =
+                RoundedCornerShape(
+                    LanPetDimensions.Corner.small,
+                ),
+            )
+            .clip(
                 RoundedCornerShape(
                     LanPetDimensions.Corner.small,
                 ),

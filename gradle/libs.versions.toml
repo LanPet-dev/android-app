@@ -2,6 +2,9 @@
 agp = "8.7.2"
 amplifyAuthenticator = "1.4.0"
 amplifyCore = "2.24.0"
+androidJunit5Version = "1.9.3.0"
+androidTestRunner = "1.9.3.0"
+androidTestCore = "1.9.3.0"
 browser = "1.8.0"
 coilCompose = "2.7.0"
 coilNetworkOkhttp = "3.0.3"
@@ -14,12 +17,15 @@ desugar_jdk_libs = "2.1.3"
 googleid = "1.1.1"
 gradle = "8.1.4"
 hiltAndroid = "2.52"
+junitBom = "5.11.2"
+junitJupiterApi = "5.11.2"
+junitJupiterEngine = "5.11.2"
+junitJupiterParams = "5.11.2"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinGradlePlugin = "1.9.0"
+kotlinxCoroutinesTest = "1.7.3"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
@@ -28,6 +34,7 @@ material = "1.12.0"
 jetbrainsKotlinJvm = "2.0.21"
 jetbrainsKotlinSerialization = "2.0.21"
 constraintlayout = "2.2.0"
+mockkAndroid = "1.13.13"
 navigationFragmentKtx = "2.8.4"
 navigationUiKtx = "2.8.4"
 androidxLifecycle = "2.8.7"
@@ -38,10 +45,19 @@ kotlinxSerialization = "1.7.3"
 awsCore = "2.24.0"
 activity = "1.9.3"
 retrofit = "2.11.0"
-animationCore = "1.0.1"
+animationCore = "1.7.5"
 composeMaterial = "1.4.0"
+junitJupiter = "5.11.2"
+androidJunit5 = "1.11.2.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+junitJupiterVersion = "5.10.2"
+turbine = "1.0.0"
 
 [libraries]
+android-junit5 = { module = "de.mannodermaus.gradle.plugins:android-junit5", version.ref = "androidJunit5Version" }
+android-test-core = { module = "de.mannodermaus.junit5:android-test-core", version.ref = "androidTestCore" }
+android-test-runner = { module = "de.mannodermaus.junit5:android-test-runner", version.ref = "androidTestRunner" }
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
@@ -60,8 +76,6 @@ gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltAndroid" }
-junit = { group = "junit", name = "junit", version = "4.13.2" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -71,10 +85,14 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junitBom" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterEngine" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterParams" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
@@ -89,8 +107,13 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 material3 = { module = "androidx.compose.material3:material3" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 [plugins]
@@ -100,6 +123,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 jetbrains-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "jetbrainsKotlinSerialization" }
+android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "androidJunit5" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "comGoogleDevtoolsKspGradlePlugin" }
 
@@ -111,3 +135,4 @@ convention-app-build = { id = "convention.android.app.build" }
 convention-lib-build = { id = "convention.android.lib.build" }
 convention-lib-coil = { id = "convention.android.lib.coil" }
 convention-lib-retrofit = { id = "convention.android.lib.retrofit" }
+convention-lib-junit5 = { id = "convention.android.test.junit5" }
