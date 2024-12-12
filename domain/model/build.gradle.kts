@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.model"
+    namespace = "com.lanpet.domain.model"
 
 }
 

@@ -1,9 +1,9 @@
 package com.lanpet.core.di
 
-import com.example.repository.AuthRepository
-import com.lanpet.AuthRepositoryImpl
+import com.lanpet.domain.repository.AuthRepository
+import com.lanpet.data.repository.AuthRepositoryImpl
 import com.lanpet.core.manager.AuthStateHolder
-import com.lanpet.service.AuthService
+import com.lanpet.data.service.AuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

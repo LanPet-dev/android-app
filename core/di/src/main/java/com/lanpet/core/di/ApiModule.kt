@@ -1,10 +1,10 @@
 package com.lanpet.core.di
 
 import com.lanpet.core.manager.AuthStateHolder
-import com.lanpet.service.AccountApiClient
-import com.lanpet.service.AccountApiService
-import com.lanpet.service.AuthApiClient
-import com.lanpet.service.BaseApiService
+import com.lanpet.data.service.AccountApiClient
+import com.lanpet.data.service.AccountApiService
+import com.lanpet.data.service.AuthApiClient
+import com.lanpet.data.service.BaseApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import com.example.auth.navigation.navigateToLoginScreen
-import com.example.model.AuthState
+import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.domain.model.AuthState
 
 class NavigationHandler(
     private val navController: NavHostController

@@ -50,6 +50,7 @@ include(":core:di")
 include(":core:auth")
 include(":core:common")
 include(":core:manager")
+include(":core:testing")
 include(":app")
 
 // build-logic

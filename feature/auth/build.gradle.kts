@@ -8,17 +8,17 @@ plugins {
 }
 
 android {
-    namespace = "com.example.auth"
+    namespace = "com.lanpet.feature.auth"
 
     buildFeatures {
         compose = true
     }
-}
 
-dependencies {
-    implementation(projects.domain.model)
-    implementation(projects.domain.usecase)
-    implementation(projects.domain.repository)
-    implementation(projects.core.auth)
-    implementation(libs.androidx.lifecycle.viewmodel.android)
-}
+    dependencies {
+        implementation(projects.domain.model)
+        implementation(projects.domain.usecase)
+        implementation(projects.domain.repository)
+        implementation(projects.core.auth)
+        implementation(libs.androidx.lifecycle.viewmodel.android)
+    }
+    }

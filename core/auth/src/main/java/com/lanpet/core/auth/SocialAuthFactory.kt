@@ -1,7 +1,7 @@
 package com.lanpet.core.auth
 
 import android.content.Context
-import com.example.model.SocialAuthType
+import com.lanpet.domain.model.SocialAuthType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

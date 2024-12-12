@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.repository"
+    namespace = "com.lanpet.domain.repository"
 }
 
 dependencies {

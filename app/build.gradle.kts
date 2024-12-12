@@ -50,6 +50,7 @@ dependencies {
     implementation(projects.core.manager)
     implementation(projects.core.auth)
     implementation(projects.core.common)
+    implementation(projects.core.testing)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
     implementation(projects.feature.profile)

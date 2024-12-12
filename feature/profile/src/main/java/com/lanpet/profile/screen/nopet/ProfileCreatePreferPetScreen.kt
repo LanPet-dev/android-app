@@ -19,7 +19,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.example.model.PetCategory
+import com.lanpet.domain.model.PetCategory
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel

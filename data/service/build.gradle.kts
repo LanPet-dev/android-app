@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lanpet.service"
+    namespace = "com.lanpet.data.service"
 }
 
 dependencies {
