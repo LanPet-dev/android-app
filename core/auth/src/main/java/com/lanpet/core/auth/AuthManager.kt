@@ -8,6 +8,8 @@ import com.lanpet.domain.usecase.RegisterAccountUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
@@ -28,7 +30,7 @@ class AuthManager @Inject constructor(
 
     @OptIn(FlowPreview::class)
     fun handleAuthCode(code: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             try {
                 val socialAuthToken =
                     getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).first()
