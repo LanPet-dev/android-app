@@ -43,6 +43,7 @@ import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
 import com.lanpet.myprofile.navigation.navigateToMyProfileCreateProfile
+import com.lanpet.myprofile.navigation.navigateToMyProfileModifyProfile
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanBio
@@ -186,6 +187,9 @@ fun AppNavigation() {
                     onNavigateToMyPosts = {
                         navController.navigateToMyPosts()
                     },
+                    onNavigateToMyProfileModifyProfile = {
+                        navController.navigateToMyProfileModifyProfile()
+                    }
                 )
                 freeNavGraph(
                     onNavigateUp = {

@@ -49,7 +49,8 @@ import com.lanpet.myprofile.R
 @Composable
 fun MyProfileCreateProfileScreen(
     onNavigateUp: (() -> Unit)? = null,
-    onNavigateToAddProfile: () -> Unit = {}
+    onNavigateToAddProfile: () -> Unit = {},
+    onNavigateToModifyProfile: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -94,11 +95,9 @@ fun MyProfileCreateProfileScreen(
                     title = stringResource(R.string.heading_hint_my_profile_create),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
-                ProfileListCard(
-                    onModifyClicked = onNavigateToAddProfile
-                )
+                ProfileListCard { onNavigateToModifyProfile() }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                AddProfileCard()
+                AddProfileCard { onNavigateToAddProfile() }
             }
         }
     }
@@ -108,11 +107,9 @@ fun MyProfileCreateProfileScreen(
 fun AddProfileCard(
     onAddProfileClicked: () -> Unit = {}
 ) {
-    val onAddProfileClickedCallback = remember { { onAddProfileClicked() } }
-
     Surface(
         modifier = Modifier
-            .clickable { onAddProfileClickedCallback() }
+            .clickable { onAddProfileClicked() }
             .commonBorder(
                 shape = RoundedCornerShape(
                     LanPetDimensions.Corner.small
@@ -150,8 +147,6 @@ fun AddProfileCard(
 fun ProfileListCard(
     onModifyClicked: () -> Unit
 ) {
-    val onModifyClickedCallback = remember { { onModifyClicked() } }
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,7 +195,7 @@ fun ProfileListCard(
                             ),
                         )
                         .clip(RoundedCornerShape(LanPetDimensions.Corner.xSmall))
-                        .clickable { onModifyClickedCallback() }
+                        .clickable { onModifyClicked() }
                         .padding(
                             horizontal = LanPetDimensions.Margin.medium,
                             vertical = LanPetDimensions.Margin.xSmall,
@@ -232,7 +227,7 @@ fun PreviewAddProfileCard() {
 @Composable
 fun PreviewMyProfileCreate() {
     LanPetAppTheme {
-        ProfileListCard( ) {}
+        ProfileListCard() {}
     }
 }
 
@@ -241,7 +236,7 @@ fun PreviewMyProfileCreate() {
 fun MyProfileCreatePreview() {
     LanPetAppTheme {
         MyProfileCreateProfileScreen(
-            onNavigateUp = {  },
+            onNavigateUp = { },
         ) {}
     }
 }

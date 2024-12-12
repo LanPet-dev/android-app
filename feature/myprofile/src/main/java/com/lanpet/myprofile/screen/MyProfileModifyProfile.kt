@@ -28,9 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.domain.model.Age
 import com.lanpet.core.auth.LocalAuthViewModel
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.Close
@@ -43,14 +41,14 @@ import com.lanpet.core.common.widget.ProfileImageWithPicker
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.domain.model.Age
 import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileAddProfileScreen(
+fun MyProfileModifyProfileScreen(
     onClose: () -> Unit = { }
 ) {
     val authViewModel = LocalAuthViewModel.current
@@ -76,7 +74,7 @@ fun MyProfileAddProfileScreen(
                 },
                 title = {
                     CommonAppBarTitle(
-                        title = stringResource(R.string.title_appbar_my_profile_add_profile),
+                        title = stringResource(R.string.title_appbar_my_profile_modify_profile),
                     )
                 },
             )
@@ -246,12 +244,4 @@ private fun NickNameSection() {
         onValueChange = { },
         placeholder = stringResource(R.string.nickname_placeholder_my_profile_add_profile),
     )
-}
-
-@Composable
-@PreviewLightDark
-fun MyProfileAddProfilePreview() {
-    LanPetAppTheme {
-        MyProfileAddProfileScreen()
-    }
 }
