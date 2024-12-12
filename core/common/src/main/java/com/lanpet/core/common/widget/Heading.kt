@@ -1,11 +1,17 @@
 package com.lanpet.core.common.widget
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.GrayColor
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 
@@ -62,4 +68,22 @@ fun CommonAppBarTitle(
         title,
         modifier = modifier,
     )
+}
+
+@Composable
+@PreviewLightDark
+fun CommonHeadingPreview() {
+    LanPetAppTheme {
+        Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonHeading(title = "Heading")
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonHeadingHint(title = "Heading Hint")
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonSubHeading1(title = "Sub Heading 1")
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonAppBarTitle(title = "App Bar Title")
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
 }

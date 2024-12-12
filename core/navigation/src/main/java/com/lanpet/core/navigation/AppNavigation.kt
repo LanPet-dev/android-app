@@ -5,8 +5,10 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
@@ -130,89 +134,94 @@ fun AppNavigation() {
             }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Box(
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = Landing,
-            modifier = Modifier.weight(1f)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            landingNavGraph {
-                navController.navigateToLoginScreen()
-            }
-
-            authNavGraph()
-
-            profileNavGraph(
-                onNavigateToYesPetNameScreen = {
-                    navController.navigateToProfileCreateYesPetName()
-                },
-                onNavigateToNoPetNameScreen = {
-                    navController.navigateToProfileCreateNoPetName()
-                },
-                onNavigateToYesPetIntroScreen = {
-                    navController.navigateToProfileIntroYesPet()
-                },
-                onNavigateToNoPetIntroScreen = {
-                    navController.navigateToProfileIntroNoPet()
-                },
-                onNavigateToHumanBio = { navController.navigateToProfileCreateHumanBio() },
-                onNavigateToPetBio = { navController.navigateToProfileCreatePetBio() },
-                onNavigateToPetCategory = { navController.navigateToProfileCreatePetCategory() },
-                onNavigateToPetSpecies = { navController.navigateToProfileCreatePetSpecies() },
-                onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
-                onNavigateToDone = { navController.navigateToProfileCreateDone() },
-                onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
-                onNavigateToMain = { navController.navigateToMainScreen() },
-                navController = navController
-            )
-
-            navigation<MainNavigationRoute>(
-                startDestination = MyProfileBaseRoute,
+            NavHost(
+                navController = navController,
+                startDestination = Landing,
+                modifier = Modifier.weight(1f)
             ) {
-                myProfileNavGraph(
+                landingNavGraph {
+                    navController.navigateToLoginScreen()
+                }
+
+                authNavGraph()
+
+                profileNavGraph(
+                    onNavigateToYesPetNameScreen = {
+                        navController.navigateToProfileCreateYesPetName()
+                    },
+                    onNavigateToNoPetNameScreen = {
+                        navController.navigateToProfileCreateNoPetName()
+                    },
+                    onNavigateToYesPetIntroScreen = {
+                        navController.navigateToProfileIntroYesPet()
+                    },
+                    onNavigateToNoPetIntroScreen = {
+                        navController.navigateToProfileIntroNoPet()
+                    },
+                    onNavigateToHumanBio = { navController.navigateToProfileCreateHumanBio() },
+                    onNavigateToPetBio = { navController.navigateToProfileCreatePetBio() },
+                    onNavigateToPetCategory = { navController.navigateToProfileCreatePetCategory() },
+                    onNavigateToPetSpecies = { navController.navigateToProfileCreatePetSpecies() },
+                    onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
+                    onNavigateToDone = { navController.navigateToProfileCreateDone() },
+                    onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
+                    onNavigateToMain = { navController.navigateToMainScreen() },
+                    navController = navController
+                )
+
+                navigation<MainNavigationRoute>(
+                    startDestination = MyProfileBaseRoute,
+                ) {
+                    myProfileNavGraph(
+                        onNavigateUp = {
+                            navController.navigateUp()
+                        },
+                        onNavigateToMyProfileCreateProfile = {
+                            navController.navigateToMyProfileCreateProfile()
+                        },
+                        onNavigateToMyProfileAddProfile = {
+                            navController.navigateToMyProfileAddProfile()
+                        },
+                        onNavigateToSettings = {
+                            navController.navigateToSettings()
+                        },
+                        onNavigateToMyPosts = {
+                            navController.navigateToMyPosts()
+                        },
+                        onNavigateToMyProfileModifyProfile = {
+                            navController.navigateToMyProfileModifyProfile()
+                        }
+                    )
+                    freeNavGraph(
+                        onNavigateUp = {
+                            navController.navigateUp()
+                        }
+                    )
+                    wikiNavGraph()
+                }
+                settingsNavGraph(
+                    onNavigateUp = {
+                        navController.navigateUp()
+                    }
+                )
+                myPostsNavGraph(
                     onNavigateUp = {
                         navController.navigateUp()
                     },
-                    onNavigateToMyProfileCreateProfile = {
-                        navController.navigateToMyProfileCreateProfile()
-                    },
-                    onNavigateToMyProfileAddProfile = {
-                        navController.navigateToMyProfileAddProfile()
-                    },
-                    onNavigateToSettings = {
-                        navController.navigateToSettings()
-                    },
-                    onNavigateToMyPosts = {
-                        navController.navigateToMyPosts()
-                    },
-                    onNavigateToMyProfileModifyProfile = {
-                        navController.navigateToMyProfileModifyProfile()
+                    onNavigateToFreeBoardDetail = {
+                        navController.navigateToFreeBoardDetailScreen(it.toString())
                     }
                 )
-                freeNavGraph(
-                    onNavigateUp = {
-                        navController.navigateUp()
-                    }
-                )
-                wikiNavGraph()
             }
-            settingsNavGraph(
-                onNavigateUp = {
-                    navController.navigateUp()
-                }
-            )
-            myPostsNavGraph(
-                onNavigateUp = {
-                    navController.navigateUp()
-                },
-                onNavigateToFreeBoardDetail = {
-                    navController.navigateToFreeBoardDetailScreen(it.toString())
-                }
-            )
         }
         AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
             visible = shouldShowBottomBar,
             enter = fadeIn(
                 // NavHost의 기본 애니메이션 duration과 easing 매칭

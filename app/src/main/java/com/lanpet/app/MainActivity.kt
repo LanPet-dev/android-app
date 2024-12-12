@@ -31,24 +31,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        println("MainActivity onResume")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        println("MainActivity onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        println("MainActivity onDestroy")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        println("MainActivity onPause")
-    }
 }
