@@ -71,6 +71,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
+import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.lib.coil)
+    alias(libs.plugins.convention.lib.junit5)
 }
 
 android {
@@ -20,5 +21,7 @@ android {
 
 dependencies {
     implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
