@@ -25,7 +25,7 @@ import com.lanpet.feature.auth.navigation.authNavGraph
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.example.landing.navigation.Landing
 import com.example.landing.navigation.landingNavGraph
-import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.drop
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val authViewModel = LocalAuthViewModel.current
+    val authViewModel = LocalAuthManager.current
 
     val authState = authViewModel.authState.collectAsState()
 

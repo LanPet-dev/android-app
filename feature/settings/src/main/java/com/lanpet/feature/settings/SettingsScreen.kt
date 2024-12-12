@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.ArrowRight
@@ -39,7 +39,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 fun SettingsScreen(
     onNavigateUp: (() -> Unit)? = null,
 ) {
-    val authViewModel = LocalAuthViewModel.current
+    val authViewModel = LocalAuthManager.current
 
     Scaffold(
         topBar = {

@@ -1,5 +1,7 @@
 package com.lanpet.auth.viewmodel
 
+import com.lanpet.core.auth.AuthManager
+import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.model.AuthorityType
 import com.lanpet.domain.model.SocialAuthToken
@@ -9,8 +11,6 @@ import com.lanpet.domain.model.account.AccountToken
 import com.lanpet.domain.usecase.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.RegisterAccountUseCase
-import com.lanpet.core.auth.viewmodel.AuthViewModel
-import com.lanpet.core.manager.AuthStateHolder
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,8 +28,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class AuthViewModelTest {
-    private lateinit var viewModel: AuthViewModel
+class AuthManagerTest {
+    private lateinit var authManager: AuthManager
 
     private lateinit var getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase
     private lateinit var registerAccountUseCase: RegisterAccountUseCase
@@ -43,7 +43,7 @@ class AuthViewModelTest {
         getAccountInformationUseCase = mockk()
         authStateHolder = AuthStateHolder()
 
-        viewModel = AuthViewModel(
+        authManager = AuthManager(
             getCognitoSocialAuthTokenUseCase,
             registerAccountUseCase,
             getAccountInformationUseCase,
@@ -61,10 +61,10 @@ class AuthViewModelTest {
     fun `logout 시, 인증상태는 AuthState_Initial 을 반환한다`() {
         // Given
         // When
-        viewModel.logout()
+        authManager.logout()
 
         // Then
-        assert(viewModel.authState.value is AuthState.Initial)
+        assert(authManager.authState.value is AuthState.Initial)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -77,13 +77,13 @@ class AuthViewModelTest {
         }
 
         // When
-        viewModel.handleAuthCode(authCode)
+        authManager.handleAuthCode(authCode)
         advanceUntilIdle()
 
         // Then
         coVerify(exactly = 1) {
             getCognitoSocialAuthTokenUseCase(authCode)
-            assert(viewModel.authState.value is AuthState.Fail)
+            assert(authManager.authState.value is AuthState.Fail)
         }
     }
 
@@ -111,7 +111,7 @@ class AuthViewModelTest {
             }
 
             // When
-            viewModel.handleAuthCode(authCode)
+            authManager.handleAuthCode(authCode)
             advanceUntilIdle()
 
             // Then
@@ -120,7 +120,7 @@ class AuthViewModelTest {
                 getAccountInformationUseCase()
             }
 
-            assert(viewModel.authState.value is AuthState.Success)
+            assert(authManager.authState.value is AuthState.Success)
         }
 
         @OptIn(ExperimentalCoroutinesApi::class)
@@ -143,7 +143,7 @@ class AuthViewModelTest {
                 }
 
                 // When
-                viewModel.handleAuthCode(authCode)
+                authManager.handleAuthCode(authCode)
                 advanceUntilIdle()
 
                 // Then
@@ -153,7 +153,7 @@ class AuthViewModelTest {
                     registerAccountUseCase()
                 }
 
-                assert(viewModel.authState.value is AuthState.Fail)
+                assert(authManager.authState.value is AuthState.Fail)
             }
 
 
@@ -185,7 +185,7 @@ class AuthViewModelTest {
                 }
 
                 // When
-                viewModel.handleAuthCode(authCode)
+                authManager.handleAuthCode(authCode)
                 advanceUntilIdle()
 
 
@@ -199,7 +199,7 @@ class AuthViewModelTest {
                     registerAccountUseCase()
                 }
 
-                assert(viewModel.authState.value is AuthState.Success)
+                assert(authManager.authState.value is AuthState.Success)
             }
         }
     }
