@@ -5,7 +5,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-data class Post(
+data class FreeBoardPost(
     val id: Int,
     val petCategory: PetCategory,
     val title: String,
@@ -35,7 +35,7 @@ data class Post(
         }
 }
 
-fun Post.createdAtPostString(
+fun FreeBoardPost.createdAtPostString(
     currentTime: Date = Date()
 ): String {
     try {
