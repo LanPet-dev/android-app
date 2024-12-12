@@ -13,9 +13,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.domain.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(projects.core.common)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.mockk.android)
     testImplementation(libs.kotlinx.coroutines.test)
