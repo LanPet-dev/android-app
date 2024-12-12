@@ -5,6 +5,8 @@ import com.lanpet.data.service.AccountApiClient
 import com.lanpet.data.service.AccountApiService
 import com.lanpet.data.service.AuthApiClient
 import com.lanpet.data.service.BaseApiService
+import com.lanpet.data.service.FreeBoardApiClient
+import com.lanpet.data.service.FreeBoardApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,6 +57,23 @@ object ApiModule {
         accountApiClient: AccountApiClient
     ): AccountApiService {
         return accountApiClient.getService()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFreeBoardApiClient(
+        @Named("BaseApiUrl") baseApiUrl: String,
+        authStateHolder: AuthStateHolder,
+    ): FreeBoardApiClient {
+        return FreeBoardApiClient(baseApiUrl, authStateHolder)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFreeBoardApiService(
+        freeBoardApiClient: FreeBoardApiClient
+    ): FreeBoardApiService {
+        return freeBoardApiClient.getService()
     }
 
     @Singleton
