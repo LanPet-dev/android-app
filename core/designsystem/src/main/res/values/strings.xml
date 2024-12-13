@@ -2,5 +2,4 @@
     <string name="next_button_string">다음</string>
     <string name="prev_button_string">뒤로</string>
     <string name="start_button_string">시작하기</string>
-    <string name="body_freeboard_no_comment">아직 작성된 댓글이 없어요🥲\n먼저 댓글을 남겨보세요!</string>
 </resources>

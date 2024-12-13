@@ -53,25 +53,23 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
-import com.lanpet.core.common.myiconpack.My
 import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import kotlinx.coroutines.flow.flow
+import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,7 +152,7 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                state.postDetail?.petCategory?.let {
+                state.postDetail.petCategory?.let {
                     Text(
                         it.value,
                         style = MaterialTheme.customTypography().body3RegularSingle
@@ -181,7 +179,7 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                     )
                 } else {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_bottom_nav_mypage_unselected),
+                        painter = painterResource(id = DS_R.drawable.ic_bottom_nav_mypage_unselected),
                         contentDescription = "ic_profile",
                         modifier = Modifier
                             .size(24.dp)
@@ -227,7 +225,7 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                 contentDescription = "post_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth(),
-                error = painterResource(id = R.drawable.img_animals),
+                error = painterResource(id = DS_R.drawable.img_animals),
             )
         }
 
@@ -272,7 +270,7 @@ fun FreeBoardCommentSection(
     )
     if (comments.isEmpty()) {
         Text(
-            stringResource(R.string.body_freeboard_no_comment),
+            stringResource(R.string.body_no_comment_freeboard_detail),
             style = MaterialTheme.customTypography().body2RegularSingle.copy(
                 color = GrayColor.Gray400
             ),
@@ -311,17 +309,17 @@ fun CommentInputSection() {
                 onValueChange = {
                     input = it
                 },
-                placeholder = { Text("답글을 입력해주세요") },
+                placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = LanPetDimensions.Spacing.small)
                     .clip(shape = CircleShape),
                 textStyle = MaterialTheme.customTypography().body2RegularSingle.copy(
-                    color = GrayColor.Gray500
+                    color = GrayColor.Gray400
                 ),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = WhiteColor.MEDIUM,
-                    unfocusedContainerColor = WhiteColor.MEDIUM,
+                    focusedContainerColor = GrayColor.Gray100,
+                    unfocusedContainerColor = GrayColor.Gray100,
                     unfocusedPlaceholderColor = GrayColor.Gray400,
                     focusedPlaceholderColor = GrayColor.Gray400,
                     focusedIndicatorColor = Color.Transparent,

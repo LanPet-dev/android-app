@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,12 +35,25 @@ object PrimaryColor {
     val PRIMARY = Color(0xff6B5CFF)
 }
 
+object VioletColor {
+    val Violet50 = Color(0xffEDEFFF)
+    val Violet100 = Color(0xffDDE1FF)
+    val Violet200 = Color(0xffC2C8FF)
+    val Violet300 = Color(0xff9CA3FE)
+    val Violet400 = Color(0xff7975FF)
+    val Violet500 = Color(0xff6B5CFF)
+    val Violet600 = Color(0xff5736F5)
+    val Violet700 = Color(0xff3E25AE)
+    val Violet800 = Color(0xff3E25AE)
+    val Violet900 = Color(0xff342689)
+}
+
 object SubPrimaryColor {
-    val VIOLET50 = Color(0xffEDEFFF)
+    val Sub = Color(0xffFF5858)
 }
 
 object BlackColor {
-    val Black = Color(0xFF000000)
+    val Black = Color(0xff1c1d23)
     val HARD = Color(0xff000000)
     val MEDIUM = Color(0xff101010)
 }
@@ -48,16 +62,17 @@ object GrayColor {
     val LIGHT = Color(0xffDBDBDB)
     val LIGHT_MEDIUM = Color(0xffBFBFBF)
     val MEDIUM = Color(0xff555555)
-    val Gray900 = Color(0xFF0B0B0C)
-    val Gray800 = Color(0xFF121214)
-    val Gray700 = Color(0xFF20202F)
-    val Gray600 = Color(0xFF2C2C34)
-    val Gray500 = Color(0xFF424242)
-    val Gray400 = Color(0xFF84838D)
-    val Gray300 = Color(0xFF9897A1)
-    val Gray200 = Color(0xFFB5B5BD)
-    val Gray100 = Color(0xFFC7C8D3)
-    val Gray50 = Color(0xFFDADAE5)
+    val Gray950 = Color(0xff25262B)
+    val Gray900 = Color(0xff383A43)
+    val Gray800 = Color(0xff3F434D)
+    val Gray700 = Color(0xff4B505D)
+    val Gray600 = Color(0xff596070)
+    val Gray500 = Color(0xff6F7686)
+    val Gray400 = Color(0xff949AA8)
+    val Gray300 = Color(0xffB5B9C4)
+    val Gray200 = Color(0xffE3E4E8)
+    val Gray100 = Color(0xffF1F1F4)
+    val Gray50 = Color(0xffF7F8F8)
 }
 
 object PurpleColor {
@@ -70,52 +85,74 @@ object WhiteColor {
     val White = Color(0xFFFFFFFF)
 }
 
-@Preview(showBackground = true, heightDp = 1500)
+@Preview(showBackground = true, heightDp = 1500, widthDp = 800)
 @Composable
 fun ColorSystemPreview() {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Primary Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("PRIMARY", PrimaryColor.PRIMARY)
+        Row{
+            Column {
+                Text("Primary Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("PRIMARY", PrimaryColor.PRIMARY)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Sub Primary Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("VIOLET50", SubPrimaryColor.VIOLET50)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Sub Primary Colors", style = MaterialTheme.typography.titleSmall)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Black Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("Black", BlackColor.Black)
-        ColorRow("HARD", BlackColor.HARD)
-        ColorRow("MEDIUM", BlackColor.MEDIUM)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Black Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("Black", BlackColor.Black)
+                ColorRow("HARD", BlackColor.HARD)
+                ColorRow("MEDIUM", BlackColor.MEDIUM)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Gray Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("Gray900", GrayColor.Gray900)
-        ColorRow("Gray800", GrayColor.Gray800)
-        ColorRow("Gray700", GrayColor.Gray700)
-        ColorRow("Gray600", GrayColor.Gray600)
-        ColorRow("Gray500", GrayColor.Gray500)
-        ColorRow("Gray400", GrayColor.Gray400)
-        ColorRow("Gray300", GrayColor.Gray300)
-        ColorRow("Gray200", GrayColor.Gray200)
-        ColorRow("Gray100", GrayColor.Gray100)
-        ColorRow("Gray50", GrayColor.Gray50)
-        ColorRow("LIGHT", GrayColor.LIGHT)
-        ColorRow("LIGHT_MEDIUM", GrayColor.LIGHT_MEDIUM)
-        ColorRow("MEDIUM", GrayColor.MEDIUM)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Gray Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("Gray900", GrayColor.Gray900)
+                ColorRow("Gray800", GrayColor.Gray800)
+                ColorRow("Gray700", GrayColor.Gray700)
+                ColorRow("Gray600", GrayColor.Gray600)
+                ColorRow("Gray500", GrayColor.Gray500)
+                ColorRow("Gray400", GrayColor.Gray400)
+                ColorRow("Gray300", GrayColor.Gray300)
+                ColorRow("Gray200", GrayColor.Gray200)
+                ColorRow("Gray100", GrayColor.Gray100)
+                ColorRow("Gray50", GrayColor.Gray50)
+                ColorRow("LIGHT", GrayColor.LIGHT)
+                ColorRow("LIGHT_MEDIUM", GrayColor.LIGHT_MEDIUM)
+                ColorRow("MEDIUM", GrayColor.MEDIUM)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Purple Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("MEDIUM", PurpleColor.MEDIUM)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Purple Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("MEDIUM", PurpleColor.MEDIUM)
+            }
+            Column {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("White Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("White", WhiteColor.White)
+                ColorRow("LIGHT", WhiteColor.LIGHT)
+                ColorRow("MEDIUM", WhiteColor.MEDIUM)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("White Colors", style = MaterialTheme.typography.titleSmall)
-        ColorRow("White", WhiteColor.White)
-        ColorRow("LIGHT", WhiteColor.LIGHT)
-        ColorRow("MEDIUM", WhiteColor.MEDIUM)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Violet Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("Violet50", VioletColor.Violet50)
+                ColorRow("Violet100", VioletColor.Violet100)
+                ColorRow("Violet200", VioletColor.Violet200)
+                ColorRow("Violet300", VioletColor.Violet300)
+                ColorRow("Violet400", VioletColor.Violet400)
+                ColorRow("Violet500", VioletColor.Violet500)
+                ColorRow("Violet600", VioletColor.Violet600)
+                ColorRow("Violet700", VioletColor.Violet700)
+                ColorRow("Violet800", VioletColor.Violet800)
+                ColorRow("Violet900", VioletColor.Violet900)
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Sub Primary Colors", style = MaterialTheme.typography.titleSmall)
+                ColorRow("SubPrimary", SubPrimaryColor.Sub)
+            }
+        }
+
     }
 }
 
@@ -125,7 +162,7 @@ fun ColorSystemPreview() {
 private fun ColorRow(name: String, color: Color) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(400.dp)
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
