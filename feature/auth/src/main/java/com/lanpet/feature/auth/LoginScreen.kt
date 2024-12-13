@@ -57,7 +57,6 @@ fun LoginScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     CognitoAuthManager(context).startGoogleSignIn()
-
                 },
             ) {
                 Text(

@@ -40,9 +40,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(libs.mockk.android)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.hilt.testing)
-    testImplementation(libs.turbine)
     testImplementation(projects.domain.repository)
 }

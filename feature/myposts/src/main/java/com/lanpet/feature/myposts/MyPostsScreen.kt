@@ -30,8 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.domain.model.PetCategory
-import com.lanpet.domain.model.Post
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem
@@ -41,6 +39,8 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardPost
+import com.lanpet.domain.model.PetCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,8 +93,8 @@ fun MyPostsScreen(
                         }
                     } else if (index == 1) {
                         MyFreeBoardPosts(
-                            posts = List(10) {
-                                Post(
+                            freeBoardPosts = List(10) {
+                                FreeBoardPost(
                                     id = it,
                                     title = "Title $it",
                                     content = loremIpsum(),
@@ -125,7 +125,7 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
         SecondaryIndicator(
             modifier = Modifier
                 .tabIndicatorOffset(tabPositions[currentTabIndex])
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
         )
     }, tabs = {
         Tab(
@@ -161,7 +161,8 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
 
 @Composable
 fun MyFreeBoardPosts(
-    posts: List<Post> = emptyList(), onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {}
+    freeBoardPosts: List<FreeBoardPost> = emptyList(),
+    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {}
 ) {
     val listState = rememberLazyListState()
 
@@ -171,10 +172,10 @@ fun MyFreeBoardPosts(
             .padding(horizontal = LanPetDimensions.Margin.small)
             .fillMaxSize(),
     ) {
-        items(posts.size) { index ->
-            key(posts[index].id) {
-                FreeBoardListItem(post = posts[index], onClick = {
-                    onNavigateToFreeBoardDetail(posts[index].id)
+        items(freeBoardPosts.size) { index ->
+            key(freeBoardPosts[index].id) {
+                FreeBoardListItem(freeBoardPost = freeBoardPosts[index], onClick = {
+                    onNavigateToFreeBoardDetail(freeBoardPosts[index].id)
                 })
 
                 if (index < 10 - 1) HorizontalDivider(

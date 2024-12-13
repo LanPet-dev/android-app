@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.domain.model.PetCategory
-import com.lanpet.domain.model.Post
+import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.createdAtPostString
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.loremIpsum
@@ -37,7 +37,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
 fun FreeBoardListItem(
-    post: Post,
+    freeBoardPost: FreeBoardPost,
     onClick: () -> Unit = {}
 ) {
     Surface {
@@ -53,13 +53,13 @@ fun FreeBoardListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall)
             ) {
-                post.tags.map {
+                freeBoardPost.tags.map {
                     CommonChip(it)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 Text(
-                    post.petCategory.value,
+                    freeBoardPost.petCategory.value,
                     style = MaterialTheme.customTypography().body3RegularSingle
                 )
             }
@@ -70,19 +70,19 @@ fun FreeBoardListItem(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(post.title, style = MaterialTheme.customTypography().body2RegularSingle)
+                    Text(freeBoardPost.title, style = MaterialTheme.customTypography().body2RegularSingle)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                     Text(
-                        post.content,
+                        freeBoardPost.content,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.customTypography().body3RegularMulti
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (post.images.isNotEmpty() && post.images.first().isNotEmpty())
+                if (freeBoardPost.images.isNotEmpty() && freeBoardPost.images.first().isNotEmpty())
                     AsyncImage(
-                        model = post.images.first(),
+                        model = freeBoardPost.images.first(),
                         contentDescription = "post_image",
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                         modifier = Modifier
@@ -105,7 +105,7 @@ fun FreeBoardListItem(
             ) {
                 Text(
                     // TODO
-                    post.createdAtPostString(),
+                    freeBoardPost.createdAtPostString(),
                     style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray300),
                     modifier = Modifier.weight(1f)
                 )
@@ -118,7 +118,7 @@ fun FreeBoardListItem(
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
-                        post.likeCount.toString(),
+                        freeBoardPost.likeCount.toString(),
                         style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400)
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -130,7 +130,7 @@ fun FreeBoardListItem(
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
-                        post.commentCount.toString(),
+                        freeBoardPost.commentCount.toString(),
                         style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400)
                     )
                 }
@@ -145,7 +145,7 @@ fun FreeBoardListItemPreview() {
     LanPetAppTheme {
         Column {
             FreeBoardListItem(
-                post = Post(
+                freeBoardPost = FreeBoardPost(
                     id = 1,
                     title = "Title",
                     content = loremIpsum(),
@@ -160,7 +160,7 @@ fun FreeBoardListItemPreview() {
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
             FreeBoardListItem(
-                post = Post(
+                freeBoardPost = FreeBoardPost(
                     id = 1,
                     title = "Title",
                     content = loremIpsum(),
