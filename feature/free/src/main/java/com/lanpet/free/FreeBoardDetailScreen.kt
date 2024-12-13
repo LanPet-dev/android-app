@@ -316,11 +316,11 @@ fun CommentInputSection() {
                     .padding(horizontal = LanPetDimensions.Spacing.small)
                     .clip(shape = CircleShape),
                 textStyle = MaterialTheme.customTypography().body2RegularSingle.copy(
-                    color = GrayColor.Gray500
+                    color = GrayColor.Gray400
                 ),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = WhiteColor.MEDIUM,
-                    unfocusedContainerColor = WhiteColor.MEDIUM,
+                    focusedContainerColor = GrayColor.Gray100,
+                    unfocusedContainerColor = GrayColor.Gray100,
                     unfocusedPlaceholderColor = GrayColor.Gray400,
                     focusedPlaceholderColor = GrayColor.Gray400,
                     focusedIndicatorColor = Color.Transparent,
