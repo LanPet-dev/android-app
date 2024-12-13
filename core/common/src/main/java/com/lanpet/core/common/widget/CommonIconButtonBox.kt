@@ -10,13 +10,14 @@ import com.lanpet.core.common.crop
 @Composable
 fun CommonIconButtonBox(
     content: @Composable () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.crop(48.dp) {
-            onClick()
-        },
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier.crop(48.dp) {
+                onClick()
+            },
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

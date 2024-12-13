@@ -23,10 +23,10 @@ fun CommonHeading(
     Text(
         title,
         style =
-        MaterialTheme.typography.titleLarge.copy(
-            color = MaterialTheme.customColorScheme.heading,
-            fontWeight = FontWeight.Bold,
-        ),
+            MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.customColorScheme.heading,
+                fontWeight = FontWeight.Bold,
+            ),
         modifier = modifier,
     )
 }
@@ -39,10 +39,10 @@ fun CommonHeadingHint(
     Text(
         title,
         style =
-        MaterialTheme.typography.titleSmall.copy(
-            color =
-            GrayColor.LIGHT_MEDIUM,
-        ),
+            MaterialTheme.typography.titleSmall.copy(
+                color =
+                    GrayColor.LIGHT_MEDIUM,
+            ),
     )
 }
 
@@ -54,7 +54,7 @@ fun CommonSubHeading1(
     Text(
         title,
         style =
-        MaterialTheme.customTypography().body1SemiBoldSingle,
+            MaterialTheme.customTypography().body1SemiBoldSingle,
         modifier = modifier,
     )
 }

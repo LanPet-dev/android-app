@@ -25,21 +25,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.crop
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.designsystem.theme.GrayColor
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateNoPetIntroScreen(
-    onNavigateToNoPetNameScreen: () -> Unit,
-) {
+fun ProfileCreateNoPetIntroScreen(onNavigateToNoPetNameScreen: () -> Unit) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -50,12 +48,13 @@ fun ProfileCreateNoPetIntroScreen(
         },
     ) {
         Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             val desc1 = stringResource(R.string.desc1_profile_create_intro_no_pet)
             val desc2 = stringResource(R.string.desc2_profile_create_intro_no_pet)
@@ -69,25 +68,30 @@ fun ProfileCreateNoPetIntroScreen(
                 Text(
                     buildAnnotatedString {
                         withStyle(
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                color = GrayColor.LIGHT_MEDIUM,
-                            ).toSpanStyle(),
+                            style =
+                                MaterialTheme.typography.labelLarge
+                                    .copy(
+                                        color = GrayColor.LIGHT_MEDIUM,
+                                    ).toSpanStyle(),
                         ) {
                             append(
-                                desc1 + "\n"
+                                desc1 + "\n",
                             )
                         }
                         withStyle(
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            ).toSpanStyle()
+                            style =
+                                MaterialTheme.typography.labelLarge
+                                    .copy(
+                                        fontWeight = FontWeight.Bold,
+                                    ).toSpanStyle(),
                         ) {
                             append(desc2)
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    style = TextStyle(textAlign = TextAlign.Center, lineHeight = 24.sp),
                 )
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(R.string.appbar_title_profile_create)) {
@@ -104,30 +108,31 @@ fun ImageSection() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         // 나(집사) 이미지
         Image(
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
-            modifier = Modifier
-                .crop(100.dp)
+            modifier =
+                Modifier
+                    .crop(100.dp),
         )
         Text(
             " > ",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
         // 반려동물 이미지
         Image(
             painter = painterResource(DS_R.drawable.img_dummy),
             contentDescription = null,
-            modifier = Modifier
-                .crop(100.dp)
+            modifier =
+                Modifier
+                    .crop(100.dp),
         )
     }
 }
-
 
 @PreviewLightDark
 @Composable

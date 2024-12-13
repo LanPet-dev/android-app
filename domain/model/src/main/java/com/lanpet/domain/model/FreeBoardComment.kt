@@ -15,16 +15,13 @@ data class FreeBoardComment(
     val freeBoardId: Int,
     val likeCount: Int,
     val commentCount: Int?,
-    val subComments: List<FreeBoardComment> = emptyList()
+    val subComments: List<FreeBoardComment> = emptyList(),
 )
 
-fun FreeBoardComment.createdAtPostString(
-    currentTime: Date = Date()
-): String {
+fun FreeBoardComment.createdAtPostString(currentTime: Date = Date()): String {
     try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
 
         val date = inputFormat.parse(createdAt) ?: return ""
 

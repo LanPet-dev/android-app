@@ -24,12 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.core.common.widget.CommonButton
-import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -40,7 +40,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreateHumanBioScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
-    onNavigateToDone: () -> Unit = { }) {
+    onNavigateToDone: () -> Unit = { },
+) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(

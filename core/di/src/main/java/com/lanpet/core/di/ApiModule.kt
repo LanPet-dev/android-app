@@ -20,66 +20,44 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideBaseApiService(
-        @Named("BaseApiUrl") baseApiUrl: String
-    ): BaseApiService {
-        return AuthApiClient(baseApiUrl).getService()
-    }
+        @Named("BaseApiUrl") baseApiUrl: String,
+    ): BaseApiService = AuthApiClient(baseApiUrl).getService()
 
     @Singleton
     @Provides
     fun provideAuthApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): AuthApiClient {
-        return AuthApiClient(baseApiUrl)
-    }
+    ): AuthApiClient = AuthApiClient(baseApiUrl)
 
     @Singleton
     @Provides
-    fun provideAuthApiService(
-        authApiClient: AuthApiClient
-    ): BaseApiService {
-        return authApiClient.getService()
-    }
+    fun provideAuthApiService(authApiClient: AuthApiClient): BaseApiService = authApiClient.getService()
 
     @Singleton
     @Provides
     fun provideAccountApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): AccountApiClient {
-        return AccountApiClient(baseApiUrl, authStateHolder)
-    }
+    ): AccountApiClient = AccountApiClient(baseApiUrl, authStateHolder)
 
     @Singleton
     @Provides
-    fun provideAccountApiService(
-        accountApiClient: AccountApiClient
-    ): AccountApiService {
-        return accountApiClient.getService()
-    }
+    fun provideAccountApiService(accountApiClient: AccountApiClient): AccountApiService = accountApiClient.getService()
 
     @Singleton
     @Provides
     fun provideFreeBoardApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): FreeBoardApiClient {
-        return FreeBoardApiClient(baseApiUrl, authStateHolder)
-    }
+    ): FreeBoardApiClient = FreeBoardApiClient(baseApiUrl, authStateHolder)
 
     @Singleton
     @Provides
-    fun provideFreeBoardApiService(
-        freeBoardApiClient: FreeBoardApiClient
-    ): FreeBoardApiService {
-        return freeBoardApiClient.getService()
-    }
+    fun provideFreeBoardApiService(freeBoardApiClient: FreeBoardApiClient): FreeBoardApiService = freeBoardApiClient.getService()
 
     @Singleton
     @Provides
     @Named("BaseApiUrl")
-    fun provideBaseApiUrl(): String {
-        return "https://test.api.lanpet.co.kr/"
-    }
+    fun provideBaseApiUrl(): String = "https://test.api.lanpet.co.kr/"
 }

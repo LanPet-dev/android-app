@@ -2,7 +2,7 @@ package com.lanpet.domain.model
 
 enum class SocialAuthType {
     GOOGLE,
-    APPLE
+    APPLE,
 }
 
 fun String.toSocialAuthType(): SocialAuthType {
@@ -12,4 +12,3 @@ fun String.toSocialAuthType(): SocialAuthType {
         else -> throw IllegalArgumentException("Unknown SocialAuthType")
     }
 }
-

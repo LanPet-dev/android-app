@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.myPostsNavGraph(
     onNavigateUp: () -> Unit,
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit
+    onNavigateToFreeBoardDetail: (postId: Int) -> Unit,
 ) {
     composable<MyPosts> {
         MyPostsScreen(

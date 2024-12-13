@@ -22,9 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.lanpet.domain.model.PetCategory
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.createdAtPostString
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.Like
@@ -34,24 +31,28 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardPost
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.createdAtPostString
 
 @Composable
 fun FreeBoardListItem(
     freeBoardPost: FreeBoardPost,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Surface {
         Column(
-            modifier = Modifier
-                .clickable {
-                    onClick()
-                }
-                .fillMaxWidth()
-                .padding(vertical = LanPetDimensions.Spacing.small)
+            modifier =
+                Modifier
+                    .clickable {
+                        onClick()
+                    }
+                    .fillMaxWidth()
+                    .padding(vertical = LanPetDimensions.Spacing.small),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall)
+                modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall),
             ) {
                 freeBoardPost.tags.map {
                     CommonChip(it)
@@ -60,15 +61,15 @@ fun FreeBoardListItem(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 Text(
                     freeBoardPost.petCategory.value,
-                    style = MaterialTheme.customTypography().body3RegularSingle
+                    style = MaterialTheme.customTypography().body3RegularSingle,
                 )
             }
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Row(
-                Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+                Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(freeBoardPost.title, style = MaterialTheme.customTypography().body2RegularSingle)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -76,62 +77,64 @@ fun FreeBoardListItem(
                         freeBoardPost.content,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.customTypography().body3RegularMulti
+                        style = MaterialTheme.customTypography().body3RegularMulti,
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (freeBoardPost.images.isNotEmpty() && freeBoardPost.images.first().isNotEmpty())
+                if (freeBoardPost.images.isNotEmpty() && freeBoardPost.images.first().isNotEmpty()) {
                     AsyncImage(
                         model = freeBoardPost.images.first(),
                         contentDescription = "post_image",
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(
-                                shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall)
-                            )
-                            .size(66.dp),
+                        modifier =
+                            Modifier
+                                .clip(
+                                    shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall),
+                                )
+                                .size(66.dp),
                         error = painterResource(id = R.drawable.img_animals),
                     )
-                else
+                } else {
                     Image(
                         painter = painterResource(id = R.drawable.img_animals),
                         contentDescription = "ic_animals",
                         modifier = Modifier.size(66.dp),
                     )
+                }
             }
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Row(
-                Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+                Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
             ) {
                 Text(
                     // TODO
                     freeBoardPost.createdAtPostString(),
                     style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray300),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Row {
                     Image(
                         imageVector = MyIconPack.Like,
                         contentDescription = "ic_like",
                         modifier = Modifier.size(12.dp),
-                        colorFilter = ColorFilter.tint(GrayColor.Gray400)
+                        colorFilter = ColorFilter.tint(GrayColor.Gray400),
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
                         freeBoardPost.likeCount.toString(),
-                        style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400)
+                        style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400),
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                     Image(
                         imageVector = MyIconPack.Message,
                         contentDescription = "ic_message",
                         modifier = Modifier.size(12.dp),
-                        colorFilter = ColorFilter.tint(GrayColor.Gray400)
+                        colorFilter = ColorFilter.tint(GrayColor.Gray400),
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
                         freeBoardPost.commentCount.toString(),
-                        style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400)
+                        style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400),
                     )
                 }
             }
@@ -145,35 +148,38 @@ fun FreeBoardListItemPreview() {
     LanPetAppTheme {
         Column {
             FreeBoardListItem(
-                freeBoardPost = FreeBoardPost(
-                    id = 1,
-                    title = "Title",
-                    content = loremIpsum(),
-                    tags = listOf("Tag1", "Tag2"),
-                    createdAt = "2021-10-10",
-                    updatedAt = "2021-10-10",
-                    likeCount = 999,
-                    commentCount = 9,
-                    petCategory = PetCategory.DOG,
-                    images = listOf()
-                )
+                freeBoardPost =
+                    FreeBoardPost(
+                        id = 1,
+                        title = "Title",
+                        content = loremIpsum(),
+                        tags = listOf("Tag1", "Tag2"),
+                        createdAt = "2021-10-10",
+                        updatedAt = "2021-10-10",
+                        likeCount = 999,
+                        commentCount = 9,
+                        petCategory = PetCategory.DOG,
+                        images = listOf(),
+                    ),
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
             FreeBoardListItem(
-                freeBoardPost = FreeBoardPost(
-                    id = 1,
-                    title = "Title",
-                    content = loremIpsum(),
-                    tags = listOf("Tag1", "Tag2"),
-                    createdAt = "2021-10-10",
-                    updatedAt = "2021-10-10",
-                    likeCount = 999,
-                    commentCount = 9,
-                    petCategory = PetCategory.DOG,
-                    images = listOf(
-                        "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-                    )
-                )
+                freeBoardPost =
+                    FreeBoardPost(
+                        id = 1,
+                        title = "Title",
+                        content = loremIpsum(),
+                        tags = listOf("Tag1", "Tag2"),
+                        createdAt = "2021-10-10",
+                        updatedAt = "2021-10-10",
+                        likeCount = 999,
+                        commentCount = 9,
+                        petCategory = PetCategory.DOG,
+                        images =
+                            listOf(
+                                "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+                            ),
+                    ),
             )
         }
     }

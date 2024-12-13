@@ -26,21 +26,23 @@ fun LanPetBottomNavBar(
 ) {
     Column {
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .background(
-                    color = MaterialTheme.customColorScheme.spacerLine
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(0.5.dp)
+                    .background(
+                        color = MaterialTheme.customColorScheme.spacerLine,
+                    ),
         )
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .sizeIn(minHeight = 64.dp)
-                .background(MaterialTheme.colorScheme.background),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .sizeIn(minHeight = 64.dp)
+                    .background(MaterialTheme.colorScheme.background),
         ) {
             bottomNavItemList.forEach { bottomNavItem ->
                 LanPetBottomNavItem(
@@ -48,7 +50,7 @@ fun LanPetBottomNavBar(
                     bottomNavItem = bottomNavItem,
                     onClick = {
                         onItemSelected(bottomNavItem)
-                    }
+                    },
                 )
             }
         }
@@ -60,13 +62,14 @@ fun LanPetBottomNavBar(
 fun LanPetBottomNavBarPreview() {
     LanPetAppTheme {
         LanPetBottomNavBar(
-            bottomNavItemList = listOf(
-                BottomNavItem.Wiki,
-                BottomNavItem.Free,
-                BottomNavItem.MyPage,
-            ),
+            bottomNavItemList =
+                listOf(
+                    BottomNavItem.Wiki,
+                    BottomNavItem.Free,
+                    BottomNavItem.MyPage,
+                ),
             selectedBottomNavItem = BottomNavItem.Wiki,
-            onItemSelected = {}
+            onItemSelected = {},
         )
     }
 }

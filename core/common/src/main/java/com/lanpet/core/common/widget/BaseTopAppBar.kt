@@ -27,9 +27,10 @@ fun LanPetTopAppBar(
     title: @Composable () -> Unit = {},
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors().copy(
-        containerColor = MaterialTheme.colorScheme.background,
-    ),
+    colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors().copy(
+            containerColor = MaterialTheme.colorScheme.background,
+        ),
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -53,18 +54,18 @@ fun LanPetCloseableTopAppBar(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
         },
         actions = {
             IconButton(onClick = onCloseClick) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close"
+                    contentDescription = "Close",
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -75,11 +76,11 @@ private fun LanPetTopAppBarPreview() {
     LanPetAppTheme {
         Column {
             LanPetTopAppBar(
-                title = { Text("Title") }
+                title = { Text("Title") },
             )
             LanPetTopAppBar(
                 navigationIcon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close") },
-                title = { Text("Title") }
+                title = { Text("Title") },
             )
         }
     }

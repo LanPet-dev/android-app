@@ -35,13 +35,10 @@ data class FreeBoardPost(
         }
 }
 
-fun FreeBoardPost.createdAtPostString(
-    currentTime: Date = Date()
-): String {
+fun FreeBoardPost.createdAtPostString(currentTime: Date = Date()): String {
     try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
 
         val date = inputFormat.parse(createdAt) ?: return ""
 

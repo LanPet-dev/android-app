@@ -19,17 +19,18 @@ import com.lanpet.core.designsystem.theme.customTypography
 @Composable
 fun CommonChip(title: String) {
     Box(
-        modifier = Modifier
-            .clip(
-                shape = CircleShape
-            )
-            .background(color = GrayColor.Gray100)
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .clip(
+                    shape = CircleShape,
+                )
+                .background(color = GrayColor.Gray100)
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             title,
-            style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray500)
+            style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray500),
         )
     }
 }

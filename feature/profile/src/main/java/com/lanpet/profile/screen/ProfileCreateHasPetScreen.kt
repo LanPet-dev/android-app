@@ -26,10 +26,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.widget.Heading
 
@@ -48,13 +48,14 @@ fun ProfileCreateHasPetScreen(
     ) {
         Surface {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(
-                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                        vertical = LanPetDimensions.Margin.Layout.vertical,
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .padding(
+                            horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                            vertical = LanPetDimensions.Margin.Layout.vertical,
+                        ),
             ) {
                 Spacer(Modifier.weight(0.1f))
                 Heading(title = stringResource(R.string.heading_profile_create_has_pet))
@@ -69,58 +70,60 @@ fun ProfileCreateHasPetScreen(
 @Composable
 private fun Content(
     onNavigateToYesPetScreen: () -> Unit,
-    onNavigateToNoPetScreen: () -> Unit
+    onNavigateToNoPetScreen: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.Companion
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        modifier =
+            Modifier.Companion
+                .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
     ) {
         HasPetSelectButton(
             onNavigateToYesPetScreen,
-            title = stringResource(R.string.yes_pet_profile_create_has_pet)
+            title = stringResource(R.string.yes_pet_profile_create_has_pet),
         )
         Spacer(Modifier.padding(horizontal = LanPetDimensions.Margin.small))
         HasPetSelectButton(
             onNavigateToNoPetScreen,
-            title = stringResource(R.string.no_pet_profile_create_has_pet)
+            title = stringResource(R.string.no_pet_profile_create_has_pet),
         )
     }
 }
 
 @Composable
-fun HasPetSelectButton(onClick: () -> Unit, title: String) {
+fun HasPetSelectButton(
+    onClick: () -> Unit,
+    title: String,
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clickable(
-                onClick = onClick,
-            )
-            .wrapContentSize()
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.customColorScheme.spacerLine,
-                shape = RoundedCornerShape(LanPetDimensions.Corner.small)
-            )
-            .padding(
-                horizontal = LanPetDimensions.Margin.xLarge,
-                vertical = LanPetDimensions.Margin.xxLarge
-            )
+        modifier =
+            Modifier
+                .clickable(
+                    onClick = onClick,
+                ).wrapContentSize()
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.customColorScheme.spacerLine,
+                    shape = RoundedCornerShape(LanPetDimensions.Corner.small),
+                ).padding(
+                    horizontal = LanPetDimensions.Margin.xLarge,
+                    vertical = LanPetDimensions.Margin.xxLarge,
+                ),
     ) {
         Image(
             painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
             contentDescription = null,
-            modifier = Modifier
-                .size(
-                    110.dp
-                )
-                .clip(
-                    RoundedCornerShape(LanPetDimensions.Corner.small)
-                ),
-
-            )
+            modifier =
+                Modifier
+                    .size(
+                        110.dp,
+                    ).clip(
+                        RoundedCornerShape(LanPetDimensions.Corner.small),
+                    ),
+        )
         Spacer(Modifier.padding(vertical = LanPetDimensions.Margin.small))
         Text(title, style = MaterialTheme.typography.labelLarge)
     }
@@ -131,7 +134,8 @@ fun HasPetSelectButton(onClick: () -> Unit, title: String) {
 fun PreviewProfileCreateHasPetScreen() {
     LanPetAppTheme {
         ProfileCreateHasPetScreen(
-            {}, {}
+            {},
+            {},
         )
     }
 }

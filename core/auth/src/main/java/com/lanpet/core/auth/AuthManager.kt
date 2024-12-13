@@ -8,8 +8,6 @@ import com.lanpet.domain.usecase.RegisterAccountUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
@@ -19,55 +17,56 @@ import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
 @Singleton
-class AuthManager @Inject constructor(
-    private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase,
-    private val registerAccountUseCase: RegisterAccountUseCase,
-    private val getAccountInformationUseCase: GetAccountInformationUseCase,
-    private val authStateHolder: AuthStateHolder
-) {
+class AuthManager
+    @Inject
+    constructor(
+        private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase,
+        private val registerAccountUseCase: RegisterAccountUseCase,
+        private val getAccountInformationUseCase: GetAccountInformationUseCase,
+        private val authStateHolder: AuthStateHolder,
+    ) {
+        val authState = authStateHolder.authState
 
-    val authState = authStateHolder.authState
-
-    @OptIn(FlowPreview::class)
-    fun handleAuthCode(code: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val socialAuthToken =
-                    getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).first()
-                authStateHolder.updateState(
-                    AuthState.Loading(socialAuthToken = socialAuthToken)
-                )
-
+        @OptIn(FlowPreview::class)
+        fun handleAuthCode(code: String) {
+            CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    val account = getAccountInformationUseCase().timeout(5.seconds).first()
+                    val socialAuthToken =
+                        getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).first()
                     authStateHolder.updateState(
-                        AuthState.Success(
-                            socialAuthToken = socialAuthToken,
-                            account = account
-                        )
+                        AuthState.Loading(socialAuthToken = socialAuthToken),
                     )
-                } catch (e: Exception) {
-                    val accountToken = registerAccountUseCase().timeout(5.seconds).first()
-                    delay(500)
-                    val account = getAccountInformationUseCase().timeout(5.seconds).first()
-                    authStateHolder.updateState(
-                        AuthState.Success(
-                            socialAuthToken = socialAuthToken,
-                            account = account
+
+                    try {
+                        val account = getAccountInformationUseCase().timeout(5.seconds).first()
+                        authStateHolder.updateState(
+                            AuthState.Success(
+                                socialAuthToken = socialAuthToken,
+                                account = account,
+                            ),
                         )
+                    } catch (e: Exception) {
+                        val accountToken = registerAccountUseCase().timeout(5.seconds).first()
+                        delay(500)
+                        val account = getAccountInformationUseCase().timeout(5.seconds).first()
+                        authStateHolder.updateState(
+                            AuthState.Success(
+                                socialAuthToken = socialAuthToken,
+                                account = account,
+                            ),
+                        )
+                    }
+                } catch (e: Exception) {
+                    authStateHolder.updateState(
+                        AuthState.Fail,
                     )
                 }
-            } catch (e: Exception) {
-                authStateHolder.updateState(
-                    AuthState.Fail
-                )
             }
         }
-    }
 
-    fun logout() {
-        authStateHolder.updateState(
-            AuthState.Initial
-        )
+        fun logout() {
+            authStateHolder.updateState(
+                AuthState.Initial,
+            )
+        }
     }
-}

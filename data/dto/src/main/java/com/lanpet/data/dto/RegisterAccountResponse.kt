@@ -5,11 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RegisterAccountResponse(
-    val accountId: String
+    val accountId: String,
 )
 
-fun RegisterAccountResponse.toDomain() = AccountToken(
-    accountId = accountId
-)
-
-
+fun RegisterAccountResponse.toDomain() =
+    AccountToken(
+        accountId = accountId,
+    )

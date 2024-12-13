@@ -21,12 +21,11 @@ fun NavGraphBuilder.myProfileNavGraph(
     navigation<MyProfileBaseRoute>(
         startDestination = MyProfile,
     ) {
-        composable<MyProfile>(
-        ) {
+        composable<MyProfile> {
             MyProfileScreen(
                 onNavigateToProfileCreate = onNavigateToMyProfileCreateProfile,
                 onNavigateToSettings = onNavigateToSettings,
-                onNavigateToMyPosts = onNavigateToMyPosts
+                onNavigateToMyPosts = onNavigateToMyPosts,
             )
         }
         composable<MyProfileCreateProfile> {
@@ -35,21 +34,21 @@ fun NavGraphBuilder.myProfileNavGraph(
                     onNavigateUp()
                 },
                 onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
-                onNavigateToModifyProfile = onNavigateToMyProfileModifyProfile
+                onNavigateToModifyProfile = onNavigateToMyProfileModifyProfile,
             )
         }
         composable<MyProfileAddProfile> {
             MyProfileAddProfileScreen(
                 onClose = {
                     onNavigateUp()
-                }
+                },
             )
         }
         composable<MyProfileModifyProfile> {
             MyProfileModifyProfileScreen(
                 onClose = {
                     onNavigateUp()
-                }
+                },
             )
         }
     }
@@ -110,9 +109,7 @@ object MyProfileBaseRoute
 
 @Serializable
 data object MyProfile {
-    override fun toString(): String {
-        return (this::class.java.toString()).split(" ").last()
-    }
+    override fun toString(): String = (this::class.java.toString()).split(" ").last()
 }
 
 @Serializable

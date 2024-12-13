@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RegisterProfileResponse(
-    val type: ProfileType
+    val type: ProfileType,
 )

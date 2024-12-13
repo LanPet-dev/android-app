@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -89,11 +88,12 @@ object WhiteColor {
 @Composable
 fun ColorSystemPreview() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
-        Row{
+        Row {
             Column {
                 Text("Primary Colors", style = MaterialTheme.typography.titleSmall)
                 ColorRow("PRIMARY", PrimaryColor.PRIMARY)
@@ -152,25 +152,28 @@ fun ColorSystemPreview() {
                 ColorRow("SubPrimary", SubPrimaryColor.Sub)
             }
         }
-
     }
 }
 
-
 @TestOnly
 @Composable
-private fun ColorRow(name: String, color: Color) {
+private fun ColorRow(
+    name: String,
+    color: Color,
+) {
     Row(
-        modifier = Modifier
-            .width(400.dp)
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .width(400.dp)
+                .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(color = color)
-                .border(1.dp, Color.Gray)
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .background(color = color)
+                    .border(1.dp, Color.Gray),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(name)

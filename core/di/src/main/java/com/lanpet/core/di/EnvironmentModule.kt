@@ -9,12 +9,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object EnvironmentModule {
-
     @Singleton
     @Named("GOOGLE_CLIENT_ID")
-    fun provideGoogleClientId(
-    ): String {
+    fun provideGoogleClientId(): String {
         return BuildConfig.GOOGLE_OAUTH_CLIENT_KEY
     }
-
 }

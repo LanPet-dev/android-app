@@ -8,6 +8,7 @@ import com.lanpet.core.common.myiconpack.Bell
 import com.lanpet.core.common.myiconpack.BellFill
 import com.lanpet.core.common.myiconpack.Bookmark
 import com.lanpet.core.common.myiconpack.BookmarkFill
+import com.lanpet.core.common.myiconpack.CheckBox
 import com.lanpet.core.common.myiconpack.Close
 import com.lanpet.core.common.myiconpack.CloseMini
 import com.lanpet.core.common.myiconpack.Community
@@ -30,49 +31,49 @@ import com.lanpet.core.common.myiconpack.Plus
 import com.lanpet.core.common.myiconpack.Search
 import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.myiconpack.Setting
-import com.lanpet.core.common.myiconpack.CheckBox
 import kotlin.collections.List as ____KtList
 
 public object MyIconPack
 
-private var __AllIcons: ____KtList<ImageVector>? = null
+private var allIcons: ____KtList<ImageVector>? = null
 
 public val MyIconPack.AllIcons: ____KtList<ImageVector>
     get() {
-        if (__AllIcons != null) {
-            return __AllIcons!!
+        if (allIcons != null) {
+            return allIcons!!
         }
-        __AllIcons = listOf(
-            Search,
-            Like,
-            HeartFill,
-            Alert,
-            CheckBox,
-            Community,
-            CloseMini,
-            File,
-            AlertFill,
-            BellFill,
-            Bell,
-            Contents,
-            Plus,
-            Close,
-            Image,
-            Setting,
-            Message,
-            Send,
-            My,
-            EditFill,
-            More,
-            BookmarkFill,
-            Edit,
-            ContentsFill,
-            LikeFill,
-            MyFill,
-            Bookmark,
-            CommunityFill,
-            ArrowLeft,
-            Heart
-        )
-        return __AllIcons!!
+        allIcons =
+            listOf(
+                Search,
+                Like,
+                HeartFill,
+                Alert,
+                CheckBox,
+                Community,
+                CloseMini,
+                File,
+                AlertFill,
+                BellFill,
+                Bell,
+                Contents,
+                Plus,
+                Close,
+                Image,
+                Setting,
+                Message,
+                Send,
+                My,
+                EditFill,
+                More,
+                BookmarkFill,
+                Edit,
+                ContentsFill,
+                LikeFill,
+                MyFill,
+                Bookmark,
+                CommunityFill,
+                ArrowLeft,
+                Heart,
+            )
+        return allIcons!!
     }
