@@ -15,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.domain.model.PetCategory
 import com.lanpet.core.common.widget.SelectableChip
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.domain.model.PetCategory
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -47,12 +47,12 @@ fun ProfileCreatePetCategoryScreen(
     ) {
         Box(
             modifier =
-            Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))

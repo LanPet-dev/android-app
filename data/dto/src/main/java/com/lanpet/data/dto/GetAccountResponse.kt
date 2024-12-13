@@ -10,14 +10,14 @@ data class GetAccountResponse(
     val authId: String,
     val authority: AuthorityType,
     val exitDate: String?,
-    val exitReason: String?
+    val exitReason: String?,
 )
 
-fun GetAccountResponse.toDomain() = Account(
-    accountId = accountId,
-    authId = authId,
-    authority = authority,
-    exitDate = exitDate,
-    exitReason = exitReason
-)
-
+fun GetAccountResponse.toDomain() =
+    Account(
+        accountId = accountId,
+        authId = authId,
+        authority = authority,
+        exitDate = exitDate,
+        exitReason = exitReason,
+    )

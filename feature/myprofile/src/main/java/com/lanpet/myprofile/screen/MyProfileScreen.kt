@@ -25,18 +25,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.common.crop
-import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.crop
 import com.lanpet.core.common.myiconpack.ArrowRight
 import com.lanpet.core.common.myiconpack.Bookmark
 import com.lanpet.core.common.myiconpack.File
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,50 +57,55 @@ fun MyProfileScreen(
                 },
                 actions = {
                     Box(
-                        modifier = Modifier
-                            .crop(
-                                48.dp
-                            ) {
-                                onNavigateToSettings()
-                            },
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .crop(
+                                    48.dp,
+                                ) {
+                                    onNavigateToSettings()
+                                },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Image(
                             imageVector = MyIconPack.Setting,
                             contentDescription = "Setting",
-                            colorFilter = ColorFilter.tint(
-                                MaterialTheme.customColorScheme.defaultIconColor,
-                            ),
+                            colorFilter =
+                                ColorFilter.tint(
+                                    MaterialTheme.customColorScheme.defaultIconColor,
+                                ),
                         )
                     }
                 },
             )
-        }
+        },
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
         ) {
-            Column() {
+            Column {
                 MyProfileCard(
-                    onNavigateToProfileCreate = onNavigateToProfileCreate
+                    onNavigateToProfileCreate = onNavigateToProfileCreate,
                 )
                 Spacer(
-                    modifier = Modifier
-                        .padding(bottom = LanPetDimensions.Spacing.xLarge)
-                        .fillMaxWidth()
-                        .size(LanPetDimensions.Spacing.xxxSmall)
-                        .background(
-                            color = MaterialTheme.customColorScheme.spacerLine
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(bottom = LanPetDimensions.Spacing.xLarge)
+                            .fillMaxWidth()
+                            .size(LanPetDimensions.Spacing.xxxSmall)
+                            .background(
+                                color = MaterialTheme.customColorScheme.spacerLine,
+                            ),
                 )
                 Text(
                     style = MaterialTheme.customTypography().title2SemiBoldSingle,
                     text = stringResource(R.string.sub_title_activity_list_my_profile),
-                    modifier = Modifier.padding(
-                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    )
+                    modifier =
+                        Modifier.padding(
+                            horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        ),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 Column {
@@ -109,70 +114,72 @@ fun MyProfileScreen(
                             Image(
                                 imageVector = MyIconPack.File,
                                 contentDescription = "ic_file",
-                                colorFilter = ColorFilter.tint(
-                                    MaterialTheme.customColorScheme.defaultIconColor,
-                                ),
-                                modifier = Modifier.size(24.dp)
+                                colorFilter =
+                                    ColorFilter.tint(
+                                        MaterialTheme.customColorScheme.defaultIconColor,
+                                    ),
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_my_post),
                         onclick = {
                             onNavigateToMyPosts()
-                        }
+                        },
                     )
                     ActivityListItem(
                         leadingContent = {
                             Image(
                                 imageVector = MyIconPack.Message,
                                 contentDescription = "ic_message",
-                                colorFilter = ColorFilter.tint(
-                                    MaterialTheme.customColorScheme.defaultIconColor,
-                                ),
-                                modifier = Modifier.size(24.dp)
+                                colorFilter =
+                                    ColorFilter.tint(
+                                        MaterialTheme.customColorScheme.defaultIconColor,
+                                    ),
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_my_comment),
-                        onclick = { }
+                        onclick = { },
                     )
                     ActivityListItem(
                         leadingContent = {
                             Image(
                                 imageVector = MyIconPack.Bookmark,
                                 contentDescription = "ic_bookmark",
-                                colorFilter = ColorFilter.tint(
-                                    MaterialTheme.customColorScheme.defaultIconColor,
-                                ),
-                                modifier = Modifier.size(24.dp)
+                                colorFilter =
+                                    ColorFilter.tint(
+                                        MaterialTheme.customColorScheme.defaultIconColor,
+                                    ),
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_bookmark),
-                        onclick = { }
+                        onclick = { },
                     )
                 }
             }
         }
-
     }
 }
 
 @Composable
-private fun MyProfileCard(
-    onNavigateToProfileCreate: () -> Unit
-) {
+private fun MyProfileCard(onNavigateToProfileCreate: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(
-                horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                vertical = LanPetDimensions.Margin.xxLarge
-            )
+        modifier =
+            Modifier
+                .padding(
+                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                    vertical = LanPetDimensions.Margin.xxLarge,
+                ),
     ) {
         Image(
-            modifier = Modifier.crop(
-                size = 88.dp
-            ),
+            modifier =
+                Modifier.crop(
+                    size = 88.dp,
+                ),
             painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-            contentDescription = "Profile Picture"
+            contentDescription = "Profile Picture",
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         Column {
@@ -188,13 +195,14 @@ private fun MyProfileCard(
         }
         Spacer(modifier = Modifier.weight(1f))
         Box(
-            modifier = Modifier
-                .crop(
-                    size = 36.dp,
-                ) {
-                    onNavigateToProfileCreate()
-                },
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .crop(
+                        size = 36.dp,
+                    ) {
+                        onNavigateToProfileCreate()
+                    },
+            contentAlignment = Alignment.Center,
         ) {
             Image(
                 imageVector = MyIconPack.ArrowRight,
@@ -228,7 +236,7 @@ fun ActivityListItem(
         trailingContent = {
             trailingContent()
         },
-        modifier = Modifier.clickable(onClick = onclick)
+        modifier = Modifier.clickable(onClick = onclick),
     )
 }
 
@@ -237,11 +245,10 @@ fun ActivityListItem(
 fun MyProfileCardPreview() {
     LanPetAppTheme {
         Surface {
-            MyProfileCard() {}
+            MyProfileCard {}
         }
     }
 }
-
 
 @Composable
 @PreviewLightDark()

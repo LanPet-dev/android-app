@@ -24,12 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.core.common.widget.CommonButton
-import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -40,7 +40,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreatePetBioScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
-    onNavigateToDone: () -> Unit = { }) {
+    onNavigateToDone: () -> Unit = { },
+) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -55,12 +56,12 @@ fun ProfileCreatePetBioScreen(
     ) {
         Box(
             modifier =
-            Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
@@ -71,7 +72,7 @@ fun ProfileCreatePetBioScreen(
                 BioInputSection(petProfileCreateViewModel)
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                    //TODO: set profiles to server
+                    // TODO: set profiles to server
                     onNavigateToDone()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
@@ -96,26 +97,26 @@ fun BioInputSection(viewModel: PetProfileCreateViewModel) {
             shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
             minLines = 7,
             colors =
-            OutlinedTextFieldDefaults.colors().copy(
-                unfocusedIndicatorColor = GrayColor.LIGHT,
-                focusedIndicatorColor = GrayColor.LIGHT,
-                disabledIndicatorColor = GrayColor.LIGHT,
-                focusedPlaceholderColor = GrayColor.MEDIUM,
-                unfocusedPlaceholderColor = GrayColor.MEDIUM,
-                disabledPlaceholderColor = GrayColor.MEDIUM,
-                cursorColor = GrayColor.MEDIUM,
-                focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-            ),
+                OutlinedTextFieldDefaults.colors().copy(
+                    unfocusedIndicatorColor = GrayColor.LIGHT,
+                    focusedIndicatorColor = GrayColor.LIGHT,
+                    disabledIndicatorColor = GrayColor.LIGHT,
+                    focusedPlaceholderColor = GrayColor.MEDIUM,
+                    unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                    disabledPlaceholderColor = GrayColor.MEDIUM,
+                    cursorColor = GrayColor.MEDIUM,
+                    focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                ),
             singleLine = false,
             onValueChange = { newText ->
                 if (newText.length <= maxLength) {
                     input = newText
                     viewModel.setBio(newText)
                     println(
-                        viewModel.petProfileCreate.value.toString()
+                        viewModel.petProfileCreate.value.toString(),
                     )
                 }
             },
@@ -129,9 +130,9 @@ fun BioInputSection(viewModel: PetProfileCreateViewModel) {
 
         Box(
             modifier =
-            Modifier
-                .matchParentSize()
-                .padding(bottom = 16.dp, end = 16.dp),
+                Modifier
+                    .matchParentSize()
+                    .padding(bottom = 16.dp, end = 16.dp),
             contentAlignment = Alignment.BottomEnd,
         ) {
             Text(
@@ -147,7 +148,7 @@ fun BioInputSection(viewModel: PetProfileCreateViewModel) {
 fun PreviewProfileCreatePetBioScreen() {
     LanPetAppTheme {
         ProfileCreatePetBioScreen(
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }

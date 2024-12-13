@@ -1,6 +1,5 @@
 package com.lanpet.data.service
 
-
 import com.lanpet.data.dto.GetAccountResponse
 import com.lanpet.data.dto.RegisterAccountResponse
 import retrofit2.http.GET
@@ -12,5 +11,4 @@ interface AccountApiService {
 
     @GET("accounts")
     suspend fun getAccount(): GetAccountResponse
-
 }

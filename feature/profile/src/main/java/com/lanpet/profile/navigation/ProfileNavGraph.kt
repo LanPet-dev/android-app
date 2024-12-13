@@ -35,7 +35,7 @@ fun NavGraphBuilder.profileNavGraph(
     onNavigateToDone: () -> Unit,
     onNavigateToPreferPet: () -> Unit,
     onNavigateToMain: () -> Unit,
-    navController: NavController
+    navController: NavController,
 ) {
     composable<ProfileCreateHasPet> {
         ProfileCreateHasPetScreen(
@@ -43,7 +43,6 @@ fun NavGraphBuilder.profileNavGraph(
             onNavigateToNoPetScreen = onNavigateToNoPetIntroScreen,
         )
     }
-
 
     navigation<ProfileNoPetBaseRoute>(
         startDestination = ProfileIntroNoPet,
@@ -60,14 +59,13 @@ fun NavGraphBuilder.profileNavGraph(
 
             ProfileCreateNoPetNameScreen(
                 onNavigateToHumanAge = onNavigateToHumanAge,
-                manProfileCreateViewModel = viewModel
+                manProfileCreateViewModel = viewModel,
             )
         }
 
-
         composable<ProfileCreateDone> {
             ProfileCreateDoneScreen(
-                onNavigateToMyProfile = onNavigateToMain
+                onNavigateToMyProfile = onNavigateToMain,
             )
         }
 
@@ -80,7 +78,6 @@ fun NavGraphBuilder.profileNavGraph(
                 manProfileCreateViewModel = viewModel,
             )
         }
-
 
         composable<ProfileCreateHumanAge> { backStackEntry ->
             val parentEntry = remember { navController.getBackStackEntry(ProfileNoPetBaseRoute) }
@@ -117,13 +114,13 @@ fun NavGraphBuilder.profileNavGraph(
 
             ProfileCreateYesPetNameScreen(
                 onNavigateToPetCategory = onNavigateToPetCategory,
-                petProfileCreateViewModel = viewModel
+                petProfileCreateViewModel = viewModel,
             )
         }
 
         composable<ProfileCreateDone> {
             ProfileCreateDoneScreen(
-                onNavigateToMyProfile = onNavigateToMain
+                onNavigateToMyProfile = onNavigateToMain,
             )
         }
 

@@ -18,21 +18,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.core.designsystem.R as DS_R
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
+import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCreatePetSpeciesScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
-    onNavigateToPetBio: () -> Unit = { }
+    onNavigateToPetBio: () -> Unit = { },
 ) {
     Scaffold(
         topBar = {
@@ -42,17 +42,18 @@ fun ProfileCreatePetSpeciesScreen(
                 },
                 actions = {
                     Text("3/4 ")
-                }
+                },
             )
         },
     ) {
         Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
@@ -71,7 +72,7 @@ fun ProfileCreatePetSpeciesScreen(
 
 @Composable
 fun PetSpeciesInputSection(viewModel: PetProfileCreateViewModel) {
-    var nameInput by rememberSaveable() {
+    var nameInput by rememberSaveable {
         mutableStateOf("")
     }
 
@@ -87,7 +88,6 @@ fun PetSpeciesInputSection(viewModel: PetProfileCreateViewModel) {
         nameInput = it
         viewModel.setSpecies(it)
     }
-
 }
 
 @PreviewLightDark
@@ -95,8 +95,7 @@ fun PetSpeciesInputSection(viewModel: PetProfileCreateViewModel) {
 fun PreviewProfileCreatePetSpeciesScreen() {
     LanPetAppTheme {
         ProfileCreatePetSpeciesScreen(
-            petProfileCreateViewModel = hiltViewModel()
+            petProfileCreateViewModel = hiltViewModel(),
         )
     }
 }
-

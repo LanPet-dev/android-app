@@ -31,29 +31,35 @@ fun SelectableChip(
         Modifier
             .padding(horizontal = 6.dp, vertical = 6.dp)
             .background(
-                color = if (isSelected) MaterialTheme.customColorScheme.selectedContainer else MaterialTheme.customColorScheme.unSelectedContainer,
+                color =
+                    if (isSelected) {
+                        MaterialTheme.customColorScheme.selectedContainer
+                    } else {
+                        MaterialTheme.customColorScheme.unSelectedContainer
+                    },
                 shape =
-                RoundedCornerShape(
-                    LanPetDimensions.Corner.small,
-                ),
-            )
-            .border(
+                    RoundedCornerShape(
+                        LanPetDimensions.Corner.small,
+                    ),
+            ).border(
                 border =
-                BorderStroke(
-                    1.dp,
-                    if (isSelected) MaterialTheme.customColorScheme.selectedContainer else GrayColor.LIGHT,
-                ),
+                    BorderStroke(
+                        1.dp,
+                        if (isSelected) {
+                            MaterialTheme.customColorScheme.selectedContainer
+                        } else {
+                            GrayColor.LIGHT
+                        },
+                    ),
                 shape =
+                    RoundedCornerShape(
+                        LanPetDimensions.Corner.small,
+                    ),
+            ).clip(
                 RoundedCornerShape(
                     LanPetDimensions.Corner.small,
                 ),
-            )
-            .clip(
-                RoundedCornerShape(
-                    LanPetDimensions.Corner.small,
-                ),
-            )
-            .clickable(
+            ).clickable(
                 onClick = {
                     onSelectValueChanged(!isSelected)
                 },
@@ -63,14 +69,14 @@ fun SelectableChip(
         Text(
             text = title,
             style =
-            MaterialTheme.typography.labelLarge.copy(
-                color =
-                if (isSelected) {
-                    MaterialTheme.customColorScheme.selectedText
-                } else {
-                    MaterialTheme.customColorScheme.unSelectedText
-                },
-            ),
+                MaterialTheme.typography.labelLarge.copy(
+                    color =
+                        if (isSelected) {
+                            MaterialTheme.customColorScheme.selectedText
+                        } else {
+                            MaterialTheme.customColorScheme.unSelectedText
+                        },
+                ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
         )

@@ -17,89 +17,111 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FreeBoardDetailViewModel @Inject constructor(
-    private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
-    private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
-) : ViewModel() {
-    private val _detailState: MutableStateFlow<DetailState> =
-        MutableStateFlow<DetailState>(DetailState.Initial)
-    private val _commentsState: MutableStateFlow<CommentsState> =
-        MutableStateFlow<CommentsState>(CommentsState.Initial)
+class FreeBoardDetailViewModel
+    @Inject
+    constructor(
+        private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
+        private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
+    ) : ViewModel() {
+        private val detailState: MutableStateFlow<DetailState> =
+            MutableStateFlow<DetailState>(DetailState.Initial)
+        private val commentsState: MutableStateFlow<CommentsState> =
+            MutableStateFlow<CommentsState>(CommentsState.Initial)
 
-    // UI에서 observe할 combined state
-    val uiState = combine(_detailState, _commentsState) { detailState, commentsState ->
-        when {
-            detailState is DetailState.Error -> FreeBoardDetailState.Error(detailState.message)
-            commentsState is CommentsState.Error -> FreeBoardDetailState.Error(commentsState.message)
-            detailState is DetailState.Success && commentsState is CommentsState.Success -> {
-                FreeBoardDetailState.Success(
-                    postDetail = detailState.postDetail,
-                    comments = commentsState.comments
-                )
+        // UI에서 observe할 combined state
+        val uiState =
+            combine(detailState, commentsState) { detailState, commentsState ->
+                when {
+                    detailState is DetailState.Error -> FreeBoardDetailState.Error(detailState.message)
+                    commentsState is CommentsState.Error -> FreeBoardDetailState.Error(commentsState.message)
+                    detailState is DetailState.Success && commentsState is CommentsState.Success -> {
+                        FreeBoardDetailState.Success(
+                            postDetail = detailState.postDetail,
+                            comments = commentsState.comments,
+                        )
+                    }
+
+                    else -> FreeBoardDetailState.Loading
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = FreeBoardDetailState.Loading,
+            )
+
+        fun init(postId: Int) {
+            viewModelScope.launch {
+                async { fetchDetail(postId) }
+                async { fetchComments(postId) }
             }
-
-            else -> FreeBoardDetailState.Loading
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = FreeBoardDetailState.Loading
-    )
 
-    fun init(postId: Int) {
-        viewModelScope.launch {
-            async { fetchDetail(postId) }
-            async { fetchComments(postId) }
+        fun refreshComments(postId: Int) {
+            viewModelScope.launch {
+                fetchComments(postId)
+            }
         }
-    }
 
-    fun refreshComments(postId: Int) {
-        viewModelScope.launch {
-            fetchComments(postId)
+        private suspend fun fetchDetail(postId: Int) {
+            detailState.value = DetailState.Loading
+
+            getFreeBoardDetailUseCase(postId)
+                .catch {
+                    detailState.value = DetailState.Error("Failed to fetch detail")
+                }.collect {
+                    detailState.value = DetailState.Success(it)
+                }
         }
-    }
 
-    private suspend fun fetchDetail(postId: Int) {
-        _detailState.value = DetailState.Loading
+        private suspend fun fetchComments(postId: Int) {
+            commentsState.value = CommentsState.Loading
 
-        getFreeBoardDetailUseCase(postId).catch {
-            _detailState.value = DetailState.Error("Failed to fetch detail")
-        }.collect {
-            _detailState.value = DetailState.Success(it)
-        }
-    }
-
-    private suspend fun fetchComments(postId: Int) {
-        _commentsState.value = CommentsState.Loading
-
-        getFreeBoardCommentListUseCase(postId).catch {
-            _commentsState.value = CommentsState.Error("Failed to fetch comments")
-        }.collect {
-            _commentsState.value = CommentsState.Success(it)
+            getFreeBoardCommentListUseCase(postId)
+                .catch {
+                    commentsState.value = CommentsState.Error("Failed to fetch comments")
+                }.collect {
+                    commentsState.value = CommentsState.Success(it)
+                }
         }
     }
-}
 
 private sealed class DetailState {
     data object Loading : DetailState()
-    data class Success(val postDetail: FreeBoardPostDetail) : DetailState()
-    data class Error(val message: String) : DetailState()
+
+    data class Success(
+        val postDetail: FreeBoardPostDetail,
+    ) : DetailState()
+
+    data class Error(
+        val message: String,
+    ) : DetailState()
+
     data object Initial : DetailState()
 }
 
 private sealed class CommentsState {
     data object Loading : CommentsState()
-    data class Success(val comments: List<FreeBoardComment>) : CommentsState()
-    data class Error(val message: String) : CommentsState()
+
+    data class Success(
+        val comments: List<FreeBoardComment>,
+    ) : CommentsState()
+
+    data class Error(
+        val message: String,
+    ) : CommentsState()
+
     data object Initial : CommentsState()
 }
 
 sealed class FreeBoardDetailState {
     data object Loading : FreeBoardDetailState()
+
     data class Success(
         val postDetail: FreeBoardPostDetail,
-        val comments: List<FreeBoardComment> = emptyList()
+        val comments: List<FreeBoardComment> = emptyList(),
     ) : FreeBoardDetailState()
 
-    data class Error(val message: String) : FreeBoardDetailState()
+    data class Error(
+        val message: String,
+    ) : FreeBoardDetailState()
 }

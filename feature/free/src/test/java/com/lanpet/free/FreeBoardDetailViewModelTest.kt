@@ -24,21 +24,20 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class FreeBoardDetailViewModelTest {
-
     private lateinit var viewModel: FreeBoardDetailViewModel
     private lateinit var getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase
     private lateinit var getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase
-
 
     @BeforeEach
     fun setUp() {
         getFreeBoardDetailUseCase = mockk()
         getFreeBoardCommentListUseCase = mockk()
 
-        viewModel = FreeBoardDetailViewModel(
-            getFreeBoardDetailUseCase,
-            getFreeBoardCommentListUseCase
-        )
+        viewModel =
+            FreeBoardDetailViewModel(
+                getFreeBoardDetailUseCase,
+                getFreeBoardCommentListUseCase,
+            )
     }
 
     @AfterEach
@@ -54,35 +53,36 @@ class FreeBoardDetailViewModelTest {
 
     @Nested
     inner class `UI State Test` {
-
         @OptIn(ExperimentalCoroutinesApi::class)
         @Test
         fun `CommentData fetch 성공,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Success 를 반환한다`() =
             runTest {
                 // given
                 val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns flow {
-                    emit(
-                        freeBoardPostDetailTestData
-                    )
-                }
+                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                    flow {
+                        emit(
+                            freeBoardPostDetailTestData,
+                        )
+                    }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns flow {
-                    emit(
-                        freeBoardCommentTestData
-                    )
-                }
+                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                    flow {
+                        emit(
+                            freeBoardCommentTestData,
+                        )
+                    }
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
-                val job = launch(UnconfinedTestDispatcher()) {
-                    viewModel.uiState.collect { states.add(it) }
-                }
+                val job =
+                    launch(UnconfinedTestDispatcher()) {
+                        viewModel.uiState.collect { states.add(it) }
+                    }
 
                 // when
                 viewModel.init(postId)
                 advanceUntilIdle()
-
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Success)
@@ -95,26 +95,28 @@ class FreeBoardDetailViewModelTest {
             runTest {
                 // given
                 val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns flow {
-                    throw Exception("Failed to fetch detail")
-                }
+                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                    flow {
+                        throw Exception("Failed to fetch detail")
+                    }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns flow {
-                    emit(
-                        freeBoardCommentTestData
-                    )
-                }
+                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                    flow {
+                        emit(
+                            freeBoardCommentTestData,
+                        )
+                    }
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
-                val job = launch(UnconfinedTestDispatcher()) {
-                    viewModel.uiState.collect { states.add(it) }
-                }
+                val job =
+                    launch(UnconfinedTestDispatcher()) {
+                        viewModel.uiState.collect { states.add(it) }
+                    }
 
                 // when
                 viewModel.init(postId)
                 advanceUntilIdle()
-
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)
@@ -122,33 +124,34 @@ class FreeBoardDetailViewModelTest {
                 job.cancel()
             }
 
-
         @OptIn(ExperimentalCoroutinesApi::class)
         @Test
         fun `CommentData fetch 실패,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Error 을 반환한다`() =
             runTest {
                 // given
                 val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns flow {
-                    emit(
-                        freeBoardPostDetailTestData
-                    )
-                }
+                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                    flow {
+                        emit(
+                            freeBoardPostDetailTestData,
+                        )
+                    }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns flow {
-                    throw Exception("Failed to fetch comments")
-                }
+                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                    flow {
+                        throw Exception("Failed to fetch comments")
+                    }
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
-                val job = launch(UnconfinedTestDispatcher()) {
-                    viewModel.uiState.collect { states.add(it) }
-                }
+                val job =
+                    launch(UnconfinedTestDispatcher()) {
+                        viewModel.uiState.collect { states.add(it) }
+                    }
 
                 // when
                 viewModel.init(postId)
                 advanceUntilIdle()
-
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)

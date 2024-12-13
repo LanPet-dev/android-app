@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.domain.model.Age
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.Close
@@ -46,13 +45,12 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.domain.model.Age
 import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileAddProfileScreen(
-    onClose: () -> Unit = { }
-) {
+fun MyProfileAddProfileScreen(onClose: () -> Unit = { }) {
     val authViewModel = LocalAuthManager.current
 
     val verticalScrollState = rememberScrollState()
@@ -70,8 +68,7 @@ fun MyProfileAddProfileScreen(
                             )
                         },
                         onClick =
-                        onClose
-
+                        onClose,
                     )
                 },
                 title = {
@@ -80,25 +77,27 @@ fun MyProfileAddProfileScreen(
                     )
                 },
             )
-        }
+        },
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column(
-                modifier = Modifier
-                    .verticalScroll(
-                        verticalScrollState,
-                    )
+                modifier =
+                    Modifier
+                        .verticalScroll(
+                            verticalScrollState,
+                        ),
             ) {
                 CommonSubHeading1(
-                    title = stringResource(R.string.heading_my_profile_add_profile, "닉네임")
+                    title = stringResource(R.string.heading_my_profile_add_profile, "닉네임"),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
                 ProfileImageWithPicker()
@@ -112,14 +111,13 @@ fun MyProfileAddProfileScreen(
                 BioInputSection()
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 CommonButton(
-                    title = stringResource(R.string.title_register_button)
+                    title = stringResource(R.string.title_register_button),
                 ) { }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
             }
         }
     }
 }
-
 
 @Composable
 private fun BioInputSection() {
@@ -130,7 +128,7 @@ private fun BioInputSection() {
     val maxLength = 200
 
     CommonSubHeading1(
-        title = stringResource(R.string.bio_hint_my_profile_add_profile)
+        title = stringResource(R.string.bio_hint_my_profile_add_profile),
     )
     Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
     Box {
@@ -141,19 +139,20 @@ private fun BioInputSection() {
             shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
             maxLines = 7,
             minLines = 7,
-            colors = OutlinedTextFieldDefaults.colors().copy(
-                unfocusedIndicatorColor = GrayColor.LIGHT,
-                focusedIndicatorColor = GrayColor.LIGHT,
-                disabledIndicatorColor = GrayColor.LIGHT,
-                focusedPlaceholderColor = GrayColor.MEDIUM,
-                unfocusedPlaceholderColor = GrayColor.MEDIUM,
-                disabledPlaceholderColor = GrayColor.MEDIUM,
-                cursorColor = GrayColor.MEDIUM,
-                focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors().copy(
+                    unfocusedIndicatorColor = GrayColor.LIGHT,
+                    focusedIndicatorColor = GrayColor.LIGHT,
+                    disabledIndicatorColor = GrayColor.LIGHT,
+                    focusedPlaceholderColor = GrayColor.MEDIUM,
+                    unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                    disabledPlaceholderColor = GrayColor.MEDIUM,
+                    cursorColor = GrayColor.MEDIUM,
+                    focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                ),
             singleLine = false,
             onValueChange = { newText ->
                 if (newText.length <= maxLength) {
@@ -170,9 +169,9 @@ private fun BioInputSection() {
 
         Box(
             modifier =
-            Modifier
-                .matchParentSize()
-                .padding(bottom = 16.dp, end = 16.dp),
+                Modifier
+                    .matchParentSize()
+                    .padding(bottom = 16.dp, end = 16.dp),
             contentAlignment = Alignment.BottomEnd,
         ) {
             Text(
@@ -187,18 +186,18 @@ private fun BioInputSection() {
 @Composable
 private fun SelectPreferPetSection() {
     CommonSubHeading1(
-        title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile)
+        title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile),
     )
 
     Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
     FlowRow {
         SelectableChip(
             title = "고양이",
-            isSelected = false
+            isSelected = false,
         ) { }
         SelectableChip(
             title = "강아지",
-            isSelected = false
+            isSelected = false,
         ) { }
     }
 }
@@ -207,30 +206,30 @@ private fun SelectPreferPetSection() {
 @Composable
 private fun SelectAgeSection() {
     CommonSubHeading1(
-        title = stringResource(R.string.age_hint_my_profile_add_profile)
+        title = stringResource(R.string.age_hint_my_profile_add_profile),
     )
 
     Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
     FlowRow {
         SelectableChip(
             title = Age.TENS.value,
-            isSelected = false
+            isSelected = false,
         ) { }
         SelectableChip(
             title = Age.TWENTIES.value,
-            isSelected = false
+            isSelected = false,
         ) { }
         SelectableChip(
             title = Age.THIRTIES.value,
-            isSelected = false
+            isSelected = false,
         ) { }
         SelectableChip(
             title = Age.FORTIES.value,
-            isSelected = false
+            isSelected = false,
         ) { }
         SelectableChip(
             title = Age.FIFTIES.value,
-            isSelected = false
+            isSelected = false,
         ) { }
     }
 }
@@ -238,7 +237,7 @@ private fun SelectAgeSection() {
 @Composable
 private fun NickNameSection() {
     CommonSubHeading1(
-        title = stringResource(R.string.nickname_hint_my_profile_add_profile)
+        title = stringResource(R.string.nickname_hint_my_profile_add_profile),
     )
     Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
     TextFieldWithDeleteButton(

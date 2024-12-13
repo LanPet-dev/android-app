@@ -22,7 +22,7 @@ fun NavController.navigateToWikiBaseRoute() {
         WikiBaseRoute,
     ) {
         launchSingleTop = true
-        popUpTo(0){
+        popUpTo(0) {
             inclusive = true
         }
     }
@@ -44,7 +44,5 @@ object WikiBaseRoute
 
 @Serializable
 data object Wiki {
-    override fun toString(): String {
-        return (this::class.java.toString()).split(" ").last()
-    }
+    override fun toString(): String = (this::class.java.toString()).split(" ").last()
 }

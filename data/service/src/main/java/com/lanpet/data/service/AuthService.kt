@@ -12,6 +12,6 @@ interface AuthService {
         @Field("grant_type") grantType: String,
         @Field("code") code: String,
         @Field("client_id") clientId: String,
-        @Field("redirect_uri") redirectUri: String
+        @Field("redirect_uri") redirectUri: String,
     ): TokenResponse
 }

@@ -33,13 +33,14 @@ fun ProfileImageWithPicker() {
         mutableStateOf(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-    ) { uri: Uri? ->
-        uri?.let {
-            imageUri = it
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) { uri: Uri? ->
+            uri?.let {
+                imageUri = it
+            }
         }
-    }
 
     CommonImagePickerView(
         imageUri,
@@ -48,44 +49,49 @@ fun ProfileImageWithPicker() {
     }
 }
 
-
 @Composable
-fun CommonImagePickerView(imageUri: Uri?, size: Dp = 130.dp, onEditButtonClick: () -> Unit) {
+fun CommonImagePickerView(
+    imageUri: Uri?,
+    size: Dp = 130.dp,
+    onEditButtonClick: () -> Unit,
+) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        contentAlignment = Alignment.Center,
     ) {
         Box {
             Image(
-                painter = if (imageUri != null) {
-                    rememberAsyncImagePainter(imageUri)
-                } else {
-                    painterResource(R.drawable.img_dummy)
-                },
+                painter =
+                    if (imageUri != null) {
+                        rememberAsyncImagePainter(imageUri)
+                    } else {
+                        painterResource(R.drawable.img_dummy)
+                    },
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.crop(size = size)
+                modifier = Modifier.crop(size = size),
             )
             Image(
                 painter = painterResource(R.drawable.ic_edit),
                 contentDescription = null,
-                modifier = Modifier
-                    .align(
-                        alignment = Alignment.BottomEnd
-                    )
-                    .size(32.dp)
-                    .clip(
-                        shape = CircleShape
-                    )
-                    .clickable {
-                        onEditButtonClick()
-                    }
+                modifier =
+                    Modifier
+                        .align(
+                            alignment = Alignment.BottomEnd,
+                        )
+                        .size(32.dp)
+                        .clip(
+                            shape = CircleShape,
+                        )
+                        .clickable {
+                            onEditButtonClick()
+                        },
             )
         }
     }
 }
-
 
 @PreviewLightDark
 @Composable

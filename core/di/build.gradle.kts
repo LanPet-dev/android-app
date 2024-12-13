@@ -13,7 +13,6 @@ plugins {
 
 android {
     namespace = "com.lanpet.core.di"
-
 }
 
 dependencies {

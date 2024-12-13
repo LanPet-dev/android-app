@@ -23,13 +23,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.landing.navigation.Landing
-import com.example.landing.navigation.landingNavGraph
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
 import com.lanpet.feature.auth.navigation.authNavGraph
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.feature.landing.navigation.Landing
+import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToSettings
@@ -86,27 +86,28 @@ fun AppNavigation() {
 
     LaunchedEffect(navBackStackEntry?.destination?.route) {
         // 현재 화면이 BottomNav를 표시해야 하는지 확인
-        shouldShowBottomBar = when (navBackStackEntry?.destination?.route) {
-            Wiki.toString() -> {
-                navItem = BottomNavItem.Wiki
-                true
-            }
+        shouldShowBottomBar =
+            when (navBackStackEntry?.destination?.route) {
+                Wiki.toString() -> {
+                    navItem = BottomNavItem.Wiki
+                    true
+                }
 
-            FreeBoard.toString() -> {
-                navItem = BottomNavItem.Free
-                true
-            }
+                FreeBoard.toString() -> {
+                    navItem = BottomNavItem.Free
+                    true
+                }
 
-            MyProfile.toString() -> {
-                navItem = BottomNavItem.MyPage
-                true
-            }
+                MyProfile.toString() -> {
+                    navItem = BottomNavItem.MyPage
+                    true
+                }
 
-            MyProfileCreateProfile.toString()
+                MyProfileCreateProfile.toString(),
                 -> true
 
-            else -> false
-        }
+                else -> false
+            }
     }
 
     // BottomNav의 item이 변경되면 해당 item에 맞는 화면으로 이동
@@ -132,16 +133,16 @@ fun AppNavigation() {
             }
     }
 
-    Box(
-    ) {
+    Box {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
             NavHost(
                 navController = navController,
                 startDestination = Landing,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 landingNavGraph {
                     navController.navigateToLoginScreen()
@@ -170,7 +171,7 @@ fun AppNavigation() {
                     onNavigateToDone = { navController.navigateToProfileCreateDone() },
                     onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
                     onNavigateToMain = { navController.navigateToMainScreen() },
-                    navController = navController
+                    navController = navController,
                 )
 
                 navigation<MainNavigationRoute>(
@@ -194,19 +195,19 @@ fun AppNavigation() {
                         },
                         onNavigateToMyProfileModifyProfile = {
                             navController.navigateToMyProfileModifyProfile()
-                        }
+                        },
                     )
                     freeNavGraph(
                         onNavigateUp = {
                             navController.navigateUp()
-                        }
+                        },
                     )
                     wikiNavGraph()
                 }
                 settingsNavGraph(
                     onNavigateUp = {
                         navController.navigateUp()
-                    }
+                    },
                 )
                 myPostsNavGraph(
                     onNavigateUp = {
@@ -214,38 +215,43 @@ fun AppNavigation() {
                     },
                     onNavigateToFreeBoardDetail = {
                         navController.navigateToFreeBoardDetailScreen(it.toString())
-                    }
+                    },
                 )
             }
         }
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.BottomCenter),
             visible = shouldShowBottomBar,
-            enter = fadeIn(
-                // NavHost의 기본 애니메이션 duration과 easing 매칭
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
-            ),
-            exit = fadeOut(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
-            )
+            enter =
+                fadeIn(
+                    // NavHost의 기본 애니메이션 duration과 easing 매칭
+                    animationSpec =
+                        tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing,
+                        ),
+                ),
+            exit =
+                fadeOut(
+                    animationSpec =
+                        tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing,
+                        ),
+                ),
         ) {
             LanPetBottomNavBar(
                 selectedBottomNavItem = navItem,
-                bottomNavItemList = listOf(
-                    BottomNavItem.Wiki,
-                    BottomNavItem.Free,
-                    BottomNavItem.MyPage,
-                ),
+                bottomNavItemList =
+                    listOf(
+                        BottomNavItem.Wiki,
+                        BottomNavItem.Free,
+                        BottomNavItem.MyPage,
+                    ),
                 onItemSelected = { item ->
                     println("selected bottom nav item: $item")
                     navItem = item
-                }
+                },
             )
         }
     }

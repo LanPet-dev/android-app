@@ -24,7 +24,7 @@ fun CommonNavigateUpButton(onNavigateUp: () -> Unit) =
                 colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
             )
         },
-        onClick = { onNavigateUp() }
+        onClick = { onNavigateUp() },
     )
 
 @PreviewLightDark

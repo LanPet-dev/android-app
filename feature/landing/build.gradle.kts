@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.landing"
+    namespace = "com.lanpet.feature.landing"
 
     buildFeatures {
         compose = true

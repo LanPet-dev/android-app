@@ -12,7 +12,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class OauthDeepLinkHandlerActivity :
     ComponentActivity() {
-
     @Inject
     lateinit var authManager: AuthManager
 
@@ -44,5 +43,4 @@ class OauthDeepLinkHandlerActivity :
     private fun handleAuthError() {
         Toast.makeText(this, "인증 실패", Toast.LENGTH_SHORT).show()
     }
-
 }

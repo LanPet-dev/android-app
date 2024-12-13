@@ -47,16 +47,17 @@ import com.lanpet.domain.model.PetCategory
 fun MyPostsScreen(
     onNavigateUp: (() -> Unit)? = null,
     initialPage: Int = 0,
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {}
-
+    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
 ) {
     var currentTabIndex by rememberSaveable {
         mutableIntStateOf(initialPage)
     }
 
-    val pagerState = rememberPagerState(
-        pageCount = { 2 }, initialPage = initialPage
-    )
+    val pagerState =
+        rememberPagerState(
+            pageCount = { 2 },
+            initialPage = initialPage,
+        )
 
     LaunchedEffect(pagerState.currentPage) {
         currentTabIndex = pagerState.currentPage
@@ -70,13 +71,15 @@ fun MyPostsScreen(
         LanPetTopAppBar(title = {
             Text(stringResource(R.string.title_appbar_my_posts))
         }, navigationIcon = {
-            if (onNavigateUp != null) CommonNavigateUpButton {
-                onNavigateUp()
+            if (onNavigateUp != null) {
+                CommonNavigateUpButton {
+                    onNavigateUp()
+                }
             }
         })
     }) { paddingValues ->
         Surface(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
         ) {
             Column {
                 // Top tabbar
@@ -85,7 +88,9 @@ fun MyPostsScreen(
                 }
                 // TODO: content section. PageView with lists
                 HorizontalPager(
-                    pageSize = PageSize.Fill, modifier = Modifier.fillMaxSize(), state = pagerState
+                    pageSize = PageSize.Fill,
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState,
                 ) { index ->
                     if (index == 0) {
                         Column {
@@ -93,20 +98,22 @@ fun MyPostsScreen(
                         }
                     } else if (index == 1) {
                         MyFreeBoardPosts(
-                            freeBoardPosts = List(10) {
-                                FreeBoardPost(
-                                    id = it,
-                                    title = "Title $it",
-                                    content = loremIpsum(),
-                                    petCategory = PetCategory.CAT,
-                                    tags = listOf("tag1", "tag2"),
-                                    images = listOf("https://picsum.photos/200/300"),
-                                    createdAt = "2021-10-10T10:00:00Z",
-                                    updatedAt = "",
-                                    likeCount = 10,
-                                    commentCount = 111,
-                                )
-                            }, onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail
+                            freeBoardPosts =
+                                List(10) {
+                                    FreeBoardPost(
+                                        id = it,
+                                        title = "Title $it",
+                                        content = loremIpsum(),
+                                        petCategory = PetCategory.CAT,
+                                        tags = listOf("tag1", "tag2"),
+                                        images = listOf("https://picsum.photos/200/300"),
+                                        createdAt = "2021-10-10T10:00:00Z",
+                                        updatedAt = "",
+                                        likeCount = 10,
+                                        commentCount = 111,
+                                    )
+                                },
+                            onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                         )
                     }
                 }
@@ -116,16 +123,20 @@ fun MyPostsScreen(
 }
 
 @Composable
-private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> Unit) {
+private fun TabBarSection(
+    currentTabIndex: Int,
+    onTabBarIndexChanged: (Int) -> Unit,
+) {
     TabRow(selectedTabIndex = currentTabIndex, divider = {
         HorizontalDivider(
             color = Color.Transparent,
         )
     }, indicator = { tabPositions ->
         SecondaryIndicator(
-            modifier = Modifier
-                .tabIndicatorOffset(tabPositions[currentTabIndex])
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .tabIndicatorOffset(tabPositions[currentTabIndex])
+                    .padding(horizontal = 24.dp),
         )
     }, tabs = {
         Tab(
@@ -139,7 +150,7 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
             Text(
                 stringResource(R.string.tab_title_wiki),
                 style = MaterialTheme.customTypography().body1SemiBoldSingle,
-                modifier = Modifier.padding(vertical = LanPetDimensions.Margin.medium)
+                modifier = Modifier.padding(vertical = LanPetDimensions.Margin.medium),
             )
         }
         Tab(
@@ -153,7 +164,7 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
             Text(
                 stringResource(R.string.tab_title_freeboard),
                 style = MaterialTheme.customTypography().body1SemiBoldSingle,
-                modifier = Modifier.padding(vertical = LanPetDimensions.Margin.medium)
+                modifier = Modifier.padding(vertical = LanPetDimensions.Margin.medium),
             )
         }
     })
@@ -162,15 +173,16 @@ private fun TabBarSection(currentTabIndex: Int, onTabBarIndexChanged: (Int) -> U
 @Composable
 fun MyFreeBoardPosts(
     freeBoardPosts: List<FreeBoardPost> = emptyList(),
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {}
+    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
 ) {
     val listState = rememberLazyListState()
 
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .padding(horizontal = LanPetDimensions.Margin.small)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .padding(horizontal = LanPetDimensions.Margin.small)
+                .fillMaxSize(),
     ) {
         items(freeBoardPosts.size) { index ->
             key(freeBoardPosts[index].id) {
@@ -178,14 +190,15 @@ fun MyFreeBoardPosts(
                     onNavigateToFreeBoardDetail(freeBoardPosts[index].id)
                 })
 
-                if (index < 10 - 1) HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    color = GrayColor.Gray100,
-                    thickness = 1.dp
-                )
+                if (index < 10 - 1) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        color = GrayColor.Gray100,
+                        thickness = 1.dp,
+                    )
+                }
             }
         }
-
     }
 }
 
@@ -195,7 +208,8 @@ fun PreviewMyPostWikiScreen() {
     LanPetAppTheme {
         Column {
             MyPostsScreen(
-                onNavigateUp = {}, initialPage = 0
+                onNavigateUp = {},
+                initialPage = 0,
             )
         }
     }
@@ -207,7 +221,8 @@ fun PreviewMyPostFreeBoardScreen() {
     LanPetAppTheme {
         Column {
             MyPostsScreen(
-                onNavigateUp = {}, initialPage = 1
+                onNavigateUp = {},
+                initialPage = 1,
             )
         }
     }

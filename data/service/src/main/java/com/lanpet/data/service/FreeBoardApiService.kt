@@ -6,7 +6,6 @@ import com.lanpet.domain.model.FreeBoardPostDetail
 import retrofit2.http.GET
 
 interface FreeBoardApiService {
-
     @GET
     suspend fun getFreeBoardPostList(): List<FreeBoardPost>
 
@@ -15,5 +14,4 @@ interface FreeBoardApiService {
 
     @GET
     suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
-
 }
