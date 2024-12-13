@@ -38,8 +38,6 @@ class OauthDeepLinkHandlerActivity :
     }
 
     private fun handleAuthSuccess(code: String) {
-        // TODO("Satoshi"): 인증 코드 처리
-        // TODO("Satoshi"): auth viewmodel 에 인증정보 저장
         authManager.handleAuthCode(code)
     }
 
