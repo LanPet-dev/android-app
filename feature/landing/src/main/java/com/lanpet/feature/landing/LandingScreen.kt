@@ -29,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
@@ -208,10 +207,7 @@ fun ImageSection(
     Image(
         painter = imagePainter,
         contentDescription = null,
-        modifier =
-            modifier.crop(
-                size = 300.dp,
-            ),
+        modifier = modifier.size(300.dp),
     )
 }
 
