@@ -35,7 +35,10 @@ import com.lanpet.core.designsystem.theme.PurpleColor
 import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
-fun LandingScreen(onNavigateToLogin: () -> Unit) {
+fun LandingScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToLogin: () -> Unit = {},
+) {
     Surface {
         Box(
             modifier =
@@ -58,7 +61,10 @@ fun LandingScreen(onNavigateToLogin: () -> Unit) {
 }
 
 @Composable
-fun PageView(pages: List<@Composable () -> Unit>) {
+fun PageView(
+    pages: List<@Composable () -> Unit>,
+    modifier: Modifier = Modifier,
+) {
     val pagerState =
         rememberPagerState(
             initialPage = 0,
@@ -96,7 +102,7 @@ fun PageView(pages: List<@Composable () -> Unit>) {
 }
 
 @Composable
-fun LandingPage1() {
+fun LandingPage1(modifier: Modifier = Modifier) {
     Column(
         modifier =
             Modifier
@@ -121,7 +127,7 @@ fun LandingPage1() {
 }
 
 @Composable
-fun LandingPage2() {
+fun LandingPage2(modifier: Modifier = Modifier) {
     Column(
         modifier =
             Modifier
@@ -146,7 +152,10 @@ fun LandingPage2() {
 }
 
 @Composable
-fun LandingPage3(navigateToLogin: () -> Unit) {
+fun LandingPage3(
+    modifier: Modifier = Modifier,
+    navigateToLogin: () -> Unit = {},
+) {
     Column(
         modifier =
             Modifier
@@ -175,8 +184,8 @@ fun LandingPage3(navigateToLogin: () -> Unit) {
 
 @Composable
 fun Heading(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text,
@@ -188,8 +197,8 @@ fun Heading(
 
 @Composable
 fun SubHeading(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text,
@@ -201,8 +210,8 @@ fun SubHeading(
 
 @Composable
 fun ImageSection(
-    modifier: Modifier = Modifier,
     imagePainter: Painter,
+    modifier: Modifier = Modifier,
 ) {
     Image(
         painter = imagePainter,
@@ -212,7 +221,10 @@ fun ImageSection(
 }
 
 @Composable
-fun LandingIndicatorItem(isActive: Boolean) {
+fun LandingIndicatorItem(
+    isActive: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val color =
         if (isActive) PurpleColor.MEDIUM else Color.LightGray
     Box(
@@ -227,7 +239,7 @@ fun LandingIndicatorItem(isActive: Boolean) {
 
 @PreviewLightDark
 @Composable
-fun PreviewLandingScreen() {
+private fun PreviewLandingScreen() {
     LanPetAppTheme {
         LandingScreen {}
     }

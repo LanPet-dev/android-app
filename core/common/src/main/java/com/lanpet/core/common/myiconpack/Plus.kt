@@ -18,31 +18,39 @@ public val MyIconPack.Plus: ImageVector
         }
         plus =
             Builder(
-                name = "Plus", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "Plus",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 2.0f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 2.0f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(21.0f, 12.0f)
                     horizontalLineTo(3.0f)
                 }
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 2.0f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 2.0f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(12.0f, 3.0f)
                     verticalLineTo(21.0f)
                 }
-            }
-                .build()
+            }.build()
         return plus!!
     }
 

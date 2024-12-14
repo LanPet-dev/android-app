@@ -75,6 +75,7 @@ import com.lanpet.core.designsystem.R as DS_R
 fun FreeBoardDetailScreen(
     postId: Int,
     onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
     LaunchedEffect(postId) {
@@ -118,7 +119,7 @@ fun FreeBoardDetailScreen(
 }
 
 @Composable
-fun LoadingUI() {
+fun LoadingUI(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -132,7 +133,10 @@ fun LoadingUI() {
 }
 
 @Composable
-fun ContentUI(state: FreeBoardDetailState.Success) {
+fun ContentUI(
+    state: FreeBoardDetailState.Success,
+    modifier: Modifier = Modifier,
+) {
     val verticalScrollState = rememberScrollState()
 
     Column(
@@ -263,37 +267,42 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
 
 // TODO: Comment section UI
 @Composable
-fun FreeBoardCommentSection(comments: List<FreeBoardComment> = emptyList()) {
-    Text(
-        "댓글 ${comments.size}",
-        style = MaterialTheme.customTypography().body2RegularMulti,
-        modifier =
-            Modifier.padding(
-                horizontal = LanPetDimensions.Spacing.small,
-                vertical = LanPetDimensions.Spacing.small,
-            ),
-    )
-    if (comments.isEmpty()) {
+fun FreeBoardCommentSection(
+    modifier: Modifier = Modifier,
+    comments: List<FreeBoardComment> = emptyList(),
+) {
+    Column {
         Text(
-            stringResource(R.string.body_no_comment_freeboard_detail),
-            style =
-                MaterialTheme.customTypography().body2RegularSingle.copy(
-                    color = GrayColor.Gray400,
+            "댓글 ${comments.size}",
+            style = MaterialTheme.customTypography().body2RegularMulti,
+            modifier =
+                Modifier.padding(
+                    horizontal = LanPetDimensions.Spacing.small,
+                    vertical = LanPetDimensions.Spacing.small,
                 ),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
         )
-    } else {
-        Column {
-            comments.forEach { comment ->
-                FreeBoardCommentItem(freeBoardComment = comment)
+        if (comments.isEmpty()) {
+            Text(
+                stringResource(R.string.body_no_comment_freeboard_detail),
+                style =
+                    MaterialTheme.customTypography().body2RegularSingle.copy(
+                        color = GrayColor.Gray400,
+                    ),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
+        } else {
+            Column {
+                comments.forEach { comment ->
+                    FreeBoardCommentItem(freeBoardComment = comment)
+                }
             }
         }
     }
 }
 
 @Composable
-fun CommentInputSection() {
+fun CommentInputSection(modifier: Modifier = Modifier) {
     var input by rememberSaveable { mutableStateOf("") }
 
     Column {
@@ -353,7 +362,7 @@ fun CommentInputSection() {
 
 @Composable
 private fun EmojiPicker(
-    onEmojiSelected: (String) -> Unit,
+    onEmojiSelect: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val emojis = listOf("😀", "😍", "🥰", "😎", "🤔", "😊", "🎉", "👍", "❤️", "🌟")
@@ -386,7 +395,7 @@ private fun EmojiPicker(
                     modifier =
                         Modifier
                             .size(48.dp)
-                            .clickable { onEmojiSelected(emoji) },
+                            .clickable { onEmojiSelect(emoji) },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -401,7 +410,7 @@ private fun EmojiPicker(
 
 @PreviewLightDark
 @Composable
-fun PreviewCommentInputSection() {
+private fun PreviewCommentInputSection() {
     LanPetAppTheme {
         CommentInputSection()
     }
@@ -410,7 +419,7 @@ fun PreviewCommentInputSection() {
 @Preview(heightDp = 2000)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, heightDp = 2000)
 @Composable
-fun FreeBoardDetailPreview() {
+private fun FreeBoardDetailPreview() {
     val freeBoardComment1 =
         FreeBoardComment(
             id = 1,

@@ -40,7 +40,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreateHumanBioScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
-    onNavigateToDone: () -> Unit = { },
+    modifier: Modifier = Modifier,
+    onNavigateToFinish: () -> Unit = { },
 ) {
     Scaffold(
         topBar = {
@@ -69,10 +70,12 @@ fun ProfileCreateHumanBioScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_human_bio_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                BioInputSection(manProfileCreateViewModel)
+                BioInputSection {
+                    manProfileCreateViewModel.setBio(it)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                    onNavigateToDone()
+                    onNavigateToFinish()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
@@ -81,7 +84,10 @@ fun ProfileCreateHumanBioScreen(
 }
 
 @Composable
-fun BioInputSection(viewModel: ManProfileCreateViewModel) {
+fun BioInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     var input by rememberSaveable {
         mutableStateOf("")
     }
@@ -113,8 +119,7 @@ fun BioInputSection(viewModel: ManProfileCreateViewModel) {
             onValueChange = { newText ->
                 if (newText.length <= maxLength) {
                     input = newText
-                    viewModel.setBio(newText)
-                    println(viewModel.manProfileCreate.value.toString())
+                    onTextChange(newText)
                 }
             },
             placeholder = {
@@ -142,7 +147,7 @@ fun BioInputSection(viewModel: ManProfileCreateViewModel) {
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateHumanBioScreen() {
+private fun PreviewProfileCreateHumanBioScreen() {
     LanPetAppTheme {
         ProfileCreateHumanBioScreen(
             manProfileCreateViewModel = hiltViewModel(),

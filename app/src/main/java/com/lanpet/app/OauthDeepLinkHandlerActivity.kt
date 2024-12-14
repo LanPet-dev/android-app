@@ -10,8 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OauthDeepLinkHandlerActivity :
-    ComponentActivity() {
+class OauthDeepLinkHandlerActivity : ComponentActivity() {
     @Inject
     lateinit var authManager: AuthManager
 

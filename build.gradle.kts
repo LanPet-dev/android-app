@@ -9,9 +9,41 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.jetbrains.serialization) apply false
     alias(libs.plugins.android.junit5) apply false
-    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.ktlint) apply true
 }
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint") // Version should be inherited from parent
+
+    dependencies {
+        add("ktlintRuleset", "io.nlopez.compose.rules:ktlint:0.4.22")
+    }
+
+    ktlint {
+        version.set("1.4.1")
+        debug.set(true)
+        verbose.set(true)
+        android.set(true)
+        outputToConsole.set(true)
+        reporters {
+            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+        }
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
+        }
+    }
+
+    tasks.whenTaskAdded {
+        // preBuild 태스크가 있는 경우에만 (안드로이드 모듈)
+        if (name == "preBuild") {
+            dependsOn("ktlintCheck")
+        }
+    }
+
+    // 빌드 전에 ktlint 검사 실행
+    tasks.matching { it.name.contains("build") }.configureEach {
+        dependsOn("ktlintCheck")
+    }
 }

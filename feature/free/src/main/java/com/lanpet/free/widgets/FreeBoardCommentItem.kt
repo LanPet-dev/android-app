@@ -35,9 +35,10 @@ import com.lanpet.domain.model.createdAtPostString
 @Composable
 fun FreeBoardCommentItem(
     freeBoardComment: FreeBoardComment,
+    modifier: Modifier = Modifier,
     isSubComment: Boolean = false,
-    onLikeClicked: () -> Unit = {},
-    onCommentClicked: () -> Unit = {},
+    onLikeClick: () -> Unit = {},
+    onCommentClick: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -154,7 +155,7 @@ fun FreeBoardCommentItem(
 @Preview(heightDp = 1400)
 @Preview(heightDp = 1400, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun FreeBoardCommentItemPreview() {
+private fun FreeBoardCommentItemPreview() {
     val freeBoardComment1 =
         FreeBoardComment(
             id = 1,

@@ -11,7 +11,10 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 
 @Composable
-fun FreeBoardScreen() {
+fun FreeBoardScreen(
+    modifier: Modifier = Modifier,
+    onNavigateUp: (() -> Unit)? = null,
+) {
     Scaffold {
         Surface(
             modifier =
@@ -26,7 +29,7 @@ fun FreeBoardScreen() {
 
 @PreviewLightDark
 @Composable
-fun FreeBoardScreenPreview() {
+private fun FreeBoardScreenPreview() {
     LanPetAppTheme {
         FreeBoardScreen()
     }

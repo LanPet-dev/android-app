@@ -15,7 +15,5 @@ class ProfileTypeTypeAdapter : TypeAdapter<ProfileType>() {
         }
     }
 
-    override fun read(`in`: JsonReader?): ProfileType? {
-        return `in`?.nextString()?.let { ProfileType.fromValue(it) }
-    }
+    override fun read(`in`: JsonReader?): ProfileType? = `in`?.nextString()?.let { ProfileType.fromValue(it) }
 }

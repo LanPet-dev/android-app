@@ -37,6 +37,7 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreateYesPetNameScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
+    modifier: Modifier = Modifier,
     onNavigateToPetCategory: () -> Unit = { },
 ) {
     Scaffold(
@@ -67,9 +68,13 @@ fun ProfileCreateYesPetNameScreen(
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_yes_pet_name))
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-                ImagePickSection(petProfileCreateViewModel)
+                ImagePickSection { uri ->
+                    petProfileCreateViewModel.setProfileImageUri(uri.toString())
+                }
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-                PetNameInputSection(petProfileCreateViewModel)
+                PetNameInputSection { name ->
+                    petProfileCreateViewModel.setNickName(name)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     onNavigateToPetCategory()
@@ -81,7 +86,10 @@ fun ProfileCreateYesPetNameScreen(
 }
 
 @Composable
-fun ImagePickSection(viewModel: PetProfileCreateViewModel) {
+fun ImagePickSection(
+    modifier: Modifier = Modifier,
+    onImageSelect: (Uri) -> Unit = { },
+) {
     var imageUri: Uri? by rememberSaveable {
         mutableStateOf(null)
     }
@@ -92,19 +100,22 @@ fun ImagePickSection(viewModel: PetProfileCreateViewModel) {
         ) { uri: Uri? ->
             uri?.let {
                 imageUri = it
-                viewModel.setProfileImageUri(it.toString())
+                onImageSelect(it)
             }
         }
 
     ImagePickerView(
-        imageUri,
+        imageUri = imageUri,
     ) {
         launcher.launch("image/*")
     }
 }
 
 @Composable
-fun PetNameInputSection(viewModel: PetProfileCreateViewModel) {
+fun PetNameInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     var nameInput by rememberSaveable {
         mutableStateOf("")
     }
@@ -118,13 +129,13 @@ fun PetNameInputSection(viewModel: PetProfileCreateViewModel) {
         placeholder = stringResource(R.string.name_input_placeholder_profile_create_yes_pet_name),
     ) {
         nameInput = it
-        viewModel.setNickName(it)
+        onTextChange(it)
     }
 }
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateYesPetNameScreen() {
+private fun PreviewProfileCreateYesPetNameScreen() {
     LanPetAppTheme {
         ProfileCreateYesPetNameScreen(
             petProfileCreateViewModel = hiltViewModel(),

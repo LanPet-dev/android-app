@@ -17,8 +17,8 @@ import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
 fun CommonHeading(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -33,8 +33,8 @@ fun CommonHeading(
 
 @Composable
 fun CommonHeadingHint(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -48,8 +48,8 @@ fun CommonHeadingHint(
 
 @Composable
 fun CommonSubHeading1(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -61,8 +61,8 @@ fun CommonSubHeading1(
 
 @Composable
 fun CommonAppBarTitle(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -72,7 +72,7 @@ fun CommonAppBarTitle(
 
 @Composable
 @PreviewLightDark
-fun CommonHeadingPreview() {
+private fun CommonHeadingPreview() {
     LanPetAppTheme {
         Column {
             Spacer(modifier = Modifier.height(8.dp))

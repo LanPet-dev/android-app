@@ -86,7 +86,7 @@ object WhiteColor {
 
 @Preview(showBackground = true, heightDp = 1500, widthDp = 800)
 @Composable
-fun ColorSystemPreview() {
+private fun ColorSystemPreview() {
     Column(
         modifier =
             Modifier

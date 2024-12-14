@@ -14,22 +14,24 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
-fun CommonNavigateUpButton(onNavigateUp: () -> Unit) =
-    CommonIconButtonBox(
-        content = {
-            Image(
-                imageVector = MyIconPack.ArrowLeft,
-                contentDescription = "ic_arrow_left",
-                modifier = Modifier.size(28.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
-            )
-        },
-        onClick = { onNavigateUp() },
-    )
+fun CommonNavigateUpButton(
+    modifier: Modifier = Modifier,
+    onNavigateUp: () -> Unit = {},
+) = CommonIconButtonBox(
+    content = {
+        Image(
+            imageVector = MyIconPack.ArrowLeft,
+            contentDescription = "ic_arrow_left",
+            modifier = Modifier.size(28.dp),
+            colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
+        )
+    },
+    onClick = { onNavigateUp() },
+)
 
 @PreviewLightDark
 @Composable
-fun CommonNavigateUpButtonPreview() {
+private fun CommonNavigateUpButtonPreview() {
     LanPetAppTheme {
         CommonNavigateUpButton {}
     }

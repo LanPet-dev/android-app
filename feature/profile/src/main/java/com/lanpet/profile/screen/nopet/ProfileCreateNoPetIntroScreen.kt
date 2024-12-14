@@ -37,7 +37,10 @@ import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateNoPetIntroScreen(onNavigateToNoPetNameScreen: () -> Unit) {
+fun ProfileCreateNoPetIntroScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToNoPetNameScreen: () -> Unit = {},
+) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -104,7 +107,7 @@ fun ProfileCreateNoPetIntroScreen(onNavigateToNoPetNameScreen: () -> Unit) {
 }
 
 @Composable
-fun ImageSection() {
+fun ImageSection(modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -136,8 +139,8 @@ fun ImageSection() {
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateNoPetIntroScreen() {
+private fun PreviewProfileCreateNoPetIntroScreen() {
     LanPetAppTheme {
-        ProfileCreateNoPetIntroScreen({})
+        ProfileCreateNoPetIntroScreen()
     }
 }

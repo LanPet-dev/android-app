@@ -3,13 +3,10 @@ package com.lanpet.core.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -33,16 +30,6 @@ fun Modifier.crop(
     .size(size)
     .clip(shape)
 
-fun Modifier.noRippleClickable(onClick: () -> Unit) =
-    composed {
-        clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() },
-        ) {
-            onClick()
-        }
-    }
-
 fun Modifier.commonBorder(
     border: BorderStroke =
         BorderStroke(
@@ -53,6 +40,4 @@ fun Modifier.commonBorder(
         RoundedCornerShape(
             LanPetDimensions.Corner.xLarge,
         ),
-) = composed {
-    border(border, shape)
-}
+) = this.border(border, shape)

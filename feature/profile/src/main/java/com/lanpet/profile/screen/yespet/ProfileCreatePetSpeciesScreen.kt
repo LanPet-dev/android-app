@@ -32,6 +32,7 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreatePetSpeciesScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
+    modifier: Modifier = Modifier,
     onNavigateToPetBio: () -> Unit = { },
 ) {
     Scaffold(
@@ -59,7 +60,9 @@ fun ProfileCreatePetSpeciesScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 Heading(title = stringResource(R.string.heading_profile_create_species_yes_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
-                PetSpeciesInputSection(petProfileCreateViewModel)
+                PetSpeciesInputSection {
+                    petProfileCreateViewModel.setSpecies(it)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     onNavigateToPetBio()
@@ -71,28 +74,33 @@ fun ProfileCreatePetSpeciesScreen(
 }
 
 @Composable
-fun PetSpeciesInputSection(viewModel: PetProfileCreateViewModel) {
+fun PetSpeciesInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     var nameInput by rememberSaveable {
         mutableStateOf("")
     }
 
-    Text(
-        stringResource(R.string.species_dropdown_label_profile_create_species_yes_pet),
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-    )
-    Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
-    TextFieldWithDeleteButton(
-        value = nameInput,
-        placeholder = stringResource(R.string.placeholder_profile_create_species_input),
-    ) {
-        nameInput = it
-        viewModel.setSpecies(it)
+    Column {
+        Text(
+            stringResource(R.string.species_dropdown_label_profile_create_species_yes_pet),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        )
+        Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Spacing.small))
+        TextFieldWithDeleteButton(
+            value = nameInput,
+            placeholder = stringResource(R.string.placeholder_profile_create_species_input),
+        ) {
+            nameInput = it
+            onTextChange(it)
+        }
     }
 }
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreatePetSpeciesScreen() {
+private fun PreviewProfileCreatePetSpeciesScreen() {
     LanPetAppTheme {
         ProfileCreatePetSpeciesScreen(
             petProfileCreateViewModel = hiltViewModel(),

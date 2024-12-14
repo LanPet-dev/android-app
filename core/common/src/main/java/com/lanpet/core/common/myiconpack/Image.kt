@@ -18,15 +18,21 @@ public val MyIconPack.Image: ImageVector
         }
         image =
             Builder(
-                name = "Image", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "Image",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 2.0f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 2.0f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(19.0f, 3.0f)
                     horizontalLineTo(5.0f)
@@ -40,11 +46,14 @@ public val MyIconPack.Image: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 2.0f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 2.0f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(8.5f, 10.0f)
                     curveTo(9.3284f, 10.0f, 10.0f, 9.3284f, 10.0f, 8.5f)
@@ -54,18 +63,20 @@ public val MyIconPack.Image: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 2.0f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 2.0f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(21.0f, 15.0f)
                     lineTo(16.0f, 10.0f)
                     lineTo(5.0f, 21.0f)
                 }
-            }
-                .build()
+            }.build()
         return image!!
     }
 

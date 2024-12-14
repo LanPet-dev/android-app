@@ -17,14 +17,16 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
-fun CommonChip(title: String) {
+fun CommonChip(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier =
             Modifier
                 .clip(
                     shape = CircleShape,
-                )
-                .background(color = GrayColor.Gray100)
+                ).background(color = GrayColor.Gray100)
                 .padding(horizontal = 10.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -37,7 +39,7 @@ fun CommonChip(title: String) {
 
 @Composable
 @PreviewLightDark
-fun CommonChipPreview() {
+private fun CommonChipPreview() {
     LanPetAppTheme {
         CommonChip("Chip")
     }

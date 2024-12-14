@@ -36,7 +36,10 @@ import com.lanpet.core.designsystem.theme.customTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onNavigateUp: (() -> Unit)? = null) {
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    onNavigateUp: (() -> Unit)? = null,
+) {
     val authViewModel = LocalAuthManager.current
 
     Scaffold(
@@ -181,6 +184,7 @@ fun SettingsScreen(onNavigateUp: (() -> Unit)? = null) {
 @Composable
 fun SettingsBaseSection(
     sectionLabel: String,
+    modifier: Modifier = Modifier,
     contents: @Composable () -> Unit,
 ) {
     Column {
@@ -195,7 +199,7 @@ fun SettingsBaseSection(
 
 @Composable
 @PreviewLightDark
-fun SettingsBaseSectionPreview() {
+private fun SettingsBaseSectionPreview() {
     LanPetAppTheme {
         SettingsBaseSection("Section Label") {
             Column {
@@ -239,7 +243,7 @@ fun SettingsBaseSectionPreview() {
 
 @Composable
 @PreviewLightDark
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     LanPetAppTheme {
         SettingsScreen()
     }
