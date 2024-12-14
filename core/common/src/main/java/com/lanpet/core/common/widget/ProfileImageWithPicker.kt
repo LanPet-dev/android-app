@@ -52,8 +52,9 @@ fun ProfileImageWithPicker() {
 @Composable
 fun CommonImagePickerView(
     imageUri: Uri?,
+    modifier: Modifier = Modifier,
     size: Dp = 130.dp,
-    onEditButtonClick: () -> Unit,
+    onEditButtonClick: () -> Unit = {},
 ) {
     Box(
         modifier =
@@ -80,12 +81,10 @@ fun CommonImagePickerView(
                     Modifier
                         .align(
                             alignment = Alignment.BottomEnd,
-                        )
-                        .size(32.dp)
+                        ).size(32.dp)
                         .clip(
                             shape = CircleShape,
-                        )
-                        .clickable {
+                        ).clickable {
                             onEditButtonClick()
                         },
             )
@@ -95,7 +94,7 @@ fun CommonImagePickerView(
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileImageWithPicker() {
+private fun PreviewProfileImageWithPicker() {
     LanPetAppTheme {
         ProfileImageWithPicker()
     }

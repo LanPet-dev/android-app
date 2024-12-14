@@ -40,7 +40,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreatePetBioScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
-    onNavigateToDone: () -> Unit = { },
+    modifier: Modifier = Modifier,
+    onNavigateToFinish: () -> Unit = { },
 ) {
     Scaffold(
         topBar = {
@@ -69,11 +70,13 @@ fun ProfileCreatePetBioScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_human_bio_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                BioInputSection(petProfileCreateViewModel)
+                BioInputSection { bioText ->
+                    petProfileCreateViewModel.setBio(bioText)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     // TODO: set profiles to server
-                    onNavigateToDone()
+                    onNavigateToFinish()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
@@ -82,7 +85,10 @@ fun ProfileCreatePetBioScreen(
 }
 
 @Composable
-fun BioInputSection(viewModel: PetProfileCreateViewModel) {
+fun BioInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     var input by rememberSaveable {
         mutableStateOf("")
     }
@@ -114,10 +120,7 @@ fun BioInputSection(viewModel: PetProfileCreateViewModel) {
             onValueChange = { newText ->
                 if (newText.length <= maxLength) {
                     input = newText
-                    viewModel.setBio(newText)
-                    println(
-                        viewModel.petProfileCreate.value.toString(),
-                    )
+                    onTextChange(newText)
                 }
             },
             placeholder = {
@@ -145,7 +148,7 @@ fun BioInputSection(viewModel: PetProfileCreateViewModel) {
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreatePetBioScreen() {
+private fun PreviewProfileCreatePetBioScreen() {
     LanPetAppTheme {
         ProfileCreatePetBioScreen(
             hiltViewModel(),

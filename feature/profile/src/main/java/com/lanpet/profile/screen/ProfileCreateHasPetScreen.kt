@@ -36,8 +36,9 @@ import com.lanpet.profile.widget.Heading
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCreateHasPetScreen(
-    onNavigateToYesPetScreen: () -> Unit,
-    onNavigateToNoPetScreen: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToYesPetScreen: () -> Unit = {},
+    onNavigateToNoPetScreen: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -80,12 +81,12 @@ private fun Content(
         horizontalArrangement = Arrangement.Center,
     ) {
         HasPetSelectButton(
-            onNavigateToYesPetScreen,
+            onClick = onNavigateToYesPetScreen,
             title = stringResource(R.string.yes_pet_profile_create_has_pet),
         )
         Spacer(Modifier.padding(horizontal = LanPetDimensions.Margin.small))
         HasPetSelectButton(
-            onNavigateToNoPetScreen,
+            onClick = onNavigateToNoPetScreen,
             title = stringResource(R.string.no_pet_profile_create_has_pet),
         )
     }
@@ -93,17 +94,16 @@ private fun Content(
 
 @Composable
 fun HasPetSelectButton(
-    onClick: () -> Unit,
     title: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier =
             Modifier
-                .clickable(
-                    onClick = onClick,
-                ).wrapContentSize()
+                .wrapContentSize()
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.customColorScheme.spacerLine,
@@ -111,6 +111,8 @@ fun HasPetSelectButton(
                 ).padding(
                     horizontal = LanPetDimensions.Margin.xLarge,
                     vertical = LanPetDimensions.Margin.xxLarge,
+                ).clickable(
+                    onClick = onClick,
                 ),
     ) {
         Image(
@@ -131,11 +133,8 @@ fun HasPetSelectButton(
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateHasPetScreen() {
+private fun PreviewProfileCreateHasPetScreen() {
     LanPetAppTheme {
-        ProfileCreateHasPetScreen(
-            {},
-            {},
-        )
+        ProfileCreateHasPetScreen()
     }
 }

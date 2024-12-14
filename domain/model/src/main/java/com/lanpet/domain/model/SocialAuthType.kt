@@ -5,10 +5,9 @@ enum class SocialAuthType {
     APPLE,
 }
 
-fun String.toSocialAuthType(): SocialAuthType {
-    return when (this) {
+fun String.toSocialAuthType(): SocialAuthType =
+    when (this) {
         "GOOGLE" -> SocialAuthType.GOOGLE
         "APPLE" -> SocialAuthType.APPLE
         else -> throw IllegalArgumentException("Unknown SocialAuthType")
     }
-}

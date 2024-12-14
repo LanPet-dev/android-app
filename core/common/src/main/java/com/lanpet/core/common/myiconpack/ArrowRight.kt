@@ -19,15 +19,19 @@ public val MyIconPack.ArrowRight: ImageVector
         }
         arrowRight =
             Builder(
-                name = "Chevron-right", defaultWidth = 20.0.dp,
+                name = "Chevron-right",
+                defaultWidth = 20.0.dp,
                 defaultHeight =
                     20.0.dp,
-                viewportWidth = 20.0f, viewportHeight = 20.0f,
+                viewportWidth = 20.0f,
+                viewportHeight = 20.0f,
             ).apply {
                 group {
                     path(
-                        fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF999999)),
-                        strokeLineWidth = 2.0f, strokeLineCap = Round,
+                        fill = SolidColor(Color(0x00000000)),
+                        stroke = SolidColor(Color(0xFF999999)),
+                        strokeLineWidth = 2.0f,
+                        strokeLineCap = Round,
                         strokeLineJoin =
                             StrokeJoin.Companion.Round,
                         strokeLineMiter = 4.0f,
@@ -39,8 +43,7 @@ public val MyIconPack.ArrowRight: ImageVector
                         lineTo(6.6668f, 3.3333f)
                     }
                 }
-            }
-                .build()
+            }.build()
         return arrowRight!!
     }
 

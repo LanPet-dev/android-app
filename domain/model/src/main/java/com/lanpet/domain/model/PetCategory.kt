@@ -1,6 +1,8 @@
 package com.lanpet.domain.model
 
-enum class PetCategory(val value: String) {
+enum class PetCategory(
+    val value: String,
+) {
     DOG("강아지"),
     CAT("고양이"),
     HAMSTER("햄스터"),

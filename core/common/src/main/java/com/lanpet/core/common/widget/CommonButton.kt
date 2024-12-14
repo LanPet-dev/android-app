@@ -27,10 +27,10 @@ enum class ButtonSize {
 
 @Composable
 fun CommonButton(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
     buttonSize: ButtonSize = ButtonSize.MEDIUM,
-    onClick: (() -> Unit)?,
+    onClick: (() -> Unit)? = null,
 ) {
     when (buttonSize) {
         ButtonSize.SMALL -> {
@@ -61,9 +61,9 @@ fun CommonButton(
 
 @Composable
 internal fun CommonButtonSmall(
-    modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
@@ -88,9 +88,9 @@ internal fun CommonButtonSmall(
 
 @Composable
 internal fun CommonButtonMedium(
-    modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
@@ -116,9 +116,9 @@ internal fun CommonButtonMedium(
 
 @Composable
 internal fun CommonButtonLarge(
-    modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
@@ -144,7 +144,7 @@ internal fun CommonButtonLarge(
 
 @PreviewLightDark
 @Composable()
-fun PreviewCommonButton() {
+private fun PreviewCommonButton() {
     LanPetAppTheme {
         Column {
             CommonButtonSmall(

@@ -27,7 +27,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     Scaffold {
@@ -72,8 +72,8 @@ fun LoginScreen() {
 
 @Composable
 fun Heading(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text,
@@ -85,8 +85,8 @@ fun Heading(
 
 @Composable
 fun SubHeading(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text,
@@ -98,8 +98,8 @@ fun SubHeading(
 
 @Composable
 private fun ImageSection(
-    modifier: Modifier = Modifier,
     imagePainter: Painter,
+    modifier: Modifier = Modifier,
 ) {
     Image(
         painter = imagePainter,
@@ -113,7 +113,7 @@ private fun ImageSection(
 
 @PreviewLightDark
 @Composable
-fun PreviewLoginScreen() {
+private fun PreviewLoginScreen() {
     LanPetAppTheme {
         LoginScreen()
     }

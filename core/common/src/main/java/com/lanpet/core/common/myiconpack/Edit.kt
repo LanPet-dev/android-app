@@ -18,12 +18,19 @@ public val MyIconPack.Edit: ImageVector
         }
         edit =
             Builder(
-                name = "Edit", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "Edit",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = EvenOdd,
                 ) {
                     moveTo(3.9292f, 21.0711f)
@@ -47,8 +54,12 @@ public val MyIconPack.Edit: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = EvenOdd,
                 ) {
                     moveTo(13.1216f, 6.636f)
@@ -58,8 +69,7 @@ public val MyIconPack.Edit: ImageVector
                     lineTo(13.1216f, 6.636f)
                     close()
                 }
-            }
-                .build()
+            }.build()
         return edit!!
     }
 

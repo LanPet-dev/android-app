@@ -17,8 +17,8 @@ class AuthRepositoryImpl
     constructor(
         private val authService: AuthService,
     ) : AuthRepository {
-        override suspend fun getAuthToken(authCode: String): Flow<SocialAuthToken> {
-            return flow {
+        override suspend fun getAuthToken(authCode: String): Flow<SocialAuthToken> =
+            flow {
                 val response: TokenResponse =
                     authService.getTokens(
                         grantType = "authorization_code",
@@ -33,5 +33,4 @@ class AuthRepositoryImpl
                     ),
                 )
             }.flowOn(Dispatchers.IO)
-        }
     }

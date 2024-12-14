@@ -22,7 +22,8 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 fun LanPetBottomNavBar(
     bottomNavItemList: List<BottomNavItem>,
     selectedBottomNavItem: BottomNavItem,
-    onItemSelected: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier,
+    onItemSelect: (BottomNavItem) -> Unit = {},
 ) {
     Column {
         Spacer(
@@ -49,7 +50,7 @@ fun LanPetBottomNavBar(
                     isSelected = bottomNavItem == selectedBottomNavItem,
                     bottomNavItem = bottomNavItem,
                     onClick = {
-                        onItemSelected(bottomNavItem)
+                        onItemSelect(bottomNavItem)
                     },
                 )
             }
@@ -59,7 +60,7 @@ fun LanPetBottomNavBar(
 
 @PreviewLightDark
 @Composable
-fun LanPetBottomNavBarPreview() {
+private fun LanPetBottomNavBarPreview() {
     LanPetAppTheme {
         LanPetBottomNavBar(
             bottomNavItemList =
@@ -69,7 +70,7 @@ fun LanPetBottomNavBarPreview() {
                     BottomNavItem.MyPage,
                 ),
             selectedBottomNavItem = BottomNavItem.Wiki,
-            onItemSelected = {},
+            onItemSelect = {},
         )
     }
 }

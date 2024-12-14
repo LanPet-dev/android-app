@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,9 +33,11 @@ import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.core.designsystem.R as DS_R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileCreateDoneScreen(onNavigateToMyProfile: () -> Unit) {
+fun ProfileCreateDoneScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToMyProfile: () -> Unit = {},
+) {
     Scaffold {
         Box(
             modifier =
@@ -149,7 +150,7 @@ fun ModernRippleEffect(
 
 // 사용 예시
 @Composable
-fun RippleProfileContainer() {
+fun RippleProfileContainer(modifier: Modifier = Modifier) {
     Box(
         modifier =
             Modifier
@@ -171,7 +172,7 @@ fun RippleProfileContainer() {
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateDoneScreen() {
+private fun PreviewProfileCreateDoneScreen() {
     LanPetAppTheme {
         ProfileCreateDoneScreen {
         }

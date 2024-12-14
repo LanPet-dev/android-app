@@ -43,7 +43,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreateNoPetNameScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
-    onNavigateToHumanAge: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToHumanAge: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -72,9 +73,13 @@ fun ProfileCreateNoPetNameScreen(
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             HeadingHint(title = stringResource(R.string.sub_heading_profile_create_no_pet_name))
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            ImagePickSection(manProfileCreateViewModel)
+            ImagePickSection { uri ->
+                manProfileCreateViewModel.setProfileImageUri(uri.toString())
+            }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            PetNameInputSection(manProfileCreateViewModel)
+            PetNameInputSection { nickName ->
+                manProfileCreateViewModel.setNickName(nickName)
+            }
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                 onNavigateToHumanAge()
@@ -85,7 +90,7 @@ fun ProfileCreateNoPetNameScreen(
 }
 
 @Composable
-fun ImagePickSection(viewModel: ManProfileCreateViewModel) {
+fun ImagePickSection(onImageSelect: (Uri) -> Unit) {
     var imageUri: Uri? by rememberSaveable {
         mutableStateOf(null)
     }
@@ -96,19 +101,22 @@ fun ImagePickSection(viewModel: ManProfileCreateViewModel) {
         ) { uri: Uri? ->
             uri?.let {
                 imageUri = it
-                viewModel.setProfileImageUri(it.toString())
+                onImageSelect(it)
             }
         }
 
     ImagePickerView(
-        imageUri,
+        imageUri = imageUri,
     ) {
         launcher.launch("image/*")
     }
 }
 
 @Composable
-fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
+fun PetNameInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     var nameInput by rememberSaveable {
         mutableStateOf("")
     }
@@ -132,7 +140,7 @@ fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
                 placeholder = stringResource(R.string.name_input_placeholder_profile_create_no_pet_name),
             ) {
                 nameInput = it
-                viewModel.setNickName(it)
+                onTextChange(it)
             }
             Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xxSmall))
             CommonButton(
@@ -154,7 +162,7 @@ fun PetNameInputSection(viewModel: ManProfileCreateViewModel) {
 }
 
 @Composable
-fun DuplicatedNicknameOkText() {
+fun DuplicatedNicknameOkText(modifier: Modifier = Modifier) {
     Text(
         stringResource(R.string.check_duplicated_nickname_ok_string),
         style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.confirmText),
@@ -162,7 +170,7 @@ fun DuplicatedNicknameOkText() {
 }
 
 @Composable
-fun DuplicatedNicknameErrorText() {
+fun DuplicatedNicknameErrorText(modifier: Modifier = Modifier) {
     Text(
         stringResource(R.string.check_duplicated_nickname_error_string),
         style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.errorText),
@@ -171,7 +179,7 @@ fun DuplicatedNicknameErrorText() {
 
 @PreviewLightDark
 @Composable
-fun PreviewErrorConfirmedText() {
+private fun PreviewErrorConfirmedText(modifier: Modifier = Modifier) {
     LanPetAppTheme {
         Column {
             DuplicatedNicknameOkText()
@@ -182,7 +190,7 @@ fun PreviewErrorConfirmedText() {
 
 @PreviewLightDark
 @Composable
-fun PreviewPetNameInputSection() {
+private fun PreviewPetNameInputSection() {
     LanPetAppTheme {
         PetNameInputSection(hiltViewModel())
     }
@@ -190,7 +198,7 @@ fun PreviewPetNameInputSection() {
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateNesPetNameScreen() {
+private fun PreviewProfileCreateNesPetNameScreen() {
     LanPetAppTheme {
         ProfileCreateNoPetNameScreen(
             manProfileCreateViewModel = hiltViewModel(),

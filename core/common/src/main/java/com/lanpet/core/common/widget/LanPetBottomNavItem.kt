@@ -26,7 +26,11 @@ import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
 
-enum class BottomNavItem(val title: String, val selectedIcon: Int, val unselectedIcon: Int) {
+enum class BottomNavItem(
+    val title: String,
+    val selectedIcon: Int,
+    val unselectedIcon: Int,
+) {
     Wiki(
         title = "반려백과",
         selectedIcon = R.drawable.ic_bottom_nav_wiki_selected,
@@ -48,7 +52,8 @@ enum class BottomNavItem(val title: String, val selectedIcon: Int, val unselecte
 fun LanPetBottomNavItem(
     isSelected: Boolean,
     bottomNavItem: BottomNavItem,
-    onClick: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier,
+    onClick: (BottomNavItem) -> Unit = {},
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.16f else 1f,
@@ -68,8 +73,7 @@ fun LanPetBottomNavItem(
                 .graphicsLayer {
                     scaleX = scale
                     scaleY = scale
-                }
-                .clip(CircleShape)
+                }.clip(CircleShape)
                 .clickable(onClick = { onClick(bottomNavItem) }),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,7 +98,7 @@ fun LanPetBottomNavItem(
 
 @Composable
 @PreviewLightDark
-fun LanPetBottomNavItemPreview() {
+private fun LanPetBottomNavItemPreview() {
     LanPetAppTheme {
         Column {
             Column {

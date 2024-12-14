@@ -16,17 +16,15 @@ class AccountRepositoryImpl
     constructor(
         private val accountService: AccountApiService,
     ) : AccountRepository {
-        override suspend fun registerAccount(): Flow<AccountToken> {
-            return flow {
+        override suspend fun registerAccount(): Flow<AccountToken> =
+            flow {
                 val response = accountService.registerAccount()
                 emit(response.toDomain())
             }.flowOn(Dispatchers.IO)
-        }
 
-        override suspend fun getAccount(): Flow<Account> {
-            return flow<Account> {
+        override suspend fun getAccount(): Flow<Account> =
+            flow<Account> {
                 val response = accountService.getAccount()
                 emit(response.toDomain())
             }.flowOn(Dispatchers.IO)
-        }
     }

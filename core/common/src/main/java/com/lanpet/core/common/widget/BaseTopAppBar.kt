@@ -24,6 +24,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanPetTopAppBar(
+    modifier: Modifier = Modifier,
     title: @Composable () -> Unit = {},
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -31,7 +32,6 @@ fun LanPetTopAppBar(
         TopAppBarDefaults.topAppBarColors().copy(
             containerColor = MaterialTheme.colorScheme.background,
         ),
-    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         windowInsets = WindowInsets(0, 0, 0, 0),
@@ -48,7 +48,7 @@ fun LanPetTopAppBar(
 fun LanPetCloseableTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
-    onCloseClick: () -> Unit,
+    onCloseClick: () -> Unit = {},
 ) {
     LanPetTopAppBar(
         title = {
@@ -79,7 +79,12 @@ private fun LanPetTopAppBarPreview() {
                 title = { Text("Title") },
             )
             LanPetTopAppBar(
-                navigationIcon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close") },
+                navigationIcon = {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Close",
+                    )
+                },
                 title = { Text("Title") },
             )
         }

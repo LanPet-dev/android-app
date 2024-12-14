@@ -45,6 +45,7 @@ import com.lanpet.domain.model.PetCategory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPostsScreen(
+    modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
     initialPage: Int = 0,
     onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
@@ -125,7 +126,7 @@ fun MyPostsScreen(
 @Composable
 private fun TabBarSection(
     currentTabIndex: Int,
-    onTabBarIndexChanged: (Int) -> Unit,
+    onBottomBarIndexChange: (Int) -> Unit,
 ) {
     TabRow(selectedTabIndex = currentTabIndex, divider = {
         HorizontalDivider(
@@ -144,7 +145,7 @@ private fun TabBarSection(
             selectedContentColor = PrimaryColor.PRIMARY,
             unselectedContentColor = GrayColor.Gray400,
             onClick = {
-                onTabBarIndexChanged(0)
+                onBottomBarIndexChange(0)
             },
         ) {
             Text(
@@ -158,7 +159,7 @@ private fun TabBarSection(
             unselectedContentColor = GrayColor.Gray400,
             selected = currentTabIndex == 1,
             onClick = {
-                onTabBarIndexChanged(1)
+                onBottomBarIndexChange(1)
             },
         ) {
             Text(
@@ -172,6 +173,7 @@ private fun TabBarSection(
 
 @Composable
 fun MyFreeBoardPosts(
+    modifier: Modifier = Modifier,
     freeBoardPosts: List<FreeBoardPost> = emptyList(),
     onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
 ) {
@@ -204,7 +206,7 @@ fun MyFreeBoardPosts(
 
 @Composable
 @PreviewLightDark
-fun PreviewMyPostWikiScreen() {
+private fun PreviewMyPostWikiScreen() {
     LanPetAppTheme {
         Column {
             MyPostsScreen(
@@ -217,7 +219,7 @@ fun PreviewMyPostWikiScreen() {
 
 @Composable
 @PreviewLightDark
-fun PreviewMyPostFreeBoardScreen() {
+private fun PreviewMyPostFreeBoardScreen() {
     LanPetAppTheme {
         Column {
             MyPostsScreen(

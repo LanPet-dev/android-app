@@ -18,15 +18,21 @@ public val MyIconPack.Search: ImageVector
         }
         search =
             Builder(
-                name = "Search", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "Search",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 1.5f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 1.5f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(11.0f, 19.0f)
                     curveTo(15.4183f, 19.0f, 19.0f, 15.4183f, 19.0f, 11.0f)
@@ -36,17 +42,19 @@ public val MyIconPack.Search: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF25262B)),
-                    strokeLineWidth = 1.5f, strokeLineCap = Round,
+                    fill = SolidColor(Color(0x00000000)),
+                    stroke = SolidColor(Color(0xFF25262B)),
+                    strokeLineWidth = 1.5f,
+                    strokeLineCap = Round,
                     strokeLineJoin =
                         StrokeJoin.Companion.Round,
-                    strokeLineMiter = 4.0f, pathFillType = NonZero,
+                    strokeLineMiter = 4.0f,
+                    pathFillType = NonZero,
                 ) {
                     moveTo(21.0f, 21.0f)
                     lineTo(16.65f, 16.65f)
                 }
-            }
-                .build()
+            }.build()
         return search!!
     }
 

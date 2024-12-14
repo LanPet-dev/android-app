@@ -13,8 +13,8 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
 fun Heading(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -29,8 +29,8 @@ fun Heading(
 
 @Composable
 fun HeadingHint(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         title,
@@ -44,7 +44,7 @@ fun HeadingHint(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHeading() {
+private fun PreviewHeading() {
     LanPetAppTheme {
         Column {
             Heading(title = "This is Heading")

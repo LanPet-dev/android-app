@@ -5,7 +5,6 @@ data class SocialAuthToken(
     val accessToken: String?,
     val refreshToken: String?,
 ) {
-    override fun toString(): String {
-        return "SocialAuthToken(socialAuthType=$socialAuthType, accessToken=$accessToken, refreshToken=$refreshToken)"
-    }
+    override fun toString(): String =
+        "SocialAuthToken(socialAuthType=$socialAuthType, accessToken=$accessToken, refreshToken=$refreshToken)"
 }

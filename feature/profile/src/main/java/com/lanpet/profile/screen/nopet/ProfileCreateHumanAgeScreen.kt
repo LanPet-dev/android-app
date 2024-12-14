@@ -10,7 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -31,7 +30,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreateHumanAgeScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
-    onNavigateToPreferPet: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToPreferPet: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -60,7 +60,9 @@ fun ProfileCreateHumanAgeScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_human_age_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                AgeChipSection(manProfileCreateViewModel)
+                AgeChipSection { age ->
+                    manProfileCreateViewModel.setAge(age)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     onNavigateToPreferPet()
@@ -73,46 +75,48 @@ fun ProfileCreateHumanAgeScreen(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun AgeChipSection(viewModel: ManProfileCreateViewModel) {
-    val manProfileCreate = viewModel.manProfileCreate.collectAsState()
-
+private fun AgeChipSection(
+    modifier: Modifier = Modifier,
+    selectedAge: Age? = null,
+    onAgeChange: (Age) -> Unit = {},
+) {
     FlowRow {
         SelectableChip(
             title = "10대",
-            isSelected = manProfileCreate.value.age?.value == "10대",
+            isSelected = selectedAge?.value == "10대",
         ) {
-            viewModel.setAge(Age.TENS)
+            onAgeChange(Age.TENS)
         }
         SelectableChip(
             title = "20대",
-            isSelected = manProfileCreate.value.age?.value == "20대",
+            isSelected = selectedAge?.value == "20대",
         ) {
-            viewModel.setAge(Age.TWENTIES)
+            onAgeChange(Age.TWENTIES)
         }
         SelectableChip(
             title = "30대",
-            isSelected = manProfileCreate.value.age?.value == "30대",
+            isSelected = selectedAge?.value == "30대",
         ) {
-            viewModel.setAge(Age.THIRTIES)
+            onAgeChange(Age.THIRTIES)
         }
         SelectableChip(
             title = "40대",
-            isSelected = manProfileCreate.value.age?.value == "40대",
+            isSelected = selectedAge?.value == "40대",
         ) {
-            viewModel.setAge(Age.FORTIES)
+            onAgeChange(Age.FORTIES)
         }
         SelectableChip(
             title = "50대 이상",
-            isSelected = manProfileCreate.value.age?.value == "50대 이상",
+            isSelected = selectedAge?.value == "50대 이상",
         ) {
-            viewModel.setAge(Age.FIFTIES)
+            onAgeChange(Age.FIFTIES)
         }
     }
 }
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreateHumanAgeScreen() {
+private fun PreviewProfileCreateHumanAgeScreen() {
     LanPetAppTheme {
         ProfileCreateHumanAgeScreen(
             manProfileCreateViewModel = hiltViewModel(),

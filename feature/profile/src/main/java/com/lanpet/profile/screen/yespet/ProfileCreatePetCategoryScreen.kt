@@ -31,7 +31,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreatePetCategoryScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
-    onNavigateToPetSpecies: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToPetSpecies: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -60,7 +61,17 @@ fun ProfileCreatePetCategoryScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_category_yes_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                CategoryChipSection(petProfileCreateViewModel)
+                petProfileCreateViewModel.petProfileCreate
+                    .collectAsState()
+                    .value.petCategory
+                    ?.let { it1 ->
+                        CategoryChipSection(
+                            selectedCategory =
+                            it1,
+                        ) {
+                            petProfileCreateViewModel.setPetCategory(it)
+                        }
+                    }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     onNavigateToPetSpecies()
@@ -73,88 +84,90 @@ fun ProfileCreatePetCategoryScreen(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun CategoryChipSection(viewModel: PetProfileCreateViewModel) {
-    val petCategory = viewModel.petProfileCreate.collectAsState()
-
+private fun CategoryChipSection(
+    selectedCategory: PetCategory,
+    modifier: Modifier = Modifier,
+    onItemSelect: (PetCategory) -> Unit = {},
+) {
     FlowRow {
         SelectableChip(
             title = "고양이",
-            isSelected = petCategory.value.petCategory?.value == "고양이",
+            isSelected = selectedCategory.value == "고양이",
         ) {
-            viewModel.setPetCategory(PetCategory.CAT)
+            onItemSelect(PetCategory.CAT)
         }
         SelectableChip(
             title = "강아지",
-            isSelected = petCategory.value.petCategory?.value == "강아지",
+            isSelected = selectedCategory.value == "강아지",
         ) {
-            viewModel.setPetCategory(PetCategory.DOG)
+            onItemSelect(PetCategory.DOG)
         }
         SelectableChip(
             title = "거미",
-            isSelected = petCategory.value.petCategory?.value == "거미",
+            isSelected = selectedCategory.value == "거미",
         ) {
-            viewModel.setPetCategory(PetCategory.SPIDER)
+            onItemSelect(PetCategory.SPIDER)
         }
         SelectableChip(
             title = "뱀",
-            isSelected = petCategory.value.petCategory?.value == "뱀",
+            isSelected = selectedCategory.value == "뱀",
         ) {
-            viewModel.setPetCategory(PetCategory.SNAKE)
+            onItemSelect(PetCategory.SNAKE)
         }
         SelectableChip(
             title = "물고기",
-            isSelected = petCategory.value.petCategory?.value == "물고기",
+            isSelected = selectedCategory.value == "물고기",
         ) {
-            viewModel.setPetCategory(PetCategory.FISH)
+            onItemSelect(PetCategory.FISH)
         }
         SelectableChip(
             title = "앵무새",
-            isSelected = petCategory.value.petCategory?.value == "앵무새",
+            isSelected = selectedCategory.value == "앵무새",
         ) {
-            viewModel.setPetCategory(PetCategory.PARROT)
+            onItemSelect(PetCategory.PARROT)
         }
         SelectableChip(
             title = "햄스터",
-            isSelected = petCategory.value.petCategory?.value == "햄스터",
+            isSelected = selectedCategory.value == "햄스터",
         ) {
-            viewModel.setPetCategory(PetCategory.HAMSTER)
+            onItemSelect(PetCategory.HAMSTER)
         }
         SelectableChip(
             title = "도마뱀",
-            isSelected = petCategory.value.petCategory?.value == "도마뱀",
+            isSelected = selectedCategory.value == "도마뱀",
         ) {
-            viewModel.setPetCategory(PetCategory.LIZARD)
+            onItemSelect(PetCategory.LIZARD)
         }
         SelectableChip(
             title = "양서류",
-            isSelected = petCategory.value.petCategory?.value == "양서류",
+            isSelected = selectedCategory.value == "양서류",
         ) {
-            viewModel.setPetCategory(PetCategory.AMPHIBIAN)
+            onItemSelect(PetCategory.AMPHIBIAN)
         }
         SelectableChip(
             title = "파충류",
-            isSelected = petCategory.value.petCategory?.value == "파충류",
+            isSelected = selectedCategory.value == "파충류",
         ) {
-            viewModel.setPetCategory(PetCategory.REPTILE)
+            onItemSelect(PetCategory.REPTILE)
         }
         SelectableChip(
             title = "거북이",
-            isSelected = petCategory.value.petCategory?.value == "거북이",
+            isSelected = selectedCategory.value == "거북이",
         ) {
-            viewModel.setPetCategory(PetCategory.TURTLE)
+            onItemSelect(PetCategory.TURTLE)
         }
         SelectableChip(
             title = "기타",
-            isSelected = petCategory.value.petCategory?.value == "기타",
+            isSelected = selectedCategory.value == "기타",
         ) {
-            viewModel.setPetCategory(PetCategory.ETC)
+            onItemSelect(PetCategory.ETC)
         }
     }
 }
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreatePetCategoryScreen() {
+private fun PreviewProfileCreatePetCategoryScreen() {
     LanPetAppTheme {
         ProfileCreatePetCategoryScreen(
             petProfileCreateViewModel = hiltViewModel(),
