@@ -35,13 +35,6 @@ subprojects {
         }
     }
 
-    tasks.whenTaskAdded {
-        // preBuild 태스크가 있는 경우에만 (안드로이드 모듈)
-        if (name == "preBuild") {
-            dependsOn("ktlintCheck")
-        }
-    }
-
     // 빌드 전에 ktlint 검사 실행
     tasks.matching { it.name.contains("build") }.configureEach {
         dependsOn("ktlintCheck")

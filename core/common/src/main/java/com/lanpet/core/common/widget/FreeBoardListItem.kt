@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.common.myiconpack.Message
@@ -33,7 +34,6 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.PetCategory
-import com.lanpet.domain.model.createdAtPostString
 
 @Composable
 fun FreeBoardListItem(
@@ -114,7 +114,7 @@ fun FreeBoardListItem(
             ) {
                 Text(
                     // TODO
-                    freeBoardPost.createdAtPostString(),
+                    createdAtPostString(freeBoardPost.createdAt),
                     style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray300),
                     modifier = Modifier.weight(1f),
                 )

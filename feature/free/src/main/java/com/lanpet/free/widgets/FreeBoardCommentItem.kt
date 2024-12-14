@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.common.myiconpack.Message
@@ -30,7 +31,6 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.FreeBoardComment
-import com.lanpet.domain.model.createdAtPostString
 
 @Composable
 fun FreeBoardCommentItem(
@@ -79,7 +79,7 @@ fun FreeBoardCommentItem(
                     )
                     Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xxxSmall))
                     Text(
-                        freeBoardComment.createdAtPostString(),
+                        createdAtPostString(freeBoardComment.createdAt),
                         style = MaterialTheme.customTypography().sub1MediumSingle.copy(color = GrayColor.Gray300),
                     )
                     Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xxSmall))
