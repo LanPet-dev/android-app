@@ -1,5 +1,6 @@
 package com.lanpet.core.common
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.WindowInsets
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -23,19 +24,18 @@ fun loremIpsum() =
     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     """.trimIndent()
 
+@SuppressLint("SimpleDateFormat")
 fun createdAtPostString(
     createdAt: String,
-    currentTime: Date = Date(),
+    currentTime: String? = null,
 ): String {
     try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val createdAtTimeMillis = createdAt.toLocalDate().time
+        val currentTimeTimeMillis =
+            currentTime?.let { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(it)?.time ?: 999999 }
+                ?: Date().time
 
-        val date = inputFormat.parse(createdAt) ?: return ""
-
-        assert(currentTime >= date)
-
-        val timeDiff = (currentTime.time - date.time) / 1000 // 초 단위 차이
+        val timeDiff = (currentTimeTimeMillis - createdAtTimeMillis) / 1000 // 초 단위 차이
 
         return when {
             timeDiff < 60 -> "방금 전"
@@ -46,6 +46,16 @@ fun createdAtPostString(
             else -> "${timeDiff / (60 * 60 * 24 * 365)}년 전"
         }
     } catch (e: Exception) {
+        e.printStackTrace()
         return ""
     }
+}
+
+fun String.toLocalDate(
+    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssXXX",
+    timeZone: TimeZone = TimeZone.getTimeZone("UTC"),
+): Date {
+    val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
+    parser.timeZone = timeZone
+    return parser.parse(this) ?: throw IllegalArgumentException("Invalid date format")
 }
