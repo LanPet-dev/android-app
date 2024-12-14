@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonSubHeading1
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -52,16 +52,16 @@ fun ProfileCreateYesPetNameScreen(
         },
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
-            Column(
-            ) {
+            Column {
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
                 Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -86,14 +86,15 @@ fun ImagePickSection(viewModel: PetProfileCreateViewModel) {
         mutableStateOf(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-    ) { uri: Uri? ->
-        uri?.let {
-            imageUri = it
-            viewModel.setProfileImageUri(it.toString())
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) { uri: Uri? ->
+            uri?.let {
+                imageUri = it
+                viewModel.setProfileImageUri(it.toString())
+            }
         }
-    }
 
     ImagePickerView(
         imageUri,

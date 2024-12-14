@@ -1,8 +1,8 @@
 package com.lanpet.data.dto
 
+import com.google.gson.annotations.SerializedName
 import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.model.SocialAuthType
-import com.google.gson.annotations.SerializedName
 
 data class TokenResponse(
     @SerializedName("access_token")
@@ -14,11 +14,12 @@ data class TokenResponse(
     @SerializedName("expires_in")
     val expiresIn: Int,
     @SerializedName("token_type")
-    val tokenType: String
+    val tokenType: String,
 )
 
-fun TokenResponse.toSocialAuthToken(socialAuthType: SocialAuthType) = SocialAuthToken(
-    accessToken = accessToken,
-    refreshToken = refreshToken,
-    socialAuthType = socialAuthType
-)
+fun TokenResponse.toSocialAuthToken(socialAuthType: SocialAuthType) =
+    SocialAuthToken(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        socialAuthType = socialAuthType,
+    )

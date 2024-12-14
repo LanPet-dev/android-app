@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.ArrowRight
@@ -36,16 +36,14 @@ import com.lanpet.core.designsystem.theme.customTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-    onNavigateUp: (() -> Unit)? = null,
-) {
-    val authViewModel = LocalAuthViewModel.current
+fun SettingsScreen(onNavigateUp: (() -> Unit)? = null) {
+    val authViewModel = LocalAuthManager.current
 
     Scaffold(
         topBar = {
             LanPetTopAppBar(
                 navigationIcon = {
-                    if (onNavigateUp != null)
+                    if (onNavigateUp != null) {
                         CommonIconButtonBox(
                             content = {
                                 Image(
@@ -55,8 +53,9 @@ fun SettingsScreen(
                                     colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
                                 )
                             },
-                            onClick = { onNavigateUp() }
+                            onClick = { onNavigateUp() },
                         )
+                    }
                 },
                 title = {
                     Text(
@@ -65,60 +64,59 @@ fun SettingsScreen(
                 },
             )
         },
-
-        ) { paddings ->
+    ) { paddings ->
         Surface(
-            modifier = Modifier.padding(paddings)
+            modifier = Modifier.padding(paddings),
         ) {
             Column {
                 SettingsBaseSection(
-                    sectionLabel = stringResource(R.string.sns_label_settings)
+                    sectionLabel = stringResource(R.string.sns_label_settings),
                 ) {
                     ListItem(
                         headlineContent = {
                             Text(
                                 "HeadLine1",
-                                style = MaterialTheme.customTypography().body2RegularSingle
+                                style = MaterialTheme.customTypography().body2RegularSingle,
                             )
                         },
                         trailingContent = {
                             Box(
-                                modifier = Modifier
-                                    .clip(
-                                        shape = CircleShape
-                                    )
-                                    .clickable {
-                                        authViewModel.logout()
-                                    }
+                                modifier =
+                                    Modifier
+                                        .clip(
+                                            shape = CircleShape,
+                                        ).clickable {
+                                            authViewModel.logout()
+                                        },
                             ) {
                                 CommonChip(stringResource(R.string.button_logout))
                             }
-                        }
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 SettingsBaseSection(
-                    sectionLabel = stringResource(R.string.notification_label_settings)
+                    sectionLabel = stringResource(R.string.notification_label_settings),
                 ) {
-                    //TODO("Satoshi"): separate switch values
+                    // TODO("Satoshi"): separate switch values
                     ListItem(
                         headlineContent = {
                             Text(
                                 stringResource(R.string.title_notification_option_switch_settings),
-                                style = MaterialTheme.customTypography().body2RegularSingle
+                                style = MaterialTheme.customTypography().body2RegularSingle,
                             )
                         },
                         trailingContent = {
                             Switch(
                                 checked = true,
-                                onCheckedChange = { }
+                                onCheckedChange = { },
                             )
-                        }
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 SettingsBaseSection(
-                    sectionLabel = stringResource(R.string.tos_label_settings)
+                    sectionLabel = stringResource(R.string.tos_label_settings),
                 ) {
                     Column {
                         ListItem(
@@ -126,7 +124,7 @@ fun SettingsScreen(
                             headlineContent = {
                                 Text(
                                     "서비스 이용약관",
-                                    style = MaterialTheme.customTypography().body2RegularSingle
+                                    style = MaterialTheme.customTypography().body2RegularSingle,
                                 )
                             },
                             trailingContent = {
@@ -134,14 +132,14 @@ fun SettingsScreen(
                                     imageVector = MyIconPack.ArrowRight,
                                     contentDescription = "ic_arrow_right",
                                 )
-                            }
+                            },
                         )
                         ListItem(
                             modifier = Modifier.clickable { },
                             headlineContent = {
                                 Text(
                                     "개인정보처리방침",
-                                    style = MaterialTheme.customTypography().body2RegularSingle
+                                    style = MaterialTheme.customTypography().body2RegularSingle,
                                 )
                             },
                             trailingContent = {
@@ -149,45 +147,47 @@ fun SettingsScreen(
                                     imageVector = MyIconPack.ArrowRight,
                                     contentDescription = "ic_arrow_right",
                                 )
-                            }
+                            },
                         )
-
                     }
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 SettingsBaseSection(
-                    sectionLabel = stringResource(R.string.information_label_settings)
+                    sectionLabel = stringResource(R.string.information_label_settings),
                 ) {
                     ListItem(
                         headlineContent = {
                             Text(
                                 "버전 0.01 alpha",
-                                style = MaterialTheme.customTypography().body2RegularSingle
+                                style = MaterialTheme.customTypography().body2RegularSingle,
                             )
                         },
                         trailingContent = {
                             Text(
                                 "최신버전이에요",
-                                style = MaterialTheme.customTypography().body3SemiBoldSingle.copy(
-                                    color = GrayColor.Gray400
-                                )
+                                style =
+                                    MaterialTheme.customTypography().body3SemiBoldSingle.copy(
+                                        color = GrayColor.Gray400,
+                                    ),
                             )
-                        }
+                        },
                     )
                 }
             }
         }
-
     }
 }
 
 @Composable
-fun SettingsBaseSection(sectionLabel: String, contents: @Composable () -> Unit) {
+fun SettingsBaseSection(
+    sectionLabel: String,
+    contents: @Composable () -> Unit,
+) {
     Column {
         Text(
             sectionLabel,
             style = MaterialTheme.customTypography().body3SemiBoldSingle.copy(color = GrayColor.Gray400),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         contents()
     }
@@ -208,7 +208,7 @@ fun SettingsBaseSectionPreview() {
                             imageVector = MyIconPack.ArrowRight,
                             contentDescription = "ic_arrow_right",
                         )
-                    }
+                    },
                 )
                 ListItem(
                     headlineContent = {
@@ -219,7 +219,7 @@ fun SettingsBaseSectionPreview() {
                             imageVector = MyIconPack.ArrowRight,
                             contentDescription = "ic_arrow_right",
                         )
-                    }
+                    },
                 )
                 ListItem(
                     headlineContent = {
@@ -230,7 +230,7 @@ fun SettingsBaseSectionPreview() {
                             imageVector = MyIconPack.ArrowRight,
                             contentDescription = "ic_arrow_right",
                         )
-                    }
+                    },
                 )
             }
         }

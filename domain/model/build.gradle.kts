@@ -7,7 +7,6 @@ plugins {
 
 android {
     namespace = "com.lanpet.domain.model"
-
 }
 
 dependencies {

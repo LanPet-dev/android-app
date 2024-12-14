@@ -9,20 +9,18 @@ import com.lanpet.free.FreeBoardDetailScreen
 import com.lanpet.free.FreeBoardScreen
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.freeNavGraph(
-    onNavigateUp: () -> Unit,
-) {
+fun NavGraphBuilder.freeNavGraph(onNavigateUp: () -> Unit) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
     ) {
-        composable<FreeBoard>() {
+        composable<FreeBoard> {
             FreeBoardScreen()
         }
         composable<FreeBoardDetail> {
             it.toRoute<FreeBoardDetail>().postId.let { postId ->
                 FreeBoardDetailScreen(
                     postId = postId.toInt(),
-                    onNavigateUp = onNavigateUp
+                    onNavigateUp = onNavigateUp,
                 )
             }
         }
@@ -43,8 +41,7 @@ fun NavController.navigateToFreeBoardBaseRoute() {
 fun NavController.navigateToFreeBoardDetailScreen(postId: String) {
     navigate(
         FreeBoardDetail(postId = postId),
-    ) {
-    }
+    ) {}
 }
 
 fun NavController.navigateToFreeBoardScreen() {
@@ -68,7 +65,5 @@ data class FreeBoardDetail(
 
 @Serializable
 data object FreeBoard {
-    override fun toString(): String {
-        return (this::class.java.toString()).split(" ").last()
-    }
+    override fun toString(): String = (this::class.java.toString()).split(" ").last()
 }

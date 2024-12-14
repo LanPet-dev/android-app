@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -16,18 +17,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.lanpet.feature.auth.navigation.authNavGraph
-import com.lanpet.feature.auth.navigation.navigateToLoginScreen
-import com.example.landing.navigation.Landing
-import com.example.landing.navigation.landingNavGraph
-import com.lanpet.core.auth.LocalAuthViewModel
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.feature.auth.navigation.authNavGraph
+import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.feature.landing.navigation.Landing
+import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToSettings
@@ -43,6 +45,7 @@ import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
 import com.lanpet.myprofile.navigation.navigateToMyProfileCreateProfile
+import com.lanpet.myprofile.navigation.navigateToMyProfileModifyProfile
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanBio
@@ -64,7 +67,7 @@ import kotlinx.coroutines.flow.drop
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val authViewModel = LocalAuthViewModel.current
+    val authViewModel = LocalAuthManager.current
 
     val authState = authViewModel.authState.collectAsState()
 
@@ -83,27 +86,28 @@ fun AppNavigation() {
 
     LaunchedEffect(navBackStackEntry?.destination?.route) {
         // 현재 화면이 BottomNav를 표시해야 하는지 확인
-        shouldShowBottomBar = when (navBackStackEntry?.destination?.route) {
-            Wiki.toString() -> {
-                navItem = BottomNavItem.Wiki
-                true
-            }
+        shouldShowBottomBar =
+            when (navBackStackEntry?.destination?.route) {
+                Wiki.toString() -> {
+                    navItem = BottomNavItem.Wiki
+                    true
+                }
 
-            FreeBoard.toString() -> {
-                navItem = BottomNavItem.Free
-                true
-            }
+                FreeBoard.toString() -> {
+                    navItem = BottomNavItem.Free
+                    true
+                }
 
-            MyProfile.toString() -> {
-                navItem = BottomNavItem.MyPage
-                true
-            }
+                MyProfile.toString() -> {
+                    navItem = BottomNavItem.MyPage
+                    true
+                }
 
-            MyProfileCreateProfile.toString()
+                MyProfileCreateProfile.toString(),
                 -> true
 
-            else -> false
-        }
+                else -> false
+            }
     }
 
     // BottomNav의 item이 변경되면 해당 item에 맞는 화면으로 이동
@@ -129,112 +133,125 @@ fun AppNavigation() {
             }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = Landing,
-            modifier = Modifier.weight(1f)
+    Box {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            landingNavGraph {
-                navController.navigateToLoginScreen()
-            }
-
-            authNavGraph()
-
-            profileNavGraph(
-                onNavigateToYesPetNameScreen = {
-                    navController.navigateToProfileCreateYesPetName()
-                },
-                onNavigateToNoPetNameScreen = {
-                    navController.navigateToProfileCreateNoPetName()
-                },
-                onNavigateToYesPetIntroScreen = {
-                    navController.navigateToProfileIntroYesPet()
-                },
-                onNavigateToNoPetIntroScreen = {
-                    navController.navigateToProfileIntroNoPet()
-                },
-                onNavigateToHumanBio = { navController.navigateToProfileCreateHumanBio() },
-                onNavigateToPetBio = { navController.navigateToProfileCreatePetBio() },
-                onNavigateToPetCategory = { navController.navigateToProfileCreatePetCategory() },
-                onNavigateToPetSpecies = { navController.navigateToProfileCreatePetSpecies() },
-                onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
-                onNavigateToDone = { navController.navigateToProfileCreateDone() },
-                onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
-                onNavigateToMain = { navController.navigateToMainScreen() },
-                navController = navController
-            )
-
-            navigation<MainNavigationRoute>(
-                startDestination = MyProfileBaseRoute,
+            NavHost(
+                navController = navController,
+                startDestination = Landing,
+                modifier = Modifier.weight(1f),
             ) {
-                myProfileNavGraph(
+                landingNavGraph {
+                    navController.navigateToLoginScreen()
+                }
+
+                authNavGraph()
+
+                profileNavGraph(
+                    onNavigateToYesPetNameScreen = {
+                        navController.navigateToProfileCreateYesPetName()
+                    },
+                    onNavigateToNoPetNameScreen = {
+                        navController.navigateToProfileCreateNoPetName()
+                    },
+                    onNavigateToYesPetIntroScreen = {
+                        navController.navigateToProfileIntroYesPet()
+                    },
+                    onNavigateToNoPetIntroScreen = {
+                        navController.navigateToProfileIntroNoPet()
+                    },
+                    onNavigateToHumanBio = { navController.navigateToProfileCreateHumanBio() },
+                    onNavigateToPetBio = { navController.navigateToProfileCreatePetBio() },
+                    onNavigateToPetCategory = { navController.navigateToProfileCreatePetCategory() },
+                    onNavigateToPetSpecies = { navController.navigateToProfileCreatePetSpecies() },
+                    onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
+                    onNavigateToDone = { navController.navigateToProfileCreateDone() },
+                    onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
+                    onNavigateToMain = { navController.navigateToMainScreen() },
+                    navController = navController,
+                )
+
+                navigation<MainNavigationRoute>(
+                    startDestination = MyProfileBaseRoute,
+                ) {
+                    myProfileNavGraph(
+                        onNavigateUp = {
+                            navController.navigateUp()
+                        },
+                        onNavigateToMyProfileCreateProfile = {
+                            navController.navigateToMyProfileCreateProfile()
+                        },
+                        onNavigateToMyProfileAddProfile = {
+                            navController.navigateToMyProfileAddProfile()
+                        },
+                        onNavigateToSettings = {
+                            navController.navigateToSettings()
+                        },
+                        onNavigateToMyPosts = {
+                            navController.navigateToMyPosts()
+                        },
+                        onNavigateToMyProfileModifyProfile = {
+                            navController.navigateToMyProfileModifyProfile()
+                        },
+                    )
+                    freeNavGraph(
+                        onNavigateUp = {
+                            navController.navigateUp()
+                        },
+                    )
+                    wikiNavGraph()
+                }
+                settingsNavGraph(
                     onNavigateUp = {
                         navController.navigateUp()
                     },
-                    onNavigateToMyProfileCreateProfile = {
-                        navController.navigateToMyProfileCreateProfile()
-                    },
-                    onNavigateToMyProfileAddProfile = {
-                        navController.navigateToMyProfileAddProfile()
-                    },
-                    onNavigateToSettings = {
-                        navController.navigateToSettings()
-                    },
-                    onNavigateToMyPosts = {
-                        navController.navigateToMyPosts()
-                    },
                 )
-                freeNavGraph(
+                myPostsNavGraph(
                     onNavigateUp = {
                         navController.navigateUp()
-                    }
+                    },
+                    onNavigateToFreeBoardDetail = {
+                        navController.navigateToFreeBoardDetailScreen(it.toString())
+                    },
                 )
-                wikiNavGraph()
             }
-            settingsNavGraph(
-                onNavigateUp = {
-                    navController.navigateUp()
-                }
-            )
-            myPostsNavGraph(
-                onNavigateUp = {
-                    navController.navigateUp()
-                },
-                onNavigateToFreeBoardDetail = {
-                    navController.navigateToFreeBoardDetailScreen(it.toString())
-                }
-            )
         }
         AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
             visible = shouldShowBottomBar,
-            enter = fadeIn(
-                // NavHost의 기본 애니메이션 duration과 easing 매칭
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
-            ),
-            exit = fadeOut(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
-            )
+            enter =
+                fadeIn(
+                    // NavHost의 기본 애니메이션 duration과 easing 매칭
+                    animationSpec =
+                        tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing,
+                        ),
+                ),
+            exit =
+                fadeOut(
+                    animationSpec =
+                        tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing,
+                        ),
+                ),
         ) {
             LanPetBottomNavBar(
                 selectedBottomNavItem = navItem,
-                bottomNavItemList = listOf(
-                    BottomNavItem.Wiki,
-                    BottomNavItem.Free,
-                    BottomNavItem.MyPage,
-                ),
+                bottomNavItemList =
+                    listOf(
+                        BottomNavItem.Wiki,
+                        BottomNavItem.Free,
+                        BottomNavItem.MyPage,
+                    ),
                 onItemSelected = { item ->
                     println("selected bottom nav item: $item")
                     navItem = item
-                }
+                },
             )
         }
     }

@@ -5,7 +5,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-data class Post(
+data class FreeBoardPost(
     val id: Int,
     val petCategory: PetCategory,
     val title: String,
@@ -35,13 +35,10 @@ data class Post(
         }
 }
 
-fun Post.createdAtPostString(
-    currentTime: Date = Date()
-): String {
+fun FreeBoardPost.createdAtPostString(currentTime: Date = Date()): String {
     try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
 
         val date = inputFormat.parse(createdAt) ?: return ""
 

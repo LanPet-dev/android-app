@@ -6,12 +6,10 @@ import androidx.navigation.compose.composable
 import com.lanpet.feature.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.settingsNavGraph(
-    onNavigateUp: () -> Unit
-) {
+fun NavGraphBuilder.settingsNavGraph(onNavigateUp: () -> Unit) {
     composable<Settings> {
         SettingsScreen(
-            onNavigateUp = onNavigateUp
+            onNavigateUp = onNavigateUp,
         )
     }
 }
@@ -23,7 +21,6 @@ fun NavController.navigateToSettings() {
         launchSingleTop = true
     }
 }
-
 
 @Serializable
 data object Settings

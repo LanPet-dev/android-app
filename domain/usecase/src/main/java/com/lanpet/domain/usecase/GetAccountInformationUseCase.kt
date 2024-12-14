@@ -5,10 +5,10 @@ import com.lanpet.domain.repository.AccountRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAccountInformationUseCase @Inject constructor(
-    private val accountRepository: AccountRepository
-) {
-    suspend operator fun invoke(): Flow<Account> {
-        return accountRepository.getAccount()
+class GetAccountInformationUseCase
+    @Inject
+    constructor(
+        private val accountRepository: AccountRepository,
+    ) {
+        suspend operator fun invoke(): Flow<Account> = accountRepository.getAccount()
     }
-}

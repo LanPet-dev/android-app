@@ -6,9 +6,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
@@ -22,5 +24,13 @@ fun CommonNavigateUpButton(onNavigateUp: () -> Unit) =
                 colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
             )
         },
-        onClick = { onNavigateUp() }
+        onClick = { onNavigateUp() },
     )
+
+@PreviewLightDark
+@Composable
+fun CommonNavigateUpButtonPreview() {
+    LanPetAppTheme {
+        CommonNavigateUpButton {}
+    }
+}

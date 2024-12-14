@@ -6,12 +6,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.myprofile.screen.MyProfileAddProfileScreen
 import com.lanpet.myprofile.screen.MyProfileCreateProfileScreen
+import com.lanpet.myprofile.screen.MyProfileModifyProfileScreen
 import com.lanpet.myprofile.screen.MyProfileScreen
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.myProfileNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToMyProfileCreateProfile: () -> Unit,
+    onNavigateToMyProfileModifyProfile: () -> Unit,
     onNavigateToMyProfileAddProfile: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToMyPosts: () -> Unit,
@@ -19,12 +21,11 @@ fun NavGraphBuilder.myProfileNavGraph(
     navigation<MyProfileBaseRoute>(
         startDestination = MyProfile,
     ) {
-        composable<MyProfile>(
-        ) {
+        composable<MyProfile> {
             MyProfileScreen(
                 onNavigateToProfileCreate = onNavigateToMyProfileCreateProfile,
                 onNavigateToSettings = onNavigateToSettings,
-                onNavigateToMyPosts = onNavigateToMyPosts
+                onNavigateToMyPosts = onNavigateToMyPosts,
             )
         }
         composable<MyProfileCreateProfile> {
@@ -33,15 +34,22 @@ fun NavGraphBuilder.myProfileNavGraph(
                     onNavigateUp()
                 },
                 onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
+                onNavigateToModifyProfile = onNavigateToMyProfileModifyProfile,
             )
         }
         composable<MyProfileAddProfile> {
             MyProfileAddProfileScreen(
                 onClose = {
                     onNavigateUp()
-                }
+                },
             )
-
+        }
+        composable<MyProfileModifyProfile> {
+            MyProfileModifyProfileScreen(
+                onClose = {
+                    onNavigateUp()
+                },
+            )
         }
     }
 }
@@ -75,6 +83,15 @@ fun NavController.navigateToMyProfileCreateProfile() {
     }
 }
 
+fun NavController.navigateToMyProfileModifyProfile() {
+    navigate(
+        MyProfileModifyProfile,
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
 fun NavController.navigateToMyProfile() {
     navigate(
         MyProfile,
@@ -92,9 +109,7 @@ object MyProfileBaseRoute
 
 @Serializable
 data object MyProfile {
-    override fun toString(): String {
-        return (this::class.java.toString()).split(" ").last()
-    }
+    override fun toString(): String = (this::class.java.toString()).split(" ").last()
 }
 
 @Serializable
@@ -102,3 +117,6 @@ object MyProfileCreateProfile
 
 @Serializable
 object MyProfileAddProfile
+
+@Serializable
+object MyProfileModifyProfile

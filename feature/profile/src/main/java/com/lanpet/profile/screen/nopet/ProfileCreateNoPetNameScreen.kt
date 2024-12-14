@@ -25,13 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.core.common.widget.CommonButton
-import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
@@ -59,13 +59,13 @@ fun ProfileCreateNoPetNameScreen(
     ) {
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
             Heading(title = stringResource(R.string.heading_profile_create_no_pet_name))
@@ -195,6 +195,5 @@ fun PreviewProfileCreateNesPetNameScreen() {
         ProfileCreateNoPetNameScreen(
             manProfileCreateViewModel = hiltViewModel(),
         ) {}
-
     }
 }

@@ -19,10 +19,10 @@ fun Heading(
     Text(
         title,
         style =
-        MaterialTheme.typography.titleLarge.copy(
-            color = MaterialTheme.customColorScheme.heading,
-            fontWeight = FontWeight.Bold,
-        ),
+            MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.customColorScheme.heading,
+                fontWeight = FontWeight.Bold,
+            ),
         modifier = modifier,
     )
 }
@@ -35,10 +35,10 @@ fun HeadingHint(
     Text(
         title,
         style =
-        MaterialTheme.typography.titleSmall.copy(
-            color =
-            GrayColor.LIGHT_MEDIUM,
-        ),
+            MaterialTheme.typography.titleSmall.copy(
+                color =
+                    GrayColor.LIGHT_MEDIUM,
+            ),
     )
 }
 

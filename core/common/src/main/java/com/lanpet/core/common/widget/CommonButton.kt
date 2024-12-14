@@ -22,7 +22,7 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 enum class ButtonSize {
     SMALL,
     MEDIUM,
-    LARGE
+    LARGE,
 }
 
 @Composable
@@ -30,14 +30,14 @@ fun CommonButton(
     modifier: Modifier = Modifier,
     title: String,
     buttonSize: ButtonSize = ButtonSize.MEDIUM,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     when (buttonSize) {
         ButtonSize.SMALL -> {
             CommonButtonSmall(
                 title = title,
                 modifier = modifier,
-                onClick = onClick
+                onClick = onClick,
             )
         }
 
@@ -45,7 +45,7 @@ fun CommonButton(
             CommonButtonMedium(
                 title = title,
                 modifier = modifier,
-                onClick = onClick
+                onClick = onClick,
             )
         }
 
@@ -53,7 +53,7 @@ fun CommonButton(
             CommonButtonLarge(
                 title = title,
                 modifier = modifier,
-                onClick = onClick
+                onClick = onClick,
             )
         }
     }
@@ -63,19 +63,21 @@ fun CommonButton(
 internal fun CommonButtonSmall(
     modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
             onClick?.invoke()
         },
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = MaterialTheme.customColorScheme.buttonBackground
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+        colors =
+            ButtonDefaults.buttonColors().copy(
+                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
     ) {
         Text(
             title,
@@ -88,20 +90,22 @@ internal fun CommonButtonSmall(
 internal fun CommonButtonMedium(
     modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
             onClick?.invoke()
         },
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = MaterialTheme.customColorScheme.buttonBackground
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .sizeIn(minHeight = 54.dp),
+        colors =
+            ButtonDefaults.buttonColors().copy(
+                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .sizeIn(minHeight = 54.dp),
     ) {
         Text(
             title,
@@ -114,51 +118,51 @@ internal fun CommonButtonMedium(
 internal fun CommonButtonLarge(
     modifier: Modifier = Modifier,
     title: String,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
             onClick?.invoke()
         },
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = MaterialTheme.customColorScheme.buttonBackground
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .sizeIn(minHeight = 64.dp)
+        colors =
+            ButtonDefaults.buttonColors().copy(
+                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .sizeIn(minHeight = 64.dp),
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
-
 
 @PreviewLightDark
 @Composable()
 fun PreviewCommonButton() {
     LanPetAppTheme {
         Column {
-
             CommonButtonSmall(
                 title = "This is title",
                 modifier = Modifier,
-                onClick = {}
+                onClick = {},
             )
             Spacer(modifier = Modifier.height(8.dp))
             CommonButtonMedium(
                 title = "This is title",
                 modifier = Modifier,
-                onClick = {}
+                onClick = {},
             )
             Spacer(modifier = Modifier.height(8.dp))
             CommonButtonLarge(
                 title = "This is title",
                 modifier = Modifier,
-                onClick = {}
+                onClick = {},
             )
         }
     }

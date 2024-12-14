@@ -1,0 +1,138 @@
+config:
+  validation: true
+
+complexity:
+  LongMethod:
+    threshold: 70 # Compose 함수는 일반적으로 더 길 수 있음
+  ComplexMethod:
+    threshold: 15 # 복잡한 UI 로직 고려
+  TooManyFunctions:
+    thresholdInFiles: 20
+    thresholdInClasses: 15
+    thresholdInInterfaces: 10
+  LongParameterList:
+    functionThreshold: 8 # Compose는 여러 파라미터를 가질 수 있음
+    constructorThreshold: 10
+    ignoreDefaultParameters: true
+    ignoreDataClasses: true
+  NestedBlockDepth:
+    threshold: 5 # Compose UI 중첩 고려
+
+formatting:
+  active: true
+  android: true
+  autoCorrect: true
+  MaximumLineLength:
+    maxLineLength: 120
+  ArgumentListWrapping:
+    active: true
+    maxLineLength: 120
+  Wrapping:
+    active: true
+    maxLineLength: 120
+  ComposableAnnotationOnNewLine:
+    active: true
+  ComposableParameterOrder:
+    active: true
+  ModifierAnnotationSpacing:
+    active: true
+  ModifierListSpacing:
+    active: true
+  ModifierOrderingSpacing:
+    active: true
+
+style:
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2', '8', '16', '24', '32', '48', '56', '64'] # 일반적인 UI 값
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+    excludePackageStatements: true
+    excludeImportStatements: true
+    excludeCommentStatements: false
+  ReturnCount:
+    max: 3
+    excludeReturnFromLambda: true
+  ThrowsCount:
+    max: 3
+  NewLineAtEndOfFile:
+    active: true
+  OptionalAbstractKeyword:
+    active: false
+  OptionalWhenBraces:
+    active: false
+  UnusedPrivateMember:
+    active: true
+    allowedNames: "(_|ignored|expected)"
+
+naming:
+  active: true
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    excludeClassPattern: '$^'
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9]*'
+  PackageNaming:
+    packagePattern: '[a-z]+(\.[a-z][A-Za-z0-9]*)*'
+
+performance:
+  active: true
+  SpreadOperator:
+    active: true
+  ArrayPrimitive:
+    active: true
+
+coroutines:
+  active: true
+  RedundantSuspendModifier:
+    active: true
+  SuspendFunWithCoroutineScopeReceiver:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+compose:
+  active: true
+  ComposableAnnotationNaming:
+    active: true
+    # Composable 함수는 대문자로 시작해야 함
+    composablePattern: '[A-Z][a-zA-Z0-9]*'
+  ComposableNaming:
+    active: true
+    # Preview 함수는 Preview로 끝나야 함
+    previewPattern: '[a-zA-Z0-9]*Preview$'
+  ModifierComposable:
+    active: true
+  ModifierMissing:
+    active: true
+  ModifierReused:
+    active: true
+  ComposableFunctionName:
+    active: true
+  CompositionLocalAllowlist:
+    active: true
+  CompositionLocalNaming:
+    active: true
+  ContentEmitterReturningValues:
+    active: true
+  PreviewNaming:
+    active: true
+  PreviewPublic:
+    active: true
+  ReusedModifierInstance:
+    active: true
+
+comments:
+  active: true
+  CommentOverPrivateProperty:
+    active: true
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false

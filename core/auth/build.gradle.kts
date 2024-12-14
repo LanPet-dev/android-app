@@ -12,10 +12,8 @@ plugins {
     alias(libs.plugins.convention.lib.junit5)
 }
 
-
 android {
     namespace = "com.lanpet.core.auth"
-
 
     buildFeatures {
         compose = true
@@ -31,7 +29,7 @@ dependencies {
     implementation(projects.domain.model)
 
     implementation(libs.androidx.browser)
-    //google auth
+    // google auth
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
@@ -40,9 +38,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(libs.mockk.android)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.hilt.testing)
-    testImplementation(libs.turbine)
     testImplementation(projects.domain.repository)
 }

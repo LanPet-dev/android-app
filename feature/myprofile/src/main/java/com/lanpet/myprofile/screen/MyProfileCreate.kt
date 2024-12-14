@@ -19,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,13 +48,14 @@ import com.lanpet.myprofile.R
 @Composable
 fun MyProfileCreateProfileScreen(
     onNavigateUp: (() -> Unit)? = null,
-    onNavigateToAddProfile: () -> Unit = {}
+    onNavigateToAddProfile: () -> Unit = {},
+    onNavigateToModifyProfile: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
             LanPetTopAppBar(
                 navigationIcon = {
-                    if (onNavigateUp != null)
+                    if (onNavigateUp != null) {
                         CommonIconButtonBox(
                             content = {
                                 Image(
@@ -65,8 +65,9 @@ fun MyProfileCreateProfileScreen(
                                     colorFilter = ColorFilter.tint(MaterialTheme.customColorScheme.defaultIconColor),
                                 )
                             },
-                            onClick = { onNavigateUp() }
+                            onClick = { onNavigateUp() },
                         )
+                    }
                 },
                 title = {
                     Text(
@@ -77,13 +78,14 @@ fun MyProfileCreateProfileScreen(
         },
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical
-                )
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column {
                 CommonHeading(
@@ -94,39 +96,35 @@ fun MyProfileCreateProfileScreen(
                     title = stringResource(R.string.heading_hint_my_profile_create),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
-                ProfileListCard(
-                    onModifyClicked = onNavigateToAddProfile
-                )
+                ProfileListCard { onNavigateToModifyProfile() }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                AddProfileCard()
+                AddProfileCard { onNavigateToAddProfile() }
             }
         }
     }
 }
 
 @Composable
-fun AddProfileCard(
-    onAddProfileClicked: () -> Unit = {}
-) {
-    val onAddProfileClickedCallback = remember { { onAddProfileClicked() } }
-
+fun AddProfileCard(onAddProfileClicked: () -> Unit = {}) {
     Surface(
-        modifier = Modifier
-            .clickable { onAddProfileClickedCallback() }
-            .commonBorder(
-                shape = RoundedCornerShape(
-                    LanPetDimensions.Corner.small
-                )
-            )
-            .fillMaxWidth()
-            .wrapContentHeight()
+        modifier =
+            Modifier
+                .clickable { onAddProfileClicked() }
+                .commonBorder(
+                    shape =
+                        RoundedCornerShape(
+                            LanPetDimensions.Corner.small,
+                        ),
+                ).fillMaxWidth()
+                .wrapContentHeight(),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(
-                horizontal = LanPetDimensions.Margin.medium,
-                vertical = LanPetDimensions.Margin.medium,
-            )
+            modifier =
+                Modifier.padding(
+                    horizontal = LanPetDimensions.Margin.medium,
+                    vertical = LanPetDimensions.Margin.medium,
+                ),
         ) {
             Image(
                 imageVector = MyIconPack.Plus,
@@ -135,49 +133,51 @@ fun AddProfileCard(
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Text(
-                style = MaterialTheme.customTypography().body2MediumSingle.copy(
-                    color = GrayColor.Gray300
-                ),
-                text = stringResource(
-                    R.string.body_add_profile_profile_create,
-                ),
+                style =
+                    MaterialTheme.customTypography().body2MediumSingle.copy(
+                        color = GrayColor.Gray300,
+                    ),
+                text =
+                    stringResource(
+                        R.string.body_add_profile_profile_create,
+                    ),
             )
         }
     }
 }
 
 @Composable
-fun ProfileListCard(
-    onModifyClicked: () -> Unit
-) {
-    val onModifyClickedCallback = remember { { onModifyClicked() } }
-
+fun ProfileListCard(onModifyClicked: () -> Unit) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .commonBorder(
-                border = BorderStroke(1.dp, PrimaryColor.PRIMARY),
-                shape = RoundedCornerShape(
-                    LanPetDimensions.Corner.small
-                )
-            )
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .commonBorder(
+                    border = BorderStroke(1.dp, PrimaryColor.PRIMARY),
+                    shape =
+                        RoundedCornerShape(
+                            LanPetDimensions.Corner.small,
+                        ),
+                ),
     ) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(
-                        horizontal = LanPetDimensions.Margin.medium,
-                        vertical = LanPetDimensions.Margin.medium,
-                    )
+                modifier =
+                    Modifier
+                        .padding(
+                            horizontal = LanPetDimensions.Margin.medium,
+                            vertical = LanPetDimensions.Margin.medium,
+                        ),
             ) {
                 Image(
-                    modifier = Modifier.crop(
-                        size = 64.dp
-                    ),
+                    modifier =
+                        Modifier.crop(
+                            size = 64.dp,
+                        ),
                     painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-                    contentDescription = "Profile Picture"
+                    contentDescription = "Profile Picture",
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 Column {
@@ -193,32 +193,33 @@ fun ProfileListCard(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
-                    modifier = Modifier
-                        .commonBorder(
-                            shape = RoundedCornerShape(
-                                LanPetDimensions.Corner.xSmall,
+                    modifier =
+                        Modifier
+                            .commonBorder(
+                                shape =
+                                    RoundedCornerShape(
+                                        LanPetDimensions.Corner.xSmall,
+                                    ),
+                            ).clip(RoundedCornerShape(LanPetDimensions.Corner.xSmall))
+                            .clickable { onModifyClicked() }
+                            .padding(
+                                horizontal = LanPetDimensions.Margin.medium,
+                                vertical = LanPetDimensions.Margin.xSmall,
                             ),
-                        )
-                        .clip(RoundedCornerShape(LanPetDimensions.Corner.xSmall))
-                        .clickable { onModifyClickedCallback() }
-                        .padding(
-                            horizontal = LanPetDimensions.Margin.medium,
-                            vertical = LanPetDimensions.Margin.xSmall,
-                        ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         stringResource(R.string.modify),
-                        style = MaterialTheme.customTypography().body2MediumSingle.copy(
-                            color = GrayColor.Gray400
-                        ),
+                        style =
+                            MaterialTheme.customTypography().body2MediumSingle.copy(
+                                color = GrayColor.Gray400,
+                            ),
                     )
                 }
             }
         }
     }
 }
-
 
 @PreviewLightDark
 @Composable
@@ -232,7 +233,7 @@ fun PreviewAddProfileCard() {
 @Composable
 fun PreviewMyProfileCreate() {
     LanPetAppTheme {
-        ProfileListCard( ) {}
+        ProfileListCard {}
     }
 }
 
@@ -241,7 +242,7 @@ fun PreviewMyProfileCreate() {
 fun MyProfileCreatePreview() {
     LanPetAppTheme {
         MyProfileCreateProfileScreen(
-            onNavigateUp = {  },
+            onNavigateUp = { },
         ) {}
     }
 }

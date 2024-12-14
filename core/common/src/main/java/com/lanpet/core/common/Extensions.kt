@@ -6,27 +6,30 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-fun WindowInsets.Companion.zero() = WindowInsets(
-    0, 0, 0, 0
-)
+fun WindowInsets.Companion.zero() =
+    WindowInsets(
+        0,
+        0,
+        0,
+        0,
+    )
 
-
-fun loremIpsum() = """
+fun loremIpsum() =
+    """
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
     Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
     Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-""".trimIndent()
+    """.trimIndent()
 
 fun createdAtPostString(
     createdAt: String,
-    currentTime: Date = Date()
+    currentTime: Date = Date(),
 ): String {
     try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
 
         val date = inputFormat.parse(createdAt) ?: return ""
 

@@ -21,4 +21,4 @@ android {
         implementation(projects.core.auth)
         implementation(libs.androidx.lifecycle.viewmodel.android)
     }
-    }
+}

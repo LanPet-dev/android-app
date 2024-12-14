@@ -22,15 +22,16 @@ class CognitoAuthManager(private val context: Context) {
     private fun buildAuthUri(): Uri {
         val encodedRedirectUri = URLEncoder.encode(REDIRECT_URI, StandardCharsets.UTF_8.toString())
 
-        val authUrl = buildString {
-            append(COGNITO_DOMAIN)
-            append("/oauth2/authorize")
-            append("?response_type=code")
-            append("&client_id=").append(CLIENT_ID)
-            append("&redirect_uri=").append(encodedRedirectUri)
-            append("&identity_provider=Google")
-            append("&scope=email+openid")
-        }
+        val authUrl =
+            buildString {
+                append(COGNITO_DOMAIN)
+                append("/oauth2/authorize")
+                append("?response_type=code")
+                append("&client_id=").append(CLIENT_ID)
+                append("&redirect_uri=").append(encodedRedirectUri)
+                append("&identity_provider=Google")
+                append("&scope=email+openid")
+            }
 
         return Uri.parse(authUrl)
     }

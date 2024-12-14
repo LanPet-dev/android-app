@@ -7,5 +7,5 @@ data class Account(
     val authId: String,
     val authority: AuthorityType,
     val exitDate: String?,
-    val exitReason: String?
+    val exitReason: String?,
 )

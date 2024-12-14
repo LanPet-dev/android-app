@@ -53,33 +53,30 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
-import com.lanpet.core.common.myiconpack.My
 import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
-import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
+import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardDetailScreen(
     postId: Int,
     onNavigateUp: () -> Unit,
-    freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>()
+    freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
-
     LaunchedEffect(postId) {
         freeBoardDetailViewModel.init(postId)
     }
@@ -95,12 +92,13 @@ fun FreeBoardDetailScreen(
                     }
                 },
             )
-        }
+        },
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
         ) {
             when (state.value) {
                 is FreeBoardDetailState.Loading -> {
@@ -123,11 +121,12 @@ fun FreeBoardDetailScreen(
 fun LoadingUI() {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
-            modifier = Modifier
-                .size(36.dp)
+            modifier =
+                Modifier
+                    .size(36.dp),
         )
     }
 }
@@ -137,13 +136,14 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
     val verticalScrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier
-            .verticalScroll(
-                state = verticalScrollState,
-            )
+        modifier =
+            Modifier
+                .verticalScroll(
+                    state = verticalScrollState,
+                ),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -153,10 +153,10 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                state.postDetail?.petCategory?.let {
+                state.postDetail.petCategory?.let {
                     Text(
                         it.value,
-                        style = MaterialTheme.customTypography().body3RegularSingle
+                        style = MaterialTheme.customTypography().body3RegularSingle,
                     )
                 }
             }
@@ -164,7 +164,7 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
 
             Text(
                 state.postDetail.title,
-                style = MaterialTheme.customTypography().title3SemiBoldMulti
+                style = MaterialTheme.customTypography().title3SemiBoldMulti,
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
             Row(
@@ -174,48 +174,52 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                     AsyncImage(
                         state.postDetail.writerImage,
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 } else {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_bottom_nav_mypage_unselected),
+                        painter = painterResource(id = DS_R.drawable.ic_bottom_nav_mypage_unselected),
                         contentDescription = "ic_profile",
-                        modifier = Modifier
-                            .size(24.dp)
+                        modifier =
+                            Modifier
+                                .size(24.dp),
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 state.postDetail.let {
                     Text(
                         it.writer,
-                        style = MaterialTheme.customTypography().body3RegularSingle
+                        style = MaterialTheme.customTypography().body3RegularSingle,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     createdAtPostString(state.postDetail.createdAt),
-                    style = MaterialTheme.customTypography().body2RegularSingle.copy(
-                        color = GrayColor.Gray300
-                    )
+                    style =
+                        MaterialTheme.customTypography().body2RegularSingle.copy(
+                            color = GrayColor.Gray300,
+                        ),
                 )
             }
         }
 
-        //line
+        // line
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = LanPetDimensions.Spacing.medium)
-                .size(1.dp)
-                .background(GrayColor.Gray50)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = LanPetDimensions.Spacing.medium)
+                    .size(1.dp)
+                    .background(GrayColor.Gray50),
         )
 
         Text(
             state.postDetail.content,
             style = MaterialTheme.customTypography().body2RegularMulti,
-            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small)
+            modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
         )
 
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
@@ -226,28 +230,30 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
                 contentDescription = "post_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth(),
-                error = painterResource(id = R.drawable.img_animals),
+                error = painterResource(id = DS_R.drawable.img_animals),
             )
         }
 
-        //line
+        // line
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = LanPetDimensions.Spacing.medium)
-                .size(4.dp)
-                .background(GrayColor.Gray50)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = LanPetDimensions.Spacing.medium)
+                    .size(4.dp)
+                    .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
-            comments = state.comments
+            comments = state.comments,
         )
-        //line
+        // line
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = LanPetDimensions.Spacing.medium)
-                .size(4.dp)
-                .background(GrayColor.Gray50)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = LanPetDimensions.Spacing.medium)
+                    .size(4.dp)
+                    .background(GrayColor.Gray50),
         )
         Spacer(modifier = Modifier.weight(1f))
         CommentInputSection()
@@ -255,28 +261,27 @@ fun ContentUI(state: FreeBoardDetailState.Success) {
     }
 }
 
-
-//TODO: Comment section UI
+// TODO: Comment section UI
 @Composable
-fun FreeBoardCommentSection(
-    comments: List<FreeBoardComment> = emptyList()
-) {
+fun FreeBoardCommentSection(comments: List<FreeBoardComment> = emptyList()) {
     Text(
         "댓글 ${comments.size}",
         style = MaterialTheme.customTypography().body2RegularMulti,
-        modifier = Modifier.padding(
-            horizontal = LanPetDimensions.Spacing.small,
-            vertical = LanPetDimensions.Spacing.small
-        )
+        modifier =
+            Modifier.padding(
+                horizontal = LanPetDimensions.Spacing.small,
+                vertical = LanPetDimensions.Spacing.small,
+            ),
     )
     if (comments.isEmpty()) {
         Text(
-            stringResource(R.string.body_freeboard_no_comment),
-            style = MaterialTheme.customTypography().body2RegularSingle.copy(
-                color = GrayColor.Gray400
-            ),
+            stringResource(R.string.body_no_comment_freeboard_detail),
+            style =
+                MaterialTheme.customTypography().body2RegularSingle.copy(
+                    color = GrayColor.Gray400,
+                ),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     } else {
         Column {
@@ -289,20 +294,22 @@ fun FreeBoardCommentSection(
 
 @Composable
 fun CommentInputSection() {
-    var input by rememberSaveable() { mutableStateOf("") }
+    var input by rememberSaveable { mutableStateOf("") }
 
     Column {
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(1.dp)
-                .background(GrayColor.Gray50)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(GrayColor.Gray50),
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(LanPetDimensions.Spacing.small),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(LanPetDimensions.Spacing.small),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
                 value = input,
@@ -310,26 +317,29 @@ fun CommentInputSection() {
                 onValueChange = {
                     input = it
                 },
-                placeholder = { Text("답글을 입력해주세요") },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = LanPetDimensions.Spacing.small)
-                    .clip(shape = CircleShape),
-                textStyle = MaterialTheme.customTypography().body2RegularSingle.copy(
-                    color = GrayColor.Gray500
-                ),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = WhiteColor.MEDIUM,
-                    unfocusedContainerColor = WhiteColor.MEDIUM,
-                    unfocusedPlaceholderColor = GrayColor.Gray400,
-                    focusedPlaceholderColor = GrayColor.Gray400,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = GrayColor.Gray400,
-                ),
+                placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = LanPetDimensions.Spacing.small)
+                        .clip(shape = CircleShape),
+                textStyle =
+                    MaterialTheme.customTypography().body2RegularSingle.copy(
+                        color = GrayColor.Gray400,
+                    ),
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = GrayColor.Gray100,
+                        unfocusedContainerColor = GrayColor.Gray100,
+                        unfocusedPlaceholderColor = GrayColor.Gray400,
+                        focusedPlaceholderColor = GrayColor.Gray400,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = GrayColor.Gray400,
+                    ),
             )
             IconButton(
-                onClick = {}
+                onClick = {},
             ) {
                 Image(
                     imageVector = MyIconPack.Send,
@@ -344,19 +354,20 @@ fun CommentInputSection() {
 @Composable
 private fun EmojiPicker(
     onEmojiSelected: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val emojis = listOf("😀", "😍", "🥰", "😎", "🤔", "😊", "🎉", "👍", "❤️", "🌟")
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(LanPetDimensions.Spacing.small)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(LanPetDimensions.Spacing.small),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text("이모티콘", style = MaterialTheme.customTypography().body2RegularSingle)
             IconButton(onClick = onDismiss) {
@@ -368,18 +379,19 @@ private fun EmojiPicker(
             columns = GridCells.Fixed(5),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalArrangement = Arrangement.spacedBy(LanPetDimensions.Spacing.small)
+            verticalArrangement = Arrangement.spacedBy(LanPetDimensions.Spacing.small),
         ) {
             items(emojis) { emoji ->
                 Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { onEmojiSelected(emoji) },
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(48.dp)
+                            .clickable { onEmojiSelected(emoji) },
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         emoji,
-                        style = MaterialTheme.customTypography().body1RegularSingle
+                        style = MaterialTheme.customTypography().body1RegularSingle,
                     )
                 }
             }
@@ -395,74 +407,75 @@ fun PreviewCommentInputSection() {
     }
 }
 
-
 @Preview(heightDp = 2000)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, heightDp = 2000)
 @Composable
 fun FreeBoardDetailPreview() {
-
-    val freeBoardComment1 = FreeBoardComment(
-        id = 1,
-        content = loremIpsum().slice(0..100),
-        writer = "writer",
-        writerImage = null,
-        createdAt = "2021-01-01T00:00:00Z",
-        updatedAt = "2021-01-01",
-        freeBoardId = 1,
-        likeCount = 1,
-        commentCount = 3,
-        subComments = listOf(
-            FreeBoardComment(
-                id = 1,
-                content = loremIpsum().slice(0..200),
-                writer = "writer",
-                writerImage = null,
-                createdAt = "2021-01-01T00:00:00Z",
-                updatedAt = "2021-01-01",
-                freeBoardId = 1,
-                likeCount = 1,
-                commentCount = null,
-                subComments = emptyList()
-            ),
-            FreeBoardComment(
-                id = 1,
-                content = loremIpsum().slice(0..50),
-                writer = "writer",
-                writerImage = null,
-                createdAt = "2021-01-01T00:00:00Z",
-                updatedAt = "2021-01-01",
-                freeBoardId = 1,
-                likeCount = 1,
-                commentCount = null,
-                subComments = emptyList()
-            ),
-            FreeBoardComment(
-                id = 1,
-                content = loremIpsum(),
-                writer = "writer",
-                writerImage = null,
-                createdAt = "2021-01-01T00:00:00Z",
-                updatedAt = "2021-01-01",
-                freeBoardId = 1,
-                likeCount = 1,
-                commentCount = null,
-                subComments = emptyList()
-            )
+    val freeBoardComment1 =
+        FreeBoardComment(
+            id = 1,
+            content = loremIpsum().slice(0..100),
+            writer = "writer",
+            writerImage = null,
+            createdAt = "2021-01-01T00:00:00Z",
+            updatedAt = "2021-01-01",
+            freeBoardId = 1,
+            likeCount = 1,
+            commentCount = 3,
+            subComments =
+                listOf(
+                    FreeBoardComment(
+                        id = 1,
+                        content = loremIpsum().slice(0..200),
+                        writer = "writer",
+                        writerImage = null,
+                        createdAt = "2021-01-01T00:00:00Z",
+                        updatedAt = "2021-01-01",
+                        freeBoardId = 1,
+                        likeCount = 1,
+                        commentCount = null,
+                        subComments = emptyList(),
+                    ),
+                    FreeBoardComment(
+                        id = 1,
+                        content = loremIpsum().slice(0..50),
+                        writer = "writer",
+                        writerImage = null,
+                        createdAt = "2021-01-01T00:00:00Z",
+                        updatedAt = "2021-01-01",
+                        freeBoardId = 1,
+                        likeCount = 1,
+                        commentCount = null,
+                        subComments = emptyList(),
+                    ),
+                    FreeBoardComment(
+                        id = 1,
+                        content = loremIpsum(),
+                        writer = "writer",
+                        writerImage = null,
+                        createdAt = "2021-01-01T00:00:00Z",
+                        updatedAt = "2021-01-01",
+                        freeBoardId = 1,
+                        likeCount = 1,
+                        commentCount = null,
+                        subComments = emptyList(),
+                    ),
+                ),
         )
-    )
 
-    val freeBoardComment2 = FreeBoardComment(
-        id = 1,
-        content = loremIpsum().slice(0..100),
-        writer = "writer",
-        writerImage = null,
-        createdAt = "2021-01-01T00:00:00Z",
-        updatedAt = "2021-01-01",
-        freeBoardId = 1,
-        likeCount = 1,
-        commentCount = null,
-        subComments = emptyList()
-    )
+    val freeBoardComment2 =
+        FreeBoardComment(
+            id = 1,
+            content = loremIpsum().slice(0..100),
+            writer = "writer",
+            writerImage = null,
+            createdAt = "2021-01-01T00:00:00Z",
+            updatedAt = "2021-01-01",
+            freeBoardId = 1,
+            likeCount = 1,
+            commentCount = null,
+            subComments = emptyList(),
+        )
 
     LanPetAppTheme {
         FreeBoardDetailScreen(

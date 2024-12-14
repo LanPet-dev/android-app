@@ -40,36 +40,36 @@ fun TextFieldWithDeleteButton(
         value = value,
         textStyle = MaterialTheme.typography.bodyMedium,
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
-        colors = OutlinedTextFieldDefaults.colors().copy(
-            unfocusedIndicatorColor = GrayColor.LIGHT,
-            focusedIndicatorColor = GrayColor.LIGHT,
-            disabledIndicatorColor = GrayColor.LIGHT,
-            focusedPlaceholderColor = GrayColor.MEDIUM,
-            unfocusedPlaceholderColor = GrayColor.MEDIUM,
-            disabledPlaceholderColor = GrayColor.MEDIUM,
-            cursorColor = GrayColor.MEDIUM,
-            focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-            unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-            disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-            errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors().copy(
+                unfocusedIndicatorColor = GrayColor.LIGHT,
+                focusedIndicatorColor = GrayColor.LIGHT,
+                disabledIndicatorColor = GrayColor.LIGHT,
+                focusedPlaceholderColor = GrayColor.MEDIUM,
+                unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                disabledPlaceholderColor = GrayColor.MEDIUM,
+                cursorColor = GrayColor.MEDIUM,
+                focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+            ),
         singleLine = singleLine,
         onValueChange = onValueChange,
         placeholder = {
             Text(
                 placeholder,
-                style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT)
+                style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
             )
         },
         trailingIcon = {
             DeleteButton(
                 visible = value.isNotEmpty(),
-                onClick = { onValueChange("") }
+                onClick = { onValueChange("") },
             )
         },
     )
 }
-
 
 @Composable
 private fun DeleteButton(
@@ -79,17 +79,16 @@ private fun DeleteButton(
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut()
+        exit = fadeOut() + scaleOut(),
     ) {
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Default.Clear,
-                contentDescription = "Clear text"
+                contentDescription = "Clear text",
             )
         }
     }
 }
-
 
 @PreviewLightDark
 @Composable
@@ -100,14 +99,14 @@ fun PreviewTextFieldWithDeleteButton() {
                 value = "value",
                 onValueChange = {},
                 placeholder = "placeholder",
-                modifier = Modifier
+                modifier = Modifier,
             )
             Spacer(Modifier.padding(8.dp))
             TextFieldWithDeleteButton(
                 value = "",
                 onValueChange = {},
                 placeholder = "placeholder",
-                modifier = Modifier
+                modifier = Modifier,
             )
         }
     }
@@ -123,5 +122,3 @@ fun PreviewDeleteButton() {
         }
     }
 }
-
-
