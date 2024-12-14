@@ -15,6 +15,7 @@
     - Version catalogs
     - Room
     - Design system
+    - Ktlint with Compose rule
 3. Testing
     - Junit5
     - mockk
