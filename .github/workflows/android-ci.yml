@@ -17,6 +17,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
+    - name: Decode Keystore
+      run:
+        echo "${{ secrets.DEBUG_KEY }} > | lanpet_debug_key_encoded"
+        echo "base64 -d -i lanpet_debug_key_encoded -o lanpet_debug_key"
+
+    - name: Create keyStore.properties file from github secrets
+      run: |
+        echo "Creating keyStore.properties..."
+        echo "debug.keyAlias=${{ secrets.DEBUG_KEY_ALIAS }}" >> keyStore.properties
+        echo "debug.keyPassword=${{ secrets.DEBUG_KEY_PASSWORD }}" >> keyStore.properties
+        echo "debug.storePassword=${{ secrets.DEBUG_STORE_PASSWORD }}" >> keyStore.properties
+        echo "debug.keystore=lanpet_debug_key" >> keyStore.properties
+        
     - name: Create local.properties file from github secrets
       run: |
         echo "Creating local.propperties..."
