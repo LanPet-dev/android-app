@@ -1,24 +1,41 @@
 import com.lanpet.core.common.createdAtPostString
+import com.lanpet.core.common.toLocalDate
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.TimeZone
 
 class ExtensionsTest {
+    private val timeZone: TimeZone = TimeZone.getDefault()
+    private val createdAt = "2016-10-27T17:13:40+00:00"
+    private val currentTime = createdAt.toLocalDate()
+    private val calendar = Calendar.getInstance()
+    private val dateFormat = SimpleDateFormat(" yyyy-MM-dd HH:mm:ss")
+
     @Nested
-    inner class CreatedAtFreeBoardPostStringTest {
+    inner class `CreatedAtPostString Test` {
         @Test
         fun `createdAtPostString, year diff test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.YEAR, 5)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2021-10-27 8:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "5년 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.YEAR, 6)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2022-10-27 8:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "6년 전",
             )
@@ -26,18 +43,24 @@ class ExtensionsTest {
 
         @Test
         fun `createdAtPostString, month diff test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.MONTH, 1)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2016-11-27 21:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "1달 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.MONTH, 2)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2016-12-27 21:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "2달 전",
             )
@@ -45,18 +68,24 @@ class ExtensionsTest {
 
         @Test
         fun `createdAtPostString, day diff test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.DATE, 1)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2016-10-29 02:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "1일 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.DATE, 2)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-27T17:13:40+00:00",
-                    currentTime = "2016-10-30 2:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "2일 전",
             )
@@ -64,26 +93,35 @@ class ExtensionsTest {
 
         @Test
         fun `createdAtPostString, hour diff test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.HOUR, 1)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-28T17:13:40+00:00",
-                    currentTime = "2016-10-29 3:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "1시간 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.HOUR, 2)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-28T03:40:40+00:00",
-                    currentTime = "2016-10-28 14:40:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "2시간 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.HOUR, 16)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-28T19:12:40+00:00",
-                    currentTime = "2016-10-29 20:12:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "16시간 전",
             )
@@ -91,18 +129,24 @@ class ExtensionsTest {
 
         @Test
         fun `createdAtPostString, minute diff test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.MINUTE, 1)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-28T04:13:40+00:00",
-                    currentTime = "2016-10-28 13:14:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "1분 전",
             )
 
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.MINUTE, 2)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2016-10-28T04:12:40+00:00",
-                    currentTime = "2016-10-28 13:14:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "2분 전",
             )
@@ -110,10 +154,24 @@ class ExtensionsTest {
 
         @Test
         fun `createdAtPostString, now test`() {
-            _root_ide_package_.org.junit.jupiter.api.Assertions.assertEquals(
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.SECOND, 10)
+
+            assertEquals(
                 createdAtPostString(
-                    createdAt = "2021-10-28T04:13:40+00:00",
-                    currentTime = "2021-10-28 13:13:40",
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
+                ),
+                "방금 전",
+            )
+
+            calendar.setTime(currentTime)
+            calendar.add(Calendar.SECOND, 59)
+
+            assertEquals(
+                createdAtPostString(
+                    createdAt = createdAt,
+                    currentTime = dateFormat.format(calendar.time),
                 ),
                 "방금 전",
             )
