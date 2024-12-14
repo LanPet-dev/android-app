@@ -48,7 +48,10 @@ import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileModifyProfileScreen(onClose: () -> Unit = { }) {
+fun MyProfileModifyProfileScreen(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit = { },
+) {
     val authViewModel = LocalAuthManager.current
 
     val verticalScrollState = rememberScrollState()
@@ -118,64 +121,66 @@ fun MyProfileModifyProfileScreen(onClose: () -> Unit = { }) {
 }
 
 @Composable
-private fun BioInputSection() {
+private fun BioInputSection(modifier: Modifier = Modifier) {
     var input by rememberSaveable {
         mutableStateOf("")
     }
 
     val maxLength = 200
 
-    CommonSubHeading1(
-        title = stringResource(R.string.bio_hint_my_profile_add_profile),
-    )
-    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
-    Box {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = input,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
-            maxLines = 7,
-            minLines = 7,
-            colors =
-                OutlinedTextFieldDefaults.colors().copy(
-                    unfocusedIndicatorColor = GrayColor.LIGHT,
-                    focusedIndicatorColor = GrayColor.LIGHT,
-                    disabledIndicatorColor = GrayColor.LIGHT,
-                    focusedPlaceholderColor = GrayColor.MEDIUM,
-                    unfocusedPlaceholderColor = GrayColor.MEDIUM,
-                    disabledPlaceholderColor = GrayColor.MEDIUM,
-                    cursorColor = GrayColor.MEDIUM,
-                    focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                ),
-            singleLine = false,
-            onValueChange = { newText ->
-                if (newText.length <= maxLength) {
-                    input = newText
-                }
-            },
-            placeholder = {
-                Text(
-                    stringResource(R.string.bio_input_placeholder_my_profile_add_profile),
-                    style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
-                )
-            },
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.bio_hint_my_profile_add_profile),
         )
-
-        Box(
-            modifier =
-                Modifier
-                    .matchParentSize()
-                    .padding(bottom = 16.dp, end = 16.dp),
-            contentAlignment = Alignment.BottomEnd,
-        ) {
-            Text(
-                text = "${input.length}/$maxLength",
-                style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        Box {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = input,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+                maxLines = 7,
+                minLines = 7,
+                colors =
+                    OutlinedTextFieldDefaults.colors().copy(
+                        unfocusedIndicatorColor = GrayColor.LIGHT,
+                        focusedIndicatorColor = GrayColor.LIGHT,
+                        disabledIndicatorColor = GrayColor.LIGHT,
+                        focusedPlaceholderColor = GrayColor.MEDIUM,
+                        unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                        disabledPlaceholderColor = GrayColor.MEDIUM,
+                        cursorColor = GrayColor.MEDIUM,
+                        focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    ),
+                singleLine = false,
+                onValueChange = { newText ->
+                    if (newText.length <= maxLength) {
+                        input = newText
+                    }
+                },
+                placeholder = {
+                    Text(
+                        stringResource(R.string.bio_input_placeholder_my_profile_add_profile),
+                        style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
+                    )
+                },
             )
+
+            Box(
+                modifier =
+                    Modifier
+                        .matchParentSize()
+                        .padding(bottom = 16.dp, end = 16.dp),
+                contentAlignment = Alignment.BottomEnd,
+            ) {
+                Text(
+                    text = "${input.length}/$maxLength",
+                    style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
+                )
+            }
         }
     }
 }
@@ -183,52 +188,56 @@ private fun BioInputSection() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelectPreferPetSection() {
-    CommonSubHeading1(
-        title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile),
-    )
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile),
+        )
 
-    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
-    FlowRow {
-        SelectableChip(
-            title = "고양이",
-            isSelected = false,
-        ) { }
-        SelectableChip(
-            title = "강아지",
-            isSelected = false,
-        ) { }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        FlowRow {
+            SelectableChip(
+                title = "고양이",
+                isSelected = false,
+            ) { }
+            SelectableChip(
+                title = "강아지",
+                isSelected = false,
+            ) { }
+        }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SelectAgeSection() {
-    CommonSubHeading1(
-        title = stringResource(R.string.age_hint_my_profile_add_profile),
-    )
+private fun SelectAgeSection(modifier: Modifier = Modifier) {
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.age_hint_my_profile_add_profile),
+        )
 
-    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
-    FlowRow {
-        SelectableChip(
-            title = Age.TENS.value,
-            isSelected = false,
-        ) { }
-        SelectableChip(
-            title = Age.TWENTIES.value,
-            isSelected = false,
-        ) { }
-        SelectableChip(
-            title = Age.THIRTIES.value,
-            isSelected = false,
-        ) { }
-        SelectableChip(
-            title = Age.FORTIES.value,
-            isSelected = false,
-        ) { }
-        SelectableChip(
-            title = Age.FIFTIES.value,
-            isSelected = false,
-        ) { }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        FlowRow {
+            SelectableChip(
+                title = Age.TENS.value,
+                isSelected = false,
+            ) { }
+            SelectableChip(
+                title = Age.TWENTIES.value,
+                isSelected = false,
+            ) { }
+            SelectableChip(
+                title = Age.THIRTIES.value,
+                isSelected = false,
+            ) { }
+            SelectableChip(
+                title = Age.FORTIES.value,
+                isSelected = false,
+            ) { }
+            SelectableChip(
+                title = Age.FIFTIES.value,
+                isSelected = false,
+            ) { }
+        }
     }
 }
 

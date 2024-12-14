@@ -12,8 +12,8 @@ class SocialAuthFactory
     constructor(
         @ApplicationContext private val context: Context,
     ) {
-        fun createSocialAuth(type: SocialAuthType): SocialAuth {
-            return when (type) {
+        fun createSocialAuth(type: SocialAuthType): SocialAuth =
+            when (type) {
                 SocialAuthType.GOOGLE ->
                     GoogleAuth.newInstance(
                         BuildConfig.GOOGLE_OAUTH_CLIENT_KEY,
@@ -22,5 +22,4 @@ class SocialAuthFactory
 
                 SocialAuthType.APPLE -> throw NotImplementedError("Apple auth is not implemented yet")
             }
-        }
     }

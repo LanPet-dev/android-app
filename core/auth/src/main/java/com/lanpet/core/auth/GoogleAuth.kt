@@ -31,13 +31,15 @@ class GoogleAuth private constructor(
         var resultToken: SocialAuthToken? = null
 
         val googleIdOption =
-            GetGoogleIdOption.Builder()
+            GetGoogleIdOption
+                .Builder()
                 .setServerClientId(googleOauthClientKey)
                 .setNonce(generateNonce()) // 보안을 위한 난수 추가
                 .build()
 
         val request =
-            GetCredentialRequest.Builder()
+            GetCredentialRequest
+                .Builder()
                 .addCredentialOption(googleIdOption)
                 .build()
 
@@ -62,9 +64,7 @@ class GoogleAuth private constructor(
         TODO("Not yet implemented")
     }
 
-    private fun generateNonce(): String {
-        return UUID.randomUUID().toString()
-    }
+    private fun generateNonce(): String = UUID.randomUUID().toString()
 
     fun handleSignIn(result: GetCredentialResponse): SocialAuthToken? {
         val credential = result.credential
@@ -112,8 +112,6 @@ class GoogleAuth private constructor(
         internal fun newInstance(
             googleOauthClientKey: String,
             context: Context,
-        ): GoogleAuth {
-            return GoogleAuth(googleOauthClientKey, WeakReference(context))
-        }
+        ): GoogleAuth = GoogleAuth(googleOauthClientKey, WeakReference(context))
     }
 }

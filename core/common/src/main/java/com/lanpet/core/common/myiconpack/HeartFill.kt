@@ -18,12 +18,19 @@ public val MyIconPack.HeartFill: ImageVector
         }
         heartFill =
             Builder(
-                name = "HeartFill", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "HeartFill",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(20.84f, 4.61f)
@@ -47,8 +54,7 @@ public val MyIconPack.HeartFill: ImageVector
                     curveTo(21.7563f, 5.7272f, 21.351f, 5.1208f, 20.84f, 4.61f)
                     close()
                 }
-            }
-                .build()
+            }.build()
         return heartFill!!
     }
 

@@ -15,7 +15,5 @@ class AuthorityTypeTypeAdapter : TypeAdapter<AuthorityType>() {
         }
     }
 
-    override fun read(`in`: JsonReader?): AuthorityType? {
-        return `in`?.nextString()?.let { AuthorityType.valueOf(it) }
-    }
+    override fun read(`in`: JsonReader?): AuthorityType? = `in`?.nextString()?.let { AuthorityType.valueOf(it) }
 }

@@ -17,7 +17,9 @@ class AuthApiClient
         private val headerInterceptor =
             Interceptor { chain ->
                 val request =
-                    chain.request().newBuilder()
+                    chain
+                        .request()
+                        .newBuilder()
                         .addHeader("Content-Type", "application/json")
                         .build()
                 chain.proceed(request)
@@ -29,19 +31,19 @@ class AuthApiClient
                 .create()
 
         private val okHttpClient =
-            OkHttpClient.Builder()
+            OkHttpClient
+                .Builder()
                 .addInterceptor(headerInterceptor)
                 .build()
 
         private val apiService =
-            Retrofit.Builder()
+            Retrofit
+                .Builder()
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(BaseApiService::class.java)
 
-        fun getService(): BaseApiService {
-            return apiService
-        }
+        fun getService(): BaseApiService = apiService
     }

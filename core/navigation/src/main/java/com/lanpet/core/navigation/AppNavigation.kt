@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val authViewModel = LocalAuthManager.current
 
@@ -248,7 +248,7 @@ fun AppNavigation() {
                         BottomNavItem.Free,
                         BottomNavItem.MyPage,
                     ),
-                onItemSelected = { item ->
+                onItemSelect = { item ->
                     println("selected bottom nav item: $item")
                     navItem = item
                 },

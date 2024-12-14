@@ -21,7 +21,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ImagePickerView(
     imageUri: Uri?,
-    onEditButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onEditButtonClick: () -> Unit = {},
 ) {
     Box(
         modifier =
@@ -59,7 +60,7 @@ fun ImagePickerView(
 
 @Preview
 @Composable
-fun PreviewImageWithEdit() {
+private fun PreviewImageWithEdit() {
     LanPetAppTheme {
         ImagePickerView(
             imageUri = null,

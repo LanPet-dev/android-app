@@ -18,14 +18,20 @@ public val MyIconPack.BookmarkFill: ImageVector
         }
         bookmarkFill =
             Builder(
-                name = "BookmarkFill", defaultWidth = 24.0.dp,
+                name = "BookmarkFill",
+                defaultWidth = 24.0.dp,
                 defaultHeight =
                     24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFFffffff)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(0.0f, 0.0f)
@@ -35,8 +41,12 @@ public val MyIconPack.BookmarkFill: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(19.0f, 21.0f)
@@ -51,8 +61,7 @@ public val MyIconPack.BookmarkFill: ImageVector
                     verticalLineTo(21.0f)
                     close()
                 }
-            }
-                .build()
+            }.build()
         return bookmarkFill!!
     }
 

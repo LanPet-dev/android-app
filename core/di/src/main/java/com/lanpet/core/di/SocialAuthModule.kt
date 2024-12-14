@@ -30,20 +30,14 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(authService: AuthService): AuthRepository {
-        return AuthRepositoryImpl(authService)
-    }
+    fun provideAuthRepository(authService: AuthService): AuthRepository = AuthRepositoryImpl(authService)
 
     @Provides
     @Singleton
     @Named("AuthUrl")
-    fun provideBaseUrl(): String {
-        return "https://lanpet.auth.ap-northeast-2.amazoncognito.com/"
-    }
+    fun provideBaseUrl(): String = "https://lanpet.auth.ap-northeast-2.amazoncognito.com/"
 
     @Provides
     @Singleton
-    fun provideAuthStateHolder(): AuthStateHolder {
-        return AuthStateHolder()
-    }
+    fun provideAuthStateHolder(): AuthStateHolder = AuthStateHolder()
 }

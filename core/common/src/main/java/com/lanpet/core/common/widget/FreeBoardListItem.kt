@@ -38,6 +38,7 @@ import com.lanpet.domain.model.createdAtPostString
 @Composable
 fun FreeBoardListItem(
     freeBoardPost: FreeBoardPost,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     Surface {
@@ -46,8 +47,7 @@ fun FreeBoardListItem(
                 Modifier
                     .clickable {
                         onClick()
-                    }
-                    .fillMaxWidth()
+                    }.fillMaxWidth()
                     .padding(vertical = LanPetDimensions.Spacing.small),
         ) {
             Row(
@@ -71,7 +71,10 @@ fun FreeBoardListItem(
                 Column(
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(freeBoardPost.title, style = MaterialTheme.customTypography().body2RegularSingle)
+                    Text(
+                        freeBoardPost.title,
+                        style = MaterialTheme.customTypography().body2RegularSingle,
+                    )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                     Text(
                         freeBoardPost.content,
@@ -81,7 +84,11 @@ fun FreeBoardListItem(
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (freeBoardPost.images.isNotEmpty() && freeBoardPost.images.first().isNotEmpty()) {
+                if (freeBoardPost.images.isNotEmpty() &&
+                    freeBoardPost.images
+                        .first()
+                        .isNotEmpty()
+                ) {
                     AsyncImage(
                         model = freeBoardPost.images.first(),
                         contentDescription = "post_image",
@@ -90,8 +97,7 @@ fun FreeBoardListItem(
                             Modifier
                                 .clip(
                                     shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall),
-                                )
-                                .size(66.dp),
+                                ).size(66.dp),
                         error = painterResource(id = R.drawable.img_animals),
                     )
                 } else {
@@ -144,7 +150,7 @@ fun FreeBoardListItem(
 
 @PreviewLightDark
 @Composable
-fun FreeBoardListItemPreview() {
+private fun FreeBoardListItemPreview() {
     LanPetAppTheme {
         Column {
             FreeBoardListItem(

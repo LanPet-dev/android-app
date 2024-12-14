@@ -42,6 +42,7 @@ import com.lanpet.myprofile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(
+    modifier: Modifier = Modifier,
     onNavigateToProfileCreate: () -> Unit = { },
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: () -> Unit = { },
@@ -214,8 +215,9 @@ private fun MyProfileCard(onNavigateToProfileCreate: () -> Unit) {
 
 @Composable
 fun ActivityListItem(
-    leadingContent: @Composable () -> Unit?,
     headlineContentText: String,
+    modifier: Modifier = Modifier,
+    leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable () -> Unit =
         {
             Image(
@@ -223,10 +225,10 @@ fun ActivityListItem(
                 contentDescription = "ic_arrow_right",
             )
         },
-    onclick: () -> Unit,
+    onclick: () -> Unit = {},
 ) {
     ListItem(
-        leadingContent = { leadingContent() },
+        leadingContent = { leadingContent?.invoke() },
         headlineContent = {
             Text(
                 style = MaterialTheme.customTypography().body2MediumSingle,
@@ -242,7 +244,7 @@ fun ActivityListItem(
 
 @Composable
 @PreviewLightDark()
-fun MyProfileCardPreview() {
+private fun MyProfileCardPreview() {
     LanPetAppTheme {
         Surface {
             MyProfileCard {}
@@ -252,7 +254,7 @@ fun MyProfileCardPreview() {
 
 @Composable
 @PreviewLightDark()
-fun MyProfileScreenPreview() {
+private fun MyProfileScreenPreview() {
     LanPetAppTheme {
         MyProfileScreen()
     }

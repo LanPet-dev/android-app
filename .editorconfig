@@ -1,4 +1,5 @@
 [*.{kt,kts}]
-ktlint_function_naming_ignore_when_annotated_with=Composable
+ktlint_function_naming_ignore_when_annotated_with = Composable
 ktlint_standard_backing-property-naming = disabled
 ktlint_standard_filename = disabled
+compose_allowed_composition_locals = LocalAuthManager, LocalCustomColorScheme

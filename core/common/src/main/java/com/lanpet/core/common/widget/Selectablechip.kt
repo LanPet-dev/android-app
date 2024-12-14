@@ -25,7 +25,8 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 fun SelectableChip(
     isSelected: Boolean,
     title: String,
-    onSelectValueChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    onSelectedValueChange: (Boolean) -> Unit = {},
 ) {
     Box(
         Modifier
@@ -61,7 +62,7 @@ fun SelectableChip(
                 ),
             ).clickable(
                 onClick = {
-                    onSelectValueChanged(!isSelected)
+                    onSelectedValueChange(!isSelected)
                 },
             ),
         Alignment.Center,
@@ -85,7 +86,7 @@ fun SelectableChip(
 
 @PreviewLightDark
 @Composable
-fun PreviewSelectableChip() {
+private fun PreviewSelectableChip() {
     Column {
         SelectableChip(true, "title") { it }
         SelectableChip(false, "title") { it }

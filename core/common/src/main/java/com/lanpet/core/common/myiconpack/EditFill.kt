@@ -20,13 +20,20 @@ public val MyIconPack.EditFill: ImageVector
         }
         editFill =
             Builder(
-                name = "EditFill", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                name = "EditFill",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 group {
                     path(
-                        fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                        fill = SolidColor(Color(0xFF25262B)),
+                        stroke = null,
+                        strokeLineWidth = 0.0f,
+                        strokeLineCap = Butt,
+                        strokeLineJoin = Miter,
+                        strokeLineMiter = 4.0f,
                         pathFillType = NonZero,
                     ) {
                         moveTo(12.0f, 12.0f)
@@ -35,8 +42,12 @@ public val MyIconPack.EditFill: ImageVector
                         arcToRelative(12.0f, 12.0f, 0.0f, true, true, -24.0f, 0.0f)
                     }
                     path(
-                        fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                        fill = SolidColor(Color(0xFFffffff)),
+                        stroke = null,
+                        strokeLineWidth = 0.0f,
+                        strokeLineCap = Butt,
+                        strokeLineJoin = Miter,
+                        strokeLineMiter = 4.0f,
                         pathFillType = EvenOdd,
                     ) {
                         moveTo(5.9469f, 18.8033f)
@@ -60,8 +71,12 @@ public val MyIconPack.EditFill: ImageVector
                         close()
                     }
                     path(
-                        fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                        fill = SolidColor(Color(0xFFffffff)),
+                        stroke = null,
+                        strokeLineWidth = 0.0f,
+                        strokeLineCap = Butt,
+                        strokeLineJoin = Miter,
+                        strokeLineMiter = 4.0f,
                         pathFillType = EvenOdd,
                     ) {
                         moveTo(12.8412f, 7.977f)
@@ -72,8 +87,7 @@ public val MyIconPack.EditFill: ImageVector
                         close()
                     }
                 }
-            }
-                .build()
+            }.build()
         return editFill!!
     }
 

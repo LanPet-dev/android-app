@@ -31,7 +31,8 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun ProfileCreatePreferPetScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
-    onNavigateToHumanBio: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateToHumanBio: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -60,7 +61,14 @@ fun ProfileCreatePreferPetScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_prefer_pet_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                PreferPetChipSection(manProfileCreateViewModel)
+                PreferPetChipSection(
+                    preferPets =
+                        manProfileCreateViewModel.manProfileCreate
+                            .collectAsState()
+                            .value.preferPets,
+                ) { pet ->
+                    manProfileCreateViewModel.updatePreferPet(pet)
+                }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
                     onNavigateToHumanBio()
@@ -73,76 +81,78 @@ fun ProfileCreatePreferPetScreen(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun PreferPetChipSection(viewModel: ManProfileCreateViewModel) {
-    val manProfileCreate = viewModel.manProfileCreate.collectAsState()
-
+private fun PreferPetChipSection(
+    preferPets: List<PetCategory>,
+    modifier: Modifier = Modifier,
+    onItemSelect: (PetCategory) -> Unit = {},
+) {
     FlowRow {
         SelectableChip(
             title = "고양이",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.CAT),
+            isSelected = preferPets.contains(PetCategory.CAT),
         ) {
-            viewModel.updatePreferPet(PetCategory.CAT)
+            onItemSelect(PetCategory.CAT)
         }
         SelectableChip(
             title = "강아지",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.DOG),
+            isSelected = preferPets.contains(PetCategory.DOG),
         ) {
-            viewModel.updatePreferPet(PetCategory.DOG)
+            onItemSelect(PetCategory.DOG)
         }
         SelectableChip(
             title = "햄스터",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.HAMSTER),
+            isSelected = preferPets.contains(PetCategory.HAMSTER),
         ) {
-            viewModel.updatePreferPet(PetCategory.HAMSTER)
+            onItemSelect(PetCategory.HAMSTER)
         }
         SelectableChip(
             title = "도마뱀",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.LIZARD),
+            isSelected = preferPets.contains(PetCategory.LIZARD),
         ) {
-            viewModel.updatePreferPet(PetCategory.LIZARD)
+            onItemSelect(PetCategory.LIZARD)
         }
         SelectableChip(
             title = "앵무새",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.PARROT),
+            isSelected = preferPets.contains(PetCategory.PARROT),
         ) {
-            viewModel.updatePreferPet(PetCategory.PARROT)
+            onItemSelect(PetCategory.PARROT)
         }
         SelectableChip(
             title = "물고기",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.FISH),
+            isSelected = preferPets.contains(PetCategory.FISH),
         ) {
-            viewModel.updatePreferPet(PetCategory.FISH)
+            onItemSelect(PetCategory.FISH)
         }
         SelectableChip(
             title = "뱀",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.SNAKE),
+            isSelected = preferPets.contains(PetCategory.SNAKE),
         ) {
-            viewModel.updatePreferPet(PetCategory.SNAKE)
+            onItemSelect(PetCategory.SNAKE)
         }
         SelectableChip(
             title = "거미",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.SPIDER),
+            isSelected = preferPets.contains(PetCategory.SPIDER),
         ) {
-            viewModel.updatePreferPet(PetCategory.SPIDER)
+            onItemSelect(PetCategory.SPIDER)
         }
         SelectableChip(
             title = "양서류",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.AMPHIBIAN),
+            isSelected = preferPets.contains(PetCategory.AMPHIBIAN),
         ) {
-            viewModel.updatePreferPet(PetCategory.AMPHIBIAN)
+            onItemSelect(PetCategory.AMPHIBIAN)
         }
         SelectableChip(
             title = "기타",
-            isSelected = manProfileCreate.value.preferPets.contains(PetCategory.ETC),
+            isSelected = preferPets.contains(PetCategory.ETC),
         ) {
-            viewModel.updatePreferPet(PetCategory.ETC)
+            onItemSelect(PetCategory.ETC)
         }
     }
 }
 
 @PreviewLightDark
 @Composable
-fun PreviewProfileCreatePreferPetScreen() {
+private fun PreviewProfileCreatePreferPetScreen() {
     LanPetAppTheme {
         ProfileCreatePreferPetScreen(
             manProfileCreateViewModel = hiltViewModel(),

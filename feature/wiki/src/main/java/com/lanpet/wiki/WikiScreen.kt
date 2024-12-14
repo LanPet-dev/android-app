@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 
 @Composable
-fun WikiScreen() {
+fun WikiScreen(modifier: Modifier = Modifier) {
     Scaffold {
         Surface(
             modifier =
@@ -26,7 +26,7 @@ fun WikiScreen() {
 
 @PreviewLightDark
 @Composable
-fun WikiScreenPreview() {
+private fun WikiScreenPreview() {
     LanPetAppTheme {
         WikiScreen()
     }

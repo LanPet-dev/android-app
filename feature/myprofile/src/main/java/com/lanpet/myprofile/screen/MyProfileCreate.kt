@@ -47,6 +47,7 @@ import com.lanpet.myprofile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileCreateProfileScreen(
+    modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
     onNavigateToAddProfile: () -> Unit = {},
     onNavigateToModifyProfile: () -> Unit = {},
@@ -105,11 +106,14 @@ fun MyProfileCreateProfileScreen(
 }
 
 @Composable
-fun AddProfileCard(onAddProfileClicked: () -> Unit = {}) {
+fun AddProfileCard(
+    modifier: Modifier = Modifier,
+    onAddProfileClick: () -> Unit = {},
+) {
     Surface(
         modifier =
             Modifier
-                .clickable { onAddProfileClicked() }
+                .clickable { onAddProfileClick() }
                 .commonBorder(
                     shape =
                         RoundedCornerShape(
@@ -147,7 +151,10 @@ fun AddProfileCard(onAddProfileClicked: () -> Unit = {}) {
 }
 
 @Composable
-fun ProfileListCard(onModifyClicked: () -> Unit) {
+fun ProfileListCard(
+    modifier: Modifier = Modifier,
+    onModifyClick: () -> Unit = {},
+) {
     Surface(
         modifier =
             Modifier
@@ -201,7 +208,7 @@ fun ProfileListCard(onModifyClicked: () -> Unit) {
                                         LanPetDimensions.Corner.xSmall,
                                     ),
                             ).clip(RoundedCornerShape(LanPetDimensions.Corner.xSmall))
-                            .clickable { onModifyClicked() }
+                            .clickable { onModifyClick() }
                             .padding(
                                 horizontal = LanPetDimensions.Margin.medium,
                                 vertical = LanPetDimensions.Margin.xSmall,
@@ -223,7 +230,7 @@ fun ProfileListCard(onModifyClicked: () -> Unit) {
 
 @PreviewLightDark
 @Composable
-fun PreviewAddProfileCard() {
+private fun PreviewAddProfileCard() {
     LanPetAppTheme {
         AddProfileCard()
     }
@@ -231,7 +238,7 @@ fun PreviewAddProfileCard() {
 
 @PreviewLightDark
 @Composable
-fun PreviewMyProfileCreate() {
+private fun PreviewMyProfileCreate() {
     LanPetAppTheme {
         ProfileListCard {}
     }
@@ -239,7 +246,7 @@ fun PreviewMyProfileCreate() {
 
 @PreviewLightDark
 @Composable
-fun MyProfileCreatePreview() {
+private fun MyProfileCreatePreview() {
     LanPetAppTheme {
         MyProfileCreateProfileScreen(
             onNavigateUp = { },

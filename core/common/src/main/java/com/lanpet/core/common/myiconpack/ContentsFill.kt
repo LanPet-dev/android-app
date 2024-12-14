@@ -18,14 +18,20 @@ public val MyIconPack.ContentsFill: ImageVector
         }
         contentsFill =
             Builder(
-                name = "ContentsFill", defaultWidth = 24.0.dp,
+                name = "ContentsFill",
+                defaultWidth = 24.0.dp,
                 defaultHeight =
                     24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f,
             ).apply {
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(2.0f, 3.0f)
@@ -40,8 +46,12 @@ public val MyIconPack.ContentsFill: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0xFF25262B)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    fill = SolidColor(Color(0xFF25262B)),
+                    stroke = null,
+                    strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt,
+                    strokeLineJoin = Miter,
+                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(22.0f, 3.0f)
@@ -55,8 +65,7 @@ public val MyIconPack.ContentsFill: ImageVector
                     verticalLineTo(3.0f)
                     close()
                 }
-            }
-                .build()
+            }.build()
         return contentsFill!!
     }
 

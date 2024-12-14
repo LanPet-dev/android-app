@@ -33,7 +33,7 @@ fun TextFieldWithDeleteButton(
     placeholder: String,
     modifier: Modifier = Modifier.fillMaxWidth(),
     singleLine: Boolean = true,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit = {},
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -92,7 +92,7 @@ private fun DeleteButton(
 
 @PreviewLightDark
 @Composable
-fun PreviewTextFieldWithDeleteButton() {
+private fun PreviewTextFieldWithDeleteButton() {
     LanPetAppTheme {
         Column(Modifier.padding(16.dp)) {
             TextFieldWithDeleteButton(
@@ -114,7 +114,7 @@ fun PreviewTextFieldWithDeleteButton() {
 
 @PreviewLightDark
 @Composable
-fun PreviewDeleteButton() {
+private fun PreviewDeleteButton() {
     LanPetAppTheme {
         Column {
             DeleteButton(true) { }

@@ -9,8 +9,9 @@ import com.lanpet.core.common.crop
 
 @Composable
 fun CommonIconButtonBox(
-    content: @Composable () -> Unit,
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
     Box(
         modifier =

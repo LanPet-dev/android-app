@@ -17,17 +17,15 @@ import javax.inject.Singleton
 class RepositoryModule {
     @Singleton
     @Provides
-    fun provideAccountRepository(accountService: AccountApiService): AccountRepository {
-        return AccountRepositoryImpl(
+    fun provideAccountRepository(accountService: AccountApiService): AccountRepository =
+        AccountRepositoryImpl(
             accountService,
         )
-    }
 
     @Singleton
     @Provides
-    fun provideFreeBoardRepository(freeBoardService: FreeBoardApiService): FreeBoardRepository {
-        return FreeBoardRepositoryImpl(
+    fun provideFreeBoardRepository(freeBoardService: FreeBoardApiService): FreeBoardRepository =
+        FreeBoardRepositoryImpl(
             freeBoardService,
         )
-    }
 }

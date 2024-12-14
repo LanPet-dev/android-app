@@ -6,7 +6,9 @@ import androidx.browser.customtabs.CustomTabsIntent
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-class CognitoAuthManager(private val context: Context) {
+class CognitoAuthManager(
+    private val context: Context,
+) {
     companion object {
         // 아래 정보들은 노출되어도 상관없는 데이터.
         private const val COGNITO_DOMAIN = "https://lanpet.auth.ap-northeast-2.amazoncognito.com"
@@ -37,7 +39,8 @@ class CognitoAuthManager(private val context: Context) {
     }
 
     private fun launchCustomTab(uri: Uri) {
-        CustomTabsIntent.Builder()
+        CustomTabsIntent
+            .Builder()
             .setShowTitle(true)
             .setUrlBarHidingEnabled(true)
             .build()
