@@ -18,17 +18,19 @@ fun Modifier.crop(
     size: Dp = 130.dp,
     shape: Shape = CircleShape,
     onClick: () -> Unit,
-) = Modifier
-    .size(size)
-    .clip(shape)
-    .clickable(onClick = onClick)
+) = this then
+    Modifier
+        .size(size)
+        .clip(shape)
+        .clickable(onClick = onClick)
 
 fun Modifier.crop(
     size: Dp = 130.dp,
     shape: Shape = CircleShape,
-) = Modifier
-    .size(size)
-    .clip(shape)
+) = this then
+    Modifier
+        .size(size)
+        .clip(shape)
 
 fun Modifier.commonBorder(
     border: BorderStroke =
