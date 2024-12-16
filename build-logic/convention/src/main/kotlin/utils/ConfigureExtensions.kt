@@ -56,17 +56,11 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
 
         sourceSets {
             getByName("prod") {
-                java.srcDirs("src/main/java")
-                kotlin.srcDirs("src/main/kotlin")
-                res.srcDirs("src/main/res")
                 java.srcDirs("src/prod/java")
                 kotlin.srcDirs("src/prod/kotlin")
                 res.srcDirs("src/prod/res")
             }
             getByName("dev") {
-                java.srcDirs("src/main/java")
-                kotlin.srcDirs("src/main/kotlin")
-                res.srcDirs("src/main/res")
                 java.srcDirs("src/dev/java")
                 kotlin.srcDirs("src/dev/kotlin")
                 res.srcDirs("src/dev/res")
