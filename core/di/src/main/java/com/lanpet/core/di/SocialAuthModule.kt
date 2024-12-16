@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModule {
+object SocialAuthModule {
     @Provides
     @Singleton
     fun provideAuthService(
