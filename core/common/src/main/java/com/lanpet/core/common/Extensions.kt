@@ -7,6 +7,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+fun String.removeWhiteSpace() = this.replace("\\s".toRegex(), "")
+
+fun String.removeLineBreak() = this.replace("\n", "")
+
 fun WindowInsets.Companion.zero() =
     WindowInsets(
         0,
