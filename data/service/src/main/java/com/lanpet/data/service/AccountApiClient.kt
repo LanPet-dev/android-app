@@ -38,6 +38,16 @@ class AccountApiClient
                 chain.proceed(request)
             }
 
+        private val accessTokenInterceptor =
+            Interceptor { chain ->
+                with(chain.request()) {
+                    chain.request().headers.get("x-access-token")
+                        ?: throw Exception("x-access-token is required")
+
+                    chain.proceed(this)
+                }
+            }
+
         private val gson =
             GsonBuilder()
                 .registerTypeAdapter(
@@ -45,7 +55,12 @@ class AccountApiClient
                     AuthorityTypeTypeAdapter(),
                 ).create()
 
-        private val okHttpClient = OkHttpClient.Builder().addInterceptor(headerInterceptor).build()
+        private val okHttpClient =
+            OkHttpClient
+                .Builder()
+                .addInterceptor(headerInterceptor)
+                .addInterceptor(accessTokenInterceptor)
+                .build()
 
         private val apiService =
             Retrofit
