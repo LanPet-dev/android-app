@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.hilt)
     alias(libs.plugins.convention.lib.retrofit)
+    alias(libs.plugins.convention.lib.junit5)
 }
 
 android {
