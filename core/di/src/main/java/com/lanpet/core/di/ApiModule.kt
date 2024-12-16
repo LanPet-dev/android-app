@@ -3,10 +3,10 @@ package com.lanpet.core.di
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.service.AccountApiClient
 import com.lanpet.data.service.AccountApiService
-import com.lanpet.data.service.ProfileApiClient
-import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.FreeBoardApiClient
 import com.lanpet.data.service.FreeBoardApiService
+import com.lanpet.data.service.ProfileApiClient
+import com.lanpet.data.service.ProfileApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 object ApiModule {
     @Singleton
     @Provides
-    fun provideBaseApiService(
+    fun provideProfileApiService(
         @Named("BaseApiUrl") baseApiUrl: String,
     ): ProfileApiService = ProfileApiClient(baseApiUrl).getService()
 
