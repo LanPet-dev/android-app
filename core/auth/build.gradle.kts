@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.android
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -17,6 +18,23 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    val localProperties =
+        Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
+
+    defaultConfig {
+        buildConfigField(
+            "String",
+            "GOOGLE_OAUTH_CLIENT_KEY",
+            localProperties.getProperty("GOOGLE_OAUTH_CLIENT_KEY"),
+        )
     }
 }
 
