@@ -1,6 +1,8 @@
 package com.lanpet.data.service
 
 import com.google.gson.GsonBuilder
+import com.lanpet.data.dto.Butler
+import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
 import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
 import com.lanpet.domain.model.ProfileType
 import okhttp3.Interceptor
@@ -9,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class AuthApiClient
+class ProfileApiClient
     @Inject
     constructor(
         private val baseUrl: String,
@@ -28,6 +30,7 @@ class AuthApiClient
         private val gson =
             GsonBuilder()
                 .registerTypeAdapter(ProfileType::class.java, ProfileTypeTypeAdapter())
+                .registerTypeAdapter(Butler::class.java, PetCategoryTypeAdapter())
                 .create()
 
         private val okHttpClient =
@@ -43,7 +46,7 @@ class AuthApiClient
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
-                .create(BaseApiService::class.java)
+                .create(ProfileApiService::class.java)
 
-        fun getService(): BaseApiService = apiService
+        fun getService(): ProfileApiService = apiService
     }
