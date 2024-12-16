@@ -73,9 +73,7 @@ fun Date.toUtcDateString(
     return formatter.format(this)
 }
 
-fun Date.toYyyyMmDdHhMmSs(
-    dateFormat: String = "yyyy-MM-dd HH:mm:ss",
-): String {
+fun Date.toYyyyMmDdHhMmSs(dateFormat: String = "yyyy-MM-dd HH:mm:ss"): String {
     val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
     return formatter.format(this)
 }
