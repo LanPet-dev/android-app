@@ -20,10 +20,10 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
             }
         }
 
-    val properties = Properties().apply {
-        load(project.rootProject.file("local.properties").inputStream())
-    }
-
+    val properties =
+        Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
 
     commonExtension.apply {
         compileSdk = 35
@@ -36,7 +36,7 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
             buildConfigField(
                 "String",
                 "GOOGLE_OAUTH_CLIENT_KEY",
-                "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}"
+                properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY"),
             )
         }
 
@@ -56,6 +56,38 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
         compileOptions {
             sourceCompatibility = VERSION_17
             targetCompatibility = VERSION_17
+        }
+
+        flavorDimensions.apply {
+            add("environment")
+        }
+
+        productFlavors {
+            create("dev") {
+                dimension = "environment"
+            }
+            create("prod") {
+                dimension = "environment"
+            }
+        }
+
+        sourceSets {
+            getByName("prod") {
+                java.srcDirs("src/main/java")
+                kotlin.srcDirs("src/main/kotlin")
+                res.srcDirs("src/main/res")
+                java.srcDirs("src/prod/java")
+                kotlin.srcDirs("src/prod/kotlin")
+                res.srcDirs("src/prod/res")
+            }
+            getByName("dev") {
+                java.srcDirs("src/main/java")
+                kotlin.srcDirs("src/main/kotlin")
+                res.srcDirs("src/main/res")
+                java.srcDirs("src/dev/java")
+                kotlin.srcDirs("src/dev/kotlin")
+                res.srcDirs("src/dev/res")
+            }
         }
 
         // Kotlin options 설정
