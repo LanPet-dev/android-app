@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.hilt)
     alias(libs.plugins.convention.lib.retrofit)
+    alias(libs.plugins.convention.lib.junit5)
 }
 
 android {
@@ -11,6 +12,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.common)
     implementation(projects.domain.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

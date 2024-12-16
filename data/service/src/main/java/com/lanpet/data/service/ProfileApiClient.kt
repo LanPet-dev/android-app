@@ -2,16 +2,18 @@ package com.lanpet.data.service
 
 import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
-import com.lanpet.data.dto.typeadapter.AuthorityTypeTypeAdapter
+import com.lanpet.data.dto.Butler
+import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
+import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
 import com.lanpet.domain.model.AuthState
-import com.lanpet.domain.model.AuthorityType
+import com.lanpet.domain.model.ProfileType
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class AccountApiClient
+class ProfileApiClient
     @Inject
     constructor(
         private val baseUrl: String,
@@ -50,10 +52,9 @@ class AccountApiClient
 
         private val gson =
             GsonBuilder()
-                .registerTypeAdapter(
-                    AuthorityType::class.java,
-                    AuthorityTypeTypeAdapter(),
-                ).create()
+                .registerTypeAdapter(ProfileType::class.java, ProfileTypeTypeAdapter())
+                .registerTypeAdapter(Butler::class.java, PetCategoryTypeAdapter())
+                .create()
 
         private val okHttpClient =
             OkHttpClient
@@ -69,7 +70,7 @@ class AccountApiClient
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
-                .create(AccountApiService::class.java)
+                .create(ProfileApiService::class.java)
 
-        fun getService(): AccountApiService = apiService
+        fun getService(): ProfileApiService = apiService
     }

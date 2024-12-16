@@ -20,28 +20,11 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
             }
         }
 
-    val properties = Properties().apply {
-        load(project.rootProject.file("local.properties").inputStream())
-    }
-
-
     commonExtension.apply {
         compileSdk = 35
         defaultConfig {
             minSdk = 24
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
-
-        defaultConfig {
-            buildConfigField(
-                "String",
-                "GOOGLE_OAUTH_CLIENT_KEY",
-                "${properties.getProperty("GOOGLE_OAUTH_CLIENT_KEY")}"
-            )
-        }
-
-        buildFeatures {
-            buildConfig = true
         }
 
         signingConfigs {
@@ -56,6 +39,32 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
         compileOptions {
             sourceCompatibility = VERSION_17
             targetCompatibility = VERSION_17
+        }
+
+        flavorDimensions.apply {
+            add("environment")
+        }
+
+        productFlavors {
+            create("dev") {
+                dimension = "environment"
+            }
+            create("prod") {
+                dimension = "environment"
+            }
+        }
+
+        sourceSets {
+            getByName("prod") {
+                java.srcDirs("src/prod/java")
+                kotlin.srcDirs("src/prod/kotlin")
+                res.srcDirs("src/prod/res")
+            }
+            getByName("dev") {
+                java.srcDirs("src/dev/java")
+                kotlin.srcDirs("src/dev/kotlin")
+                res.srcDirs("src/dev/res")
+            }
         }
 
         // Kotlin options 설정

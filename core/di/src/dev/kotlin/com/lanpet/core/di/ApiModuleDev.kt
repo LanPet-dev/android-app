@@ -1,7 +1,7 @@
 package com.lanpet.core.di
 
-import com.lanpet.core.auth.BuildConfig
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
@@ -9,8 +9,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object EnvironmentModule {
+object ApiModuleDev {
     @Singleton
-    @Named("GOOGLE_CLIENT_ID")
-    fun provideGoogleClientId(): String = BuildConfig.GOOGLE_OAUTH_CLIENT_KEY
+    @Provides
+    @Named("BaseApiUrl")
+    fun provideBaseApiUrl(): String = "https://test.api.lanpet.co.kr/"
 }
