@@ -26,7 +26,7 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Decode Keystore
-      run:
+      run: |
         echo "${{ secrets.DEBUG_KEY }} > | lanpet_debug_key_encoded"
         echo "base64 -d -i lanpet_debug_key_encoded -o lanpet_debug_key"
 
