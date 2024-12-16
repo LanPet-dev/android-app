@@ -21,14 +21,19 @@ object ApiModule {
     @Provides
     fun provideProfileApiService(
         @Named("BaseApiUrl") baseApiUrl: String,
-    ): ProfileApiService = ProfileApiClient(baseApiUrl).getService()
+        authStateHolder: AuthStateHolder,
+    ): ProfileApiService =
+        ProfileApiClient(
+            baseApiUrl,
+            authStateHolder,
+        ).getService()
 
     @Singleton
     @Provides
     fun provideAuthApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): ProfileApiClient = ProfileApiClient(baseApiUrl)
+    ): ProfileApiClient = ProfileApiClient(baseApiUrl, authStateHolder)
 
     @Singleton
     @Provides
@@ -56,6 +61,7 @@ object ApiModule {
     @Provides
     fun provideFreeBoardApiService(freeBoardApiClient: FreeBoardApiClient): FreeBoardApiService = freeBoardApiClient.getService()
 
+    // TODO("Satoshi"): separate by flavor environment
     @Singleton
     @Provides
     @Named("BaseApiUrl")
