@@ -1,5 +1,6 @@
 package com.lanpet.data.dto
 
+import com.google.gson.annotations.SerializedName
 import com.lanpet.domain.model.ProfileType
 import kotlinx.serialization.Serializable
 
@@ -19,6 +20,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class RegisterPetProfileRequest(
+    @SerializedName("type")
     val profileType: ProfileType = ProfileType.PET,
     val nickname: String,
     val pictureUrl: String? = null,

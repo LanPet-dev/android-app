@@ -6,8 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PetDto(
     val petType: PetCategory,
-    val feature: List<String>,
+    val breed: String? = null,
+    val feature: List<String> = emptyList(),
     // To date format string
-    val birthDate: String,
-    val weight: Double,
+    val birthDate: String? = null,
+    val weight: Double? = null,
 )
