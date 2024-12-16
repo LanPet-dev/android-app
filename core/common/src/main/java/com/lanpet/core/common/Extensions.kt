@@ -63,3 +63,19 @@ fun String.toLocalDate(
     parser.timeZone = timeZone
     return parser.parse(this) ?: throw IllegalArgumentException("Invalid date format")
 }
+
+fun Date.toUtcDateString(
+    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssXXX",
+    timeZone: TimeZone = TimeZone.getTimeZone("UTC"),
+): String {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    formatter.timeZone = timeZone
+    return formatter.format(this)
+}
+
+fun Date.toYyyyMmDdHhMmSs(
+    dateFormat: String = "yyyy-MM-dd HH:mm:ss",
+): String {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    return formatter.format(this)
+}
