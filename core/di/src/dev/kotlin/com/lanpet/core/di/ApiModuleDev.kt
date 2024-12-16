@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModuleDev {
-    // TODO("Satoshi"): replace with production endpoint
     @Singleton
     @Provides
     @Named("BaseApiUrl")
