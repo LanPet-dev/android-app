@@ -60,10 +60,4 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideFreeBoardApiService(freeBoardApiClient: FreeBoardApiClient): FreeBoardApiService = freeBoardApiClient.getService()
-
-    // TODO("Satoshi"): separate by flavor environment
-    @Singleton
-    @Provides
-    @Named("BaseApiUrl")
-    fun provideBaseApiUrl(): String = "https://test.api.lanpet.co.kr/"
 }
