@@ -1,5 +1,6 @@
 package com.lanpet.core.di
 
+import com.lanpet.core.auth.BuildConfig
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
