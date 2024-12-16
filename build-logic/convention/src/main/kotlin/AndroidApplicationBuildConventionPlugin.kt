@@ -2,8 +2,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import utils.configureAndroidCommon
-import java.util.Properties
+import utils.configureAndroidApplication
 
 class AndroidApplicationBuildConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -14,8 +13,7 @@ class AndroidApplicationBuildConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<ApplicationExtension> {
-                configureAndroidCommon(this)
-
+                configureAndroidApplication(this)
 
                 buildTypes {
                     // TODO("Satoshi"): Flavors (release, debug, qa, etc...)
