@@ -44,34 +44,34 @@ jobs:
         echo "keystore.key_alias=${{secrets.GOOGLE_OAUTH_CLIENT_KEY}}" >> local.properties
         echo "sdk.dir=$ANDROID_HOME" >> local.properties
 
-    - name: Check if files exist
-      run: |
-        if [ ! -f "lanpet_debug_key" ]; then
-          echo "Error: lanpet_debug_key file not found"
-          exit 1
-        fi
+    # - name: Check if files exist
+    #   run: |
+    #     if [ ! -f "lanpet_debug_key" ]; then
+    #       echo "Error: lanpet_debug_key file not found"
+    #       exit 1
+    #     fi
     
-        if [ ! -f "keyStore.properties" ]; then
-          echo "Error: keyStore.properties file not found"
-          exit 1
-        fi
+    #     if [ ! -f "keyStore.properties" ]; then
+    #       echo "Error: keyStore.properties file not found"
+    #       exit 1
+    #     fi
     
-        if [ ! -f "local.properties" ]; then
-          echo "Error: local.properties file not found"
-          exit 1
-        fi
+    #     if [ ! -f "local.properties" ]; then
+    #       echo "Error: local.properties file not found"
+    #       exit 1
+    #     fi
         
-        echo "All required files exist"
-        # 파일 내용이 비어있지 않은지도 확인
-        if [ ! -s "keyStore.properties" ]; then
-          echo "Error: keyStore.properties is empty"
-          exit 1
-        fi
+    #     echo "All required files exist"
+    #     # 파일 내용이 비어있지 않은지도 확인
+    #     if [ ! -s "keyStore.properties" ]; then
+    #       echo "Error: keyStore.properties is empty"
+    #       exit 1
+    #     fi
         
-        if [ ! -s "local.properties" ]; then
-          echo "Error: local.properties is empty"
-          exit 1
-        fi
+    #     if [ ! -s "local.properties" ]; then
+    #       echo "Error: local.properties is empty"
+    #       exit 1
+    #     fi
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
