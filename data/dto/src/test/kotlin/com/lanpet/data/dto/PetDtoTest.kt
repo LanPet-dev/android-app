@@ -14,7 +14,12 @@ class PetDtoTest {
         val petDto =
             PetDto(
                 petType = PetCategory.CAT,
-                feature = listOf("cute", "lovely"),
+                breed = "낭만고양이",
+                feature =
+                    listOf(
+                        "cute",
+                        "lovely",
+                    ),
                 birthDate = "2021-01-01",
                 weight = 3.5,
             )
@@ -23,15 +28,21 @@ class PetDtoTest {
             """
                 {
                     "petType": "CAT",
+                    "breed": "낭만고양이",
                     "feature": ["cute", "lovely"],
                     "birthDate": "2021-01-01",
                     "weight": 3.5
                 }
                 """.removeWhiteSpace().removeLineBreak()
 
+        val json =
+            Json {
+                encodeDefaults = true
+            }
+
         // When
-        val serialized = Json.encodeToString(PetDto.serializer(), petDto)
-        val deserialized = Json.decodeFromString(PetDto.serializer(), serialized)
+        val serialized = json.encodeToString(PetDto.serializer(), petDto)
+        val deserialized = json.decodeFromString(PetDto.serializer(), serialized)
 
         // Then
         assertEquals(petDto, deserialized)
@@ -54,15 +65,21 @@ class PetDtoTest {
             """
                 {
                     "petType": "LIZARD",
+                    "breed": null,
                     "feature": [],
                     "birthDate": "2021-01-01",
                     "weight": 3.5
                 }
                 """.removeWhiteSpace().removeLineBreak()
 
+        val json =
+            Json {
+                encodeDefaults = true
+            }
+
         // When
-        val serialized = Json.encodeToString(PetDto.serializer(), petDto)
-        val deserialized = Json.decodeFromString(PetDto.serializer(), serialized)
+        val serialized = json.encodeToString(PetDto.serializer(), petDto)
+        val deserialized = json.decodeFromString(PetDto.serializer(), serialized)
 
         // Then
         assertEquals(petDto, deserialized)
