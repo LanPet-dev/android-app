@@ -70,3 +70,19 @@ fun rememberNavigationHandler(
 
     return navigationHandler
 }
+
+sealed class NavigationEvent {
+    data class DeepLink(
+        val url: String,
+        val args: Map<String, String> = emptyMap(),
+    ) : NavigationEvent()
+
+    data class AuthStateChange(
+        val authState: AuthState,
+    ) : NavigationEvent()
+
+    data class ScreenNavigation(
+        val route: String,
+        val args: Map<String, String> = emptyMap(),
+    ) : NavigationEvent()
+}
