@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
 
 class NavigationHandler(
     private val navController: NavHostController,
@@ -24,29 +26,38 @@ class NavigationHandler(
         println(
             "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState",
         )
-        if ((previousAuthState is AuthState.Fail && currentAuthState is AuthState.Fail) ||
-            (
-                previousAuthState is AuthState.Success &&
-                    currentAuthState is AuthState.Success ||
-                    (
-                        previousAuthState is AuthState.Loading && currentAuthState is AuthState.Loading
-                    ) ||
-                    (previousAuthState is AuthState.Initial && currentAuthState is AuthState.Initial)
-            )
-        ) {
-            previousAuthState = currentAuthState
+
+        if (previousAuthState::class == currentAuthState::class) {
+            println("previousAuthState is same as currentAuthState")
             return
         }
 
-        // Fail, Loading 또는 initial 상태에서 Success로 변경되었다면, 로그인 성공이므로 MainScreen 으로 이동
-        if (currentAuthState is AuthState.Success &&
-            (previousAuthState is AuthState.Fail || previousAuthState is AuthState.Initial || previousAuthState is AuthState.Loading)
-        ) {
-            navController.navigateToMainScreen()
-        } else if ( // 현재상태가 Success 상태에서 Initial 또는 Fail 상태로 변경되었다면 로그인 실패 또는 로그아웃 이므로 Login screen 으로 이동
-            (currentAuthState is AuthState.Initial || currentAuthState is AuthState.Fail) && previousAuthState is AuthState.Success
-        ) {
-            navController.navigateToLoginScreen()
+        when (currentAuthState) {
+            is AuthState.Initial -> {
+                // TODO
+            }
+
+            is AuthState.Success -> {
+                if (currentAuthState.profile.isEmpty()) {
+                    navController.navigateToProfileCreateHasPet()
+                } else {
+                    navController.navigateToMainScreen(
+                        bottomNavItem = BottomNavItem.Wiki,
+                    )
+                }
+            }
+
+            is AuthState.Logout -> {
+                navController.navigateToLoginScreen()
+            }
+
+            is AuthState.Fail -> {
+                // TODO
+            }
+
+            is AuthState.Loading -> {
+                // TODO
+            }
         }
 
         previousAuthState = currentAuthState
@@ -69,20 +80,4 @@ fun rememberNavigationHandler(
     }
 
     return navigationHandler
-}
-
-sealed class NavigationEvent {
-    data class DeepLink(
-        val url: String,
-        val args: Map<String, String> = emptyMap(),
-    ) : NavigationEvent()
-
-    data class AuthStateChange(
-        val authState: AuthState,
-    ) : NavigationEvent()
-
-    data class ScreenNavigation(
-        val route: String,
-        val args: Map<String, String> = emptyMap(),
-    ) : NavigationEvent()
 }
