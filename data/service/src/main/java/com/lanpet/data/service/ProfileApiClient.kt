@@ -2,7 +2,7 @@ package com.lanpet.data.service
 
 import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
-import com.lanpet.data.dto.Butler
+import com.lanpet.data.dto.ButlerDto
 import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
 import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
 import com.lanpet.domain.model.AuthState
@@ -21,6 +21,12 @@ class ProfileApiClient
     ) {
         private val headerInterceptor =
             Interceptor { chain ->
+                if (authStateHolder.authState.value !is AuthState.Success) {
+                    throw Exception("AuthState is not Success")
+                }
+                val token =
+                    (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
+
                 val request =
                     chain
                         .request()
@@ -28,14 +34,7 @@ class ProfileApiClient
                         .addHeader("Content-Type", "application/json")
                         .addHeader(
                             "x-access-token",
-                            if (authStateHolder.authState.value is AuthState.Loading) {
-                                (authStateHolder.authState.value as AuthState.Loading)
-                                    .socialAuthToken
-                                    ?.accessToken
-                                    .toString()
-                            } else {
-                                ""
-                            },
+                            token ?: "",
                         ).build()
                 chain.proceed(request)
             }
@@ -43,17 +42,21 @@ class ProfileApiClient
         private val accessTokenInterceptor =
             Interceptor { chain ->
                 with(chain.request()) {
-                    chain.request().headers.get("x-access-token")
-                        ?: throw Exception("x-access-token is required")
+                    if (headers
+                            .get("x-access-token")
+                            ?.isNotEmpty() == true
+                    ) {
+                        chain.proceed(this)
+                    }
 
-                    chain.proceed(this)
+                    throw Exception("x-access-token is required")
                 }
             }
 
         private val gson =
             GsonBuilder()
                 .registerTypeAdapter(ProfileType::class.java, ProfileTypeTypeAdapter())
-                .registerTypeAdapter(Butler::class.java, PetCategoryTypeAdapter())
+                .registerTypeAdapter(ButlerDto::class.java, PetCategoryTypeAdapter())
                 .create()
 
         private val okHttpClient =

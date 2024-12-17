@@ -1,6 +1,7 @@
 package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
+import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.ProfileType
 import kotlinx.serialization.Serializable
 
@@ -26,4 +27,22 @@ data class RegisterPetProfileRequest(
     val pictureUrl: String? = null,
     val introduction: String? = null,
     val pet: PetDto,
-)
+) {
+    companion object {
+        @JvmStatic
+        fun fromDomain(petProfileCreate: PetProfileCreate): RegisterPetProfileRequest =
+            RegisterPetProfileRequest(
+                nickname = petProfileCreate.nickName,
+                pictureUrl = petProfileCreate.profileImageUri.toString(),
+                introduction = petProfileCreate.bio,
+                profileType = petProfileCreate.type,
+                pet =
+                    PetDto(
+                        petType = petProfileCreate.pet.petCategory,
+                        breed = petProfileCreate.pet.breed,
+                        feature = petProfileCreate.pet.feature,
+                        weight = petProfileCreate.pet.weight,
+                    ),
+            )
+    }
+}

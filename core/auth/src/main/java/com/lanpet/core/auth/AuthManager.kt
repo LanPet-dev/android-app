@@ -2,9 +2,9 @@ package com.lanpet.core.auth
 
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
-import com.lanpet.domain.usecase.GetAccountInformationUseCase
-import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
-import com.lanpet.domain.usecase.RegisterAccountUseCase
+import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
+import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
+import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview

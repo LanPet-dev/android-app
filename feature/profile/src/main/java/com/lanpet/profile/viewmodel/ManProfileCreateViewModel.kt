@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.ProfileType
+import com.lanpet.domain.model.profile.Butler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,8 +26,14 @@ class ManProfileCreateViewModel
                 ManProfileCreate(
                     profileImageUri = null,
                     nickName = "",
-                    age = null,
                     bio = "",
+                    preferPets = emptyList(),
+                    type = ProfileType.BUTLER,
+                    butler =
+                        Butler(
+                            ageRange = 0,
+                            preferredPet = null,
+                        ),
                 ),
             )
 
@@ -40,7 +48,8 @@ class ManProfileCreateViewModel
         }
 
         fun setAge(age: Age) {
-            _manProfileCreate.value = _manProfileCreate.value.copy(age = age)
+            _manProfileCreate.value =
+                _manProfileCreate.value.copy(butler = _manProfileCreate.value.butler.copy(ageRange = age.intValue))
         }
 
         fun setBio(bio: String) {
@@ -52,8 +61,14 @@ class ManProfileCreateViewModel
                 ManProfileCreate(
                     profileImageUri = null,
                     nickName = "",
-                    age = null,
                     bio = "",
+                    preferPets = emptyList(),
+                    type = ProfileType.BUTLER,
+                    butler =
+                        Butler(
+                            ageRange = 0,
+                            preferredPet = null,
+                        ),
                 )
         }
 

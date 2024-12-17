@@ -7,7 +7,10 @@ sealed class AuthState {
     data class Success(
         val socialAuthToken: SocialAuthToken?,
         val account: Account?,
+        val profile: List<UserProfile> = emptyList(),
     ) : AuthState()
+
+    data object Logout : AuthState()
 
     data object Fail : AuthState()
 

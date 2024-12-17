@@ -1,6 +1,7 @@
 package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
+import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import kotlinx.serialization.Serializable
@@ -19,17 +20,31 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class RegisterManProfileRequest(
-    @SerializedName("type")
-    val profileType: ProfileType = ProfileType.BUTLER,
+    @SerializedName("type") val profileType: ProfileType = ProfileType.BUTLER,
     val nickname: String,
-    @SerializedName("pictureUrl")
-    val profileImageUrl: String? = null,
+    @SerializedName("pictureUrl") val profileImageUrl: String? = null,
     val introduction: String? = null,
-    val butler: Butler,
-)
+    val butler: ButlerDto,
+) {
+    companion object {
+        @JvmStatic
+        fun fromDomain(manProfileCreate: ManProfileCreate): RegisterManProfileRequest =
+            RegisterManProfileRequest(
+                nickname = manProfileCreate.nickName,
+                profileImageUrl = manProfileCreate.profileImageUri.toString(),
+                introduction = manProfileCreate.bio,
+                profileType = manProfileCreate.type,
+                butler =
+                    ButlerDto(
+                        ageRange = manProfileCreate.butler.ageRange,
+                        preferredPet = manProfileCreate.butler.preferredPet,
+                    ),
+            )
+    }
+}
 
 @Serializable
-data class Butler(
+data class ButlerDto(
     val ageRange: Int,
     val preferredPet: PetCategory?,
 )

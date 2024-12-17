@@ -8,9 +8,9 @@ import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.model.SocialAuthType
 import com.lanpet.domain.model.account.Account
 import com.lanpet.domain.model.account.AccountToken
-import com.lanpet.domain.usecase.GetAccountInformationUseCase
-import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
-import com.lanpet.domain.usecase.RegisterAccountUseCase
+import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
+import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
+import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

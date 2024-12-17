@@ -18,5 +18,5 @@ interface ProfileApiService {
     suspend fun getProfileList(): FindProfileResponse
 
     @GET("profiles/{id}")
-    suspend fun getProfileDetail(id: String)
+    suspend fun getProfileDetail(id: String): FindProfileDetailResponse
 }
