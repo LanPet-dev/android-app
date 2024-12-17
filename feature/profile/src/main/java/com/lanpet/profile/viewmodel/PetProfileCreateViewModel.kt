@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.PetProfileCreate
+import com.lanpet.domain.model.ProfileType
+import com.lanpet.domain.model.profile.Pet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +22,16 @@ class PetProfileCreateViewModel
                 PetProfileCreate(
                     profileImageUri = null,
                     nickName = "",
-                    petCategory = null,
-                    species = "",
                     bio = "",
+                    type = ProfileType.PET,
+                    pet =
+                        Pet(
+                            petCategory = PetCategory.ETC,
+                            breed = null,
+                            feature = emptyList(),
+                            weight = null,
+                            birthDate = null,
+                        ),
                 ),
             )
         val petProfileCreate: StateFlow<PetProfileCreate> = _petProfileCreate.asStateFlow()
@@ -36,11 +45,19 @@ class PetProfileCreateViewModel
         }
 
         fun setPetCategory(petCategory: PetCategory) {
-            _petProfileCreate.update { it.copy(petCategory = petCategory) }
+            _petProfileCreate.update {
+                it.copy(
+                    pet = it.pet.copy(petCategory = petCategory),
+                )
+            }
         }
 
-        fun setSpecies(species: String) {
-            _petProfileCreate.update { it.copy(species = species) }
+        fun setBreed(breed: String) {
+            _petProfileCreate.update {
+                it.copy(
+                    pet = it.pet.copy(breed = breed),
+                )
+            }
         }
 
         fun setBio(bio: String) {
@@ -48,22 +65,12 @@ class PetProfileCreateViewModel
         }
 
         fun validatePetProfileCreate(): Boolean {
-            val currentValue = _petProfileCreate.value
-            return currentValue.nickName.isNotEmpty() &&
-                currentValue.petCategory != null &&
-                currentValue.species.isNotEmpty() &&
-                currentValue.bio.isNotEmpty()
+            // TODO
+            throw NotImplementedError()
         }
 
         fun clear() {
-            _petProfileCreate.update {
-                PetProfileCreate(
-                    profileImageUri = null,
-                    nickName = "",
-                    petCategory = null,
-                    species = "",
-                    bio = "",
-                )
-            }
+            // TODO
+            throw NotImplementedError()
         }
     }

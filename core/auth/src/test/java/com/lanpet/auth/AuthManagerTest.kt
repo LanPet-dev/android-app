@@ -9,8 +9,8 @@ import com.lanpet.domain.model.SocialAuthType
 import com.lanpet.domain.model.account.Account
 import com.lanpet.domain.model.account.AccountToken
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
-import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
+import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -100,7 +100,13 @@ class AuthManagerTest {
                 val authCode = "AUTH-CODE"
                 coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
                     flow {
-                        emit(SocialAuthToken(SocialAuthType.GOOGLE, "accessToken", "refreshToken"))
+                        emit(
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        )
                     }
 
                 coEvery { getAccountInformationUseCase() } returns
@@ -139,7 +145,13 @@ class AuthManagerTest {
                     val authCode = "AUTH-CODE"
                     coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
                         flow {
-                            emit(SocialAuthToken(SocialAuthType.GOOGLE, "accessToken", "refreshToken"))
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
                         }
 
                     coEvery { getAccountInformationUseCase() } returns
@@ -173,7 +185,13 @@ class AuthManagerTest {
                     val authCode = "AUTH-CODE"
                     coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
                         flow {
-                            emit(SocialAuthToken(SocialAuthType.GOOGLE, "accessToken", "refreshToken"))
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
                         }
 
                     coEvery { getAccountInformationUseCase() } returnsMany

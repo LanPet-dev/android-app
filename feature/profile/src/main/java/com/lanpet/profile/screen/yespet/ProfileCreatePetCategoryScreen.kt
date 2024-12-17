@@ -63,8 +63,8 @@ fun ProfileCreatePetCategoryScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 petProfileCreateViewModel.petProfileCreate
                     .collectAsState()
-                    .value.petCategory
-                    ?.let { it1 ->
+                    .value.pet.petCategory
+                    .let { it1 ->
                         CategoryChipSection(
                             selectedCategory =
                             it1,

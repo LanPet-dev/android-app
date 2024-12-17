@@ -1,5 +1,6 @@
 package com.lanpet.data.service
 
+import com.lanpet.data.dto.FindProfileDetailResponse
 import com.lanpet.data.dto.FindProfileResponse
 import com.lanpet.data.dto.RegisterManProfileRequest
 import com.lanpet.data.dto.RegisterPetProfileRequest

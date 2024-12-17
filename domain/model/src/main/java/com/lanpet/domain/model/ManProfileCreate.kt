@@ -8,6 +8,6 @@ data class ManProfileCreate(
     val nickName: String,
     val preferPets: List<PetCategory> = emptyList<PetCategory>(),
     val bio: String,
-    val type : ProfileType,
-    val butler : Butler,
+    val type: ProfileType,
+    val butler: Butler,
 )
