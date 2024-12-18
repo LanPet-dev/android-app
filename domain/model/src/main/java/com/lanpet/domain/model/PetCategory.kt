@@ -15,4 +15,5 @@ enum class PetCategory(
     REPTILE("파충류"),
     TURTLE("거북이"),
     ETC("기타"),
+    NONE("없음"),
 }
