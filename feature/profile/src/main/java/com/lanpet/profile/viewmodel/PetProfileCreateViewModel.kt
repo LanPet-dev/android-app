@@ -76,11 +76,13 @@ class PetProfileCreateViewModel
 
         fun registerPetProfile() {
             viewModelScope.launch {
+                _registerPetProfileResult.value = RegisterPetProfileResult.Loading
                 try {
-                    _registerPetProfileResult.value = RegisterPetProfileResult.Loading
-                    registerPetProfileUseCase(_petProfileCreate.value)
-                    _registerPetProfileResult.value = RegisterPetProfileResult.Success
+                    registerPetProfileUseCase(_petProfileCreate.value).collect {
+                        _registerPetProfileResult.value = RegisterPetProfileResult.Success
+                    }
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     _registerPetProfileResult.value =
                         RegisterPetProfileResult.Error(e.message ?: "Unknown error")
                 }

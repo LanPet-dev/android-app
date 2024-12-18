@@ -16,7 +16,7 @@ class NavigationHandler(
      * 이전 AuthState
      * 현재 AuthState 와 비교하여 처리하기위해 필요함
      */
-    private var previousAuthState: AuthState = AuthState.Initial
+    private var previousAuthState: AuthState = AuthState.Initial()
 
     /**
      * AuthState 에 따른 Screen 이동 처리를 담당한다.
@@ -26,6 +26,11 @@ class NavigationHandler(
         println(
             "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState",
         )
+
+        // navigationHandleFlag 가 false 일 경우, Screen 이동 처리를 하지 않습니다.
+        if (!currentAuthState.navigationHandleFlag) {
+            return
+        }
 
         if (previousAuthState::class == currentAuthState::class) {
             println("previousAuthState is same as currentAuthState")

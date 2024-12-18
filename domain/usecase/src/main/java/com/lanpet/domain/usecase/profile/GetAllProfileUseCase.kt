@@ -8,5 +8,5 @@ class GetAllProfileUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend fun invoke() = profileRepository.getProfiles()
+        suspend operator fun invoke() = profileRepository.getProfiles()
     }

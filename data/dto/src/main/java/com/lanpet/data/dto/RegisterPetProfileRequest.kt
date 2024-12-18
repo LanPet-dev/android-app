@@ -33,14 +33,14 @@ data class RegisterPetProfileRequest(
         fun fromDomain(petProfileCreate: PetProfileCreate): RegisterPetProfileRequest =
             RegisterPetProfileRequest(
                 nickname = petProfileCreate.nickName,
-                pictureUrl = petProfileCreate.profileImageUri.toString(),
+                pictureUrl = petProfileCreate.profileImageUri?.path,
                 introduction = petProfileCreate.bio,
                 profileType = petProfileCreate.type,
                 pet =
                     PetDto(
                         petType = petProfileCreate.pet.petCategory,
                         breed = petProfileCreate.pet.breed,
-                        feature = petProfileCreate.pet.feature,
+                        feature = petProfileCreate.pet.feature.joinToString(","),
                         weight = petProfileCreate.pet.weight,
                     ),
             )

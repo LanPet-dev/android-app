@@ -27,6 +27,8 @@ class ProfileApiClient
                 val token =
                     (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
 
+                println("token: $token")
+
                 val request =
                     chain
                         .request()
@@ -42,14 +44,12 @@ class ProfileApiClient
         private val accessTokenInterceptor =
             Interceptor { chain ->
                 with(chain.request()) {
-                    if (headers
-                            .get("x-access-token")
-                            ?.isNotEmpty() == true
+                    if (headers.get("x-access-token")?.isNotEmpty() == true
                     ) {
                         chain.proceed(this)
+                    } else {
+                        throw Exception("x-access-token is required")
                     }
-
-                    throw Exception("x-access-token is required")
                 }
             }
 

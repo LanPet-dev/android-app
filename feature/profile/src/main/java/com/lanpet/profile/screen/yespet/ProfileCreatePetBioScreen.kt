@@ -2,7 +2,6 @@ package com.lanpet.profile.screen.yespet
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,39 +39,37 @@ import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.core.designsystem.R as DS_R
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCreatePetBioScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
     modifier: Modifier = Modifier,
+    @Suppress("ktlint:compose:lambda-param-in-effect")
     onNavigateToFinish: () -> Unit = { },
 ) {
-    val registerPetProfileResult =
+    val registerPetProfileResult by
         petProfileCreateViewModel.registerPetProfileResult.collectAsState()
 
-    val rememberOnNavigateToFinish by remember { mutableStateOf(onNavigateToFinish) }
+    val currentOnNavigateToFinish by rememberUpdatedState {
+        onNavigateToFinish()
+    }
 
     LaunchedEffect(registerPetProfileResult) {
-        when (registerPetProfileResult.value) {
-            is RegisterPetProfileResult.Success ->
-                rememberOnNavigateToFinish()
+        when (registerPetProfileResult) {
+            is RegisterPetProfileResult.Success -> {
+                currentOnNavigateToFinish.invoke()
+            }
 
             is RegisterPetProfileResult.Error -> {
-                println(
-                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Error",
-                )
+                // TODO
             }
 
             is RegisterPetProfileResult.Initial -> {
-                println(
-                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Initial",
-                )
+                // TODO
             }
 
             is RegisterPetProfileResult.Loading -> {
-                println(
-                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Loading",
-                )
+                // TODO
             }
         }
     }
