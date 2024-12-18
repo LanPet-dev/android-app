@@ -32,6 +32,7 @@ sealed class AuthState {
 
     data class Loading(
         val socialAuthToken: SocialAuthToken?,
+        // 다른 상태와 달리, default 값이 false 입니다.
         override val navigationHandleFlag: Boolean = false,
     ) : AuthState()
 }
