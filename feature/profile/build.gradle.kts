@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.lib.coil)
+    alias(libs.plugins.android.junit5)
 }
 
 android {
@@ -18,6 +19,7 @@ android {
 
 dependencies {
     implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(libs.androidx.animation.core)
     implementation(libs.androidx.animation.core)
