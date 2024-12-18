@@ -14,8 +14,11 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,6 +35,7 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
+import com.lanpet.profile.viewmodel.RegisterPetProfileResult
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.core.designsystem.R as DS_R
@@ -43,6 +47,36 @@ fun ProfileCreatePetBioScreen(
     modifier: Modifier = Modifier,
     onNavigateToFinish: () -> Unit = { },
 ) {
+    val registerPetProfileResult =
+        petProfileCreateViewModel.registerPetProfileResult.collectAsState()
+
+    val rememberOnNavigateToFinish by remember { mutableStateOf(onNavigateToFinish) }
+
+    LaunchedEffect(registerPetProfileResult) {
+        when (registerPetProfileResult.value) {
+            is RegisterPetProfileResult.Success ->
+                rememberOnNavigateToFinish()
+
+            is RegisterPetProfileResult.Error -> {
+                println(
+                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Error",
+                )
+            }
+
+            is RegisterPetProfileResult.Initial -> {
+                println(
+                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Initial",
+                )
+            }
+
+            is RegisterPetProfileResult.Loading -> {
+                println(
+                    "ProfileCreatePetBioScreen: RegisterPetProfileResult.Loading",
+                )
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -75,8 +109,7 @@ fun ProfileCreatePetBioScreen(
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                    // TODO: set profiles to server
-                    onNavigateToFinish()
+                    petProfileCreateViewModel.registerPetProfile()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }
