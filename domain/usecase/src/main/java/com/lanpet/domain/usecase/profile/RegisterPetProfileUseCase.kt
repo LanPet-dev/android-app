@@ -9,5 +9,5 @@ class RegisterPetProfileUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend fun execute(petProfileCreate: PetProfileCreate) = profileRepository.registerPetProfile(petProfileCreate)
+        suspend operator fun invoke(petProfileCreate: PetProfileCreate) = profileRepository.registerPetProfile(petProfileCreate)
     }

@@ -8,5 +8,5 @@ class GetProfileDetailUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend fun execute(profileId: String) = profileRepository.getProfile(profileId)
+        suspend fun invoke(profileId: String) = profileRepository.getProfile(profileId)
     }
