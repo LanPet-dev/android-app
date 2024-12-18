@@ -24,7 +24,8 @@ class NavigationHandler(
      */
     fun handleNavigationByAuthState(currentAuthState: AuthState) {
         println(
-            "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState",
+            "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState " +
+                "navigationHandleFlag: ${currentAuthState.navigationHandleFlag}",
         )
 
         // navigationHandleFlag 가 false 일 경우, Screen 이동 처리를 하지 않습니다.
