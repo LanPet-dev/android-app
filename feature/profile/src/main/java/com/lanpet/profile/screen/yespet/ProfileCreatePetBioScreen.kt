@@ -34,7 +34,6 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
-import com.lanpet.profile.viewmodel.RegisterManProfileResult
 import com.lanpet.profile.viewmodel.RegisterPetProfileResult
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
@@ -45,19 +44,19 @@ import com.lanpet.core.designsystem.R as DS_R
 fun ProfileCreatePetBioScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
     modifier: Modifier = Modifier,
-    onNavigateToFinish: () -> Unit = { },
+    onProfileRegisterComplete: () -> Unit = { },
 ) {
     val registerPetProfileResult by
         petProfileCreateViewModel.registerPetProfileResult.collectAsState()
 
-    val currentOnNavigateToFinish by rememberUpdatedState {
-        onNavigateToFinish()
+    val currentOnProfileRegisterComplete by rememberUpdatedState {
+        onProfileRegisterComplete()
     }
 
     LaunchedEffect(registerPetProfileResult) {
         when (registerPetProfileResult) {
             is RegisterPetProfileResult.Success -> {
-                currentOnNavigateToFinish.invoke()
+                currentOnProfileRegisterComplete.invoke()
             }
 
             is RegisterPetProfileResult.Error -> {
