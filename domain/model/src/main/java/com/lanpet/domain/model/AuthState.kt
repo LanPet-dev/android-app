@@ -2,7 +2,6 @@ package com.lanpet.domain.model
 
 import com.lanpet.domain.model.account.Account
 
-// TODO("Satoshi"): Add authState that whether user has own profile or not
 sealed class AuthState {
     /**
      * Navigation 핸들러에의해 처리가 되어야하는지 여부를 결정합니다.
