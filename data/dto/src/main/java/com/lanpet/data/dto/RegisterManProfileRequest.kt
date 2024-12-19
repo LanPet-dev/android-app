@@ -46,5 +46,5 @@ data class RegisterManProfileRequest(
 @Serializable
 data class ButlerDto(
     val ageRange: Int,
-    val preferredPet: PetCategory?,
+    val preferredPet: List<PetCategory> = emptyList(),
 )

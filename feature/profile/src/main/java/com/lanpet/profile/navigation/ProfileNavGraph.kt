@@ -129,7 +129,7 @@ fun NavGraphBuilder.profileNavGraph(
             val viewModel = hiltViewModel<PetProfileCreateViewModel>(parentEntry)
 
             ProfileCreatePetBioScreen(
-                onNavigateToFinish = onNavigateToDone,
+                onProfileRegisterComplete = onNavigateToDone,
                 petProfileCreateViewModel = viewModel,
             )
         }
