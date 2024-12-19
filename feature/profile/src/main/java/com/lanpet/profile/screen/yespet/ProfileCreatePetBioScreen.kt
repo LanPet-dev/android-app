@@ -44,19 +44,19 @@ import com.lanpet.core.designsystem.R as DS_R
 fun ProfileCreatePetBioScreen(
     petProfileCreateViewModel: PetProfileCreateViewModel,
     modifier: Modifier = Modifier,
-    onProfileRegisterComplete: () -> Unit = { },
+    onRegisterPetProfileComplete: () -> Unit = { },
 ) {
     val registerPetProfileResult by
         petProfileCreateViewModel.registerPetProfileResult.collectAsState()
 
-    val currentOnProfileRegisterComplete by rememberUpdatedState {
-        onProfileRegisterComplete()
+    val currentOnRegisterPetProfileComplete by rememberUpdatedState {
+        onRegisterPetProfileComplete()
     }
 
     LaunchedEffect(registerPetProfileResult) {
         when (registerPetProfileResult) {
             is RegisterPetProfileResult.Success -> {
-                currentOnProfileRegisterComplete.invoke()
+                currentOnRegisterPetProfileComplete.invoke()
             }
 
             is RegisterPetProfileResult.Error -> {

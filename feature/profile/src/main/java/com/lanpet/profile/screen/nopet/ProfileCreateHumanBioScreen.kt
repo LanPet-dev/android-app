@@ -45,19 +45,19 @@ import com.lanpet.core.designsystem.R as DS_R
 fun ProfileCreateHumanBioScreen(
     manProfileCreateViewModel: ManProfileCreateViewModel,
     modifier: Modifier = Modifier,
-    onNavigateToFinish: () -> Unit = { },
+    onRegisterManProfileComplete: () -> Unit = { },
 ) {
     val registerManProfileResult by
         manProfileCreateViewModel.registerManProfileResult.collectAsState()
 
-    val currentOnNavigateToFinish by rememberUpdatedState {
-        onNavigateToFinish()
+    val currntOnRegisterManProfileComplete by rememberUpdatedState {
+        onRegisterManProfileComplete()
     }
 
     LaunchedEffect(registerManProfileResult) {
         when (registerManProfileResult) {
             is RegisterManProfileResult.Success -> {
-                currentOnNavigateToFinish()
+                currntOnRegisterManProfileComplete()
             }
 
             is RegisterManProfileResult.Error -> TODO()
