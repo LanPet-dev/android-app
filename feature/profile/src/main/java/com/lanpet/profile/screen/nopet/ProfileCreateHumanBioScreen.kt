@@ -14,8 +14,11 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,6 +35,7 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
+import com.lanpet.profile.viewmodel.RegisterManProfileResult
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.core.designsystem.R as DS_R
@@ -43,6 +47,25 @@ fun ProfileCreateHumanBioScreen(
     modifier: Modifier = Modifier,
     onNavigateToFinish: () -> Unit = { },
 ) {
+    val registerManProfileResult by
+        manProfileCreateViewModel.registerManProfileResult.collectAsState()
+
+    val currentOnNavigateToFinish by rememberUpdatedState {
+        onNavigateToFinish()
+    }
+
+    LaunchedEffect(registerManProfileResult) {
+        when (registerManProfileResult) {
+            is RegisterManProfileResult.Success -> {
+                currentOnNavigateToFinish()
+            }
+
+            is RegisterManProfileResult.Error -> TODO()
+            RegisterManProfileResult.Initial -> TODO()
+            RegisterManProfileResult.Loading -> TODO()
+        }
+    }
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -75,7 +98,7 @@ fun ProfileCreateHumanBioScreen(
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                    onNavigateToFinish()
+                    manProfileCreateViewModel.registerManProfile()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             }

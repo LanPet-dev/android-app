@@ -4,5 +4,5 @@ import com.lanpet.domain.model.PetCategory
 
 data class Butler(
     val ageRange: Int,
-    val preferredPet: PetCategory?,
+    val preferredPet: List<PetCategory> = emptyList(),
 )

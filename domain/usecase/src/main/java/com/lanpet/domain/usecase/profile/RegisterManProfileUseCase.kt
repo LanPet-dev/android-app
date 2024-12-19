@@ -9,5 +9,5 @@ class RegisterManProfileUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend fun invoke(manProfileCreate: ManProfileCreate) = profileRepository.registerButlerProfile(manProfileCreate)
+        suspend operator fun invoke(manProfileCreate: ManProfileCreate) = profileRepository.registerButlerProfile(manProfileCreate)
     }

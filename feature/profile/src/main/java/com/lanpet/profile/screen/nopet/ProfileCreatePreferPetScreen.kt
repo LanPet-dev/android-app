@@ -34,6 +34,10 @@ fun ProfileCreatePreferPetScreen(
     modifier: Modifier = Modifier,
     onNavigateToHumanBio: () -> Unit = {},
 ) {
+    val manProfileCreate =
+        manProfileCreateViewModel.manProfileCreate
+            .collectAsState()
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -63,9 +67,8 @@ fun ProfileCreatePreferPetScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 PreferPetChipSection(
                     preferPets =
-                        manProfileCreateViewModel.manProfileCreate
-                            .collectAsState()
-                            .value.preferPets,
+                        manProfileCreate
+                            .value.butler.preferredPet,
                 ) { pet ->
                     manProfileCreateViewModel.updatePreferPet(pet)
                 }
