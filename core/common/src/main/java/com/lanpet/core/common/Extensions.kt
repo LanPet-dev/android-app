@@ -7,6 +7,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+fun String.removeWhiteSpace() = this.replace("\\s".toRegex(), "")
+
+fun String.removeLineBreak() = this.replace("\n", "")
+
 fun WindowInsets.Companion.zero() =
     WindowInsets(
         0,
@@ -58,4 +62,18 @@ fun String.toLocalDate(
     val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
     parser.timeZone = timeZone
     return parser.parse(this) ?: throw IllegalArgumentException("Invalid date format")
+}
+
+fun Date.toUtcDateString(
+    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssXXX",
+    timeZone: TimeZone = TimeZone.getTimeZone("UTC"),
+): String {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    formatter.timeZone = timeZone
+    return formatter.format(this)
+}
+
+fun Date.toYyyyMmDdHhMmSs(dateFormat: String = "yyyy-MM-dd HH:mm:ss"): String {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    return formatter.format(this)
 }

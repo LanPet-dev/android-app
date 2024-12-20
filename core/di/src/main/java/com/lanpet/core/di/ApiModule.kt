@@ -3,10 +3,10 @@ package com.lanpet.core.di
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.service.AccountApiClient
 import com.lanpet.data.service.AccountApiService
-import com.lanpet.data.service.AuthApiClient
-import com.lanpet.data.service.BaseApiService
 import com.lanpet.data.service.FreeBoardApiClient
 import com.lanpet.data.service.FreeBoardApiService
+import com.lanpet.data.service.ProfileApiClient
+import com.lanpet.data.service.ProfileApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,20 +19,25 @@ import javax.inject.Singleton
 object ApiModule {
     @Singleton
     @Provides
-    fun provideBaseApiService(
+    fun provideProfileApiService(
         @Named("BaseApiUrl") baseApiUrl: String,
-    ): BaseApiService = AuthApiClient(baseApiUrl).getService()
+        authStateHolder: AuthStateHolder,
+    ): ProfileApiService =
+        ProfileApiClient(
+            baseApiUrl,
+            authStateHolder,
+        ).getService()
 
     @Singleton
     @Provides
     fun provideAuthApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): AuthApiClient = AuthApiClient(baseApiUrl)
+    ): ProfileApiClient = ProfileApiClient(baseApiUrl, authStateHolder)
 
     @Singleton
     @Provides
-    fun provideAuthApiService(authApiClient: AuthApiClient): BaseApiService = authApiClient.getService()
+    fun provideAuthApiService(authApiClient: ProfileApiClient): ProfileApiService = authApiClient.getService()
 
     @Singleton
     @Provides
@@ -55,9 +60,4 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideFreeBoardApiService(freeBoardApiClient: FreeBoardApiClient): FreeBoardApiService = freeBoardApiClient.getService()
-
-    @Singleton
-    @Provides
-    @Named("BaseApiUrl")
-    fun provideBaseApiUrl(): String = "https://test.api.lanpet.co.kr/"
 }
