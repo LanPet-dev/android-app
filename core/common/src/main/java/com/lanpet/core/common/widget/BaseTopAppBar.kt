@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,6 +70,28 @@ fun LanPetCloseableTopAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LanPetCenterAlignedTopAppBar(
+    modifier: Modifier = Modifier,
+    title: @Composable () -> Unit = {},
+    navigationIcon: @Composable (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+    colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors().copy(
+            containerColor = MaterialTheme.colorScheme.background,
+        ),
+) {
+    CenterAlignedTopAppBar(
+        windowInsets = WindowInsets(0, 0, 0, 0),
+        title = title,
+        navigationIcon = { navigationIcon?.invoke() },
+        actions = actions,
+        colors = colors,
+        modifier = modifier.systemBarsPadding(),
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @PreviewLightDark
 @Composable
 private fun LanPetTopAppBarPreview() {
@@ -98,5 +120,27 @@ private fun LanPetTopAppBarWithBackPreview() {
         LanPetCloseableTopAppBar(
             title = "Title",
         ) {}
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@PreviewLightDark
+@Composable
+private fun LanPetCenterAlignedTopAppBarPreview() {
+    LanPetAppTheme {
+        Column {
+            LanPetCenterAlignedTopAppBar(
+                title = { Text("Title") },
+            )
+            LanPetCenterAlignedTopAppBar(
+                navigationIcon = {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Close",
+                    )
+                },
+                title = { Text("Title") },
+            )
+        }
     }
 }

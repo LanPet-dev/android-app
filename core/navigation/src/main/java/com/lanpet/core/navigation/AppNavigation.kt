@@ -38,6 +38,7 @@ import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
 import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
+import com.lanpet.free.navigation.navigateToFreeBoardWriteScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.MyProfileCreateProfile
@@ -200,6 +201,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     freeNavGraph(
                         onNavigateUp = {
                             navController.navigateUp()
+                        },
+                        onNavigateToFreeBoardWriteFreeBoard = {
+                            navController.navigateToFreeBoardWriteScreen()
                         },
                     )
                     wikiNavGraph()
