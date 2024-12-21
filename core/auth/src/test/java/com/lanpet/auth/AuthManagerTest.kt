@@ -72,7 +72,7 @@ class AuthManagerTest {
         authManager.logout()
 
         // Then
-        assert(authManager.authState.value is AuthState.Initial)
+        assert(authManager.authState.value is AuthState.Logout)
     }
 
     @Test
