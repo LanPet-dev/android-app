@@ -64,6 +64,7 @@ import com.lanpet.wiki.navigation.navigateToWikiBaseRoute
 import com.lanpet.wiki.navigation.wikiNavGraph
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import timber.log.Timber
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
@@ -253,7 +254,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         BottomNavItem.MyPage,
                     ),
                 onItemSelect = { item ->
-                    println("selected bottom nav item: $item")
+                    Timber.d("selected bottom nav item: $item")
                     navItem = item
                 },
             )

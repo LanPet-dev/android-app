@@ -8,6 +8,7 @@ import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
+import timber.log.Timber
 
 class NavigationHandler(
     private val navController: NavHostController,
@@ -23,7 +24,7 @@ class NavigationHandler(
      * AuthState 가 변경되면, 이전 AuthState 와 비교하여 Screen 이동을 처리함.
      */
     fun handleNavigationByAuthState(currentAuthState: AuthState) {
-        println(
+        Timber.d(
             "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState " +
                 "navigationHandleFlag: ${currentAuthState.navigationHandleFlag}",
         )
@@ -34,7 +35,7 @@ class NavigationHandler(
         }
 
         if (previousAuthState::class == currentAuthState::class) {
-            println("previousAuthState is same as currentAuthState")
+            Timber.d("previousAuthState is same as currentAuthState")
             return
         }
 

@@ -68,7 +68,6 @@ fun ProfileCreateHumanAgeScreen(
                             .collectAsState()
                             .value.butler.age,
                 ) { age ->
-                    println("age: $age")
                     manProfileCreateViewModel.setAge(age)
                 }
                 Spacer(Modifier.weight(1f))
@@ -92,7 +91,6 @@ private fun AgeChipSection(
     selectedAge: Age? = null,
     onAgeChange: (Age) -> Unit = {},
 ) {
-    println("selectedAge: $selectedAge")
     FlowRow {
         SelectableChip(
             title = "10대",

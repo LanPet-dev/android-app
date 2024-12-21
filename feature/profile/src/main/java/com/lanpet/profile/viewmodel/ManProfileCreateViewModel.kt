@@ -134,21 +134,6 @@ class ManProfileCreateViewModel
             _manProfileCreate.value = _manProfileCreate.value.copy(bio = bio)
         }
 
-        fun clearProfileCreate() {
-            _manProfileCreate.value =
-                ManProfileCreate(
-                    profileImageUri = null,
-                    nickName = "",
-                    bio = "",
-                    type = ProfileType.BUTLER,
-                    butler =
-                        Butler(
-                            age = Age.NONE,
-                            preferredPet = emptyList(),
-                        ),
-                )
-        }
-
         fun updatePreferPet(category: PetCategory) {
             val tmpList =
                 _manProfileCreate.value.butler.preferredPet
@@ -207,6 +192,21 @@ class ManProfileCreateViewModel
 
         fun clearNicknameDuplicated() {
             _isNicknameDuplicated.value = null
+        }
+
+        fun clearProfileCreate() {
+            _manProfileCreate.value =
+                ManProfileCreate(
+                    profileImageUri = null,
+                    nickName = "",
+                    bio = "",
+                    type = ProfileType.BUTLER,
+                    butler =
+                        Butler(
+                            age = Age.NONE,
+                            preferredPet = emptyList(),
+                        ),
+                )
         }
     }
 

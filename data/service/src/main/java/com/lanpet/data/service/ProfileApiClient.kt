@@ -11,6 +11,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileApiClient
@@ -27,7 +28,7 @@ class ProfileApiClient
                 val token =
                     (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
 
-                println("token: $token")
+                Timber.d("token: $token")
 
                 val request =
                     chain
