@@ -181,15 +181,15 @@ private fun SelectBoardSection(modifier: Modifier = Modifier) {
         FlowRow(
             modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.xSmall),
         ) {
-            SelectableChip(
+            SelectableChip.Rounded(
                 title = FreeBoardCategoryType.COMMUNICATE.value,
                 isSelected = false,
             ) { }
-            SelectableChip(
+            SelectableChip.Rounded(
                 title = FreeBoardCategoryType.RECOMMEND.value,
                 isSelected = false,
             ) { }
-            SelectableChip(
+            SelectableChip.Rounded(
                 title = FreeBoardCategoryType.QUESTION.value,
                 isSelected = false,
             ) { }
@@ -213,7 +213,7 @@ private fun SelectPetSection(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.xSmall),
         ) {
             PetCategory.entries.forEach { category ->
-                SelectableChip(
+                SelectableChip.Rounded(
                     title = category.value,
                     isSelected = false,
                 ) { }
@@ -337,7 +337,7 @@ private fun ContentInputSection(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Text(
-                    text = "${input.length}/${String.format("%,d",maxLength)}자",
+                    text = "${input.length}/${String.format("%,d", maxLength)}자",
                     style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
                 )
             }
