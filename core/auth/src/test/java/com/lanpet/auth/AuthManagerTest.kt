@@ -66,7 +66,7 @@ class AuthManagerTest {
     }
 
     @Test
-    fun `logout 시, 인증상태는 AuthState_Initial 을 반환한다`() {
+    fun `logout 시, 인증상태는 AuthState_Logout 을 반환한다`() {
         // Given
         // When
         authManager.logout()
