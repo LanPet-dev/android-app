@@ -15,11 +15,7 @@ class PetDtoTest {
             PetDto(
                 petType = PetCategory.CAT,
                 breed = "낭만고양이",
-                feature =
-                    listOf(
-                        "cute",
-                        "lovely",
-                    ),
+                feature = "cute,lovely",
                 birthDate = "2021-01-01",
                 weight = 3.5,
             )
@@ -29,7 +25,7 @@ class PetDtoTest {
                 {
                     "petType": "CAT",
                     "breed": "낭만고양이",
-                    "feature": ["cute", "lovely"],
+                    "feature": "cute,lovely",
                     "birthDate": "2021-01-01",
                     "weight": 3.5
                 }
@@ -56,7 +52,6 @@ class PetDtoTest {
             PetDto(
                 petType = PetCategory.LIZARD,
                 // empty list
-                feature = emptyList(),
                 birthDate = "2021-01-01",
                 weight = 3.5,
             )
@@ -66,7 +61,7 @@ class PetDtoTest {
                 {
                     "petType": "LIZARD",
                     "breed": null,
-                    "feature": [],
+                    "feature": null,
                     "birthDate": "2021-01-01",
                     "weight": 3.5
                 }

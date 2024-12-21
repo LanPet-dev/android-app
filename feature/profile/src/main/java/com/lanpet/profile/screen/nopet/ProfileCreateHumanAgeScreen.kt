@@ -92,31 +92,31 @@ private fun AgeChipSection(
     onAgeChange: (Age) -> Unit = {},
 ) {
     FlowRow {
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "10대",
             isSelected = selectedAge?.value == "10대",
         ) {
             onAgeChange(Age.TENS)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "20대",
             isSelected = selectedAge?.value == "20대",
         ) {
             onAgeChange(Age.TWENTIES)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "30대",
             isSelected = selectedAge?.value == "30대",
         ) {
             onAgeChange(Age.THIRTIES)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "40대",
             isSelected = selectedAge?.value == "40대",
         ) {
             onAgeChange(Age.FORTIES)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "50대 이상",
             isSelected = selectedAge?.value == "50대 이상",
         ) {

@@ -162,11 +162,8 @@ fun RippleProfileContainer(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_family),
             contentDescription = "Profile Image",
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier.size(240.dp),
         )
-
-        // 여기에 프로필 이미지를 추가
-        // Image() 또는 Icon() 컴포넌트 사용
     }
 }
 

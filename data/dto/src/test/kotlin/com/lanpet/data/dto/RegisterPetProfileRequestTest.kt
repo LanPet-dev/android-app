@@ -16,7 +16,7 @@ class RegisterPetProfileRequestTest {
                 pet =
                     PetDto(
                         petType = PetCategory.CAT,
-                        feature = listOf("cute", "lovely"),
+                        feature = "cute,lovely",
                         birthDate = "2021-01-01",
                         weight = 3.5,
                     ),
@@ -32,7 +32,7 @@ class RegisterPetProfileRequestTest {
                     "pet": {
                         "petType": "CAT",
                         "breed": null,
-                        "feature": ["cute", "lovely"],
+                        "feature": "cute,lovely",
                         "birthDate": "2021-01-01",
                         "weight": 3.5
                     }
@@ -60,7 +60,6 @@ class RegisterPetProfileRequestTest {
                 pet =
                     PetDto(
                         petType = PetCategory.AMPHIBIAN,
-                        feature = emptyList(),
                     ),
             )
 
@@ -74,7 +73,7 @@ class RegisterPetProfileRequestTest {
                     "pet": {
                         "petType": "AMPHIBIAN",
                         "breed": null,
-                        "feature": [],
+                        "feature": null,
                         "birthDate": null,
                         "weight":null 
                     }
