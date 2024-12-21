@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -82,10 +83,12 @@ private fun Content(
     ) {
         HasPetSelectButton(
             onClick = onNavigateToYesPetScreen,
+            painterResource = painterResource(com.lanpet.core.common.R.drawable.img_has_pet),
             title = stringResource(R.string.yes_pet_profile_create_has_pet),
         )
         Spacer(Modifier.padding(horizontal = LanPetDimensions.Margin.small))
         HasPetSelectButton(
+            painterResource = painterResource(com.lanpet.core.common.R.drawable.img_no_pet),
             onClick = onNavigateToNoPetScreen,
             title = stringResource(R.string.no_pet_profile_create_has_pet),
         )
@@ -95,6 +98,7 @@ private fun Content(
 @Composable
 fun HasPetSelectButton(
     title: String,
+    painterResource: Painter,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -117,7 +121,7 @@ fun HasPetSelectButton(
                 ),
     ) {
         Image(
-            painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_dummy),
+            painter = painterResource,
             contentDescription = null,
             modifier =
                 Modifier

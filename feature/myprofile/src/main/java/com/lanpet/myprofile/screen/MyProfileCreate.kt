@@ -19,14 +19,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.commonBorder
 import com.lanpet.core.common.crop
@@ -42,6 +46,8 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.ProfileType
+import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +58,10 @@ fun MyProfileCreateProfileScreen(
     onNavigateToAddProfile: () -> Unit = {},
     onNavigateToModifyProfile: () -> Unit = {},
 ) {
+    val authState = LocalAuthManager.current
+    val defaultUserProfile by authState.defaultUserProfile.collectAsState()
+    val userProfiles by authState.userProfiles.collectAsState()
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -97,7 +107,10 @@ fun MyProfileCreateProfileScreen(
                     title = stringResource(R.string.heading_hint_my_profile_create),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
-                ProfileListCard { onNavigateToModifyProfile() }
+                ProfileListCard(
+                    userProfile = defaultUserProfile,
+                    isActive = true,
+                ) { onNavigateToModifyProfile() }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 AddProfileCard { onNavigateToAddProfile() }
             }
@@ -152,6 +165,8 @@ fun AddProfileCard(
 
 @Composable
 fun ProfileListCard(
+    userProfile: UserProfile,
+    isActive: Boolean,
     modifier: Modifier = Modifier,
     onModifyClick: () -> Unit = {},
 ) {
@@ -190,12 +205,14 @@ fun ProfileListCard(
                 Column {
                     Text(
                         style = MaterialTheme.customTypography().body1SemiBoldSingle,
-                        text = "John Doe",
+                        text = userProfile.nickname,
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                     Text(
                         style = MaterialTheme.customTypography().body2MediumSingle,
-                        text = "Hello I am John Doe",
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        text = userProfile.introduction.toString(),
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -240,7 +257,18 @@ private fun PreviewAddProfileCard() {
 @Composable
 private fun PreviewMyProfileCreate() {
     LanPetAppTheme {
-        ProfileListCard {}
+        ProfileListCard(
+            userProfile =
+                UserProfile(
+                    nickname = "닉네임",
+                    introduction = "소개",
+                    id = "id",
+                    type = ProfileType.PET,
+                    isDefault = true,
+                    profileImageUri = null,
+                ),
+            isActive = true,
+        ) {}
     }
 }
 
