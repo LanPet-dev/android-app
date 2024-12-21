@@ -38,6 +38,7 @@ import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
 import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
+import com.lanpet.free.navigation.navigateToFreeBoardWriteScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.MyProfileCreateProfile
@@ -63,6 +64,7 @@ import com.lanpet.wiki.navigation.navigateToWikiBaseRoute
 import com.lanpet.wiki.navigation.wikiNavGraph
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import timber.log.Timber
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
@@ -201,6 +203,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateUp = {
                             navController.navigateUp()
                         },
+                        onNavigateToFreeBoardWriteFreeBoard = {
+                            navController.navigateToFreeBoardWriteScreen()
+                        },
                     )
                     wikiNavGraph()
                 }
@@ -249,7 +254,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         BottomNavItem.MyPage,
                     ),
                 onItemSelect = { item ->
-                    println("selected bottom nav item: $item")
+                    Timber.d("selected bottom nav item: $item")
                     navItem = item
                 },
             )

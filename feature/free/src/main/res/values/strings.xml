@@ -2,4 +2,11 @@
 <resources>
     <string name="placeholder_textfield_enter_reply_freeboard_detail">답글을 입력해주세요</string>
     <string name="body_no_comment_freeboard_detail">아직 작성된 댓글이 없어요🥲\n먼저 댓글을 남겨보세요!</string>
+    <string name="title_freeboard_write">사랑방 글쓰기</string>
+    <string name="complete_action_freeboard_write">완료</string>
+    <string name="board_category_hint_freeboard_write">게시글 카테고리를 선택해주세요.</string>
+    <string name="pet_category_hint_freeboard_write">반려동물 카테고리를 선택해주세요.</string>
+    <string name="title_title_input_freeboard_write">제목</string>
+    <string name="title_content_input_freeboard_write">내용</string>
+    <string name="complete_button_freeboard_write">사진 첨부하기</string>
 </resources>

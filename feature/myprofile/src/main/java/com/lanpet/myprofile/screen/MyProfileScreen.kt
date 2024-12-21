@@ -18,13 +18,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.crop
 import com.lanpet.core.common.myiconpack.ArrowRight
@@ -37,7 +41,10 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.ProfileType
+import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
+import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +54,9 @@ fun MyProfileScreen(
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: () -> Unit = { },
 ) {
+    val authManager = LocalAuthManager.current
+    val defaultUserProfile = authManager.defaultUserProfile.collectAsState()
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -88,6 +98,7 @@ fun MyProfileScreen(
         ) {
             Column {
                 MyProfileCard(
+                    defaultUserProfile.value,
                     onNavigateToProfileCreate = onNavigateToProfileCreate,
                 )
                 Spacer(
@@ -164,7 +175,10 @@ fun MyProfileScreen(
 }
 
 @Composable
-private fun MyProfileCard(onNavigateToProfileCreate: () -> Unit) {
+private fun MyProfileCard(
+    myProfile: UserProfile,
+    onNavigateToProfileCreate: () -> Unit = {},
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
@@ -174,24 +188,37 @@ private fun MyProfileCard(onNavigateToProfileCreate: () -> Unit) {
                     vertical = LanPetDimensions.Margin.xxLarge,
                 ),
     ) {
-        Image(
-            modifier =
-                Modifier.crop(
-                    size = 88.dp,
-                ),
-            painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-            contentDescription = "Profile Picture",
-        )
+        if (!myProfile.profileImageUri.isNullOrEmpty()) {
+            AsyncImage(
+                myProfile.profileImageUri,
+                contentDescription = "profile_image",
+                modifier =
+                    Modifier.crop(
+                        size = 88.dp,
+                    ),
+            )
+        } else {
+            Image(
+                modifier =
+                    Modifier.crop(
+                        size = 88.dp,
+                    ),
+                painter = painterResource(id = DS_R.drawable.img_animals),
+                contentDescription = "profile_image",
+            )
+        }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         Column {
             Text(
                 style = MaterialTheme.customTypography().title2SemiBoldSingle,
-                text = "John Doe",
+                text = myProfile.nickname,
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Text(
                 style = MaterialTheme.customTypography().body1RegularSingle,
-                text = "Hello I am John Doe",
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                text = myProfile.introduction.toString(),
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -247,7 +274,16 @@ fun ActivityListItem(
 private fun MyProfileCardPreview() {
     LanPetAppTheme {
         Surface {
-            MyProfileCard {}
+            MyProfileCard(
+                myProfile =
+                    UserProfile(
+                        id = "id",
+                        type = ProfileType.BUTLER,
+                        nickname = "I am nickname",
+                        profileImageUri = null,
+                        introduction = "Hello I am nickname. hahaha hell o",
+                    ),
+            ) {}
         }
     }
 }

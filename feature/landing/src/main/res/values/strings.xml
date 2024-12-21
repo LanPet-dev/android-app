@@ -5,4 +5,5 @@
     <string name="text_landing_subheading_2">커뮤니티를 통해 다양한 정보를 얻고 소통해요!</string>
     <string name="text_landing_heading_3">사용자 맞춤 정보 제공을 위한\n반려 프로필설정</string>
     <string name="text_landing_subheading_3">나의 반려동물에 대한 콘텐츠만 모아 볼 수 있어요!</string>
+    <string name="button_start_landing">시작하기</string>
 </resources>

@@ -4,8 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
+import timber.log.Timber
 
 class NavigationHandler(
     private val navController: NavHostController,
@@ -14,39 +17,56 @@ class NavigationHandler(
      * 이전 AuthState
      * 현재 AuthState 와 비교하여 처리하기위해 필요함
      */
-    private var previousAuthState: AuthState = AuthState.Initial
+    private var previousAuthState: AuthState = AuthState.Initial()
 
     /**
      * AuthState 에 따른 Screen 이동 처리를 담당한다.
      * AuthState 가 변경되면, 이전 AuthState 와 비교하여 Screen 이동을 처리함.
      */
     fun handleNavigationByAuthState(currentAuthState: AuthState) {
-        println(
-            "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState",
+        Timber.d(
+            "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState " +
+                "navigationHandleFlag: ${currentAuthState.navigationHandleFlag}",
         )
-        if ((previousAuthState is AuthState.Fail && currentAuthState is AuthState.Fail) ||
-            (
-                previousAuthState is AuthState.Success &&
-                    currentAuthState is AuthState.Success ||
-                    (
-                        previousAuthState is AuthState.Loading && currentAuthState is AuthState.Loading
-                    ) ||
-                    (previousAuthState is AuthState.Initial && currentAuthState is AuthState.Initial)
-            )
-        ) {
-            previousAuthState = currentAuthState
+
+        // navigationHandleFlag 가 false 일 경우, Screen 이동 처리를 하지 않습니다.
+        if (!currentAuthState.navigationHandleFlag) {
             return
         }
 
-        // Fail, Loading 또는 initial 상태에서 Success로 변경되었다면, 로그인 성공이므로 MainScreen 으로 이동
-        if (currentAuthState is AuthState.Success &&
-            (previousAuthState is AuthState.Fail || previousAuthState is AuthState.Initial || previousAuthState is AuthState.Loading)
-        ) {
-            navController.navigateToMainScreen()
-        } else if ( // 현재상태가 Success 상태에서 Initial 또는 Fail 상태로 변경되었다면 로그인 실패 또는 로그아웃 이므로 Login screen 으로 이동
-            (currentAuthState is AuthState.Initial || currentAuthState is AuthState.Fail) && previousAuthState is AuthState.Success
-        ) {
-            navController.navigateToLoginScreen()
+        if (previousAuthState::class == currentAuthState::class) {
+            Timber.d("previousAuthState is same as currentAuthState")
+            return
+        }
+
+        when (currentAuthState) {
+            is AuthState.Initial -> {
+                // TODO
+            }
+
+            is AuthState.Success -> {
+                // only for test
+//                navController.navigateToProfileCreateHasPet()
+                if (currentAuthState.profile.isEmpty()) {
+                    navController.navigateToProfileCreateHasPet()
+                } else {
+                    navController.navigateToMainScreen(
+                        bottomNavItem = BottomNavItem.Wiki,
+                    )
+                }
+            }
+
+            is AuthState.Logout -> {
+                navController.navigateToLoginScreen()
+            }
+
+            is AuthState.Fail -> {
+                // TODO
+            }
+
+            is AuthState.Loading -> {
+                // TODO
+            }
         }
 
         previousAuthState = currentAuthState

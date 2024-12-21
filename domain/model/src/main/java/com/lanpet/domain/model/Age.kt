@@ -2,14 +2,16 @@ package com.lanpet.domain.model
 
 enum class Age(
     val value: String,
+    val intValue: Int,
 ) {
-    TENS("10대"),
-    TWENTIES("20대"),
-    THIRTIES("30대"),
-    FORTIES("40대"),
-    FIFTIES("50대 이상"),
-    SIXTIES("60대"),
-    SEVENTIES("70대"),
-    EIGHTIES("80대"),
-    NINETIES("90대"),
+    TENS("10대", 10),
+    TWENTIES("20대", 20),
+    THIRTIES("30대", 30),
+    FORTIES("40대", 40),
+    FIFTIES("50대 이상", 50),
+    SIXTIES("60대", 60),
+    SEVENTIES("70대", 70),
+    EIGHTIES("80대", 80),
+    NINETIES("90대", 90),
+    NONE("없음", -1),
 }

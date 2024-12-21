@@ -2,9 +2,10 @@ package com.lanpet.core.auth
 
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
-import com.lanpet.domain.usecase.GetAccountInformationUseCase
-import com.lanpet.domain.usecase.GetCognitoSocialAuthTokenUseCase
-import com.lanpet.domain.usecase.RegisterAccountUseCase
+import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
+import com.lanpet.domain.usecase.account.RegisterAccountUseCase
+import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
+import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -23,13 +24,24 @@ class AuthManager
         private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase,
         private val registerAccountUseCase: RegisterAccountUseCase,
         private val getAccountInformationUseCase: GetAccountInformationUseCase,
+        private val getAllProfileUseCase: GetAllProfileUseCase,
         private val authStateHolder: AuthStateHolder,
     ) {
         val authState = authStateHolder.authState
 
+        /**
+         * 대표 프로필
+         */
+        val defaultUserProfile = authStateHolder.defaultProfile
+
+        /**
+         * 유저의 프로필 목록
+         */
+        val userProfiles = authStateHolder.userProfiles
+
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val socialAuthToken =
                         getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).first()
@@ -43,6 +55,15 @@ class AuthManager
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
+                                navigationHandleFlag = false,
+                            ),
+                        )
+                        val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        authStateHolder.updateState(
+                            AuthState.Success(
+                                socialAuthToken = socialAuthToken,
+                                account = account,
+                                profile = profile,
                             ),
                         )
                     } catch (e: Exception) {
@@ -53,12 +74,21 @@ class AuthManager
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
+                                navigationHandleFlag = false,
+                            ),
+                        )
+                        val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        authStateHolder.updateState(
+                            AuthState.Success(
+                                socialAuthToken = socialAuthToken,
+                                account = account,
+                                profile = profile,
                             ),
                         )
                     }
                 } catch (e: Exception) {
                     authStateHolder.updateState(
-                        AuthState.Fail,
+                        AuthState.Fail(),
                     )
                 }
             }
@@ -66,7 +96,7 @@ class AuthManager
 
         fun logout() {
             authStateHolder.updateState(
-                AuthState.Initial,
+                AuthState.Logout(),
             )
         }
     }

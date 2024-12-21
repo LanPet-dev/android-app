@@ -2,13 +2,13 @@ package com.lanpet.feature.landing
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
@@ -88,7 +89,7 @@ fun PageView(
             modifier =
                 Modifier
                     .align(alignment = Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
+                    .padding(bottom = 200.dp),
         ) {
             repeat(pages.size) { iteration ->
                 key(iteration) {
@@ -159,10 +160,7 @@ fun LandingPage3(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
-                .clickable(onClick = {
-                    navigateToLogin()
-                }),
+                .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -179,6 +177,12 @@ fun LandingPage3(
             imagePainter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_landing3),
         )
         Spacer(Modifier.weight(1f))
+        CommonButton(
+            title = stringResource(R.string.button_start_landing),
+            modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+            onClick = navigateToLogin,
+        )
+        Spacer(Modifier.height(24.dp))
     }
 }
 

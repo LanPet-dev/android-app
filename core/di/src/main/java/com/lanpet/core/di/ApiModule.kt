@@ -19,17 +19,6 @@ import javax.inject.Singleton
 object ApiModule {
     @Singleton
     @Provides
-    fun provideProfileApiService(
-        @Named("BaseApiUrl") baseApiUrl: String,
-        authStateHolder: AuthStateHolder,
-    ): ProfileApiService =
-        ProfileApiClient(
-            baseApiUrl,
-            authStateHolder,
-        ).getService()
-
-    @Singleton
-    @Provides
     fun provideAuthApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,

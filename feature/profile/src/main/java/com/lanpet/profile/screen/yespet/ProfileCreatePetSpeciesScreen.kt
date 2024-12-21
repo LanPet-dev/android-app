@@ -61,7 +61,7 @@ fun ProfileCreatePetSpeciesScreen(
                 Heading(title = stringResource(R.string.heading_profile_create_species_yes_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
                 PetSpeciesInputSection {
-                    petProfileCreateViewModel.setSpecies(it)
+                    petProfileCreateViewModel.setBreed(it)
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {

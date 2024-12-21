@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.SelectableChip
@@ -34,6 +35,10 @@ fun ProfileCreatePreferPetScreen(
     modifier: Modifier = Modifier,
     onNavigateToHumanBio: () -> Unit = {},
 ) {
+    val manProfileCreate =
+        manProfileCreateViewModel.manProfileCreate
+            .collectAsState()
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -63,14 +68,17 @@ fun ProfileCreatePreferPetScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 PreferPetChipSection(
                     preferPets =
-                        manProfileCreateViewModel.manProfileCreate
-                            .collectAsState()
-                            .value.preferPets,
+                        manProfileCreate
+                            .value.butler.preferredPet,
                 ) { pet ->
                     manProfileCreateViewModel.updatePreferPet(pet)
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.preferredPet !is FormValidationStatus.Valid) {
+                        return@CommonButton
+                    }
+
                     onNavigateToHumanBio()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))

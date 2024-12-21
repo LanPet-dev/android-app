@@ -41,7 +41,7 @@ fun CommonHeadingHint(
         style =
             MaterialTheme.typography.titleSmall.copy(
                 color =
-                    GrayColor.LIGHT_MEDIUM,
+                    GrayColor.Gray500,
             ),
     )
 }
@@ -71,6 +71,35 @@ fun CommonAppBarTitle(
 }
 
 @Composable
+fun CommonHint(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        title,
+        style =
+            MaterialTheme.customTypography().body3RegularSingle.copy(
+                color =
+                    GrayColor.Gray400,
+            ),
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun CommonCenterAlignedAppBarTitle(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        title,
+        style =
+            MaterialTheme.customTypography().title3SemiBoldMulti,
+        modifier = modifier,
+    )
+}
+
+@Composable
 @PreviewLightDark
 private fun CommonHeadingPreview() {
     LanPetAppTheme {
@@ -83,6 +112,8 @@ private fun CommonHeadingPreview() {
             CommonSubHeading1(title = "Sub Heading 1")
             Spacer(modifier = Modifier.height(8.dp))
             CommonAppBarTitle(title = "App Bar Title")
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonCenterAlignedAppBarTitle(title = "Center Aligned App Bar Title")
             Spacer(modifier = Modifier.height(8.dp))
         }
     }

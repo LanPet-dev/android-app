@@ -3,7 +3,6 @@ package com.lanpet.core.auth
 import android.content.Context
 import android.credentials.GetCredentialException
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -14,6 +13,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.model.SocialAuthType
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.UUID
 
@@ -24,7 +24,7 @@ class GoogleAuth private constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun login(): SocialAuthToken? {
         if (context.get() == null) {
-            Log.e(TAG, "Context is null")
+            Timber.e("Context is null")
             return null
         }
 
@@ -84,31 +84,27 @@ class GoogleAuth private constructor(
                                 socialAuthType = SocialAuthType.GOOGLE,
                             )
 
-                        println(googleAuthToken)
-
                         return googleAuthToken
 //                        saveToken(googleAuthToken)
                         // TODO("Satoshi"): auth process to cognito
                     } catch (e: GoogleIdTokenParsingException) {
-                        Log.e(TAG, "Received an invalid google id token response", e)
+                        Timber.e("Received an invalid google id token response", e)
                         return null
                     }
                 } else {
-                    Log.e(TAG, "Unexpected type of credential")
+                    Timber.e("Unexpected type of credential")
                     return null
                 }
             }
 
             else -> {
-                Log.e(TAG, "Unexpected type of credential")
+                Timber.e("Unexpected type of credential")
                 return null
             }
         }
     }
 
     companion object {
-        private const val TAG = "GoogleAuth"
-
         internal fun newInstance(
             googleOauthClientKey: String,
             context: Context,

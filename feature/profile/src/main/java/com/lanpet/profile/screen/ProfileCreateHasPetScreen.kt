@@ -104,15 +104,16 @@ fun HasPetSelectButton(
         modifier =
             Modifier
                 .wrapContentSize()
+                .clip(RoundedCornerShape(LanPetDimensions.Corner.small))
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.customColorScheme.spacerLine,
                     shape = RoundedCornerShape(LanPetDimensions.Corner.small),
+                ).clickable(
+                    onClick = onClick,
                 ).padding(
                     horizontal = LanPetDimensions.Margin.xLarge,
                     vertical = LanPetDimensions.Margin.xxLarge,
-                ).clickable(
-                    onClick = onClick,
                 ),
     ) {
         Image(

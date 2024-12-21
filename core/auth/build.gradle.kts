@@ -46,6 +46,8 @@ dependencies {
     implementation(projects.core.testing)
     implementation(projects.domain.model)
 
+    implementation(libs.turbine)
+
     implementation(libs.androidx.browser)
     // google auth
     implementation(libs.androidx.credentials)

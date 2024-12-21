@@ -12,10 +12,11 @@
     <string name="desc1_profile_create_intro_no_pet">반려동물을 키우고 있지 않지만\n동물에 대한 정보를 얻고 싶다면 랜집사 프로필로 설정돼요</string>
     <string name="desc2_profile_create_intro_no_pet">나중에 반려동물이 생긴다면\n반려동물 프로필로 전환이 가능해요!</string>>
 
-    <string name="heading_profile_create_yes_pet_name">프로필 이름을 입력해주세요</string>
+    <string name="heading_profile_create_yes_pet_name">닉네임을 설정해주세요</string>
     <string name="sub_heading_profile_create_yes_pet_name">사진 등록은 넘어가도 괜찮아요!</string>
-    <string name="name_input_label_profile_create_yes_pet_name">반려동물 이름은 무엇인가요?</string>
-    <string name="name_input_placeholder_profile_create_yes_pet_name">이름을 입력해주세요</string>
+    <string name="name_input_label_profile_create_yes_pet_name">닉네임을 설정해주세요</string>
+    <string name="name_input_placeholder_profile_create_yes_pet_name">닉네임을 입력해주세요</string>
+    <string name="hint_nickname_validator_profile_create">최소 2자리, 최대 20자리까지 설정 가능해요</string>
 
     <string name="heading_profile_create_no_pet_name">닉네임을 설정해주세요</string>
     <string name="sub_heading_profile_create_no_pet_name">사진 등록은 넘어가도 괜찮아요!</string>

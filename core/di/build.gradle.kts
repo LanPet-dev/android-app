@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.material)
     implementation(projects.core.navigation)
     implementation(projects.core.auth)
-    implementation(libs.amplify.core)
     implementation(projects.data.service)
     implementation(projects.domain.repository)
     implementation(projects.data.repository)
