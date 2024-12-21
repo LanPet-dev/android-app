@@ -10,10 +10,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.SelectableChip
@@ -60,11 +62,21 @@ fun ProfileCreateHumanAgeScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_human_age_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                AgeChipSection { age ->
+                AgeChipSection(
+                    selectedAge =
+                        manProfileCreateViewModel.manProfileCreate
+                            .collectAsState()
+                            .value.butler.age,
+                ) { age ->
+                    println("age: $age")
                     manProfileCreateViewModel.setAge(age)
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.age !is FormValidationStatus.Valid) {
+                        return@CommonButton
+                    }
+
                     onNavigateToPreferPet()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
@@ -80,6 +92,7 @@ private fun AgeChipSection(
     selectedAge: Age? = null,
     onAgeChange: (Age) -> Unit = {},
 ) {
+    println("selectedAge: $selectedAge")
     FlowRow {
         SelectableChip(
             title = "10대",

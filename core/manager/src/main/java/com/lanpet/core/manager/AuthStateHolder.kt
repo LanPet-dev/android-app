@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class AuthStateHolder {
     private val _authState =
         MutableStateFlow<AuthState>(
-            AuthState.Initial,
+            AuthState.Initial(),
         )
 
     val authState = _authState.asStateFlow()

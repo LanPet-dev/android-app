@@ -41,7 +41,7 @@ fun CommonHeadingHint(
         style =
             MaterialTheme.typography.titleSmall.copy(
                 color =
-                    GrayColor.LIGHT_MEDIUM,
+                    GrayColor.Gray500,
             ),
     )
 }
@@ -66,6 +66,22 @@ fun CommonAppBarTitle(
 ) {
     Text(
         title,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun CommonHint(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        title,
+        style =
+            MaterialTheme.customTypography().body3RegularSingle.copy(
+                color =
+                    GrayColor.Gray400,
+            ),
         modifier = modifier,
     )
 }

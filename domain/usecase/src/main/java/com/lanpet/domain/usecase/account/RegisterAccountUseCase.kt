@@ -1,14 +1,14 @@
-package com.lanpet.domain.usecase
+package com.lanpet.domain.usecase.account
 
-import com.lanpet.domain.model.account.Account
+import com.lanpet.domain.model.account.AccountToken
 import com.lanpet.domain.repository.AccountRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAccountInformationUseCase
+class RegisterAccountUseCase
     @Inject
     constructor(
         private val accountRepository: AccountRepository,
     ) {
-        suspend operator fun invoke(): Flow<Account> = accountRepository.getAccount()
+        suspend operator fun invoke(): Flow<AccountToken> = accountRepository.registerAccount()
     }

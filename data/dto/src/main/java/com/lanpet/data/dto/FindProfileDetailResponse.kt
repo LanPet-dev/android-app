@@ -1,8 +1,8 @@
-package com.lanpet.domain.model
+package com.lanpet.data.dto
 
-data class UserProfile(
+data class FindProfileDetailResponse(
     val id: String,
-    val type: ProfileType,
+    val type: String,
     val nickname: String,
     val profileImageUri: String?,
     val introduction: String?,

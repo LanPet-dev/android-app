@@ -1,4 +1,4 @@
-package com.lanpet.domain.usecase
+package com.lanpet.domain.usecase.cognitoauth
 
 import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.repository.AuthRepository

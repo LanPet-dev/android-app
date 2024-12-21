@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.lanpet.core.auth.AuthManager
-import com.lanpet.core.manager.AuthStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -13,9 +12,6 @@ import javax.inject.Inject
 class OauthDeepLinkHandlerActivity : ComponentActivity() {
     @Inject
     lateinit var authManager: AuthManager
-
-    @Inject
-    lateinit var authStateHolder: AuthStateHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
