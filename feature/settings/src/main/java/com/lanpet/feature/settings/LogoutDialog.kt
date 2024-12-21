@@ -21,6 +21,7 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
 
+// TODO("Satoshi"): Separate dialog interface to BaseDialog and implement it in LogoutDialog
 @Composable
 fun LogoutDialog(
     onDismiss: () -> Unit,
