@@ -1,5 +1,6 @@
 package com.lanpet.free
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,7 +42,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
@@ -50,11 +50,11 @@ import com.lanpet.core.common.widget.CommonCenterAlignedAppBarTitle
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
 import com.lanpet.core.common.widget.LanPetCenterAlignedTopAppBar
-import com.lanpet.core.common.widget.ProfileImageWithPicker
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
@@ -387,7 +387,10 @@ private fun ButtonWithIcon(
         )
         Text(
             title,
-            style = MaterialTheme.customTypography().body2SemiBoldMulti,
+            style =
+                MaterialTheme.customTypography().body2SemiBoldMulti.copy(
+                    color = PrimaryColor.PRIMARY,
+                ),
         )
     }
 }
@@ -434,9 +437,18 @@ private fun ImageWithDeleteIcon(modifier: Modifier = Modifier) {
 }
 
 @Preview(heightDp = 1000)
-@PreviewLightDark
 @Composable
-private fun FreeBoardWriteScreenPreview() {
+private fun FreeBoardWriteScreenLightPreview() {
+    LanPetAppTheme {
+        FreeBoardWriteScreen(
+            onNavigateUp = {},
+        )
+    }
+}
+
+@Preview(heightDp = 1000, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FreeBoardWriteScreenDarkPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
