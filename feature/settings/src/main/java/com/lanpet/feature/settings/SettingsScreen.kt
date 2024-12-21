@@ -39,6 +39,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
+    onOpenLogoutDialog: (() -> Unit)? = null,
 ) {
     val authViewModel = LocalAuthManager.current
 
@@ -89,7 +90,8 @@ fun SettingsScreen(
                                         .clip(
                                             shape = CircleShape,
                                         ).clickable {
-                                            authViewModel.logout()
+//                                            authViewModel.logout()
+                                            onOpenLogoutDialog?.invoke()
                                         },
                             ) {
                                 CommonChip(stringResource(R.string.button_logout))
