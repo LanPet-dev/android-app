@@ -90,73 +90,73 @@ private fun CategoryChipSection(
     onItemSelect: (PetCategory) -> Unit = {},
 ) {
     FlowRow {
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "고양이",
             isSelected = selectedCategory.value == "고양이",
         ) {
             onItemSelect(PetCategory.CAT)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "강아지",
             isSelected = selectedCategory.value == "강아지",
         ) {
             onItemSelect(PetCategory.DOG)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "거미",
             isSelected = selectedCategory.value == "거미",
         ) {
             onItemSelect(PetCategory.SPIDER)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "뱀",
             isSelected = selectedCategory.value == "뱀",
         ) {
             onItemSelect(PetCategory.SNAKE)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "물고기",
             isSelected = selectedCategory.value == "물고기",
         ) {
             onItemSelect(PetCategory.FISH)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "앵무새",
             isSelected = selectedCategory.value == "앵무새",
         ) {
             onItemSelect(PetCategory.PARROT)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "햄스터",
             isSelected = selectedCategory.value == "햄스터",
         ) {
             onItemSelect(PetCategory.HAMSTER)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "도마뱀",
             isSelected = selectedCategory.value == "도마뱀",
         ) {
             onItemSelect(PetCategory.LIZARD)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "양서류",
             isSelected = selectedCategory.value == "양서류",
         ) {
             onItemSelect(PetCategory.AMPHIBIAN)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "파충류",
             isSelected = selectedCategory.value == "파충류",
         ) {
             onItemSelect(PetCategory.REPTILE)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "거북이",
             isSelected = selectedCategory.value == "거북이",
         ) {
             onItemSelect(PetCategory.TURTLE)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "기타",
             isSelected = selectedCategory.value == "기타",
         ) {

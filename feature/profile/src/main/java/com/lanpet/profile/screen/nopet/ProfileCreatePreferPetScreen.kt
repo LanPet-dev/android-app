@@ -95,61 +95,61 @@ private fun PreferPetChipSection(
     onItemSelect: (PetCategory) -> Unit = {},
 ) {
     FlowRow {
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "고양이",
             isSelected = preferPets.contains(PetCategory.CAT),
         ) {
             onItemSelect(PetCategory.CAT)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "강아지",
             isSelected = preferPets.contains(PetCategory.DOG),
         ) {
             onItemSelect(PetCategory.DOG)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "햄스터",
             isSelected = preferPets.contains(PetCategory.HAMSTER),
         ) {
             onItemSelect(PetCategory.HAMSTER)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "도마뱀",
             isSelected = preferPets.contains(PetCategory.LIZARD),
         ) {
             onItemSelect(PetCategory.LIZARD)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "앵무새",
             isSelected = preferPets.contains(PetCategory.PARROT),
         ) {
             onItemSelect(PetCategory.PARROT)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "물고기",
             isSelected = preferPets.contains(PetCategory.FISH),
         ) {
             onItemSelect(PetCategory.FISH)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "뱀",
             isSelected = preferPets.contains(PetCategory.SNAKE),
         ) {
             onItemSelect(PetCategory.SNAKE)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "거미",
             isSelected = preferPets.contains(PetCategory.SPIDER),
         ) {
             onItemSelect(PetCategory.SPIDER)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "양서류",
             isSelected = preferPets.contains(PetCategory.AMPHIBIAN),
         ) {
             onItemSelect(PetCategory.AMPHIBIAN)
         }
-        SelectableChip(
+        SelectableChip.Rounded(
             title = "기타",
             isSelected = preferPets.contains(PetCategory.ETC),
         ) {
