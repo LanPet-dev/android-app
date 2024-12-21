@@ -53,6 +53,7 @@ androidJunit5 = "1.11.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 junitJupiterVersion = "5.10.2"
+timberVersion = "5.0.1"
 turbine = "1.0.0"
 
 [libraries]
@@ -88,6 +89,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junitBom" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterEngine" }
