@@ -80,12 +80,10 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
 // common dependencies for configure
 internal fun Project.configureDependencies() {
     dependencies {
+        // Json serialization
         "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
-
-        // JUnit 5
-//        "testImplementation"(libs.findLibrary("libs.junit.jupiter.api").get())
-//        "testRuntimeOnly"(libs.findLibrary("libs.junit.jupiter.engine").get())
-//        "testImplementation"(libs.findLibrary("libs.junit.jupiter.params").get())
+        // Timber logger
+        "implementation"(libs.findLibrary("jakewharton.timber").get())
         // TODO("Satoshi"): Add common dependencies
     }
 }
