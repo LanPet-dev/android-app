@@ -96,7 +96,7 @@ class AuthManager
 
         fun logout() {
             authStateHolder.updateState(
-                AuthState.Initial(),
+                AuthState.Logout(),
             )
         }
     }
