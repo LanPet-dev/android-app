@@ -133,7 +133,7 @@ fun SelectableChip(
                         },
                 ),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
         )
     }
 }
