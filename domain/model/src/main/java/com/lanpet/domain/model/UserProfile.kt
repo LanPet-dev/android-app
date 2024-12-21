@@ -6,4 +6,5 @@ data class UserProfile(
     val nickname: String,
     val profileImageUri: String?,
     val introduction: String?,
+    val isDefault: Boolean = false,
 )
