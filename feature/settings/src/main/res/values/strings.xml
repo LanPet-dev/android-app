@@ -7,4 +7,8 @@
     <string name="sns_label_settings">SNS 연동 계정</string>
     <string name="title_notification_option_switch_settings">알림(Push) 전체 허용</string>
     <string name="button_logout">로그아웃</string>
+    <string name="dialog_logout_title">정말 로그아웃 하시겠어요?</string>
+    <string name="dialog_logout_content">떠난다니 아쉬워요😥\n언제든지 저희가 필요하다면 다시 찾아와주세요!</string>
+    <string name="dialog_logout_cancel">취소</string>
+    <string name="dialog_logout_confirm">로그아웃</string>
 </resources>

@@ -32,6 +32,7 @@ import com.lanpet.feature.landing.navigation.Landing
 import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
+import com.lanpet.feature.settings.navigation.navigateToLogoutDialog
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
@@ -41,7 +42,6 @@ import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
 import com.lanpet.free.navigation.navigateToFreeBoardWriteScreen
 import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
-import com.lanpet.myprofile.navigation.MyProfileCreateProfile
 import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
@@ -69,9 +69,9 @@ import timber.log.Timber
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val authViewModel = LocalAuthManager.current
+    val authManager = LocalAuthManager.current
 
-    val authState = authViewModel.authState.collectAsState()
+    val authState = authManager.authState.collectAsState()
 
     // Handling navigation by AuthState
     rememberNavigationHandler(navController, authState.value)
@@ -105,7 +105,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     true
                 }
 
-                MyProfileCreateProfile.toString(),
+                toString(),
                 -> true
 
                 else -> false
@@ -212,6 +212,15 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 settingsNavGraph(
                     onNavigateUp = {
                         navController.navigateUp()
+                    },
+                    onDismissLogoutDialog = {
+                        navController.navigateUp()
+                    },
+                    onLogout = {
+                        authManager.logout()
+                    },
+                    onOpenLogoutDialog = {
+                        navController.navigateToLogoutDialog()
                     },
                 )
                 myPostsNavGraph(
