@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
@@ -44,14 +45,14 @@ class NavigationHandler(
 
             is AuthState.Success -> {
                 // only for test
-                navController.navigateToProfileCreateHasPet()
-//                if (currentAuthState.profile.isEmpty()) {
-//                    navController.navigateToProfileCreateHasPet()
-//                } else {
-//                    navController.navigateToMainScreen(
-//                        bottomNavItem = BottomNavItem.Wiki,
-//                    )
-//                }
+//                navController.navigateToProfileCreateHasPet()
+                if (currentAuthState.profile.isEmpty()) {
+                    navController.navigateToProfileCreateHasPet()
+                } else {
+                    navController.navigateToMainScreen(
+                        bottomNavItem = BottomNavItem.Wiki,
+                    )
+                }
             }
 
             is AuthState.Logout -> {

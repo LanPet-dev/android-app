@@ -29,6 +29,16 @@ class AuthManager
     ) {
         val authState = authStateHolder.authState
 
+        /**
+         * 대표 프로필
+         */
+        val defaultUserProfile = authStateHolder.defaultProfile
+
+        /**
+         * 유저의 프로필 목록
+         */
+        val userProfiles = authStateHolder.userProfiles
+
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
