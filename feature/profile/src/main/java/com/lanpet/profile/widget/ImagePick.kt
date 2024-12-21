@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.profile.R
 import com.lanpet.core.designsystem.R as DS_R
 
 @Composable
@@ -36,7 +37,7 @@ fun ImagePickerView(
                     if (imageUri != null) {
                         rememberAsyncImagePainter(imageUri)
                     } else {
-                        painterResource(DS_R.drawable.img_dummy)
+                        painterResource(com.lanpet.core.common.R.drawable.img_default_profile)
                     },
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
