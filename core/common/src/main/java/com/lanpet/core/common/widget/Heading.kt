@@ -87,6 +87,19 @@ fun CommonHint(
 }
 
 @Composable
+fun CommonCenterAlignedAppBarTitle(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        title,
+        style =
+            MaterialTheme.customTypography().title3SemiBoldMulti,
+        modifier = modifier,
+    )
+}
+
+@Composable
 @PreviewLightDark
 private fun CommonHeadingPreview() {
     LanPetAppTheme {
@@ -99,6 +112,8 @@ private fun CommonHeadingPreview() {
             CommonSubHeading1(title = "Sub Heading 1")
             Spacer(modifier = Modifier.height(8.dp))
             CommonAppBarTitle(title = "App Bar Title")
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonCenterAlignedAppBarTitle(title = "Center Aligned App Bar Title")
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
