@@ -17,7 +17,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.profile.R
-import com.lanpet.core.designsystem.R as DS_R
 
 @Composable
 fun ImagePickerView(
@@ -44,13 +43,13 @@ fun ImagePickerView(
                 modifier = Modifier.crop(),
             )
             Image(
-                painter = painterResource(DS_R.drawable.ic_edit),
+                painter = painterResource(com.lanpet.core.common.R.drawable.ic_plus_circle),
                 contentDescription = null,
                 modifier =
                     Modifier
                         .align(
                             alignment = Alignment.BottomEnd,
-                        ).size(32.dp)
+                        ).size(34.dp)
                         .clickable {
                             onEditButtonClick()
                         },
