@@ -50,6 +50,7 @@ import com.lanpet.core.common.widget.CommonCenterAlignedAppBarTitle
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
 import com.lanpet.core.common.widget.LanPetCenterAlignedTopAppBar
+import com.lanpet.core.common.widget.ProfileImageWithPicker
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -139,6 +140,11 @@ fun FreeBoardWriteScreen(
                             .padding(
                                 LanPetDimensions.Margin.medium,
                             ),
+                    onClick = {
+                        // TODO("Satoshi"):
+                        // 1. check permission
+                        // 2. open gallery or camera
+                    },
                 )
                 LazyRow(
                     modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
