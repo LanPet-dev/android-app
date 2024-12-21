@@ -107,9 +107,9 @@ fun ProfileCreateHumanBioScreen(
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-//                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.bio !is FormValidationStatus.Valid) {
-//                        return@CommonButton
-//                    }
+                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.bio !is FormValidationStatus.Valid) {
+                        return@CommonButton
+                    }
 
                     manProfileCreateViewModel.registerManProfile()
                 }
