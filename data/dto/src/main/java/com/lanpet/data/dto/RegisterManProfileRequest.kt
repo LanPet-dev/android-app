@@ -36,7 +36,7 @@ data class RegisterManProfileRequest(
                 profileType = manProfileCreate.type,
                 butler =
                     ButlerDto(
-                        ageRange = manProfileCreate.butler.ageRange,
+                        ageRange = manProfileCreate.butler.age.intValue,
                         preferredPet = manProfileCreate.butler.preferredPet,
                     ),
             )

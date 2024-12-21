@@ -14,8 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -24,8 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
+import com.lanpet.core.common.widget.CommonHint
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -37,6 +40,7 @@ import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.profile.widget.ImagePickerView
+import kotlinx.coroutines.launch
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +50,12 @@ fun ProfileCreateNoPetNameScreen(
     modifier: Modifier = Modifier,
     onNavigateToHumanAge: () -> Unit = {},
 ) {
+    val duplicateCheckState by manProfileCreateViewModel.isNicknameDuplicated.collectAsState()
+    val validationStatus by manProfileCreateViewModel.manProfileCreateValidationResult.collectAsState()
+    val nicknameInput by manProfileCreateViewModel.manProfileCreate.collectAsState()
+
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             LanPetTopAppBar(
@@ -77,11 +87,31 @@ fun ProfileCreateNoPetNameScreen(
                 manProfileCreateViewModel.setProfileImageUri(uri.toString())
             }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xLarge))
-            PetNameInputSection { nickName ->
-                manProfileCreateViewModel.setNickName(nickName)
-            }
+            PetNameInputSection(
+                nicknameInput = nicknameInput.nickName,
+                nickNameValidationStatus = validationStatus.nickName,
+                duplicateCheckState = duplicateCheckState,
+                onTextChange = { nickName ->
+                    manProfileCreateViewModel.clearNicknameDuplicated()
+                    manProfileCreateViewModel.setNickName(nickName)
+                },
+                onCheckNicknameDuplicate = {
+                    scope.launch {
+                        manProfileCreateViewModel.checkNickNameDuplicate()
+                    }
+                },
+            )
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                println(
+                    "ProfileCreateNoPetNameScreen: " +
+                        "validationStatus.nickName: ${validationStatus.nickName}, " +
+                        "duplicateCheckState: $duplicateCheckState"
+                )
+
+                if (validationStatus.nickName !is FormValidationStatus.Valid) return@CommonButton
+                if (duplicateCheckState != true) return@CommonButton
+
                 onNavigateToHumanAge()
             }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -114,17 +144,13 @@ fun ImagePickSection(onImageSelect: (Uri) -> Unit) {
 
 @Composable
 fun PetNameInputSection(
+    nickNameValidationStatus: FormValidationStatus,
+    duplicateCheckState: Boolean?,
+    nicknameInput: String,
     modifier: Modifier = Modifier,
     onTextChange: (String) -> Unit = {},
+    onCheckNicknameDuplicate: () -> Unit = {},
 ) {
-    var nameInput by rememberSaveable {
-        mutableStateOf("")
-    }
-
-    var nicknameDuplicateCheckStatus by rememberSaveable {
-        mutableStateOf<Boolean?>(true)
-    }
-
     Column {
         Text(
             stringResource(R.string.name_input_label_profile_create_no_pet_name),
@@ -136,10 +162,9 @@ fun PetNameInputSection(
         ) {
             TextFieldWithDeleteButton(
                 modifier = Modifier.weight(3f),
-                value = nameInput,
+                value = nicknameInput,
                 placeholder = stringResource(R.string.name_input_placeholder_profile_create_no_pet_name),
             ) {
-                nameInput = it
                 onTextChange(it)
             }
             Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xxSmall))
@@ -147,17 +172,39 @@ fun PetNameInputSection(
                 modifier = Modifier.width(100.dp),
                 title = stringResource(R.string.check_duplicated_nickname_button_string),
                 onClick = {
+                    onCheckNicknameDuplicate()
                 },
             )
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-        nicknameDuplicateCheckStatus?.let {
-            if (it) {
-                DuplicatedNicknameOkText()
-            } else {
-                DuplicatedNicknameErrorText()
+
+        // 표시할 텍스트가 있는경우
+        if (nickNameValidationStatus is FormValidationStatus.Invalid) {
+            if (nickNameValidationStatus.message != null) {
+                Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall))
+                Text(
+                    nickNameValidationStatus.message.toString(),
+                    style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.errorText),
+                )
             }
         }
+
+        // 중복체크 결과가 있는경우
+        if (duplicateCheckState != null) {
+            Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall))
+            if (duplicateCheckState) {
+                com.lanpet.profile.screen.yespet
+                    .DuplicatedNicknameOkText()
+            } else {
+                com.lanpet.profile.screen.yespet
+                    .DuplicatedNicknameErrorText()
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall))
+        CommonHint(
+            title = stringResource(R.string.hint_nickname_validator_profile_create),
+        )
     }
 }
 
@@ -183,6 +230,7 @@ private fun PreviewErrorConfirmedText(modifier: Modifier = Modifier) {
     LanPetAppTheme {
         Column {
             DuplicatedNicknameOkText()
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
             DuplicatedNicknameErrorText()
         }
     }
@@ -190,18 +238,42 @@ private fun PreviewErrorConfirmedText(modifier: Modifier = Modifier) {
 
 @PreviewLightDark
 @Composable
-private fun PreviewPetNameInputSection() {
+private fun PreviewPetNameInputSection_DuplicatedCheckStateIsNull() {
     LanPetAppTheme {
-        PetNameInputSection(hiltViewModel())
+        PetNameInputSection(
+            nickNameValidationStatus = FormValidationStatus.Valid("valid"),
+            duplicateCheckState = null,
+            nicknameInput = "input",
+            onTextChange = {},
+            onCheckNicknameDuplicate = {},
+        )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun PreviewProfileCreateNesPetNameScreen() {
+private fun PreviewPetNameInputSection_DuplicatedCheckStateIsFalse() {
     LanPetAppTheme {
-        ProfileCreateNoPetNameScreen(
-            manProfileCreateViewModel = hiltViewModel(),
-        ) {}
+        PetNameInputSection(
+            nickNameValidationStatus = FormValidationStatus.Valid("valid"),
+            duplicateCheckState = false,
+            nicknameInput = "input",
+            onTextChange = {},
+            onCheckNicknameDuplicate = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun PreviewPetNameInputSection_DuplicatedCheckStateIsTrue() {
+    LanPetAppTheme {
+        PetNameInputSection(
+            nickNameValidationStatus = FormValidationStatus.Valid("valid"),
+            duplicateCheckState = true,
+            nicknameInput = "input",
+            onTextChange = {},
+            onCheckNicknameDuplicate = {},
+        )
     }
 }

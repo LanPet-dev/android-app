@@ -6,6 +6,7 @@ import com.lanpet.data.dto.ButlerDto
 import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
 import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
 import com.lanpet.domain.model.AuthState
+import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -56,7 +57,7 @@ class ProfileApiClient
         private val gson =
             GsonBuilder()
                 .registerTypeAdapter(ProfileType::class.java, ProfileTypeTypeAdapter())
-                .registerTypeAdapter(ButlerDto::class.java, PetCategoryTypeAdapter())
+                .registerTypeAdapter(PetCategory::class.java, PetCategoryTypeAdapter())
                 .create()
 
         private val okHttpClient =

@@ -3,12 +3,15 @@ package com.lanpet.profile.screen.yespet
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -52,6 +55,8 @@ fun ProfileCreateYesPetNameScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val scrollState = rememberScrollState()
+
     val validationResult =
         petProfileCreateViewModel.petProfileCreateValidationResult.collectAsState()
 
@@ -82,7 +87,13 @@ fun ProfileCreateYesPetNameScreen(
                         vertical = LanPetDimensions.Margin.Layout.vertical,
                     ),
         ) {
-            Column {
+            Column(
+                modifier =
+                    Modifier.scrollable(
+                        state = scrollState,
+                        orientation = Orientation.Vertical,
+                    ),
+            ) {
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.medium))
                 Heading(title = stringResource(R.string.heading_profile_create_yes_pet_name))
                 Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -96,6 +107,7 @@ fun ProfileCreateYesPetNameScreen(
                     nickNameValidationStatus = validationResult.value.nickName,
                     duplicateCheckState = isNicknameDuplicated.value,
                     onTextChange = { name ->
+                        petProfileCreateViewModel.clearNicknameDuplicated()
                         petProfileCreateViewModel.setNickName(name)
                     },
                     nicknameInput = petProfileCreate.value.nickName,

@@ -13,4 +13,5 @@ enum class Age(
     SEVENTIES("70대", 70),
     EIGHTIES("80대", 80),
     NINETIES("90대", 90),
+    NONE("없음", -1),
 }

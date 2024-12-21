@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -34,8 +35,8 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.profile.R
+import com.lanpet.profile.model.RegisterManProfileResult
 import com.lanpet.profile.viewmodel.ManProfileCreateViewModel
-import com.lanpet.profile.viewmodel.RegisterManProfileResult
 import com.lanpet.profile.widget.Heading
 import com.lanpet.profile.widget.HeadingHint
 import com.lanpet.core.designsystem.R as DS_R
@@ -50,19 +51,27 @@ fun ProfileCreateHumanBioScreen(
     val registerManProfileResult by
         manProfileCreateViewModel.registerManProfileResult.collectAsState()
 
-    val currntOnRegisterManProfileComplete by rememberUpdatedState {
+    val currentOnRegisterManProfileComplete by rememberUpdatedState {
         onRegisterManProfileComplete()
     }
 
     LaunchedEffect(registerManProfileResult) {
         when (registerManProfileResult) {
             is RegisterManProfileResult.Success -> {
-                currntOnRegisterManProfileComplete()
+                currentOnRegisterManProfileComplete()
             }
 
-            is RegisterManProfileResult.Error -> TODO()
-            RegisterManProfileResult.Initial -> TODO()
-            RegisterManProfileResult.Loading -> TODO()
+            is RegisterManProfileResult.Error -> {
+                // TODO
+            }
+
+            RegisterManProfileResult.Initial -> {
+                // TODO
+            }
+
+            RegisterManProfileResult.Loading -> {
+                // TODO
+            }
         }
     }
 
@@ -93,11 +102,15 @@ fun ProfileCreateHumanBioScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
                 HeadingHint(title = stringResource(R.string.sub_heading_profile_create_human_bio_no_pet))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                BioInputSection {
-                    manProfileCreateViewModel.setBio(it)
+                BioInputSection { bio ->
+                    manProfileCreateViewModel.setBio(bio)
                 }
                 Spacer(Modifier.weight(1f))
                 CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+//                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.bio !is FormValidationStatus.Valid) {
+//                        return@CommonButton
+//                    }
+
                     manProfileCreateViewModel.registerManProfile()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))

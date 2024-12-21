@@ -215,6 +215,10 @@ class PetProfileCreateViewModel
                 return@withContext true
             }
         }
+
+        fun clearNicknameDuplicated() {
+            _isNicknameDuplicated.value = null
+        }
     }
 
 /**
