@@ -180,7 +180,6 @@ class ManProfileCreateViewModel
         }
 
         fun registerManProfile() {
-            println( "registerManProfile: ${_manProfileCreate.value}")
             viewModelScope.launch {
                 _registerManProfileResult.value = RegisterManProfileResult.Loading
                 try {
@@ -188,7 +187,6 @@ class ManProfileCreateViewModel
                         _registerManProfileResult.value = RegisterManProfileResult.Success
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     _registerManProfileResult.value =
                         RegisterManProfileResult.Error(e.message ?: "Unknown error")
                 }

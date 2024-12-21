@@ -15,7 +15,8 @@ class PetCategoryTypeAdapter : TypeAdapter<PetCategory?>() {
         }
     }
 
-    override fun read(`in`: JsonReader?): PetCategory? = `in`?.nextString()?.let {
-        println("PetCategoryTypeAdapter read: $it")
-        PetCategory.valueOf(it) }
+    override fun read(`in`: JsonReader?): PetCategory? =
+        `in`?.nextString()?.let {
+            PetCategory.valueOf(it)
+        }
 }

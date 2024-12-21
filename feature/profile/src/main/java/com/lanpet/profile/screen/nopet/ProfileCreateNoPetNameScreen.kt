@@ -103,12 +103,6 @@ fun ProfileCreateNoPetNameScreen(
             )
             Spacer(Modifier.weight(1f))
             CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                println(
-                    "ProfileCreateNoPetNameScreen: " +
-                        "validationStatus.nickName: ${validationStatus.nickName}, " +
-                        "duplicateCheckState: $duplicateCheckState"
-                )
-
                 if (validationStatus.nickName !is FormValidationStatus.Valid) return@CommonButton
                 if (duplicateCheckState != true) return@CommonButton
 

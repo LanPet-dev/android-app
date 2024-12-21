@@ -2,7 +2,6 @@ package com.lanpet.data.service
 
 import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
-import com.lanpet.data.dto.ButlerDto
 import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
 import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
 import com.lanpet.domain.model.AuthState

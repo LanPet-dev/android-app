@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
