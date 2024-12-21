@@ -214,22 +214,36 @@ class AuthManagerTest {
                         throw Exception("Failed to register account")
                     }
 
-                // When
-                authManager.handleAuthCode(authCode)
-                advanceUntilIdle()
+                authManager.authState.test {
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Initial>(awaitItem())
 
-                // Then
-                coVerify(exactly = 1) {
-                    getCognitoSocialAuthTokenUseCase(authCode)
-                    getAccountInformationUseCase()
-                    registerAccountUseCase()
+                    // When
+                    authManager.handleAuthCode(authCode)
+                    advanceUntilIdle()
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                    // Second AuthState value
+                    assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    // Then
+                    coVerify(exactly = 1) {
+                        getCognitoSocialAuthTokenUseCase(authCode)
+                        getAccountInformationUseCase()
+                        registerAccountUseCase()
+                    }
+
+                    coVerify(exactly = 0) {
+                        getAllProfileUseCase()
+                    }
+
+                    assertInstanceOf<AuthState.Fail>(authManager.authState.value)
                 }
-
-                coVerify(exactly = 0) {
-                    getAllProfileUseCase()
-                }
-
-                assertInstanceOf<AuthState.Fail>(authManager.authState.value)
             }
 
         @Test
