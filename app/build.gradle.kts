@@ -22,10 +22,6 @@ android {
         versionName = "1.0.0"
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
-
     buildFeatures {
         compose = true
     }
@@ -37,9 +33,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-    implementation(libs.amplify.authenticator)
-    implementation(libs.amplify.core)
 
     // Retrofit
     implementation(libs.retrofit)
