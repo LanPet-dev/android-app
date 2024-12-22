@@ -63,6 +63,27 @@ class MemberLeaveViewModelTest {
         fun `LeaveMemberUseCase 가 false 를 반환하는경우, LeaveState 는 MemberLeaveState_Error 을 반환한다`() =
             runTest {
                 // given
+                coEvery { leaveMemberUseCase() } returns flowOf(false)
+
+                viewModel.leaveState.test {
+                    // when
+                    viewModel.leaveMember()
+
+                    // then
+                    assertInstanceOf<MemberLeaveState.Initial>(awaitItem())
+                    assertInstanceOf<MemberLeaveState.Loading>(awaitItem())
+                    assertInstanceOf<MemberLeaveState.Error>(awaitItem())
+
+                    coVerify(exactly = 1) {
+                        leaveMemberUseCase()
+                    }
+                }
+            }
+
+        @Test
+        fun `LeaveMemberUseCase 가 Exception 를 반환하는경우, LeaveState 는 MemberLeaveState_Error 을 반환한다`() =
+            runTest {
+                // given
                 coEvery { leaveMemberUseCase() } throws Exception()
 
                 viewModel.leaveState.test {

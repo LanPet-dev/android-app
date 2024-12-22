@@ -25,7 +25,11 @@ class MemberLeaveViewModel
                 try {
                     _leaveState.value = MemberLeaveState.Loading
                     leaveMemberUseCase().collect {
-                        _leaveState.value = MemberLeaveState.Success
+                        if (it) {
+                            _leaveState.value = MemberLeaveState.Success
+                        } else {
+                            throw Exception("LeaveMemberUseCase return false")
+                        }
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
