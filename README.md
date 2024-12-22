@@ -1,6 +1,7 @@
 # LanPet android app
 
 # Tech Stack
+
 1. Architecture
     - Multi module (https://developer.android.com/topic/modularization?hl=ko)
     - Clean architecture
@@ -22,8 +23,10 @@
     - Turbine (https://github.com/cashapp/turbine)
     - Robolectric (https://developer.android.com/training/testing/local-tests/robolectric?hl=ko)
 
-# Project structure   
+# Project structure
+
 Multi module based clean architecture
+
 ```
 Root project 'LanPetApp'
 ├── Project ':app'
@@ -55,4 +58,13 @@ Root project 'LanPetApp'
 
 Included builds:
 └── Project ':build-logic'
+```
+
+# Make module graph
+
+```
+1. Install Graphviz
+   - brew install graphviz
+2. Run gradle task
+   - ./gradlew projectDependencyGraph
 ```

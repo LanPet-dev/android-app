@@ -1,0 +1,151 @@
+// from: https://github.com/DroidKaigi/conference-app-2021/blob/main/gradle/dependencyGraph.gradle
+// from: https://github.com/JakeWharton/SdkSearch/blob/3351cad9bfacb0a364858e843774147143f58c7a/gradle/projectDependencyGraph.gradle
+tasks.register('projectDependencyGraph') {
+    doLast {
+        def dotFileName = 'project.dot'
+        def dot = new File(rootProject.rootDir, dotFileName)
+        dot.parentFile.mkdirs()
+        dot.delete()
+
+        dot << 'digraph {\n'
+        dot << "  graph [label=\"${rootProject.name}\\n \",labelloc=t,fontsize=30,ranksep=1.4];\n"
+        dot << '  node [style=filled, fillcolor="#bbbbbb"];\n'
+        dot << '  rankdir=TB;\n'
+        dot << '  compound=true;\n'  // 그룹화를 위해 추가
+
+        def rootProjects = []
+        def queue = [rootProject]
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0)
+            rootProjects.add(project)
+            queue.addAll(project.childProjects.values())
+        }
+
+        def projects = new LinkedHashSet<Project>()
+        def dependencies = new LinkedHashMap<Tuple2<Project, Project>, List<String>>()
+        def multiplatformProjects = []
+        def jsProjects = []
+        def androidProjects = []
+        def androidLibraryProjects = []
+        def androidDynamicFeatureProjects = []
+        def javaProjects = []
+
+        queue = [rootProject]
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0)
+            queue.addAll(project.childProjects.values())
+
+            if (project.plugins.hasPlugin('org.jetbrains.kotlin.multiplatform')) {
+                multiplatformProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('kotlin2js')) {
+                jsProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.application')) {
+                androidProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.library')) {
+                androidLibraryProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('com.android.dynamic-feature')) {
+                androidDynamicFeatureProjects.add(project)
+            }
+            if (project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('java')) {
+                javaProjects.add(project)
+            }
+
+            project.configurations.configureEach { config ->
+                if (config.name.toLowerCase().contains("test")) return
+                config.dependencies
+                        .withType(ProjectDependency)
+                        .collect { it.dependencyProject }
+                        .each { dependency ->
+                            projects.add(project)
+                            projects.add(dependency)
+                            rootProjects.remove(dependency)
+
+                            def graphKey = new Tuple2<Project, Project>(project, dependency)
+                            def traits = dependencies.computeIfAbsent(graphKey) { new ArrayList<String>() }
+
+                            if (config.name.toLowerCase().endsWith('implementation')) {
+                                traits.add('style=dotted')
+                            }
+                        }
+            }
+        }
+
+        projects = new ArrayList<>(projects).sort { it.path }
+
+        dot << '\n  # Module Groups\n\n'
+
+        // Data Layer
+        dot << '  subgraph cluster_data {\n'
+        dot << '    label="Data Layer";\n'
+        dot << '    style=filled;\n'
+        dot << '    color="#f0f0f0";\n'
+        projects.findAll { it.path.contains(':data') }.each { project ->
+            dot << "    \"${project.path}\" [fillcolor=\"#81D4FA\"];\n"
+        }
+        dot << '  }\n'
+
+        // Domain Layer
+        dot << '  subgraph cluster_domain {\n'
+        dot << '    label="Domain Layer";\n'
+        dot << '    style=filled;\n'
+        dot << '    color="#f0f0f0";\n'
+        projects.findAll { it.path.contains(':domain') }.each { project ->
+            dot << "    \"${project.path}\" [fillcolor=\"#A5D6A7\"];\n"
+        }
+        dot << '  }\n'
+
+        // Core Layer
+        dot << '  subgraph cluster_core {\n'
+        dot << '    label="Core Layer";\n'
+        dot << '    style=filled;\n'
+        dot << '    color="#f0f0f0";\n'
+        projects.findAll { it.path.contains(':core') }.each { project ->
+            dot << "    \"${project.path}\" [fillcolor=\"#FFE0B2\"];\n"
+        }
+        dot << '  }\n'
+
+        // Feature Modules
+        dot << '  subgraph cluster_feature {\n'
+        dot << '    label="Feature Modules";\n'
+        dot << '    style=filled;\n'
+        dot << '    color="#f0f0f0";\n'
+        projects.findAll {
+            !it.path.contains(':data') &&
+                    !it.path.contains(':domain') &&
+                    !it.path.contains(':core') &&
+                    it.path != ':'
+        }.each { project ->
+            dot << "    \"${project.path}\" [fillcolor=\"#E1BEE7\"];\n"
+        }
+        dot << '  }\n'
+
+        // Root App Module
+        projects.findAll { it.path == ':' }.each { project ->
+            dot << "  \"${project.path}\" [fillcolor=\"#FFA726\"];\n"
+        }
+
+        dot << '\n  # Dependencies\n\n'
+        dependencies.forEach { key, traits ->
+            dot << "  \"${key.first.path}\" -> \"${key.second.path}\""
+            if (!traits.isEmpty()) {
+                dot << " [${traits.join(", ")}]"
+            }
+            dot << '\n'
+        }
+
+        dot << '}\n'
+
+        def p = "dot -Tpng -O ${dotFileName}".execute([], dot.parentFile)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        }
+        dot.delete()
+
+        println("Project module dependency graph created at ${dot.absolutePath}.png")
+    }
+}

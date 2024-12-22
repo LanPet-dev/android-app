@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
-import com.lanpet.core.designsystem.R as DS_R
+import com.lanpet.profile.R
 
 @Composable
 fun ImagePickerView(
@@ -36,20 +36,20 @@ fun ImagePickerView(
                     if (imageUri != null) {
                         rememberAsyncImagePainter(imageUri)
                     } else {
-                        painterResource(DS_R.drawable.img_dummy)
+                        painterResource(com.lanpet.core.common.R.drawable.img_default_profile)
                     },
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.crop(),
             )
             Image(
-                painter = painterResource(DS_R.drawable.ic_edit),
+                painter = painterResource(com.lanpet.core.common.R.drawable.ic_plus_circle),
                 contentDescription = null,
                 modifier =
                     Modifier
                         .align(
                             alignment = Alignment.BottomEnd,
-                        ).size(32.dp)
+                        ).size(34.dp)
                         .clickable {
                             onEditButtonClick()
                         },

@@ -44,7 +44,6 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
-import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,7 +202,7 @@ private fun MyProfileCard(
                     Modifier.crop(
                         size = 88.dp,
                     ),
-                painter = painterResource(id = DS_R.drawable.img_animals),
+                painter = painterResource(id = com.lanpet.core.common.R.drawable.img_default_profile),
                 contentDescription = "profile_image",
             )
         }
