@@ -107,6 +107,7 @@ fun MemberLeaveScreen(
                     style = MaterialTheme.customTypography().title2SemiBoldMulti,
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.medium))
+                // TODO("Satoshi"): Separate this info UI as a component
                 Box(
                     modifier =
                         Modifier
