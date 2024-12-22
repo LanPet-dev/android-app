@@ -62,9 +62,9 @@ Included builds:
 
 # Make module graph
 
-`
+```
 1. Install Graphviz
    - brew install graphviz
 2. Run gradle task
-   -   ./gradlew projectDependencyGraph
-`
+   - ./gradlew projectDependencyGraph
+```
