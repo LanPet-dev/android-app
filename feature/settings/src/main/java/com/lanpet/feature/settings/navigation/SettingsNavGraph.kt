@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.settingsNavGraph(
     onNavigateUp: () -> Unit,
+    onLeave: () -> Unit,
+    onNavigateToMemberLeave: () -> Unit,
     onOpenLogoutDialog: () -> Unit,
     onDismissLogoutDialog: () -> Unit,
     onLogout: () -> Unit,
@@ -17,13 +19,20 @@ fun NavGraphBuilder.settingsNavGraph(
     composable<Settings> {
         SettingsScreen(
             onNavigateUp = onNavigateUp,
-            onOpenLogoutDialog = { onOpenLogoutDialog() },
+            onOpenLogoutDialog = onOpenLogoutDialog,
+            onNavigateToMemberLeave = onNavigateToMemberLeave,
         )
     }
     dialog<LogoutDialog> {
         LogoutDialog(
-            onDismiss = { onDismissLogoutDialog() },
-            onLogout = { onLogout() },
+            onDismiss = onDismissLogoutDialog,
+            onLogout = onLogout,
+        )
+    }
+    composable<MemberLeave> {
+        com.lanpet.feature.settings.MemberLeaveScreen(
+            onNavigateUp = onNavigateUp,
+            onLeave = onLeave,
         )
     }
 }
@@ -44,8 +53,20 @@ fun NavController.navigateToLogoutDialog() {
     }
 }
 
+fun NavController.navigateToMemberLeave() {
+    navigate(
+        MemberLeave,
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
 @Serializable
 data object Settings
 
 @Serializable
 data object LogoutDialog
+
+@Serializable
+object MemberLeave

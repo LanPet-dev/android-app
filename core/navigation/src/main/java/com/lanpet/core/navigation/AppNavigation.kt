@@ -33,6 +33,7 @@ import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToLogoutDialog
+import com.lanpet.feature.settings.navigation.navigateToMemberLeave
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
@@ -221,6 +222,13 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     },
                     onOpenLogoutDialog = {
                         navController.navigateToLogoutDialog()
+                    },
+                    onLeave = {
+                        // TODO
+                        throw NotImplementedError("Not implemented yet")
+                    },
+                    onNavigateToMemberLeave = {
+                        navController.navigateToMemberLeave()
                     },
                 )
                 myPostsNavGraph(
