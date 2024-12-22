@@ -60,5 +60,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.hilt.testing)
-    testImplementation(projects.domain.repository)
 }

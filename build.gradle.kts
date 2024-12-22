@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.android.junit5) apply false
     alias(libs.plugins.ktlint) apply true
 }
+apply(from = "gradle/dependencyGraph.gradle")
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint") // Version should be inherited from parent
