@@ -1,6 +1,5 @@
 package com.lanpet.data.dto
 
-import androidx.compose.runtime.Stable
 import com.lanpet.domain.model.PetCategory
 import kotlinx.serialization.Serializable
 
