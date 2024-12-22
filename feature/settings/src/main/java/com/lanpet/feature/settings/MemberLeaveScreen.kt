@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
@@ -48,18 +50,39 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.VioletColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.feature.settings.viewmodel.MemberLeaveState
+import com.lanpet.feature.settings.viewmodel.MemberLeaveViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberLeaveScreen(
     modifier: Modifier = Modifier,
-    onLeave: () -> Unit = {},
+    memberLeaveViewModel: MemberLeaveViewModel = hiltViewModel<MemberLeaveViewModel>(),
     onNavigateUp: () -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
     val profile by LocalAuthManager.current.defaultUserProfile.collectAsStateWithLifecycle()
-
     var reasonInput by rememberSaveable { mutableStateOf("") }
+    val leaveState by memberLeaveViewModel.leaveState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(leaveState) {
+        when (leaveState) {
+            is MemberLeaveState.Success -> {
+            }
+
+            is MemberLeaveState.Error -> {
+                // TODO
+            }
+
+            is MemberLeaveState.Initial -> {
+                // TODO
+            }
+
+            is MemberLeaveState.Loading -> {
+                // TODO
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -147,7 +170,9 @@ fun MemberLeaveScreen(
                 CommonButton(
                     buttonSize = ButtonSize.LARGE,
                     title = stringResource(R.string.title_button_member_leave),
-                    onClick = onLeave,
+                    onClick = {
+                        memberLeaveViewModel.leaveMember()
+                    },
                 )
             }
         }

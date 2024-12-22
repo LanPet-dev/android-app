@@ -223,10 +223,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     onOpenLogoutDialog = {
                         navController.navigateToLogoutDialog()
                     },
-                    onLeave = {
-                        // TODO
-                        throw NotImplementedError("Not implemented yet")
-                    },
                     onNavigateToMemberLeave = {
                         navController.navigateToMemberLeave()
                     },

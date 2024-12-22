@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.settingsNavGraph(
     onNavigateUp: () -> Unit,
-    onLeave: () -> Unit,
     onNavigateToMemberLeave: () -> Unit,
     onOpenLogoutDialog: () -> Unit,
     onDismissLogoutDialog: () -> Unit,
@@ -32,7 +31,6 @@ fun NavGraphBuilder.settingsNavGraph(
     composable<MemberLeave> {
         com.lanpet.feature.settings.MemberLeaveScreen(
             onNavigateUp = onNavigateUp,
-            onLeave = onLeave,
         )
     }
 }
