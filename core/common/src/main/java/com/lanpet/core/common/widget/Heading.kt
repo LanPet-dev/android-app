@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -67,6 +68,8 @@ fun CommonAppBarTitle(
     Text(
         title,
         modifier = modifier,
+        style =
+            MaterialTheme.customTypography().title3SemiBoldSingle,
     )
 }
 
@@ -103,18 +106,20 @@ fun CommonCenterAlignedAppBarTitle(
 @PreviewLightDark
 private fun CommonHeadingPreview() {
     LanPetAppTheme {
-        Column {
-            Spacer(modifier = Modifier.height(8.dp))
-            CommonHeading(title = "Heading")
-            Spacer(modifier = Modifier.height(8.dp))
-            CommonHeadingHint(title = "Heading Hint")
-            Spacer(modifier = Modifier.height(8.dp))
-            CommonSubHeading1(title = "Sub Heading 1")
-            Spacer(modifier = Modifier.height(8.dp))
-            CommonAppBarTitle(title = "App Bar Title")
-            Spacer(modifier = Modifier.height(8.dp))
-            CommonCenterAlignedAppBarTitle(title = "Center Aligned App Bar Title")
-            Spacer(modifier = Modifier.height(8.dp))
+        Surface {
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonHeading(title = "Heading")
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonHeadingHint(title = "Heading Hint")
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonSubHeading1(title = "Sub Heading 1")
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonAppBarTitle(title = "App Bar Title")
+                Spacer(modifier = Modifier.height(8.dp))
+                CommonCenterAlignedAppBarTitle(title = "Center Aligned App Bar Title")
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
