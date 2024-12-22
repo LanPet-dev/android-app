@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.Close
 import com.lanpet.core.common.widget.CommonAppBarTitle
@@ -54,8 +53,6 @@ fun MyProfileAddProfileScreen(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = { },
 ) {
-    val authViewModel = LocalAuthManager.current
-
     val verticalScrollState = rememberScrollState()
 
     Scaffold(
