@@ -48,4 +48,16 @@ class ProfileRepositoryImpl
 //                emit(res.toDomain())
 //            }.flowOn(Dispatchers.IO)
         }
+
+        override suspend fun updateProfile(
+            id: String,
+            userProfile: UserProfile,
+        ): Flow<Boolean> {
+            throw NotImplementedError("Not implemented")
+//            val res = profileApiService.updateProfile(id, userProfile.toDto())
+        }
+
+        override suspend fun deleteProfile(id: String): Flow<Boolean> {
+            TODO("Not yet implemented")
+        }
     }

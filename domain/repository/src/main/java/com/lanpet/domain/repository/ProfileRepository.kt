@@ -15,4 +15,11 @@ interface ProfileRepository {
     suspend fun getProfiles(): Flow<List<UserProfile>>
 
     suspend fun getProfile(id: String): Flow<UserProfile>
+
+    suspend fun updateProfile(
+        id: String,
+        userProfile: UserProfile,
+    ): Flow<Boolean>
+
+    suspend fun deleteProfile(id: String): Flow<Boolean>
 }
