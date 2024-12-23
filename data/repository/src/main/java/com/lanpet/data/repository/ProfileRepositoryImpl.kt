@@ -7,6 +7,7 @@ import com.lanpet.data.service.ProfileApiService
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
+import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,13 +42,11 @@ class ProfileRepositoryImpl
                 emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun getProfile(id: String): Flow<UserProfile> {
-            throw NotImplementedError("Not implemented")
-//            flow {
-//                val res = profileApiService.getProfileDetail(id)
-//                emit(res.toDomain())
-//            }.flowOn(Dispatchers.IO)
-        }
+        override suspend fun getProfile(id: String): Flow<UserProfileDetail> =
+            flow {
+                val res = profileApiService.getProfileDetail(id)
+                emit(res.toDomain())
+            }.flowOn(Dispatchers.IO)
 
         override suspend fun updateProfile(
             id: String,

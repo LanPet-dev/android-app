@@ -2,14 +2,18 @@ package com.lanpet.core.auth
 
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
+import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
+import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
@@ -25,6 +29,7 @@ class AuthManager
         private val registerAccountUseCase: RegisterAccountUseCase,
         private val getAccountInformationUseCase: GetAccountInformationUseCase,
         private val getAllProfileUseCase: GetAllProfileUseCase,
+        private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val authStateHolder: AuthStateHolder,
     ) {
         val authState = authStateHolder.authState
@@ -38,6 +43,12 @@ class AuthManager
          * 유저의 프로필 목록
          */
         val userProfiles = authStateHolder.userProfiles
+
+        /**
+         * 현재 유저의 프로필
+         */
+        private val _currentUserProfile = MutableStateFlow<UserProfileDetail?>(null)
+        val currentUserProfile = _currentUserProfile.asStateFlow()
 
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {

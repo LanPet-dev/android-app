@@ -46,14 +46,14 @@ class NavigationHandler(
 
             is AuthState.Success -> {
 //                 only for test
-                navController.navigateToProfileCreateHasPet()
-//                if (currentAuthState.profile.isEmpty()) {
-//                    navController.navigateToProfileCreateHasPet()
-//                } else {
-//                    navController.navigateToMainScreen(
-//                        bottomNavItem = BottomNavItem.Wiki,
-//                    )
-//                }
+//                navController.navigateToProfileCreateHasPet()
+                if (currentAuthState.profile.isEmpty()) {
+                    navController.navigateToProfileCreateHasPet()
+                } else {
+                    navController.navigateToMainScreen(
+                        bottomNavItem = BottomNavItem.Wiki,
+                    )
+                }
             }
 
             is AuthState.Logout -> {

@@ -1,6 +1,7 @@
 package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
+import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
@@ -47,4 +48,10 @@ data class RegisterManProfileRequest(
 data class ButlerDto(
     val ageRange: Int,
     val preferredPet: List<PetCategory> = emptyList(),
-)
+) {
+    fun toDomain() =
+        com.lanpet.domain.model.profile.Butler(
+            age = Age.entries.firstOrNull { it.intValue == ageRange } ?: Age.NONE,
+            preferredPet = preferredPet,
+        )
+}

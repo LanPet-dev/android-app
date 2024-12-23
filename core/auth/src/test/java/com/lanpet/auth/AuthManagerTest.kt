@@ -15,6 +15,7 @@ import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
+import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -38,6 +39,7 @@ class AuthManagerTest {
 
     private lateinit var getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase
     private lateinit var registerAccountUseCase: RegisterAccountUseCase
+    private lateinit var getProfileDetailUseCase: GetProfileDetailUseCase
     private lateinit var getAccountInformationUseCase: GetAccountInformationUseCase
     private lateinit var getAllProfileUseCase: GetAllProfileUseCase
     private lateinit var authStateHolder: AuthStateHolder
@@ -48,6 +50,7 @@ class AuthManagerTest {
         registerAccountUseCase = mockk()
         getAccountInformationUseCase = mockk()
         getAllProfileUseCase = mockk()
+        getProfileDetailUseCase = mockk()
         authStateHolder = AuthStateHolder()
 
         authManager =
@@ -56,6 +59,7 @@ class AuthManagerTest {
                 registerAccountUseCase,
                 getAccountInformationUseCase,
                 getAllProfileUseCase,
+                getProfileDetailUseCase,
                 authStateHolder,
             )
     }
