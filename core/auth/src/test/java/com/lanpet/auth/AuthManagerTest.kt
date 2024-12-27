@@ -336,6 +336,153 @@ class AuthManagerTest {
             }
     }
 
+    @Nested
+    inner class `UpdateUserProfile test` {
+        @Test
+        fun `AuthState 가 Success 인 경우, 새로운 profile 데이터를 받은 경우, AuthState 의 상태는 Success 이고, profile 은 새로운 profile로 업데이트 된다`() =
+            runTest {
+                val oldProfiles =
+                    listOf(
+                        UserProfile(
+                            "oldProfileId",
+                            ProfileType.BUTLER,
+                            "nickName",
+                            "bio",
+                            "profileImageUri",
+                        ),
+                    )
+
+                coEvery {
+                    getAllProfileUseCase()
+                } returns
+                    flow {
+                        emit(
+                            listOf(
+                                UserProfile(
+                                    "newProfileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "bio",
+                                    "profileImageUri",
+                                ),
+                            ),
+                        )
+                    }
+
+                // 초기 state 설정
+                authStateHolder.updateState(
+                    AuthState.Success(
+                        SocialAuthToken(
+                            SocialAuthType.GOOGLE,
+                            "accessToken",
+                            "refreshToken",
+                        ),
+                        Account(
+                            "accountId",
+                            "authId",
+                            authority = AuthorityType.USER,
+                            exitDate = null,
+                            exitReason = null,
+                        ),
+                        oldProfiles,
+                    ),
+                )
+
+                authManager.authState.test {
+                    // 초기상태 검증
+                    assert(authManager.authState.value is AuthState.Success)
+                    assert(
+                        (authManager.authState.value as AuthState.Success).profile.first().id ==
+                            "oldProfileId",
+                    )
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    // When
+                    authManager.updateUserProfile()
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    coVerify(exactly = 1) {
+                        getAllProfileUseCase()
+                    }
+
+                    assert(authManager.authState.value is AuthState.Success)
+                    assert(
+                        (authManager.authState.value as AuthState.Success).profile.first().id ==
+                            "newProfileId",
+                    )
+                }
+            }
+
+        @Test
+        fun `AuthState 가 Success 인 경우, 새로운 profile 데이터를 받기 실패한 경우, AuthState 의 상태는 Fail 을 반환한다`() =
+            runTest {
+                coEvery { getAllProfileUseCase() } returns
+                    flow {
+                        throw Exception("Failed to get profile")
+                    }
+
+                // 초기 state 설정
+                authStateHolder.updateState(
+                    AuthState.Success(
+                        SocialAuthToken(
+                            SocialAuthType.GOOGLE,
+                            "accessToken",
+                            "refreshToken",
+                        ),
+                        Account(
+                            "accountId",
+                            "authId",
+                            authority = AuthorityType.USER,
+                            exitDate = null,
+                            exitReason = null,
+                        ),
+                        listOf(
+                            UserProfile(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "bio",
+                                "profileImageUri",
+                            ),
+                        ),
+                    ),
+                )
+
+                authManager.authState.test {
+                    // 초기상태 검증
+                    assert(authManager.authState.value is AuthState.Success)
+                    assert(
+                        (authManager.authState.value as AuthState.Success).profile.first().id ==
+                            "profileId",
+                    )
+
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    // When
+                    authManager.updateUserProfile()
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    coVerify(exactly = 1) {
+                        getAllProfileUseCase()
+                    }
+
+                    assert(authManager.authState.value is AuthState.Fail)
+                }
+            }
+    }
+
     companion object {
         @OptIn(ExperimentalCoroutinesApi::class)
         @BeforeAll
