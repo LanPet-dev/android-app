@@ -105,6 +105,30 @@ class AuthManager
             }
         }
 
+        @OptIn(FlowPreview::class)
+        suspend fun updateUserProfile() {
+            try {
+                if (authState.value !is AuthState.Success) {
+                    return
+                }
+                val currentAuthState = authStateHolder.authState.value as AuthState.Success
+
+                val res = getAllProfileUseCase().timeout(5.seconds).first()
+
+                authStateHolder.updateState(
+                    AuthState.Success(
+                        socialAuthToken = currentAuthState.socialAuthToken,
+                        account = currentAuthState.account,
+                        profile = res,
+                    ),
+                )
+            } catch (e: Exception) {
+                authStateHolder.updateState(
+                    AuthState.Fail(),
+                )
+            }
+        }
+
         fun logout() {
             authStateHolder.updateState(
                 AuthState.Logout(),
