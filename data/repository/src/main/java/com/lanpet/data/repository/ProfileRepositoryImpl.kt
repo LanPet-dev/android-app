@@ -4,6 +4,7 @@ import com.lanpet.data.dto.RegisterManProfileRequest
 import com.lanpet.data.dto.RegisterPetProfileRequest
 import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.ProfileApiService
+import com.lanpet.data.service.localdb.AuthDatabase
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
@@ -19,6 +20,7 @@ class ProfileRepositoryImpl
     @Inject
     constructor(
         private val profileApiService: ProfileApiService,
+        private val authDatabase: AuthDatabase,
     ) : ProfileRepository {
         override suspend fun registerPetProfile(petProfileCreate: PetProfileCreate): Flow<String> =
             flow {
@@ -58,11 +60,27 @@ class ProfileRepositoryImpl
                 emit(!res.isExist)
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun getDefaultProfile(): Flow<UserProfile> {
-            TODO("Not yet implemented")
+        override suspend fun getDefaultProfile(accountId: String): Flow<String> {
+            authDatabase.authDao().getByAccountId(accountId)?.let {
+                return flow {
+                    emit(it.profileId)
+                }.flowOn(Dispatchers.IO)
+            } ?: throw IllegalStateException("No default profile")
         }
 
-        override suspend fun setDefaultProfile(id: String): Flow<Boolean> {
-            TODO("Not yet implemented")
-        }
+        override suspend fun setDefaultProfile(
+            accountId: String,
+            profileId: String,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    authDatabase.authDao().upsert(
+                        profileId = profileId,
+                        accountId = accountId,
+                    )
+                    emit(true)
+                } catch (e: Exception) {
+                    emit(false)
+                }
+            }.flowOn(Dispatchers.IO)
     }
