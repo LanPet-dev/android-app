@@ -15,7 +15,6 @@ class RegisterPetProfileRequestTest {
                 nickname = "nickname",
                 pictureUrl = null,
                 introduction = null,
-                representative = false,
                 pet =
                     PetDto(
                         petType = PetCategory.CAT,
@@ -32,7 +31,6 @@ class RegisterPetProfileRequestTest {
                     "nickname": "nickname",
                     "pictureUrl": null,
                     "introduction": null,
-                    "representative": false,
                     "pet": {
                         "petType": "CAT",
                         "breed": null,
@@ -63,7 +61,6 @@ class RegisterPetProfileRequestTest {
                 nickname = "nickname",
                 pictureUrl = null,
                 introduction = null,
-                representative = false,
                 pet =
                 PetDto(
                     petType = PetCategory.AMPHIBIAN,
@@ -77,7 +74,6 @@ class RegisterPetProfileRequestTest {
                     "nickname": "nickname",
                     "pictureUrl": null,
                     "introduction": null,
-                    "representative": false,
                     "pet": {
                         "petType": "AMPHIBIAN",
                         "breed": null,
