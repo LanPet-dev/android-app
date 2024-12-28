@@ -60,13 +60,11 @@ class ProfileRepositoryImpl
                 emit(!res.isExist)
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun getDefaultProfile(accountId: String): Flow<String> {
-            authDatabase.authDao().getByAccountId(accountId)?.let {
-                return flow {
-                    emit(it.profileId)
-                }.flowOn(Dispatchers.IO)
-            } ?: throw IllegalStateException("No default profile")
-        }
+        override suspend fun getDefaultProfile(accountId: String): Flow<String?> =
+            flow {
+                val profile = authDatabase.authDao().getByAccountId(accountId)
+                emit(profile?.profileId)
+            }.flowOn(Dispatchers.IO)
 
         override suspend fun setDefaultProfile(
             accountId: String,

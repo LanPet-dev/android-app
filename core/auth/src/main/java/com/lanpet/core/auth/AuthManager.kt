@@ -7,7 +7,9 @@ import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
+import com.lanpet.domain.usecase.profile.GetDefaultProfileUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
+import com.lanpet.domain.usecase.profile.SetDefaultProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -30,6 +32,8 @@ class AuthManager
         private val getAccountInformationUseCase: GetAccountInformationUseCase,
         private val getAllProfileUseCase: GetAllProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
+        private val getDefaultProfileUseCase: GetDefaultProfileUseCase,
+        private val setDefaultProfileUseCase: SetDefaultProfileUseCase,
         private val authStateHolder: AuthStateHolder,
     ) {
         val authState = authStateHolder.authState
@@ -72,16 +76,35 @@ class AuthManager
                             ),
                         )
                         val profile = getAllProfileUseCase().timeout(5.seconds).first()
+
+                        var defaultProfileId =
+                            getDefaultProfileUseCase(
+                                account.accountId,
+                            ).timeout(5.seconds).first()
+
+                        if (defaultProfileId == null) {
+                            setDefaultProfileUseCase(
+                                account.accountId,
+                                profile.first().id,
+                            ).timeout(5.seconds).first()
+
+                            defaultProfileId = profile.first().id
+                        }
+
                         val detail =
-                            getProfileDetailUseCase(profile.first().id).timeout(5.seconds).first()
+                            getProfileDetailUseCase(defaultProfileId).timeout(5.seconds).first()
+
+                        val defaultProfile =
+                            profile.firstOrNull { it.id == defaultProfileId } ?: throw Exception(
+                                "Default profile not found",
+                            )
+
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
                                 profile = profile,
-                                defaultProfile =
-                                    profile.firstOrNull { it.isDefault }
-                                        ?: profile.first(),
+                                defaultProfile = defaultProfile,
                                 profileDetail = detail,
                             ),
                         )
@@ -96,16 +119,35 @@ class AuthManager
                             ),
                         )
                         val profile = getAllProfileUseCase().timeout(5.seconds).first()
+
+                        var defaultProfileId =
+                            getDefaultProfileUseCase(
+                                account.accountId,
+                            ).timeout(5.seconds).first()
+
+                        if (defaultProfileId == null) {
+                            setDefaultProfileUseCase(
+                                account.accountId,
+                                profile.first().id,
+                            ).timeout(5.seconds).first()
+
+                            defaultProfileId = profile.first().id
+                        }
+
                         val detail =
-                            getProfileDetailUseCase(profile.first().id).timeout(5.seconds).first()
+                            getProfileDetailUseCase(defaultProfileId).timeout(5.seconds).first()
+
+                        val defaultProfile =
+                            profile.firstOrNull { it.id == defaultProfileId } ?: throw Exception(
+                                "Default profile not found",
+                            )
+
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
                                 profile = profile,
-                                defaultProfile =
-                                    profile.firstOrNull { it.isDefault }
-                                        ?: profile.first(),
+                                defaultProfile = defaultProfile,
                                 profileDetail = detail,
                             ),
                         )
@@ -118,6 +160,7 @@ class AuthManager
             }
         }
 
+        // TODO: fix
         @OptIn(FlowPreview::class)
         suspend fun updateUserProfile() {
             try {

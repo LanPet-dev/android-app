@@ -8,5 +8,5 @@ class GetDefaultProfileUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend operator fun invoke() = profileRepository.getDefaultProfile()
+        suspend operator fun invoke(accountId: String) = profileRepository.getDefaultProfile(accountId)
     }

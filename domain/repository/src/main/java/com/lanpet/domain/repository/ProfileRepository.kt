@@ -40,7 +40,7 @@ interface ProfileRepository {
     /**
      * 현재 유저의 기본 프로파일을 가져옵니다.
      */
-    suspend fun getDefaultProfile(accountId: String): Flow<String>
+    suspend fun getDefaultProfile(accountId: String): Flow<String?>
 
     /**
      * 현재 유저의 기본 프로파일을 설정합니다.
