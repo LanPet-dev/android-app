@@ -10,7 +10,6 @@ data class UpdateProfileRequest(
     val introduction: String? = null,
     val pet: PetDto? = null,
     val butler: ButlerDto? = null,
-    val representative: Boolean,
 ) {
     companion object {
         @JvmStatic

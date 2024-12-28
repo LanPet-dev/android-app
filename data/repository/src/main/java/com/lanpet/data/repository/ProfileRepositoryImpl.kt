@@ -59,4 +59,10 @@ class ProfileRepositoryImpl
         override suspend fun deleteProfile(id: String): Flow<Boolean> {
             TODO("Not yet implemented")
         }
+
+        override suspend fun checkNicknameDuplicated(nickname: String): Flow<Boolean> =
+            flow {
+                val res = profileApiService.checkNicknameDuplicated(nickname)
+                emit(!res.isExist)
+            }.flowOn(Dispatchers.IO)
     }

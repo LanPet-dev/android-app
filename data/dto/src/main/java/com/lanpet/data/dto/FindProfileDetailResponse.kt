@@ -10,7 +10,6 @@ data class FindProfileDetailResponse(
     val nickname: String,
     val pictureUrl: String? = null,
     val introduction: String? = null,
-    val representative: Boolean,
     val pet: PetDto? = null,
     val butler: ButlerDto? = null,
 ) {
@@ -21,7 +20,6 @@ data class FindProfileDetailResponse(
             nickname = nickname,
             pictureUrl = pictureUrl,
             introduction = introduction,
-            representative = representative,
             pet = pet?.toDomain(),
             butler = butler?.toDomain(),
         )

@@ -9,4 +9,5 @@ data class PetProfileCreate(
     val nickName: String,
     val bio: String? = null,
     val pet: Pet,
+    val representative: Boolean,
 )

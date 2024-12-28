@@ -11,12 +11,12 @@ import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
@@ -50,6 +50,8 @@ class AuthManager
         private val _currentUserProfile = MutableStateFlow<UserProfileDetail?>(null)
         val currentUserProfile = _currentUserProfile.asStateFlow()
 
+        val currentProfileDetail = authStateHolder.currentProfileDetail
+
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
@@ -70,16 +72,21 @@ class AuthManager
                             ),
                         )
                         val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        val detail =
+                            getProfileDetailUseCase(profile.first().id).timeout(5.seconds).first()
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
                                 profile = profile,
+                                defaultProfile =
+                                    profile.firstOrNull { it.isDefault }
+                                        ?: profile.first(),
+                                profileDetail = detail,
                             ),
                         )
                     } catch (e: Exception) {
                         val accountToken = registerAccountUseCase().timeout(5.seconds).first()
-                        delay(500)
                         val account = getAccountInformationUseCase().timeout(5.seconds).first()
                         authStateHolder.updateState(
                             AuthState.Success(
@@ -89,11 +96,17 @@ class AuthManager
                             ),
                         )
                         val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        val detail =
+                            getProfileDetailUseCase(profile.first().id).timeout(5.seconds).first()
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
                                 account = account,
                                 profile = profile,
+                                defaultProfile =
+                                    profile.firstOrNull { it.isDefault }
+                                        ?: profile.first(),
+                                profileDetail = detail,
                             ),
                         )
                     }
@@ -114,18 +127,34 @@ class AuthManager
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
                 val res = getAllProfileUseCase().timeout(5.seconds).first()
+                val detail = getProfileDetailUseCase(res.first().id).timeout(5.seconds).first()
 
                 authStateHolder.updateState(
                     AuthState.Success(
                         socialAuthToken = currentAuthState.socialAuthToken,
                         account = currentAuthState.account,
                         profile = res,
+                        defaultProfile =
+                            res.firstOrNull { it.isDefault }
+                                ?: res.first(),
+                        profileDetail = detail,
                     ),
                 )
             } catch (e: Exception) {
+                Timber.e(e)
                 authStateHolder.updateState(
                     AuthState.Fail(),
                 )
+            }
+        }
+
+        @OptIn(FlowPreview::class)
+        suspend fun getUserProfileDetail(id: String) {
+            try {
+                val res = getProfileDetailUseCase(id).timeout(5.seconds).first()
+                _currentUserProfile.value = res
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
 

@@ -1,5 +1,6 @@
 package com.lanpet.data.service
 
+import com.lanpet.data.dto.CheckNicknameDuplicatedResponse
 import com.lanpet.data.dto.FindProfileDetailResponse
 import com.lanpet.data.dto.FindProfileResponse
 import com.lanpet.data.dto.RegisterManProfileRequest
@@ -12,6 +13,8 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProfileApiService {
     @POST("profiles")
@@ -30,7 +33,10 @@ interface ProfileApiService {
     suspend fun getProfileList(): FindProfileResponse
 
     @GET("profiles/{id}")
-    suspend fun getProfileDetail(id: String): FindProfileDetailResponse
+    suspend fun getProfileDetail(
+        @Path("id")
+        id: String,
+    ): FindProfileDetailResponse
 
     @PATCH("profiles/{id}")
     suspend fun updateProfile(
@@ -41,4 +47,9 @@ interface ProfileApiService {
 
     @DELETE("profiles/{id}")
     suspend fun deleteProfile(id: String): Unit
+
+    @POST("/profiles/check-nickname")
+    suspend fun checkNicknameDuplicated(
+        @Query("nickname") nickname: String,
+    ): CheckNicknameDuplicatedResponse
 }

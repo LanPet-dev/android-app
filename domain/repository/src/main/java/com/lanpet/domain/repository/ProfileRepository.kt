@@ -23,4 +23,6 @@ interface ProfileRepository {
     ): Flow<Boolean>
 
     suspend fun deleteProfile(id: String): Flow<Boolean>
+
+    suspend fun checkNicknameDuplicated(nickname: String): Flow<Boolean>
 }

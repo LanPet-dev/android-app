@@ -20,6 +20,16 @@ class AuthStateHolder {
 
     val authState = _authState.asStateFlow()
 
+    val currentProfileDetail =
+        authState
+            .map { state ->
+                (state as? AuthState.Success)?.profileDetail
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = null,
+            )
+
     val userProfiles =
         authState
             .map { state ->
@@ -31,14 +41,14 @@ class AuthStateHolder {
             )
 
     val defaultProfile =
-        userProfiles
-            .map { profiles ->
-                profiles.firstOrNull() ?: UserProfile(
+        authState
+            .map { state ->
+                (state as? AuthState.Success)?.defaultProfile ?: UserProfile(
                     id = "",
-                    type = ProfileType.BUTLER,
-                    nickname = "TEST",
+                    type = ProfileType.PET,
+                    introduction = "",
+                    nickname = "",
                     profileImageUri = "",
-                    introduction = "TEST",
                     isDefault = false,
                 )
             }.stateIn(
@@ -47,10 +57,10 @@ class AuthStateHolder {
                 initialValue =
                     UserProfile(
                         id = "",
-                        type = ProfileType.BUTLER,
-                        nickname = "TEST",
+                        type = ProfileType.PET,
+                        introduction = "",
+                        nickname = "",
                         profileImageUri = "",
-                        introduction = "TEST",
                         isDefault = false,
                     ),
             )

@@ -1,6 +1,7 @@
 package com.lanpet.domain.model
 
 import com.lanpet.domain.model.account.Account
+import com.lanpet.domain.model.profile.UserProfileDetail
 
 sealed class AuthState {
     /**
@@ -14,6 +15,8 @@ sealed class AuthState {
         val socialAuthToken: SocialAuthToken?,
         val account: Account?,
         val profile: List<UserProfile> = emptyList(),
+        val profileDetail: UserProfileDetail? = null,
+        val defaultProfile: UserProfile? = null,
         override val navigationHandleFlag: Boolean = true,
     ) : AuthState()
 

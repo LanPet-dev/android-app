@@ -1,4 +1,3 @@
 package com.lanpet.core.manager
 
-object LauncherManager {
-}
+object LauncherManager

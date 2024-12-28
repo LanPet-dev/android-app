@@ -8,7 +8,6 @@ data class UserProfileDetail(
     val nickname: String,
     val pictureUrl: String? = null,
     val introduction: String? = null,
-    val representative: Boolean,
     val pet: Pet? = null,
     val butler: Butler? = null,
 )
