@@ -48,14 +48,6 @@ class ProfileRepositoryImpl
                 emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun updateProfile(
-            id: String,
-            userProfile: UserProfile,
-        ): Flow<Boolean> {
-            throw NotImplementedError("Not implemented")
-//            val res = profileApiService.updateProfile(id, userProfile.toDto())
-        }
-
         override suspend fun deleteProfile(id: String): Flow<Boolean> {
             TODO("Not yet implemented")
         }
@@ -65,4 +57,12 @@ class ProfileRepositoryImpl
                 val res = profileApiService.checkNicknameDuplicated(nickname)
                 emit(!res.isExist)
             }.flowOn(Dispatchers.IO)
+
+        override suspend fun getDefaultProfile(): Flow<UserProfile> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun setDefaultProfile(id: String): Flow<Boolean> {
+            TODO("Not yet implemented")
+        }
     }
