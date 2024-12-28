@@ -13,6 +13,8 @@ class RegisterPetProfileRequestTest {
         val registerPetProfileRequest =
             RegisterPetProfileRequest(
                 nickname = "nickname",
+                pictureUrl = null,
+                introduction = null,
                 pet =
                     PetDto(
                         petType = PetCategory.CAT,
@@ -57,10 +59,12 @@ class RegisterPetProfileRequestTest {
         val registerPetProfileRequest =
             RegisterPetProfileRequest(
                 nickname = "nickname",
+                pictureUrl = null,
+                introduction = null,
                 pet =
-                    PetDto(
-                        petType = PetCategory.AMPHIBIAN,
-                    ),
+                PetDto(
+                    petType = PetCategory.AMPHIBIAN,
+                ),
             )
 
         val registerPetProfileRequestJsonString =

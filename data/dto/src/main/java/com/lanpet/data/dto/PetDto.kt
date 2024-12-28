@@ -11,4 +11,13 @@ data class PetDto(
     // To date format string
     val birthDate: String? = null,
     val weight: Double? = null,
-)
+) {
+    fun toDomain() =
+        com.lanpet.domain.model.profile.Pet(
+            petCategory = petType,
+            breed = breed,
+            feature = feature?.split(",") ?: emptyList(),
+            weight = weight,
+            birthDate = birthDate,
+        )
+}

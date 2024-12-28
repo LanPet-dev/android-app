@@ -1,6 +1,8 @@
 package com.lanpet.domain.usecase.profile
 
+import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetProfileDetailUseCase
@@ -8,5 +10,5 @@ class GetProfileDetailUseCase
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
-        suspend fun invoke(profileId: String) = profileRepository.getProfile(profileId)
+        suspend operator fun invoke(profileId: String): Flow<UserProfileDetail> = profileRepository.getProfile(profileId)
     }

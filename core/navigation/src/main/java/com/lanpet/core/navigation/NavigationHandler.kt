@@ -61,7 +61,7 @@ class NavigationHandler(
             }
 
             is AuthState.Fail -> {
-                // TODO
+                navController.navigateToLoginScreen()
             }
 
             is AuthState.Loading -> {

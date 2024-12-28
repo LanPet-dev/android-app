@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.myprofile.screen.MyProfileAddProfileScreen
 import com.lanpet.myprofile.screen.MyProfileCreateProfileScreen
+import com.lanpet.myprofile.screen.MyProfileManageProfile
 import com.lanpet.myprofile.screen.MyProfileModifyProfileScreen
 import com.lanpet.myprofile.screen.MyProfileScreen
 import kotlinx.serialization.Serializable
@@ -17,6 +18,7 @@ fun NavGraphBuilder.myProfileNavGraph(
     onNavigateToMyProfileAddProfile: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToMyPosts: () -> Unit,
+    onNavigateToMyProfileManageProfile: () -> Unit,
 ) {
     navigation<MyProfileBaseRoute>(
         startDestination = MyProfile,
@@ -26,6 +28,7 @@ fun NavGraphBuilder.myProfileNavGraph(
                 onNavigateToProfileCreate = onNavigateToMyProfileCreateProfile,
                 onNavigateToSettings = onNavigateToSettings,
                 onNavigateToMyPosts = onNavigateToMyPosts,
+                onNavigateToProfileManage = onNavigateToMyProfileManageProfile,
             )
         }
         composable<MyProfileCreateProfile> {
@@ -34,7 +37,6 @@ fun NavGraphBuilder.myProfileNavGraph(
                     onNavigateUp()
                 },
                 onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
-                onNavigateToModifyProfile = onNavigateToMyProfileModifyProfile,
             )
         }
         composable<MyProfileAddProfile> {
@@ -49,6 +51,11 @@ fun NavGraphBuilder.myProfileNavGraph(
                 onClose = {
                     onNavigateUp()
                 },
+            )
+        }
+        composable<MyProfileManageProfile> {
+            MyProfileManageProfile(
+                onNavigateUp = onNavigateUp,
             )
         }
     }
@@ -92,6 +99,24 @@ fun NavController.navigateToMyProfileModifyProfile() {
     }
 }
 
+fun NavController.navigateToMyProfileSetDefaultProfile() {
+    navigate(
+        MyProfileSetDefaultProfile,
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+fun NavController.navigateToMyProfileManageProfile() {
+    navigate(
+        MyProfileManageProfile,
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
 fun NavController.navigateToMyProfile() {
     navigate(
         MyProfile,
@@ -120,3 +145,9 @@ object MyProfileAddProfile
 
 @Serializable
 object MyProfileModifyProfile
+
+@Serializable
+object MyProfileSetDefaultProfile
+
+@Serializable
+object MyProfileManageProfile

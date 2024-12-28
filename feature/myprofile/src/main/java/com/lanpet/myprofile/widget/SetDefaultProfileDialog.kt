@@ -1,33 +1,39 @@
-package com.lanpet.feature.settings
+package com.lanpet.myprofile.widget
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.lanpet.core.common.widget.BaseDialog
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.PrimaryColor
+import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.myprofile.R
 
+/**
+ * 대표프로필 설정 다이얼로그
+ */
 @Composable
-fun LogoutDialog(
-    onDismiss: () -> Unit,
-    onLogout: () -> Unit,
+fun SetDefaultProfileDialog(
     modifier: Modifier = Modifier,
+    onDismiss: () -> Unit = {},
+    onSetDefaultProfile: () -> Unit = {},
 ) {
     BaseDialog(
-        modifier = modifier,
-        title = {
+        content = {
             Text(
-                stringResource(R.string.dialog_logout_title),
-                style = MaterialTheme.customTypography().body1SemiBoldSingle,
+                stringResource(R.string.dialog_set_default_profile_content),
+                style =
+                    MaterialTheme.customTypography().body1SemiBoldMulti.copy(
+                        color = MaterialTheme.customColorScheme.textFieldText,
+                    ),
             )
         },
         dismiss = {
@@ -35,7 +41,7 @@ fun LogoutDialog(
                 onClick = onDismiss,
             ) {
                 Text(
-                    stringResource(R.string.dialog_logout_cancel),
+                    stringResource(R.string.dialog_set_default_profile_dismiss),
                     style =
                         MaterialTheme.customTypography().body1SemiBoldSingle.copy(
                             color = GrayColor.Gray300,
@@ -45,10 +51,10 @@ fun LogoutDialog(
         },
         confirm = {
             TextButton(
-                onClick = onLogout,
+                onClick = onSetDefaultProfile,
             ) {
                 Text(
-                    stringResource(R.string.dialog_logout_confirm),
+                    stringResource(R.string.dialog_set_default_profile_confirm),
                     style =
                         MaterialTheme.customTypography().body1SemiBoldSingle.copy(
                             color = PrimaryColor.PRIMARY,
@@ -56,28 +62,15 @@ fun LogoutDialog(
                 )
             }
         },
-        content = {
-            Text(
-                stringResource(R.string.dialog_logout_content),
-                style =
-                    MaterialTheme.customTypography().body3RegularMulti.copy(
-                        color = GrayColor.Gray700,
-                    ),
-            )
-        },
     )
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
-private fun LogoutDialogPreview() {
+@PreviewLightDark
+private fun SetDefaultProfileDialogPreview() {
     LanPetAppTheme {
         Surface {
-            LogoutDialog(
-                onDismiss = {},
-                onLogout = {},
-            )
+            SetDefaultProfileDialog()
         }
     }
 }

@@ -44,16 +44,22 @@ fun BaseDialog(
                             ),
                     ),
         ) {
-            title?.invoke()
-            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
-            content?.invoke()
-            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+            title?.let {
+                it.invoke()
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+            }
+            content?.let {
+                it.invoke()
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
             ) {
-                dismiss?.invoke()
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+                dismiss?.let {
+                    it.invoke()
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+                }
                 confirm?.invoke()
             }
         }

@@ -7,6 +7,7 @@ import com.lanpet.data.service.ProfileApiService
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
+import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,11 +42,27 @@ class ProfileRepositoryImpl
                 emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun getProfile(id: String): Flow<UserProfile> {
+        override suspend fun getProfile(id: String): Flow<UserProfileDetail> =
+            flow {
+                val res = profileApiService.getProfileDetail(id)
+                emit(res.toDomain())
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun updateProfile(
+            id: String,
+            userProfile: UserProfile,
+        ): Flow<Boolean> {
             throw NotImplementedError("Not implemented")
-//            flow {
-//                val res = profileApiService.getProfileDetail(id)
-//                emit(res.toDomain())
-//            }.flowOn(Dispatchers.IO)
+//            val res = profileApiService.updateProfile(id, userProfile.toDto())
         }
+
+        override suspend fun deleteProfile(id: String): Flow<Boolean> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun checkNicknameDuplicated(nickname: String): Flow<Boolean> =
+            flow {
+                val res = profileApiService.checkNicknameDuplicated(nickname)
+                emit(!res.isExist)
+            }.flowOn(Dispatchers.IO)
     }

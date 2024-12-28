@@ -1,6 +1,10 @@
 package com.lanpet.core.common
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.compose.foundation.layout.WindowInsets
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -76,4 +80,17 @@ fun Date.toUtcDateString(
 fun Date.toYyyyMmDdHhMmSs(dateFormat: String = "yyyy-MM-dd HH:mm:ss"): String {
     val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
     return formatter.format(this)
+}
+
+fun Context.createProfileImageUri(): Uri {
+    // TODO: Refactor filename
+    val fileName = "lanpet_${System.currentTimeMillis()}.jpg"
+
+    return contentResolver.insert(
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        },
+    )!!
 }

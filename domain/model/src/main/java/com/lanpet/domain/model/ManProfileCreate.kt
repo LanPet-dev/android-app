@@ -9,4 +9,5 @@ data class ManProfileCreate(
     val bio: String,
     val type: ProfileType,
     val butler: Butler,
+    val representative: Boolean,
 )
