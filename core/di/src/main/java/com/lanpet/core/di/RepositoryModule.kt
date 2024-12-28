@@ -6,6 +6,7 @@ import com.lanpet.data.repository.ProfileRepositoryImpl
 import com.lanpet.data.service.AccountApiService
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.data.service.ProfileApiService
+import com.lanpet.data.service.localdb.AuthDatabase
 import com.lanpet.domain.repository.AccountRepository
 import com.lanpet.domain.repository.FreeBoardRepository
 import com.lanpet.domain.repository.ProfileRepository
@@ -34,8 +35,9 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideProfileRepository(profileService: ProfileApiService): ProfileRepository =
+    fun provideProfileRepository(profileService: ProfileApiService, authDatabase: AuthDatabase): ProfileRepository =
         ProfileRepositoryImpl(
             profileService,
+            authDatabase,
         )
 }

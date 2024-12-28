@@ -75,7 +75,7 @@ fun MyProfileCreateProfileScreen(
     val userProfiles by authManager.userProfiles.collectAsStateWithLifecycle()
 
     var showSetDefaultProfileDialog by remember { mutableStateOf(false) }
-    var selectedProfileId by remember { mutableStateOf<String?>(null) }
+    var selectedProfileId by remember { mutableStateOf<String>("") }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
 
@@ -93,7 +93,14 @@ fun MyProfileCreateProfileScreen(
                 onSetDefaultProfile = {
                     Timber.d("selectedProfileId: $selectedProfileId")
                     scope.launch {
-                        authManager.updateUserProfile()
+                        if (selectedProfileId.isEmpty()) {
+                            return@launch
+                        }
+
+                        authManager.updateUserProfile(
+                            selectedProfileId,
+                        )
+
                         showSetDefaultProfileDialog = false
                     }
                 },
