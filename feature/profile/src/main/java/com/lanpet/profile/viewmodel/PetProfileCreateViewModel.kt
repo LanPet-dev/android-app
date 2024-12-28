@@ -46,7 +46,6 @@ class PetProfileCreateViewModel
                             weight = null,
                             birthDate = null,
                         ),
-                    representative = true,
                 ),
             )
         val petProfileCreate: StateFlow<PetProfileCreate> = _petProfileCreate.asStateFlow()

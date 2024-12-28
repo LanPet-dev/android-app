@@ -55,7 +55,7 @@ import com.lanpet.myprofile.R
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToProfileCreate: () -> Unit = { },
-    onNavigateToProfileManage: () -> Unit = { },
+    onNavigateToProfileManage: (String) -> Unit = { },
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: () -> Unit = { },
 ) {
@@ -103,7 +103,7 @@ fun MyProfileScreen(
         ) {
             Column {
                 MyProfileCard(
-                    defaultUserProfile.value!!,
+                    defaultUserProfile.value,
                     onNavigateToProfileCreate = {},
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
@@ -115,7 +115,9 @@ fun MyProfileScreen(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.title_manage_profile_button),
                         onClick = {
-                            onNavigateToProfileManage()
+                            onNavigateToProfileManage(
+                                defaultUserProfile.value.id,
+                            )
                         },
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))

@@ -40,6 +40,7 @@ interface ProfileApiService {
 
     @PATCH("profiles/{id}")
     suspend fun updateProfile(
+        @Path("id")
         id: String,
         @Body
         updateProfileRequest: UpdateProfileRequest,

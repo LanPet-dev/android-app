@@ -1,7 +1,9 @@
 package com.lanpet.domain.repository
 
 import com.lanpet.domain.model.ManProfileCreate
+import com.lanpet.domain.model.ManProfile
 import com.lanpet.domain.model.PetProfileCreate
+import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.profile.UserProfileDetail
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +18,22 @@ interface ProfileRepository {
      * 집사 프로파일을 등록합니다.
      */
     suspend fun registerButlerProfile(manProfileCreate: ManProfileCreate): Flow<String>
+
+    /**
+     * 반려동물 프로파일을 수정합니다.
+     */
+    suspend fun modifyPetProfile(
+        profileId: String,
+        petProfile: PetProfile,
+    ): Flow<Boolean>
+
+    /**
+     * 집사 프로파일을 수정합니다.
+     */
+    suspend fun modifyButlerProfile(
+        profileId: String,
+        manProfile: ManProfile,
+    ): Flow<Boolean>
 
     /**
      * 현재 유저의 모든 프로파일 정보를 가져옵니다.

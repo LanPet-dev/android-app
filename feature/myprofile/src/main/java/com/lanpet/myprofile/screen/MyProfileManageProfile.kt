@@ -22,15 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
@@ -47,7 +45,11 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.domain.model.Age
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.ProfileType
 import com.lanpet.myprofile.R
+import com.lanpet.myprofile.viewmodel.ManageManProfileViewModel
+import com.lanpet.myprofile.viewmodel.ManagePetProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,11 +57,12 @@ fun MyProfileManageProfile(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit = { },
 ) {
-    val authManager = LocalAuthManager.current
-
-    val currentUserProfile by authManager.currentProfileDetail.collectAsState()
-
     val verticalScrollState = rememberScrollState()
+
+    val currentUserProfile =
+        LocalAuthManager.current.currentProfileDetail
+            .collectAsState()
+            .value
 
     Scaffold(
         topBar = {
@@ -101,44 +104,95 @@ fun MyProfileManageProfile(
                             verticalScrollState,
                         ),
             ) {
-                CommonSubHeading1(
-                    title = stringResource(R.string.heading_my_profile_add_profile, "닉네임"),
-                )
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
-                ProfileImageWithPicker()
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
-                NickNameSection(
-                    nickname = currentUserProfile?.nickname ?: "",
-                    onNicknameChange = {
-                    },
-                )
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                currentUserProfile?.butler?.let { it1 ->
-                    SelectAgeSection(
-                        age = it1.age,
-                        onAgeChange = { },
-                    )
+                if (currentUserProfile == null) {
+                    // TODO
+                    return@Column
                 }
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                SelectPreferPetSection()
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                BioInputSection()
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                CommonButton(
-                    title = stringResource(R.string.title_register_button),
-                ) { }
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+
+                when (currentUserProfile.type) {
+                    ProfileType.PET -> {
+                        PetProfileUpdateView()
+                    }
+
+                    ProfileType.BUTLER -> {
+                        ManProfileUpdateView()
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun BioInputSection(modifier: Modifier = Modifier) {
-    var input by rememberSaveable {
-        mutableStateOf("")
+private fun PetProfileUpdateView(
+    modifier: Modifier = Modifier,
+    managePetProfileViewModel: ManagePetProfileViewModel = hiltViewModel(),
+) {
+    Column {
+        Text(
+            "",
+        )
     }
+}
 
+@Composable
+private fun ManProfileUpdateView(
+    modifier: Modifier = Modifier,
+    manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
+) {
+    val manProfileUpdate by manageManProfileViewModel.manProfileUpdate.collectAsState()
+
+    Column {
+        CommonSubHeading1(
+            title =
+                stringResource(
+                    R.string.heading_my_profile_add_profile,
+                    manProfileUpdate?.nickName.toString(),
+                ),
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
+        ProfileImageWithPicker()
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
+        NickNameSection(
+            nickname = manProfileUpdate?.nickName ?: "",
+            onNicknameChange = {
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        manProfileUpdate?.butler?.let { it1 ->
+            SelectAgeSection(
+                age = it1.age,
+                onAgeChange = {
+                },
+            )
+        }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        SelectPreferPetSection(
+            preferPet = manProfileUpdate?.butler?.preferredPet ?: emptyList(),
+            onPreferPetChange = {
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        BioInputSection(
+            text = manProfileUpdate?.bio ?: "",
+            onTextChange = {
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        CommonButton(
+            title = stringResource(R.string.title_register_button),
+        ) {
+        }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+    }
+}
+
+@Composable
+private fun BioInputSection(
+    text: String,
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit = {},
+) {
     val maxLength = 200
 
     Column {
@@ -149,7 +203,7 @@ private fun BioInputSection(modifier: Modifier = Modifier) {
         Box {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = input,
+                value = text,
                 textStyle = MaterialTheme.typography.bodyMedium,
                 shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
                 maxLines = 7,
@@ -171,7 +225,7 @@ private fun BioInputSection(modifier: Modifier = Modifier) {
                 singleLine = false,
                 onValueChange = { newText ->
                     if (newText.length <= maxLength) {
-                        input = newText
+                        onTextChange(newText)
                     }
                 },
                 placeholder = {
@@ -190,7 +244,7 @@ private fun BioInputSection(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Text(
-                    text = "${input.length}/$maxLength",
+                    text = "${text.length}/$maxLength",
                     style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
                 )
             }
@@ -200,7 +254,11 @@ private fun BioInputSection(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SelectPreferPetSection(modifier: Modifier = Modifier) {
+private fun SelectPreferPetSection(
+    preferPet: List<PetCategory>,
+    modifier: Modifier = Modifier,
+    onPreferPetChange: (PetCategory) -> Unit = {},
+) {
     Column {
         CommonSubHeading1(
             title = stringResource(R.string.prefer_pet_hint_my_profile_add_profile),
@@ -210,12 +268,59 @@ private fun SelectPreferPetSection(modifier: Modifier = Modifier) {
         FlowRow {
             SelectableChip(
                 title = "고양이",
-                isSelected = false,
-            ) { }
+                isSelected = preferPet.contains(PetCategory.CAT),
+            ) {
+                onPreferPetChange(PetCategory.CAT)
+            }
             SelectableChip(
                 title = "강아지",
-                isSelected = false,
-            ) { }
+                isSelected = preferPet.contains(PetCategory.DOG),
+            ) {
+                onPreferPetChange(PetCategory.DOG)
+            }
+            SelectableChip(
+                title = "햄스터",
+                isSelected = preferPet.contains(PetCategory.HAMSTER),
+            ) {
+                onPreferPetChange(PetCategory.HAMSTER)
+            }
+            SelectableChip(
+                title = "물고기",
+                isSelected = preferPet.contains(PetCategory.FISH),
+            ) {
+                onPreferPetChange(PetCategory.FISH)
+            }
+            SelectableChip(
+                title = "앵무새",
+                isSelected = preferPet.contains(PetCategory.PARROT),
+            ) {
+                onPreferPetChange(PetCategory.PARROT)
+            }
+            // 뱀
+            SelectableChip(
+                title = "뱀",
+                isSelected = preferPet.contains(PetCategory.SNAKE),
+            ) {
+                onPreferPetChange(PetCategory.SNAKE)
+            }
+            SelectableChip(
+                title = "도마뱀",
+                isSelected = preferPet.contains(PetCategory.LIZARD),
+            ) {
+                onPreferPetChange(PetCategory.LIZARD)
+            }
+            SelectableChip(
+                title = "거북이",
+                isSelected = preferPet.contains(PetCategory.TURTLE),
+            ) {
+                onPreferPetChange(PetCategory.TURTLE)
+            }
+            SelectableChip(
+                title = "기타",
+                isSelected = preferPet.contains(PetCategory.OTHER),
+            ) {
+                onPreferPetChange(PetCategory.OTHER)
+            }
         }
     }
 }
@@ -236,24 +341,32 @@ private fun SelectAgeSection(
         FlowRow {
             SelectableChip(
                 title = Age.TENS.value,
-                isSelected = false,
-            ) { }
+                isSelected = age == Age.TENS,
+            ) {
+                onAgeChange(Age.TENS)
+            }
             SelectableChip(
                 title = Age.TWENTIES.value,
-                isSelected = false,
-            ) { }
+                isSelected = age == Age.TWENTIES,
+            ) {
+                onAgeChange(Age.TWENTIES)
+            }
             SelectableChip(
                 title = Age.THIRTIES.value,
-                isSelected = false,
-            ) { }
+                isSelected = age == Age.THIRTIES,
+            ) {
+                onAgeChange(Age.THIRTIES)
+            }
             SelectableChip(
                 title = Age.FORTIES.value,
-                isSelected = false,
-            ) { }
+                isSelected = age == Age.FORTIES,
+            ) { onAgeChange(Age.FORTIES) }
             SelectableChip(
                 title = Age.FIFTIES.value,
-                isSelected = false,
-            ) { }
+                isSelected = age == Age.FIFTIES,
+            ) {
+                onAgeChange(Age.FIFTIES)
+            }
         }
     }
 }
@@ -269,8 +382,10 @@ private fun NickNameSection(
     )
     Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
     TextFieldWithDeleteButton(
-        value = "",
-        onValueChange = { },
+        value = nickname,
+        onValueChange = {
+            onNicknameChange(it)
+        },
         placeholder = stringResource(R.string.nickname_placeholder_my_profile_add_profile),
     )
 }

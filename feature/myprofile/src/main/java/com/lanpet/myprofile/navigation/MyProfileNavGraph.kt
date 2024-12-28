@@ -18,7 +18,7 @@ fun NavGraphBuilder.myProfileNavGraph(
     onNavigateToMyProfileAddProfile: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToMyPosts: () -> Unit,
-    onNavigateToMyProfileManageProfile: () -> Unit,
+    onNavigateToMyProfileManageProfile: (String) -> Unit,
 ) {
     navigation<MyProfileBaseRoute>(
         startDestination = MyProfile,
@@ -54,6 +54,14 @@ fun NavGraphBuilder.myProfileNavGraph(
             )
         }
         composable<MyProfileManageProfile> {
+            argument("profileId") {
+                val profileId =
+                    it.arguments?.getString("profileId")
+                        ?: throw IllegalArgumentException("profileId is required")
+                MyProfileManageProfile(
+                    profileId = profileId,
+                )
+            }
             MyProfileManageProfile(
                 onNavigateUp = onNavigateUp,
             )
@@ -108,9 +116,11 @@ fun NavController.navigateToMyProfileSetDefaultProfile() {
     }
 }
 
-fun NavController.navigateToMyProfileManageProfile() {
+fun NavController.navigateToMyProfileManageProfile(profileId: String) {
     navigate(
-        MyProfileManageProfile,
+        MyProfileManageProfile(
+            profileId = profileId,
+        ),
     ) {
         launchSingleTop = true
         restoreState = true
@@ -150,4 +160,6 @@ object MyProfileModifyProfile
 object MyProfileSetDefaultProfile
 
 @Serializable
-object MyProfileManageProfile
+data class MyProfileManageProfile(
+    val profileId: String,
+)
