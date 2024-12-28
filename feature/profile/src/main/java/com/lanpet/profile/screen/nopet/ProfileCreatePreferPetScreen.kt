@@ -138,18 +138,6 @@ private fun PreferPetChipSection(
             onItemSelect(PetCategory.SNAKE)
         }
         SelectableChip.Rounded(
-            title = "거미",
-            isSelected = preferPets.contains(PetCategory.SPIDER),
-        ) {
-            onItemSelect(PetCategory.SPIDER)
-        }
-        SelectableChip.Rounded(
-            title = "양서류",
-            isSelected = preferPets.contains(PetCategory.AMPHIBIAN),
-        ) {
-            onItemSelect(PetCategory.AMPHIBIAN)
-        }
-        SelectableChip.Rounded(
             title = "기타",
             isSelected = preferPets.contains(PetCategory.OTHER),
         ) {

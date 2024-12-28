@@ -103,12 +103,6 @@ private fun CategoryChipSection(
             onItemSelect(PetCategory.DOG)
         }
         SelectableChip.Rounded(
-            title = "거미",
-            isSelected = selectedCategory.value == "거미",
-        ) {
-            onItemSelect(PetCategory.SPIDER)
-        }
-        SelectableChip.Rounded(
             title = "뱀",
             isSelected = selectedCategory.value == "뱀",
         ) {
@@ -137,18 +131,6 @@ private fun CategoryChipSection(
             isSelected = selectedCategory.value == "도마뱀",
         ) {
             onItemSelect(PetCategory.LIZARD)
-        }
-        SelectableChip.Rounded(
-            title = "양서류",
-            isSelected = selectedCategory.value == "양서류",
-        ) {
-            onItemSelect(PetCategory.AMPHIBIAN)
-        }
-        SelectableChip.Rounded(
-            title = "파충류",
-            isSelected = selectedCategory.value == "파충류",
-        ) {
-            onItemSelect(PetCategory.REPTILE)
         }
         SelectableChip.Rounded(
             title = "거북이",

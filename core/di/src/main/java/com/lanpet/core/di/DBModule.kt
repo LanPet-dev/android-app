@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.lanpet.data.service.localdb.AuthDatabase
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
@@ -14,6 +15,7 @@ import javax.inject.Singleton
 object DBModule {
 
     @Singleton
+    @Provides
     fun provideAuthDatabase(
         @ApplicationContext context: Context,
     ): AuthDatabase =

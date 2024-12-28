@@ -160,26 +160,40 @@ class AuthManager
             }
         }
 
-        // TODO: fix
         @OptIn(FlowPreview::class)
-        suspend fun updateUserProfile() {
+        suspend fun updateUserProfile(profileId: String) {
             try {
                 if (authState.value !is AuthState.Success) {
                     return
                 }
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
+                val setDefaultProfileRes =
+                    currentAuthState.account?.let {
+                        setDefaultProfileUseCase(
+                            it.accountId,
+                            profileId,
+                        ).timeout(5.seconds).first()
+                    } ?: throw IllegalStateException("Account is null")
+
+                if (!setDefaultProfileRes) {
+                    throw IllegalStateException("Set default profile failed")
+                }
+
                 val res = getAllProfileUseCase().timeout(5.seconds).first()
-                val detail = getProfileDetailUseCase(res.first().id).timeout(5.seconds).first()
+
+                val defaultProfile =
+                    res.firstOrNull { it.id == profileId }
+                        ?: throw IllegalStateException("Default profile not found")
+
+                val detail = getProfileDetailUseCase(profileId).timeout(5.seconds).first()
 
                 authStateHolder.updateState(
                     AuthState.Success(
                         socialAuthToken = currentAuthState.socialAuthToken,
                         account = currentAuthState.account,
                         profile = res,
-                        defaultProfile =
-                            res.firstOrNull { it.isDefault }
-                                ?: res.first(),
+                        defaultProfile = defaultProfile,
                         profileDetail = detail,
                     ),
                 )

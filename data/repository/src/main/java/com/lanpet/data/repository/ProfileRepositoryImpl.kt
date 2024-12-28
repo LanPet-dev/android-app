@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileRepositoryImpl
@@ -63,6 +64,7 @@ class ProfileRepositoryImpl
         override suspend fun getDefaultProfile(accountId: String): Flow<String?> =
             flow {
                 val profile = authDatabase.authDao().getByAccountId(accountId)
+                Timber.d("Get default profile success $profile")
                 emit(profile?.profileId)
             }.flowOn(Dispatchers.IO)
 
@@ -76,6 +78,7 @@ class ProfileRepositoryImpl
                         profileId = profileId,
                         accountId = accountId,
                     )
+                    Timber.d("Set default profile success $profileId $accountId")
                     emit(true)
                 } catch (e: Exception) {
                     emit(false)

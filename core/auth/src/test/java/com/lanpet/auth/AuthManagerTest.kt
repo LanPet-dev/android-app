@@ -16,7 +16,9 @@ import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
+import com.lanpet.domain.usecase.profile.GetDefaultProfileUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
+import com.lanpet.domain.usecase.profile.SetDefaultProfileUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,6 +38,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
 
+// TODO: fix. AuthDatabase
 class AuthManagerTest {
     private lateinit var authManager: AuthManager
 
@@ -44,6 +47,8 @@ class AuthManagerTest {
     private lateinit var getProfileDetailUseCase: GetProfileDetailUseCase
     private lateinit var getAccountInformationUseCase: GetAccountInformationUseCase
     private lateinit var getAllProfileUseCase: GetAllProfileUseCase
+    private lateinit var getDefaultProfileUseCase: GetDefaultProfileUseCase
+    private lateinit var setDefaultProfileUseCase: SetDefaultProfileUseCase
     private lateinit var authStateHolder: AuthStateHolder
 
     @BeforeEach
@@ -53,6 +58,8 @@ class AuthManagerTest {
         getAccountInformationUseCase = mockk()
         getAllProfileUseCase = mockk()
         getProfileDetailUseCase = mockk()
+        getDefaultProfileUseCase = mockk()
+        setDefaultProfileUseCase = mockk()
         authStateHolder = AuthStateHolder()
 
         authManager =
@@ -62,6 +69,8 @@ class AuthManagerTest {
                 getAccountInformationUseCase,
                 getAllProfileUseCase,
                 getProfileDetailUseCase,
+                getDefaultProfileUseCase,
+                setDefaultProfileUseCase,
                 authStateHolder,
             )
     }
