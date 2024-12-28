@@ -151,9 +151,9 @@ private fun PreferPetChipSection(
         }
         SelectableChip.Rounded(
             title = "기타",
-            isSelected = preferPets.contains(PetCategory.ETC),
+            isSelected = preferPets.contains(PetCategory.OTHER),
         ) {
-            onItemSelect(PetCategory.ETC)
+            onItemSelect(PetCategory.OTHER)
         }
     }
 }

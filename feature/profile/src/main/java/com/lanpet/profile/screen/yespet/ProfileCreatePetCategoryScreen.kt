@@ -160,7 +160,7 @@ private fun CategoryChipSection(
             title = "기타",
             isSelected = selectedCategory.value == "기타",
         ) {
-            onItemSelect(PetCategory.ETC)
+            onItemSelect(PetCategory.OTHER)
         }
     }
 }
