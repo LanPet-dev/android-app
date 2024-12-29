@@ -28,4 +28,6 @@
     <string name="dialog_set_default_profile_confirm">설정할게요</string>
     <string name="title_appbar_my_profile_manage_profile">프로필 관리</string>
     <string name="check_duplicated_nickname_button_string">중복 확인</string>
+    <string name="check_duplicated_nickname_ok_string">사용가능한 닉네임이에요</string>
+    <string name="check_duplicated_nickname_error_string">중복되는 닉네임이 있어요</string>
 </resources>

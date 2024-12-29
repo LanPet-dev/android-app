@@ -46,6 +46,7 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
+import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
@@ -146,14 +147,6 @@ private fun ManProfileUpdateView(
     val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
 
     Column {
-        CommonSubHeading1(
-            title =
-                stringResource(
-                    R.string.heading_my_profile_add_profile,
-                    manageProfileUiState.manProfileUpdate?.nickName.toString(),
-                ),
-        )
-        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         ProfileImageWithPicker()
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
@@ -414,7 +407,36 @@ private fun NickNameSection(
                 },
             )
         }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        when (duplicatedStatus) {
+            true -> {
+                DuplicatedNicknameOkText()
+            }
+
+            false -> {
+                DuplicatedNicknameErrorText()
+            }
+
+            null -> {
+            }
+        }
     }
+}
+
+@Composable
+fun DuplicatedNicknameOkText(modifier: Modifier = Modifier) {
+    Text(
+        stringResource(R.string.check_duplicated_nickname_ok_string),
+        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.confirmText),
+    )
+}
+
+@Composable
+fun DuplicatedNicknameErrorText(modifier: Modifier = Modifier) {
+    Text(
+        stringResource(R.string.check_duplicated_nickname_error_string),
+        style = MaterialTheme.customTypography().body3MediumSingle.copy(color = MaterialTheme.customColorScheme.errorText),
+    )
 }
 
 @Composable
