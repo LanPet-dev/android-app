@@ -2,22 +2,30 @@ package com.lanpet.free.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.domain.usecase.freeboard.CreateFreeBoardPostUseCase
 import com.lanpet.free.model.WriteFreeBoardResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FreeBoardWriteViewModel
     @Inject
     constructor(
+        private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
     ): ViewModel() {
         private val _freeBoardPostCreate =
             MutableStateFlow(
@@ -82,11 +90,19 @@ class FreeBoardWriteViewModel
                     petCategory = FormValidationStatus.Initial(),
                     title = FormValidationStatus.Initial(),
                     body = FormValidationStatus.Initial(),
-                    imageList = FormValidationStatus.Initial(),
+                    imageList = FormValidationStatus.Valid(),
                 ),
             )
         val freeBoardWriteValidationResult: StateFlow<FreeBoardWriteValidationResult> =
             _freeBoardWriteValidationResult.asStateFlow()
+
+        val completeEnable: StateFlow<Boolean> = freeBoardWriteValidationResult.map { validationResult ->
+            validationResult.boardCategory is FormValidationStatus.Valid &&
+                    validationResult.petCategory is FormValidationStatus.Valid &&
+                    validationResult.title is FormValidationStatus.Valid &&
+                    validationResult.body is FormValidationStatus.Valid &&
+                    validationResult.imageList is FormValidationStatus.Valid
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
         fun setBoardCategory(category: String) {
             _freeBoardWriteValidationResult.value =
@@ -140,12 +156,17 @@ class FreeBoardWriteViewModel
             _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = currentImages)
         }
 
-        fun setImages(imageList: List<Uri>) {
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    imageList = freeBoardWriteValidator.imageList.validate(imageList),
-                )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = imageList)
+        fun writeFreeBoardPost() {
+            viewModelScope.launch {
+                _writeFreeBoardResult.emit(WriteFreeBoardResult.Loading)
+
+                postFreeBoardUseCase(freeBoardPostCreate.value.toDomain())
+                    .catch {
+                        _writeFreeBoardResult.emit(WriteFreeBoardResult.Error("Unknown error"))
+                    }.collect {
+                        _writeFreeBoardResult.emit(WriteFreeBoardResult.Success)
+                    }
+            }
         }
     }
 
@@ -172,4 +193,12 @@ data class FreeBoardPostCreate(
     val title: String,
     val body: String,
     val imageList: List<Uri>?
+)
+
+fun FreeBoardPostCreate.toDomain() = com.lanpet.domain.model.FreeBoardPostCreate(
+    boardCategory = boardCategory,
+    petCategory = petCategory,
+    title = title,
+    body = body,
+    imageList = imageList,
 )

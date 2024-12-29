@@ -53,7 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createProfileImageUri
@@ -91,30 +91,25 @@ fun FreeBoardWriteScreen(
 ) {
     val verticalScrollState = rememberScrollState()
 
-    val completeEnable: Boolean = true
-
-    val writeFreeBoardResult by
-    freeBoardWriteViewModel.writeFreeBoardResult.collectAsState(
-        WriteFreeBoardResult.Initial
-    )
-
     val freeBoardPostCreate by freeBoardWriteViewModel.freeBoardPostCreate.collectAsState()
+    val completeEnable by freeBoardWriteViewModel.completeEnable.collectAsState()
 
-    LaunchedEffect(writeFreeBoardResult) {
-        when (writeFreeBoardResult) {
-            is WriteFreeBoardResult.Success -> {
-            }
+    LaunchedEffect(Unit) {
+        freeBoardWriteViewModel.writeFreeBoardResult.collect { result ->
+            when (result) {
+                is WriteFreeBoardResult.Success -> onNavigateUp()
 
-            is WriteFreeBoardResult.Error -> {
-                // TODO
-            }
+                is WriteFreeBoardResult.Error -> {
+                    // TODO
+                }
 
-            WriteFreeBoardResult.Initial -> {
-                // TODO
-            }
+                WriteFreeBoardResult.Initial -> {
+                    // TODO
+                }
 
-            WriteFreeBoardResult.Loading -> {
-                // TODO
+                WriteFreeBoardResult.Loading -> {
+                    // TODO
+                }
             }
         }
     }
@@ -142,7 +137,10 @@ fun FreeBoardWriteScreen(
                 },
                 actions = {
                     TextButton(
-                        onClick = {},
+                        enabled = completeEnable,
+                        onClick = {
+                            freeBoardWriteViewModel.writeFreeBoardPost()
+                        },
                     ) {
                         Text(
                             text = stringResource(R.string.complete_action_freeboard_write),
@@ -621,7 +619,7 @@ private fun FreeBoardWriteScreenLightPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
-            freeBoardWriteViewModel = FreeBoardWriteViewModel(),
+            freeBoardWriteViewModel = hiltViewModel(),
         )
     }
 }
@@ -632,7 +630,7 @@ private fun FreeBoardWriteScreenDarkPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
-            freeBoardWriteViewModel = FreeBoardWriteViewModel(),
+            freeBoardWriteViewModel = hiltViewModel(),
         )
     }
 }
