@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -20,8 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -29,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lanpet.core.auth.LocalAuthManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.widget.CommonAppBarTitle
@@ -48,21 +50,21 @@ import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.myprofile.R
+import com.lanpet.myprofile.navigation.MyProfileManageProfile
 import com.lanpet.myprofile.viewmodel.ManageManProfileViewModel
 import com.lanpet.myprofile.viewmodel.ManagePetProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileManageProfile(
+fun MyProfileManageProfileScreen(
     modifier: Modifier = Modifier,
+    args: MyProfileManageProfile? = null,
     onNavigateUp: () -> Unit = { },
 ) {
-    val verticalScrollState = rememberScrollState()
+    assert(args?.profileId != null)
+    assert(args?.profileType != null)
 
-    val currentUserProfile =
-        LocalAuthManager.current.currentProfileDetail
-            .collectAsState()
-            .value
+    val verticalScrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -104,12 +106,11 @@ fun MyProfileManageProfile(
                             verticalScrollState,
                         ),
             ) {
-                if (currentUserProfile == null) {
-                    // TODO
+                if (args == null) {
                     return@Column
                 }
 
-                when (currentUserProfile.type) {
+                when (args.profileType) {
                     ProfileType.PET -> {
                         PetProfileUpdateView()
                     }
@@ -140,48 +141,59 @@ private fun ManProfileUpdateView(
     modifier: Modifier = Modifier,
     manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
 ) {
-    val manProfileUpdate by manageManProfileViewModel.manProfileUpdate.collectAsState()
+    val manageProfileUiState by manageManProfileViewModel.manageManProfileUiState.collectAsStateWithLifecycle()
+
+    val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
 
     Column {
         CommonSubHeading1(
             title =
                 stringResource(
                     R.string.heading_my_profile_add_profile,
-                    manProfileUpdate?.nickName.toString(),
+                    manageProfileUiState.manProfileUpdate?.nickName.toString(),
                 ),
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         ProfileImageWithPicker()
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
-            nickname = manProfileUpdate?.nickName ?: "",
+            duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
+            nickname = manageProfileUiState.manProfileUpdate?.nickName ?: "",
             onNicknameChange = {
+                manageManProfileViewModel.updateNickName(it)
+            },
+            onCheckDuplicatedNickname = {
+                manageManProfileViewModel.checkNicknameDuplicate()
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-        manProfileUpdate?.butler?.let { it1 ->
+        manageProfileUiState.manProfileUpdate?.butler?.let { it1 ->
             SelectAgeSection(
                 age = it1.age,
                 onAgeChange = {
+                    manageManProfileViewModel.updateButlerAge(it)
                 },
             )
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         SelectPreferPetSection(
-            preferPet = manProfileUpdate?.butler?.preferredPet ?: emptyList(),
+            preferPet = manageProfileUiState.manProfileUpdate?.butler?.preferredPet ?: emptyList(),
             onPreferPetChange = {
+                manageManProfileViewModel.updateButlerPreferredPet(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         BioInputSection(
-            text = manProfileUpdate?.bio ?: "",
+            text = manageProfileUiState.manProfileUpdate?.bio ?: "",
             onTextChange = {
+                manageManProfileViewModel.updateBio(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         CommonButton(
             title = stringResource(R.string.title_register_button),
         ) {
+            manageManProfileViewModel.modifyManProfile()
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }
@@ -374,26 +386,41 @@ private fun SelectAgeSection(
 @Composable
 private fun NickNameSection(
     nickname: String,
+    duplicatedStatus: Boolean?,
     modifier: Modifier = Modifier,
     onNicknameChange: (String) -> Unit = {},
+    onCheckDuplicatedNickname: () -> Unit = {},
 ) {
-    CommonSubHeading1(
-        title = stringResource(R.string.nickname_hint_my_profile_add_profile),
-    )
-    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
-    TextFieldWithDeleteButton(
-        value = nickname,
-        onValueChange = {
-            onNicknameChange(it)
-        },
-        placeholder = stringResource(R.string.nickname_placeholder_my_profile_add_profile),
-    )
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.nickname_hint_my_profile_add_profile),
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        Row {
+            TextFieldWithDeleteButton(
+                modifier = Modifier.weight(3f),
+                value = nickname,
+                onValueChange = {
+                    onNicknameChange(it)
+                },
+                placeholder = stringResource(R.string.nickname_placeholder_my_profile_add_profile),
+            )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+            CommonButton(
+                modifier = Modifier.width(100.dp),
+                title = stringResource(R.string.check_duplicated_nickname_button_string),
+                onClick = {
+                    onCheckDuplicatedNickname()
+                },
+            )
+        }
+    }
 }
 
 @Composable
 @PreviewLightDark
 private fun MyProfileManageProfilePreview() {
     LanPetAppTheme {
-        MyProfileManageProfile()
+        MyProfileManageProfileScreen()
     }
 }

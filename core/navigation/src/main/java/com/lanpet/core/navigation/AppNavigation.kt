@@ -201,8 +201,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                             navController.navigateToMyProfileModifyProfile()
                         },
                         onNavigateToMyProfileManageProfile = {
-                            profileId ->
-                            navController.navigateToMyProfileManageProfile(profileId = profileId)
+                            profileId, profileType->
+                            navController.navigateToMyProfileManageProfile(profileId = profileId, profileType = profileType)
                         },
                     )
                     freeNavGraph(

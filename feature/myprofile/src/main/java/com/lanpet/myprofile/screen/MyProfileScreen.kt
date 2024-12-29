@@ -55,7 +55,7 @@ import com.lanpet.myprofile.R
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToProfileCreate: () -> Unit = { },
-    onNavigateToProfileManage: (String) -> Unit = { },
+    onNavigateToProfileManage: (String, ProfileType) -> Unit = { profileId: String, profileType: ProfileType -> },
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: () -> Unit = { },
 ) {
@@ -117,6 +117,7 @@ fun MyProfileScreen(
                         onClick = {
                             onNavigateToProfileManage(
                                 defaultUserProfile.value.id,
+                                defaultUserProfile.value.type,
                             )
                         },
                     )

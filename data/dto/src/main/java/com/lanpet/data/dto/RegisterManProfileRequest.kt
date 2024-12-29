@@ -2,8 +2,8 @@ package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
 import com.lanpet.domain.model.Age
-import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.ManProfile
+import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Butler
