@@ -1,4 +1,4 @@
-package com.lanpet.free
+package com.lanpet.free.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
@@ -36,7 +37,7 @@ fun FreeBoardScreen(
                 modifier = Modifier.padding(bottom = 80.dp),
             ) {
                 Icon(
-                    painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_edit_outline),
+                    painterResource(id = R.drawable.ic_edit_outline),
                     "Floating action button.",
                 )
             }

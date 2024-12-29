@@ -1,4 +1,4 @@
-package com.lanpet.free
+package com.lanpet.free.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -65,6 +65,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.FreeBoardComment
+import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem

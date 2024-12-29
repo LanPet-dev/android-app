@@ -1,6 +1,9 @@
-package com.lanpet.free
+package com.lanpet.free.screen
 
+import android.Manifest
 import android.content.res.Configuration
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,32 +26,46 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
+import com.lanpet.core.common.createProfileImageUri
 import com.lanpet.core.common.myiconpack.Close
+import com.lanpet.core.common.rememberCameraPermissionLauncher
+import com.lanpet.core.common.rememberCameraTakePictureLauncher
+import com.lanpet.core.common.rememberGalleryLauncher
+import com.lanpet.core.common.widget.ActionButton
 import com.lanpet.core.common.widget.CommonCenterAlignedAppBarTitle
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
+import com.lanpet.core.common.widget.IOSActionSheet
 import com.lanpet.core.common.widget.LanPetCenterAlignedTopAppBar
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -60,17 +77,47 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.free.R
+import com.lanpet.free.model.WriteFreeBoardResult
+import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardWriteScreen(
+    freeBoardWriteViewModel: FreeBoardWriteViewModel,
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
 
-    val imageList: List<String> = arrayListOf("")
     val completeEnable: Boolean = true
+
+    val writeFreeBoardResult by
+    freeBoardWriteViewModel.writeFreeBoardResult.collectAsState(
+        WriteFreeBoardResult.Initial
+    )
+
+    val freeBoardPostCreate by freeBoardWriteViewModel.freeBoardPostCreate.collectAsState()
+
+    LaunchedEffect(writeFreeBoardResult) {
+        when (writeFreeBoardResult) {
+            is WriteFreeBoardResult.Success -> {
+            }
+
+            is WriteFreeBoardResult.Error -> {
+                // TODO
+            }
+
+            WriteFreeBoardResult.Initial -> {
+                // TODO
+            }
+
+            WriteFreeBoardResult.Loading -> {
+                // TODO
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -127,30 +174,39 @@ fun FreeBoardWriteScreen(
                             verticalScrollState,
                         ),
             ) {
-                SelectBoardSection()
+                SelectBoardSection(
+                    selectedCategory = freeBoardPostCreate.boardCategory,
+                ) { category ->
+                    freeBoardWriteViewModel.setBoardCategory(category)
+                }
                 LineWithSpacer()
-                SelectPetSection()
+                SelectPetSection(
+                    selectedCategory = freeBoardPostCreate.petCategory,
+                )  { category ->
+                    freeBoardWriteViewModel.setPetCategory(category)
+                }
                 LineWithSpacer()
-                TitleInputSection()
-                ContentInputSection()
-                ButtonWithIcon(
-                    title = stringResource(R.string.complete_button_freeboard_write),
-                    modifier =
-                        Modifier
-                            .padding(
-                                LanPetDimensions.Margin.medium,
-                            ),
-                    onClick = {
-                        // TODO("Satoshi"):
-                        // 1. check permission
-                        // 2. open gallery or camera
-                    },
-                )
+                TitleInputSection() { title ->
+                    freeBoardWriteViewModel.setTitle(title)
+                }
+                ContentInputSection { body ->
+                    freeBoardWriteViewModel.setBody(body)
+                }
+                ImagePickSection() { uri ->
+                    freeBoardWriteViewModel.addImage(uri)
+                }
                 LazyRow(
                     modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
                 ) {
-                    items(imageList.size) { index ->
-                        ImageWithDeleteIcon()
+                    val imageList: List<Uri>? = freeBoardPostCreate.imageList
+                    if (!imageList.isNullOrEmpty()) {
+                        items(imageList.size) { index ->
+                            ImageWithDeleteIcon(
+                                uri = imageList[index]
+                            ) {
+                                freeBoardWriteViewModel.removeImage(imageList[index])
+                            }
+                        }
                     }
                 }
             }
@@ -174,7 +230,17 @@ private fun LineWithSpacer() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SelectBoardSection(modifier: Modifier = Modifier) {
+private fun SelectBoardSection(
+    selectedCategory: String?,
+    modifier: Modifier = Modifier,
+    onCategorySelect: (String) -> Unit,
+) {
+    val categories = listOf(
+        FreeBoardCategoryType.COMMUNICATE,
+        FreeBoardCategoryType.RECOMMEND,
+        FreeBoardCategoryType.QUESTION
+    )
+
     Column {
         CommonSubHeading1(
             title = stringResource(R.string.board_category_hint_freeboard_write),
@@ -187,25 +253,23 @@ private fun SelectBoardSection(modifier: Modifier = Modifier) {
         FlowRow(
             modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.xSmall),
         ) {
-            SelectableChip.Rounded(
-                title = FreeBoardCategoryType.COMMUNICATE.value,
-                isSelected = false,
-            ) { }
-            SelectableChip.Rounded(
-                title = FreeBoardCategoryType.RECOMMEND.value,
-                isSelected = false,
-            ) { }
-            SelectableChip.Rounded(
-                title = FreeBoardCategoryType.QUESTION.value,
-                isSelected = false,
-            ) { }
+            categories.forEach { category ->
+                SelectableChip.Rounded(
+                    title = category.value,
+                    isSelected = selectedCategory == category.name,
+                ) {onCategorySelect(category.name) }
+            }
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SelectPetSection(modifier: Modifier = Modifier) {
+private fun SelectPetSection(
+    selectedCategory: String?,
+    modifier: Modifier = Modifier,
+    onCategorySelect: (String) -> Unit,
+) {
     Column {
         CommonSubHeading1(
             title = stringResource(R.string.pet_category_hint_freeboard_write),
@@ -221,18 +285,24 @@ private fun SelectPetSection(modifier: Modifier = Modifier) {
             PetCategory.entries.forEach { category ->
                 SelectableChip.Rounded(
                     title = category.value,
-                    isSelected = false,
-                ) { }
+                    isSelected = selectedCategory == category.name,
+                ) { onCategorySelect(category.toString()) }
             }
         }
     }
 }
 
 @Composable
-private fun TitleInputSection(modifier: Modifier = Modifier) {
+private fun TitleInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit,
+) {
     var input by rememberSaveable {
         mutableStateOf("")
     }
+
+    val maxLength = 50
+
     Column(
         modifier =
             Modifier.padding(
@@ -269,7 +339,10 @@ private fun TitleInputSection(modifier: Modifier = Modifier) {
                 ),
             singleLine = false,
             onValueChange = { newText ->
-                input = newText
+                if (newText.length <= maxLength) {
+                    input = newText
+                    onTextChange(newText)
+                }
             },
             placeholder = {
                 Text(
@@ -282,7 +355,10 @@ private fun TitleInputSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ContentInputSection(modifier: Modifier = Modifier) {
+private fun ContentInputSection(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit,
+) {
     var input by rememberSaveable {
         mutableStateOf("")
     }
@@ -325,6 +401,7 @@ private fun ContentInputSection(modifier: Modifier = Modifier) {
                 onValueChange = { newText ->
                     if (newText.length <= maxLength) {
                         input = newText
+                        onTextChange(newText)
                     }
                 },
                 placeholder = {
@@ -347,6 +424,111 @@ private fun ContentInputSection(modifier: Modifier = Modifier) {
                     style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImagePickSection(
+    modifier: Modifier = Modifier,
+    onImageSelect: (Uri) -> Unit = { },
+) {
+    val context = LocalContext.current
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    var imageUri: Uri? by rememberSaveable {
+        mutableStateOf(null)
+    }
+
+    // 갤러리 launcher
+    val galleryLauncher =
+        rememberGalleryLauncher(
+            onGetUri = { uri ->
+                uri?.let {
+                    imageUri = it
+                    onImageSelect(it)
+                }
+            },
+        )
+
+    // 카메라 launcher
+    val cameraLauncher =
+        rememberCameraTakePictureLauncher { success ->
+            if (success) {
+                imageUri?.let { uri ->
+                    onImageSelect(uri)
+                }
+            }
+        }
+
+    // 카메라 권한 launcher
+    val cameraPermissionLauncher =
+        rememberCameraPermissionLauncher(
+            onGrant = {
+                val uri = context.createProfileImageUri()
+                imageUri = uri
+                cameraLauncher.launch(uri)
+            },
+            onDeny = { Toast.makeText(context, "카메라 권한이 필요합니다", Toast.LENGTH_SHORT).show() },
+        )
+
+    ButtonWithIcon(
+        title = stringResource(R.string.complete_button_freeboard_write),
+        modifier =
+        Modifier
+            .padding(
+                LanPetDimensions.Margin.medium,
+            ),
+        onClick = {
+            scope.launch {
+                sheetState.show()
+            }
+        },
+    )
+
+    if (sheetState.isVisible) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {},
+            containerColor = Color.Transparent,
+        ) {
+            IOSActionSheet(
+                cancelButton = {
+                    ActionButton(
+                        text = stringResource(R.string.title_button_close),
+                        onClick = {
+                            scope.launch {
+                                sheetState.hide()
+                            }
+                        },
+                    )
+                },
+                content = {
+                    Column {
+                        ActionButton(
+                            text = stringResource(R.string.title_button_camera),
+                            onClick = {
+                                // TODO open camera
+                                scope.launch {
+                                    sheetState.hide()
+                                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                }
+                            },
+                        )
+                        ActionButton(
+                            text = stringResource(R.string.title_button_gallery),
+                            onClick = {
+                                scope.launch {
+                                    sheetState.hide()
+                                    galleryLauncher.launch("image/*")
+                                }
+                            },
+                        )
+                    }
+                },
+            )
         }
     }
 }
@@ -396,37 +578,34 @@ private fun ButtonWithIcon(
 }
 
 @Composable
-private fun ImageWithDeleteIcon(modifier: Modifier = Modifier) {
+private fun ImageWithDeleteIcon(
+    uri: Uri,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit),
+) {
     Box(
         modifier.padding(LanPetDimensions.Spacing.xxSmall),
     ) {
-        if (false) {
-            AsyncImage(
-                // TODO model 수정 필요
-                model = "",
-                contentDescription = "post_image",
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .clip(
-                            shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall),
-                        ).size(82.dp),
-                error = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-            )
-        } else {
-            Image(
-                painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-                contentDescription = "ic_animals",
-                modifier = Modifier.size(82.dp),
-            )
-        }
+        AsyncImage(
+            model = uri,
+            contentDescription = "post_image",
+            contentScale = ContentScale.Crop,
+            modifier =
+            Modifier
+                .clip(
+                    shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+                ).size(82.dp),
+            error = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
+        )
         IconButton(
             modifier =
                 Modifier
                     .padding(LanPetDimensions.Margin.xxSmall)
                     .align(Alignment.TopEnd)
                     .size(24.dp),
-            onClick = {},
+            onClick = {
+                onClick.invoke()
+            },
         ) {
             Image(
                 painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.ic_close_mini),
@@ -442,6 +621,7 @@ private fun FreeBoardWriteScreenLightPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
+            freeBoardWriteViewModel = FreeBoardWriteViewModel(),
         )
     }
 }
@@ -452,6 +632,7 @@ private fun FreeBoardWriteScreenDarkPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
+            freeBoardWriteViewModel = FreeBoardWriteViewModel(),
         )
     }
 }
