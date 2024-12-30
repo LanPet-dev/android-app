@@ -43,7 +43,6 @@ dependencies {
     implementation(projects.domain.model)
     implementation(projects.domain.usecase)
     implementation(projects.core.manager)
-    implementation(projects.core.testing)
     implementation(projects.domain.model)
 
     implementation(libs.turbine)
