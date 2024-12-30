@@ -53,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createProfileImageUri
@@ -142,7 +143,7 @@ fun FreeBoardWriteScreen(
                         },
                         colors =
                         ButtonDefaults.textButtonColors().copy(
-                            contentColor = MaterialTheme.customColorScheme.tobBarTextButtonTextColor,
+                            contentColor = MaterialTheme.customColorScheme.topBarTextButtonTextColor,
                             disabledContentColor = GrayColor.Gray300,
                         ),
                     ) {

@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
@@ -68,6 +69,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
+import com.lanpet.myprofile.viewmodel.ProfileListViewModel
 import com.lanpet.myprofile.widget.DeleteProfileDialog
 import com.lanpet.myprofile.widget.SetDefaultProfileDialog
 import kotlinx.coroutines.launch
@@ -77,6 +79,7 @@ import timber.log.Timber
 @Composable
 fun MyProfileCreateProfileScreen(
     modifier: Modifier = Modifier,
+    profileListViewModel: ProfileListViewModel = hiltViewModel(),
     onNavigateUp: (() -> Unit)? = null,
     onNavigateToAddProfile: () -> Unit = {},
     onNavigateToModifyProfile: (String, ProfileType) -> Unit = { profileId, profileType -> },
@@ -106,12 +109,18 @@ fun MyProfileCreateProfileScreen(
                 onSetDefaultProfile = {
                     Timber.d("selectedProfileId: $selectedProfileId")
                     scope.launch {
-                        if (selectedProfileId.isEmpty()) {
-                            showDeleteProfileDialog = false
-                            return@launch
-                        }
+                        try {
+                            if (selectedProfileId.isEmpty()) {
+                                showDeleteProfileDialog = false
+                                return@launch
+                            }
 
-                        showDeleteProfileDialog = false
+                            profileListViewModel.deleteProfile(selectedProfileId)
+                            showDeleteProfileDialog = false
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                            showDeleteProfileDialog = false
+                        }
                     }
                 },
             )
