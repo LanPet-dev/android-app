@@ -9,4 +9,7 @@
     <string name="title_title_input_freeboard_write">제목</string>
     <string name="title_content_input_freeboard_write">내용</string>
     <string name="complete_button_freeboard_write">사진 첨부하기</string>
+    <string name="title_button_close">닫기</string>
+    <string name="title_button_camera">사진촬영</string>
+    <string name="title_button_gallery">사진앨범</string>>
 </resources>
