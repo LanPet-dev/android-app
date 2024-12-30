@@ -43,7 +43,7 @@ data class CustomColorScheme(
     val confirmText: Color,
     val spacerLine: Color,
     val defaultIconColor: Color,
-    val tobBarTextButtonTextColor: Color,
+    val topBarTextButtonTextColor: Color,
     // TODO("Satoshi"): define another colors
 )
 
@@ -62,7 +62,7 @@ val LightCustomColors =
         confirmText = Color.Blue,
         spacerLine = GrayColor.LIGHT,
         defaultIconColor = BlackColor.MEDIUM,
-        tobBarTextButtonTextColor = GrayColor.Gray950
+        topBarTextButtonTextColor = GrayColor.Gray950
     )
 
 val DarkCustomColors =
@@ -80,7 +80,7 @@ val DarkCustomColors =
         confirmText = Color.Blue,
         spacerLine = GrayColor.LIGHT,
         defaultIconColor = WhiteColor.White,
-        tobBarTextButtonTextColor = GrayColor.Gray50
+        topBarTextButtonTextColor = GrayColor.Gray50
     )
 
 val LocalCustomColorScheme =
