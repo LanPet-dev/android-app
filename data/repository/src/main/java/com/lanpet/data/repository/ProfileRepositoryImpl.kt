@@ -5,10 +5,10 @@ import com.lanpet.data.dto.RegisterPetProfileRequest
 import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.localdb.AuthDatabase
-import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.ManProfile
-import com.lanpet.domain.model.PetProfileCreate
+import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfile
+import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
@@ -87,9 +87,16 @@ class ProfileRepositoryImpl
                 emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
 
-        override suspend fun deleteProfile(id: String): Flow<Boolean> {
-            TODO("Not yet implemented")
-        }
+        override suspend fun deleteProfile(id: String): Flow<Boolean> =
+            flow {
+                try {
+                    profileApiService.deleteProfile(id)
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }.flowOn(Dispatchers.IO)
 
         override suspend fun checkNicknameDuplicated(nickname: String): Flow<Boolean> =
             flow {
