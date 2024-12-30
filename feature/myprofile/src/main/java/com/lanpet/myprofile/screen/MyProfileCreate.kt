@@ -68,6 +68,7 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
+import com.lanpet.myprofile.widget.DeleteProfileDialog
 import com.lanpet.myprofile.widget.SetDefaultProfileDialog
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -86,9 +87,36 @@ fun MyProfileCreateProfileScreen(
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
     var showSetDefaultProfileDialog by remember { mutableStateOf(false) }
+    var showDeleteProfileDialog by remember { mutableStateOf(false) }
     var selectedProfileId by remember { mutableStateOf<String>("") }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
+
+    if (showDeleteProfileDialog) {
+        Dialog(
+            onDismissRequest = { showDeleteProfileDialog = false },
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                ),
+        ) {
+            DeleteProfileDialog(
+                onDismiss = { showDeleteProfileDialog = false },
+                onSetDefaultProfile = {
+                    Timber.d("selectedProfileId: $selectedProfileId")
+                    scope.launch {
+                        if (selectedProfileId.isEmpty()) {
+                            showDeleteProfileDialog = false
+                            return@launch
+                        }
+
+                        showDeleteProfileDialog = false
+                    }
+                },
+            )
+        }
+    }
 
     if (showSetDefaultProfileDialog) {
         Dialog(
@@ -218,6 +246,8 @@ fun MyProfileCreateProfileScreen(
                                 onNavigateToModifyProfile(userProfile.id, userProfile.type)
                             },
                             onDeleteClick = {
+                                selectedProfileId = userProfile.id
+                                showDeleteProfileDialog = true
                             },
                         )
                         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))

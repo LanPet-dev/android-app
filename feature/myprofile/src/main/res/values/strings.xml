@@ -36,4 +36,7 @@
     <string name="title_button_end_edit_profile">완료</string>
     <string name="heading_pet_category_manage_profile">반려동물은 어떤 친구인가요?</string>
     <string name="heading_pet_breed_manage_profile">반려동물의 종은 무엇인가요?</string>
+    <string name="dialog_delete_profile_content">프로필을 삭제하시겠습니까?</string>
+    <string name="dialog_delete_profile_dismiss">취소</string>
+    <string name="dialog_delete_profile_confirm">삭제할게요</string>
 </resources>
