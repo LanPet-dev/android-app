@@ -2,7 +2,6 @@ package com.lanpet.core.auth
 
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
-import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
@@ -13,8 +12,6 @@ import com.lanpet.domain.usecase.profile.SetDefaultProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
@@ -24,16 +21,16 @@ import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
 @Singleton
-class AuthManager
+open class AuthManager
     @Inject
     constructor(
-        private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase,
-        private val registerAccountUseCase: RegisterAccountUseCase,
-        private val getAccountInformationUseCase: GetAccountInformationUseCase,
-        private val getAllProfileUseCase: GetAllProfileUseCase,
-        private val getProfileDetailUseCase: GetProfileDetailUseCase,
-        private val getDefaultProfileUseCase: GetDefaultProfileUseCase,
-        private val setDefaultProfileUseCase: SetDefaultProfileUseCase,
+        private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase?=null,
+        private val registerAccountUseCase: RegisterAccountUseCase? = null,
+        private val getAccountInformationUseCase: GetAccountInformationUseCase? = null,
+        private val getAllProfileUseCase: GetAllProfileUseCase? = null,
+        private val getProfileDetailUseCase: GetProfileDetailUseCase? = null,
+        private val getDefaultProfileUseCase: GetDefaultProfileUseCase? = null,
+        private val setDefaultProfileUseCase: SetDefaultProfileUseCase? = null,
         private val authStateHolder: AuthStateHolder,
     ) {
         val authState = authStateHolder.authState
@@ -49,11 +46,8 @@ class AuthManager
         val userProfiles = authStateHolder.userProfiles
 
         /**
-         * 현재 유저의 프로필
+         * 현재 유저의 프로필 상세 정보
          */
-        private val _currentUserProfile = MutableStateFlow<UserProfileDetail?>(null)
-        val currentUserProfile = _currentUserProfile.asStateFlow()
-
         val currentProfileDetail = authStateHolder.currentProfileDetail
 
         @OptIn(FlowPreview::class)
@@ -61,13 +55,13 @@ class AuthManager
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val socialAuthToken =
-                        getCognitoSocialAuthTokenUseCase(code).timeout(5.seconds).first()
+                        getCognitoSocialAuthTokenUseCase!!(code).timeout(5.seconds).first()
                     authStateHolder.updateState(
                         AuthState.Loading(socialAuthToken = socialAuthToken),
                     )
 
                     try {
-                        val account = getAccountInformationUseCase().timeout(5.seconds).first()
+                        val account = getAccountInformationUseCase!!().timeout(5.seconds).first()
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
@@ -75,15 +69,15 @@ class AuthManager
                                 navigationHandleFlag = false,
                             ),
                         )
-                        val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        val profile = getAllProfileUseCase!!().timeout(5.seconds).first()
 
                         var defaultProfileId =
-                            getDefaultProfileUseCase(
+                            getDefaultProfileUseCase!!(
                                 account.accountId,
                             ).timeout(5.seconds).first()
 
                         if (defaultProfileId == null) {
-                            setDefaultProfileUseCase(
+                            setDefaultProfileUseCase!!(
                                 account.accountId,
                                 profile.first().id,
                             ).timeout(5.seconds).first()
@@ -92,7 +86,7 @@ class AuthManager
                         }
 
                         val detail =
-                            getProfileDetailUseCase(defaultProfileId).timeout(5.seconds).first()
+                            getProfileDetailUseCase!!(defaultProfileId).timeout(5.seconds).first()
 
                         val defaultProfile =
                             profile.firstOrNull { it.id == defaultProfileId } ?: throw Exception(
@@ -109,8 +103,8 @@ class AuthManager
                             ),
                         )
                     } catch (e: Exception) {
-                        val accountToken = registerAccountUseCase().timeout(5.seconds).first()
-                        val account = getAccountInformationUseCase().timeout(5.seconds).first()
+                        val accountToken = registerAccountUseCase!!().timeout(5.seconds).first()
+                        val account = getAccountInformationUseCase!!().timeout(5.seconds).first()
                         authStateHolder.updateState(
                             AuthState.Success(
                                 socialAuthToken = socialAuthToken,
@@ -118,15 +112,15 @@ class AuthManager
                                 navigationHandleFlag = false,
                             ),
                         )
-                        val profile = getAllProfileUseCase().timeout(5.seconds).first()
+                        val profile = getAllProfileUseCase!!().timeout(5.seconds).first()
 
                         var defaultProfileId =
-                            getDefaultProfileUseCase(
+                            getDefaultProfileUseCase!!(
                                 account.accountId,
                             ).timeout(5.seconds).first()
 
                         if (defaultProfileId == null) {
-                            setDefaultProfileUseCase(
+                            setDefaultProfileUseCase!!(
                                 account.accountId,
                                 profile.first().id,
                             ).timeout(5.seconds).first()
@@ -135,7 +129,7 @@ class AuthManager
                         }
 
                         val detail =
-                            getProfileDetailUseCase(defaultProfileId).timeout(5.seconds).first()
+                            getProfileDetailUseCase!!(defaultProfileId).timeout(5.seconds).first()
 
                         val defaultProfile =
                             profile.firstOrNull { it.id == defaultProfileId } ?: throw Exception(
@@ -170,7 +164,7 @@ class AuthManager
 
                 val setDefaultProfileRes =
                     currentAuthState.account?.let {
-                        setDefaultProfileUseCase(
+                        setDefaultProfileUseCase!!(
                             it.accountId,
                             profileId,
                         ).timeout(5.seconds).first()
@@ -180,13 +174,13 @@ class AuthManager
                     throw IllegalStateException("Set default profile failed")
                 }
 
-                val res = getAllProfileUseCase().timeout(5.seconds).first()
+                val res = getAllProfileUseCase!!().timeout(5.seconds).first()
 
                 val defaultProfile =
                     res.firstOrNull { it.id == profileId }
                         ?: throw IllegalStateException("Default profile not found")
 
-                val detail = getProfileDetailUseCase(profileId).timeout(5.seconds).first()
+                val detail = getProfileDetailUseCase!!(profileId).timeout(5.seconds).first()
 
                 authStateHolder.updateState(
                     AuthState.Success(
@@ -202,16 +196,6 @@ class AuthManager
                 authStateHolder.updateState(
                     AuthState.Fail(),
                 )
-            }
-        }
-
-        @OptIn(FlowPreview::class)
-        suspend fun getUserProfileDetail(id: String) {
-            try {
-                val res = getProfileDetailUseCase(id).timeout(5.seconds).first()
-                _currentUserProfile.value = res
-            } catch (e: Exception) {
-                Timber.e(e)
             }
         }
 

@@ -40,7 +40,6 @@ class ManProfileCreateViewModel
                             age = Age.NONE,
                             preferredPet = emptyList(),
                         ),
-                    representative = true,
                 ),
             )
         val manProfileCreate: StateFlow<ManProfileCreate> = _manProfileCreate.asStateFlow()
@@ -212,7 +211,6 @@ class ManProfileCreateViewModel
                             age = Age.NONE,
                             preferredPet = emptyList(),
                         ),
-                    representative = true,
                 )
         }
     }

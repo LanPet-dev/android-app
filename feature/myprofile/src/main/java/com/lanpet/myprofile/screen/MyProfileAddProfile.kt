@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.Close
 import com.lanpet.core.common.widget.CommonAppBarTitle
@@ -37,11 +38,10 @@ import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.common.widget.ProfileImageWithPicker
+import com.lanpet.core.common.widget.ProfileImagePicker
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.domain.model.Age
@@ -54,6 +54,10 @@ fun MyProfileAddProfileScreen(
     onClose: () -> Unit = { },
 ) {
     val verticalScrollState = rememberScrollState()
+
+    val profileImageUri by rememberSaveable {
+        mutableStateOf(null)
+    }
 
     Scaffold(
         topBar = {
@@ -100,7 +104,10 @@ fun MyProfileAddProfileScreen(
                     title = stringResource(R.string.heading_my_profile_add_profile, "닉네임"),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
-                ProfileImageWithPicker()
+                ProfileImagePicker(
+                    profileImageUri = profileImageUri,
+                    onImageSelect = {},
+                )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
                 NickNameSection()
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
@@ -256,7 +263,7 @@ private fun NickNameSection() {
 @Composable
 @PreviewLightDark
 private fun MyProfileAddProfilePreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MyProfileAddProfileScreen()
     }
 }

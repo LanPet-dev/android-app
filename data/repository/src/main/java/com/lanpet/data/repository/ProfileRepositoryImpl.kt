@@ -6,7 +6,9 @@ import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.localdb.AuthDatabase
 import com.lanpet.domain.model.ManProfileCreate
+import com.lanpet.domain.model.ManProfile
 import com.lanpet.domain.model.PetProfileCreate
+import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
@@ -25,7 +27,7 @@ class ProfileRepositoryImpl
     ) : ProfileRepository {
         override suspend fun registerPetProfile(petProfileCreate: PetProfileCreate): Flow<String> =
             flow {
-                val request = RegisterPetProfileRequest.fromDomain(petProfileCreate)
+                val request = RegisterPetProfileRequest.fromDomainToRegisterRequest(petProfileCreate)
                 val res = profileApiService.createPetProfile(request)
                 emit(res.id)
             }.flowOn(Dispatchers.IO)
@@ -34,10 +36,44 @@ class ProfileRepositoryImpl
             flow {
                 val res =
                     profileApiService.createManProfile(
-                        RegisterManProfileRequest.fromDomain(manProfileCreate),
+                        RegisterManProfileRequest.fromDomainToRegisterRequest(manProfileCreate),
                     )
                 emit(res.id)
             }.flowOn(Dispatchers.IO)
+
+        override suspend fun modifyPetProfile(
+            profileId: String,
+            petProfile: PetProfile,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    profileApiService.updateProfile(
+                        profileId,
+                        RegisterPetProfileRequest.fromDomainToUpdateRequest(petProfile),
+                    )
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun modifyButlerProfile(
+            profileId: String,
+            manProfile: ManProfile,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    profileApiService.updateProfile(
+                        profileId,
+                        RegisterManProfileRequest.fromDomainToUpdateRequest(manProfile),
+                    )
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }
 
         override suspend fun getProfiles(): Flow<List<UserProfile>> =
             flow {
