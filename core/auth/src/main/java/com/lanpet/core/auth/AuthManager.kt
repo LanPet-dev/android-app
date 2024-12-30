@@ -31,24 +31,24 @@ open class AuthManager
         private val getProfileDetailUseCase: GetProfileDetailUseCase? = null,
         private val getDefaultProfileUseCase: GetDefaultProfileUseCase? = null,
         private val setDefaultProfileUseCase: SetDefaultProfileUseCase? = null,
-        private val authStateHolder: AuthStateHolder? = null,
+        private val authStateHolder: AuthStateHolder,
     ) {
-        val authState = authStateHolder!!.authState
+        val authState = authStateHolder.authState
 
         /**
          * 대표 프로필
          */
-        val defaultUserProfile = authStateHolder!!.defaultProfile
+        val defaultUserProfile = authStateHolder.defaultProfile
 
         /**
          * 유저의 프로필 목록
          */
-        val userProfiles = authStateHolder!!.userProfiles
+        val userProfiles = authStateHolder.userProfiles
 
         /**
          * 현재 유저의 프로필 상세 정보
          */
-        val currentProfileDetail = authStateHolder!!.currentProfileDetail
+        val currentProfileDetail = authStateHolder.currentProfileDetail
 
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
@@ -56,7 +56,7 @@ open class AuthManager
                 try {
                     val socialAuthToken =
                         getCognitoSocialAuthTokenUseCase!!(code).timeout(5.seconds).first()
-                    authStateHolder!!.updateState(
+                    authStateHolder.updateState(
                         AuthState.Loading(socialAuthToken = socialAuthToken),
                     )
 
@@ -147,7 +147,7 @@ open class AuthManager
                         )
                     }
                 } catch (e: Exception) {
-                    authStateHolder!!.updateState(
+                    authStateHolder.updateState(
                         AuthState.Fail(),
                     )
                 }
@@ -160,7 +160,7 @@ open class AuthManager
                 if (authState.value !is AuthState.Success) {
                     return
                 }
-                val currentAuthState = authStateHolder!!.authState.value as AuthState.Success
+                val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
                 val setDefaultProfileRes =
                     currentAuthState.account?.let {
@@ -193,14 +193,14 @@ open class AuthManager
                 )
             } catch (e: Exception) {
                 Timber.e(e)
-                authStateHolder!!.updateState(
+                authStateHolder.updateState(
                     AuthState.Fail(),
                 )
             }
         }
 
         fun logout() {
-            authStateHolder!!.updateState(
+            authStateHolder.updateState(
                 AuthState.Logout(),
             )
         }
