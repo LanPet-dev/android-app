@@ -53,7 +53,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createProfileImageUri
@@ -141,18 +140,16 @@ fun FreeBoardWriteScreen(
                         onClick = {
                             freeBoardWriteViewModel.writeFreeBoardPost()
                         },
+                        colors =
+                        ButtonDefaults.textButtonColors().copy(
+                            contentColor = MaterialTheme.customColorScheme.tobBarTextButtonTextColor,
+                            disabledContentColor = GrayColor.Gray300,
+                        ),
                     ) {
                         Text(
                             text = stringResource(R.string.complete_action_freeboard_write),
                             style =
-                                MaterialTheme.customTypography().body1SemiBoldSingle.copy(
-                                    color =
-                                        if (completeEnable) {
-                                            GrayColor.Gray950
-                                        } else {
-                                            GrayColor.Gray300
-                                        },
-                                ),
+                                MaterialTheme.customTypography().body1SemiBoldSingle,
                         )
                     }
                 },

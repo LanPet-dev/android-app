@@ -138,7 +138,11 @@ class FreeBoardWriteViewModel
 
         fun addImage(uri: Uri) {
             val currentImages = _freeBoardPostCreate.value.imageList?.toMutableList() ?: mutableListOf()
-            currentImages.add(uri)
+            if (currentImages.contains(uri)) {
+                return
+            } else {
+                currentImages.add(uri)
+            }
 
             _freeBoardWriteValidationResult.value = _freeBoardWriteValidationResult.value.copy(
                 imageList = freeBoardWriteValidator.imageList.validate(currentImages)
