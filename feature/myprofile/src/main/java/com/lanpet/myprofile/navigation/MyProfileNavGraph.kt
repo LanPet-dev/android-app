@@ -39,6 +39,7 @@ fun NavGraphBuilder.myProfileNavGraph(
                     onNavigateUp()
                 },
                 onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
+                onNavigateToModifyProfile = onNavigateToMyProfileManageProfile,
             )
         }
         composable<MyProfileAddProfile> {

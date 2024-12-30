@@ -31,7 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.crop
@@ -42,7 +44,6 @@ import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
@@ -60,7 +61,7 @@ fun MyProfileScreen(
     onNavigateToMyPosts: () -> Unit = { },
 ) {
     val authManager = LocalAuthManager.current
-    val defaultUserProfile = authManager.defaultUserProfile.collectAsState()
+    val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -316,36 +317,32 @@ fun ActivityListItem(
 @Composable
 @PreviewLightDark()
 private fun MyProfileCardPreview() {
-    LanPetAppTheme {
-        Surface {
-            MyProfileCard(
-                myProfile =
-                    UserProfile(
-                        id = "id",
-                        type = ProfileType.BUTLER,
-                        nickname = "I am nickname",
-                        profileImageUri = null,
-                        introduction = "Hello I am nickname. hahaha hell o",
-                    ),
-            ) {}
-        }
+    BasePreviewWrapper {
+        MyProfileCard(
+            myProfile =
+                UserProfile(
+                    id = "id",
+                    type = ProfileType.BUTLER,
+                    nickname = "I am nickname",
+                    profileImageUri = null,
+                    introduction = "Hello I am nickname. hahaha hell o",
+                ),
+        ) {}
     }
 }
 
 @Composable
 @PreviewLightDark()
 private fun ProfileBaseButtonPreview() {
-    LanPetAppTheme {
-        Surface {
-            ProfileBaseButton(title = "Button") {}
-        }
+    BasePreviewWrapper {
+        ProfileBaseButton(title = "Button") {}
     }
 }
 
 @Composable
 @PreviewLightDark()
 private fun MyProfileScreenPreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MyProfileScreen()
     }
 }

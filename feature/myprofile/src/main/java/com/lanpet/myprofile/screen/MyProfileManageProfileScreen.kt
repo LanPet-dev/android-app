@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.widget.CommonAppBarTitle
@@ -39,11 +40,10 @@ import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.common.widget.ProfileImageWithPicker
+import com.lanpet.core.common.widget.ProfileImagePicker
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
@@ -107,11 +107,7 @@ fun MyProfileManageProfileScreen(
                             verticalScrollState,
                         ),
             ) {
-                if (args == null) {
-                    return@Column
-                }
-
-                when (args.profileType) {
+                when (args!!.profileType) {
                     ProfileType.PET -> {
                         PetProfileUpdateView()
                     }
@@ -147,7 +143,12 @@ private fun ManProfileUpdateView(
     val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
 
     Column {
-        ProfileImageWithPicker()
+        ProfileImagePicker(
+            profileImageUri = manageProfileUiState.manProfileUpdate?.profileImageUri,
+            onImageSelect = {
+                manageManProfileViewModel.updateProfileImageUri(it)
+            },
+        )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
             duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
@@ -442,7 +443,13 @@ fun DuplicatedNicknameErrorText(modifier: Modifier = Modifier) {
 @Composable
 @PreviewLightDark
 private fun MyProfileManageProfilePreview() {
-    LanPetAppTheme {
-        MyProfileManageProfileScreen()
+    BasePreviewWrapper {
+        MyProfileManageProfileScreen(
+            args =
+                MyProfileManageProfile(
+                    profileId = "1",
+                    profileType = ProfileType.BUTLER,
+                ),
+        )
     }
 }
