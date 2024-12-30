@@ -142,7 +142,7 @@ fun FreeBoardWriteScreen(
                         },
                         colors =
                         ButtonDefaults.textButtonColors().copy(
-                            contentColor = MaterialTheme.customColorScheme.tobBarTextButtonTextColor,
+                            contentColor = MaterialTheme.customColorScheme.topBarTextButtonTextColor,
                             disabledContentColor = GrayColor.Gray300,
                         ),
                     ) {
