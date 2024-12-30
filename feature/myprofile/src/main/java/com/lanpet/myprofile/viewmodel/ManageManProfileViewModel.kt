@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,15 +34,14 @@ class ManageManProfileViewModel
         private val modifyManProfileUseCase: ModifyManProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
-        private val authManager: AuthManager,
     ) : ViewModel() {
-        private val _manageManProfileUiState =
+        private val _uiState =
             MutableStateFlow(
                 ManageManProfileUiState(
                     manProfileUpdate = null,
                 ),
             )
-        val manageManProfileUiState = _manageManProfileUiState.asStateFlow()
+        val uiState = _uiState.asStateFlow()
 
         private val manProfileUpdateValidator =
             ManProfileUpdateValidator(
@@ -79,51 +77,51 @@ class ManageManProfileViewModel
         val uiEvent = _uiEvent.asSharedFlow()
 
         fun updateProfileImageUri(uri: Uri) {
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     manProfileUpdate =
-                        _manageManProfileUiState.value.manProfileUpdate?.copy(
+                        _uiState.value.manProfileUpdate?.copy(
                             profileImageUri = uri,
                         ),
                     validationStatus =
-                        _manageManProfileUiState.value.validationStatus.copy(
+                        _uiState.value.validationStatus.copy(
                             profileImageUri = manProfileUpdateValidator.profileImageUri.validate(uri),
                         ),
                 )
         }
 
         fun updateBio(bio: String) {
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     manProfileUpdate =
-                        _manageManProfileUiState.value.manProfileUpdate?.copy(
+                        _uiState.value.manProfileUpdate?.copy(
                             bio = bio,
                         ),
                     validationStatus =
-                        _manageManProfileUiState.value.validationStatus.copy(
+                        _uiState.value.validationStatus.copy(
                             bio = manProfileUpdateValidator.bio.validate(bio),
                         ),
                 )
         }
 
         fun updateButlerAge(age: Age) {
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     manProfileUpdate =
-                        _manageManProfileUiState.value.manProfileUpdate?.copy(
+                        _uiState.value.manProfileUpdate?.copy(
                             butler =
-                                _manageManProfileUiState.value.manProfileUpdate?.butler?.copy(
+                                _uiState.value.manProfileUpdate?.butler?.copy(
                                     age = age,
                                 ),
                         ),
                     validationStatus =
-                        _manageManProfileUiState.value.validationStatus.copy(
+                        _uiState.value.validationStatus.copy(
                             butler =
                                 manProfileUpdateValidator.butler.validate(
                                     Butler(
                                         age = age,
                                         preferredPet =
-                                            _manageManProfileUiState.value.manProfileUpdate
+                                            _uiState.value.manProfileUpdate
                                                 ?.butler
                                                 ?.preferredPet
                                                 ?: emptyList(),
@@ -135,7 +133,7 @@ class ManageManProfileViewModel
 
         fun updateButlerPreferredPet(preferredPet: PetCategory) {
             val currentPreferredPet =
-                _manageManProfileUiState.value.manProfileUpdate
+                _uiState.value.manProfileUpdate
                     ?.butler
                     ?.preferredPet
                     ?.toMutableList()
@@ -147,22 +145,22 @@ class ManageManProfileViewModel
                 currentPreferredPet.add(preferredPet)
             }
 
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     manProfileUpdate =
-                        _manageManProfileUiState.value.manProfileUpdate?.copy(
+                        _uiState.value.manProfileUpdate?.copy(
                             butler =
-                                _manageManProfileUiState.value.manProfileUpdate?.butler?.copy(
+                                _uiState.value.manProfileUpdate?.butler?.copy(
                                     preferredPet = currentPreferredPet,
                                 ),
                         ),
                     validationStatus =
-                        _manageManProfileUiState.value.validationStatus.copy(
+                        _uiState.value.validationStatus.copy(
                             butler =
                                 manProfileUpdateValidator.butler.validate(
                                     Butler(
                                         age =
-                                            _manageManProfileUiState.value.manProfileUpdate
+                                            _uiState.value.manProfileUpdate
                                                 ?.butler
                                                 ?.age!!,
                                         preferredPet = currentPreferredPet,
@@ -173,18 +171,18 @@ class ManageManProfileViewModel
         }
 
         fun updateNickName(nickName: String) {
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     nicknameDuplicateCheck = null,
                     manProfileUpdate =
-                        _manageManProfileUiState.value.manProfileUpdate?.copy(
+                        _uiState.value.manProfileUpdate?.copy(
                             nickName = nickName,
                         ),
                 )
         }
 
         fun checkNicknameDuplicate() {
-            if (_manageManProfileUiState.value.manProfileUpdate
+            if (_uiState.value.manProfileUpdate
                     ?.nickName
                     .isNullOrEmpty()
             ) {
@@ -192,47 +190,47 @@ class ManageManProfileViewModel
             }
             viewModelScope.launch {
                 checkNicknameDuplicatedUseCase(
-                    _manageManProfileUiState.value.manProfileUpdate?.nickName!!,
+                    _uiState.value.manProfileUpdate?.nickName!!,
                 ).collect { isDuplicated ->
-                    _manageManProfileUiState.value =
-                        _manageManProfileUiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    _uiState.value =
+                        _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
                 }
             }
         }
 
         private fun checkValidation(): Boolean =
-            _manageManProfileUiState.value.validationStatus.isValid && _manageManProfileUiState.value.nicknameDuplicateCheck == true
+            _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
         fun modifyManProfile() {
-            if (_manageManProfileUiState.value.manProfileUpdate == null) {
+            if (_uiState.value.manProfileUpdate == null) {
                 return
             }
 
-            _manageManProfileUiState.value =
-                _manageManProfileUiState.value.copy(
+            _uiState.value =
+                _uiState.value.copy(
                     validationStatus =
-                        _manageManProfileUiState.value.validationStatus.copy(
+                        _uiState.value.validationStatus.copy(
                             profileImageUri =
                                 manProfileUpdateValidator.profileImageUri.validate(
-                                    _manageManProfileUiState.value.manProfileUpdate!!.profileImageUri,
+                                    _uiState.value.manProfileUpdate!!.profileImageUri,
                                 ),
                             nickName =
                                 manProfileUpdateValidator.nickName.validate(
-                                    _manageManProfileUiState.value.manProfileUpdate!!.nickName,
+                                    _uiState.value.manProfileUpdate!!.nickName,
                                 ),
                             bio =
                                 manProfileUpdateValidator.bio.validate(
-                                    _manageManProfileUiState.value.manProfileUpdate!!.bio,
+                                    _uiState.value.manProfileUpdate!!.bio,
                                 ),
                             butler =
                                 manProfileUpdateValidator.butler.validate(
-                                    _manageManProfileUiState.value.manProfileUpdate!!.butler,
+                                    _uiState.value.manProfileUpdate!!.butler,
                                 ),
                         ),
                 )
 
-            Timber.d("validationStatus: ${_manageManProfileUiState.value.validationStatus}")
-            Timber.d("nicknameDuplicateCheck: ${_manageManProfileUiState.value.nicknameDuplicateCheck}")
+            Timber.d("validationStatus: ${_uiState.value.validationStatus}")
+            Timber.d("nicknameDuplicateCheck: ${_uiState.value.nicknameDuplicateCheck}")
 
             if (!checkValidation()) {
                 return
@@ -240,10 +238,10 @@ class ManageManProfileViewModel
 
             val manProfile =
                 ManProfile(
-                    profileImageUri = _manageManProfileUiState.value.manProfileUpdate?.profileImageUri,
-                    nickName = _manageManProfileUiState.value.manProfileUpdate?.nickName,
-                    bio = _manageManProfileUiState.value.manProfileUpdate?.bio,
-                    butler = _manageManProfileUiState.value.manProfileUpdate?.butler,
+                    profileImageUri = _uiState.value.manProfileUpdate?.profileImageUri,
+                    nickName = _uiState.value.manProfileUpdate?.nickName,
+                    bio = _uiState.value.manProfileUpdate?.bio,
+                    butler = _uiState.value.manProfileUpdate?.butler,
                     type = ProfileType.BUTLER,
                 )
 
@@ -251,7 +249,7 @@ class ManageManProfileViewModel
 
             viewModelScope.launch {
                 modifyManProfileUseCase(
-                    _manageManProfileUiState.value.manProfileUpdate!!.id,
+                    _uiState.value.manProfileUpdate!!.id,
                     manProfile,
                 ).collect {
                     _uiEvent.emit(it)
@@ -267,8 +265,8 @@ class ManageManProfileViewModel
                     getProfileDetailUseCase(it).collect { profileDetail ->
                         Timber.i("profileDetail: $profileDetail")
 
-                        _manageManProfileUiState.value =
-                            _manageManProfileUiState.value.copy(
+                        _uiState.value =
+                            _uiState.value.copy(
                                 manProfileUpdate =
                                     ManProfileUpdate(
                                         profileImageUri = Uri.parse(profileDetail.pictureUrl),

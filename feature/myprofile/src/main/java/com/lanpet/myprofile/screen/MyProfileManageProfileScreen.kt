@@ -126,10 +126,54 @@ private fun PetProfileUpdateView(
     modifier: Modifier = Modifier,
     managePetProfileViewModel: ManagePetProfileViewModel = hiltViewModel(),
 ) {
+    val petProfileUiState by managePetProfileViewModel.uiState.collectAsStateWithLifecycle()
+
     Column {
-        Text(
-            "",
+        ProfileImagePicker(
+            profileImageUri = petProfileUiState.petProfileUpdate?.profileImageUri,
+            onImageSelect = {
+                managePetProfileViewModel.updateProfileImageUri(it)
+            },
         )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        NickNameSection(
+            duplicatedStatus = petProfileUiState.nicknameDuplicateCheck,
+            nickname = petProfileUiState.petProfileUpdate?.nickName ?: "",
+            onNicknameChange = {
+                managePetProfileViewModel.updateNickName(it)
+            },
+            onCheckDuplicatedNickname = {
+                managePetProfileViewModel.checkNicknameDuplicated()
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        PetCategorySection(
+            petCategory = petProfileUiState.petProfileUpdate?.pet?.petCategory ?: PetCategory.OTHER,
+            onPetCategoryChange = {
+                managePetProfileViewModel.updatePetCategory(it)
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        PetBreedSection(
+            petBreed = petProfileUiState.petProfileUpdate?.pet?.breed ?: "",
+            onPetBreedChange = {
+                managePetProfileViewModel.updateBreed(it)
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        BioInputSection(
+            text = petProfileUiState.petProfileUpdate?.bio ?: "",
+            onTextChange = {
+                managePetProfileViewModel.updateBio(it)
+            },
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+        CommonButton(
+            title = stringResource(R.string.title_register_button),
+        ) {
+            managePetProfileViewModel.modifyPetProfile()
+        }
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }
 }
 
@@ -138,7 +182,7 @@ private fun ManProfileUpdateView(
     modifier: Modifier = Modifier,
     manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
 ) {
-    val manageProfileUiState by manageManProfileViewModel.manageManProfileUiState.collectAsStateWithLifecycle()
+    val manageProfileUiState by manageManProfileViewModel.uiState.collectAsStateWithLifecycle()
 
     val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
 
@@ -326,6 +370,100 @@ private fun SelectPreferPetSection(
                 isSelected = preferPet.contains(PetCategory.OTHER),
             ) {
                 onPreferPetChange(PetCategory.OTHER)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PetBreedSection(
+    petBreed: String,
+    modifier: Modifier = Modifier,
+    onPetBreedChange: (String) -> Unit = {},
+) {
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.heading_pet_breed_manage_profile),
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        TextFieldWithDeleteButton(
+            value = petBreed,
+            onValueChange = {
+                onPetBreedChange(it)
+            },
+            placeholder = "ex)푸들",
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PetCategorySection(
+    petCategory: PetCategory,
+    modifier: Modifier = Modifier,
+    onPetCategoryChange: (PetCategory) -> Unit = {},
+) {
+    Column {
+        CommonSubHeading1(
+            title = stringResource(R.string.heading_pet_category_manage_profile),
+        )
+
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
+        FlowRow {
+            SelectableChip(
+                title = "고양이",
+                isSelected = petCategory == PetCategory.CAT,
+            ) {
+                onPetCategoryChange(PetCategory.CAT)
+            }
+            SelectableChip(
+                title = "강아지",
+                isSelected = petCategory == PetCategory.DOG,
+            ) {
+                onPetCategoryChange(PetCategory.DOG)
+            }
+            SelectableChip(
+                title = "햄스터",
+                isSelected = petCategory == PetCategory.HAMSTER,
+            ) {
+                onPetCategoryChange(PetCategory.HAMSTER)
+            }
+            SelectableChip(
+                title = "물고기",
+                isSelected = petCategory == PetCategory.FISH,
+            ) {
+                onPetCategoryChange(PetCategory.FISH)
+            }
+            SelectableChip(
+                title = "앵무새",
+                isSelected = petCategory == PetCategory.PARROT,
+            ) {
+                onPetCategoryChange(PetCategory.PARROT)
+            }
+            // 뱀
+            SelectableChip(
+                title = "뱀",
+                isSelected = petCategory == PetCategory.SNAKE,
+            ) {
+                onPetCategoryChange(PetCategory.SNAKE)
+            }
+            SelectableChip(
+                title = "도마뱀",
+                isSelected = petCategory == PetCategory.LIZARD,
+            ) {
+                onPetCategoryChange(PetCategory.LIZARD)
+            }
+            SelectableChip(
+                title = "거북이",
+                isSelected = petCategory == PetCategory.TURTLE,
+            ) {
+                onPetCategoryChange(PetCategory.TURTLE)
+            }
+            SelectableChip(
+                title = "기타",
+                isSelected = petCategory == PetCategory.OTHER,
+            ) {
+                onPetCategoryChange(PetCategory.OTHER)
             }
         }
     }
