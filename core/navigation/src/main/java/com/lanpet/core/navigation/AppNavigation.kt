@@ -212,6 +212,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateToFreeBoardWriteFreeBoard = {
                             navController.navigateToFreeBoardWriteScreen()
                         },
+                        navController = navController,
                     )
                     wikiNavGraph()
                 }
