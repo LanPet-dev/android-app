@@ -19,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -202,7 +201,8 @@ open class AuthManager
         @VisibleForTesting
         suspend fun getProfiles(account: Account): List<UserProfile> =
             try {
-                getAllProfileUseCase!!().timeout(5.seconds).first()
+                val res = getAllProfileUseCase!!().timeout(5.seconds).first()
+                if (res.isEmpty()) throw AuthException.NoProfileException(account = account) else res
             } catch (e: Exception) {
                 throw AuthException.NoProfileException(
                     account = account,

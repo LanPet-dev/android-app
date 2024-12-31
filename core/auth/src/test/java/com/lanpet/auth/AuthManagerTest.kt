@@ -125,6 +125,64 @@ class AuthManagerTest {
     @Nested
     inner class `Cognito 토큰 받기 성공 시` {
         @Nested
+        inner class `account 정보가 존재하는 경우` {
+            @Test
+            fun `profile 정보가 없는경우, AuthState_Success 를 반환한다`() = runTest {
+                coEvery { getCognitoSocialAuthTokenUseCase("AUTH-CODE") } returns
+                    flow {
+                        emit(
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        )
+                    }
+
+                coEvery { getAccountInformationUseCase() } returns
+                    flow {
+                        emit(
+                            Account(
+                                "accountId",
+                                "authId",
+                                authority = AuthorityType.USER,
+                                exitDate = null,
+                                exitReason = null,
+                            ),
+                        )
+                    }
+
+                coEvery { getAllProfileUseCase() } returns
+                    flow {
+                        emit(emptyList())
+                    }
+
+                authManager.authState.test {
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                    // When
+                    authManager.handleAuthCode("AUTH-CODE")
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                    // Second AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    coVerify(exactly = 1) {
+                        getCognitoSocialAuthTokenUseCase("AUTH-CODE")
+                        getAccountInformationUseCase()
+                        getAllProfileUseCase()
+                    }
+                }
+            }
+        }
+
+        @Nested
         inner class `account 정보가 존재하지 않는 경우` {
             @Test
             fun `account 정보를 등록하고, 등록이 실패한 경우 인증상태는 AuthState_Fail 을 반환한다`() =
