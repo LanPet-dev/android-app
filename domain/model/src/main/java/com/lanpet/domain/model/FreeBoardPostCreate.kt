@@ -7,5 +7,5 @@ data class FreeBoardPostCreate(
     val petCategory: String,
     val title: String,
     val body: String,
-    val imageList: List<Uri>?
+    val imageList: List<Uri>?,
 )

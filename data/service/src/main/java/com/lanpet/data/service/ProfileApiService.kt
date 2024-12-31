@@ -49,7 +49,8 @@ interface ProfileApiService {
     @DELETE("profiles/{id}")
     suspend fun deleteProfile(
         @Path("id")
-        id: String): Unit
+        id: String,
+    ): Unit
 
     @POST("/profiles/check-nickname")
     suspend fun checkNicknameDuplicated(

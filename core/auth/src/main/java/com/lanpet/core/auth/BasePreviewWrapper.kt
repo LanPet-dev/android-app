@@ -18,9 +18,10 @@ fun BasePreviewWrapper(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
-        LocalAuthManager provides AuthManager(
-            authStateHolder = AuthStateHolder(),
-        ),
+        LocalAuthManager provides
+            AuthManager(
+                authStateHolder = AuthStateHolder(),
+            ),
     ) {
         LanPetAppTheme {
             Surface {

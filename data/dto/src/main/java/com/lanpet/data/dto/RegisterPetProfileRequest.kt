@@ -1,8 +1,8 @@
 package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
-import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.PetProfile
+import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.ProfileType
 import kotlinx.serialization.Serializable
 
@@ -20,7 +20,9 @@ data class RegisterPetProfileRequest(
         fun fromDomainToRegisterRequest(petProfileCreate: PetProfileCreate): RegisterPetProfileRequest =
             RegisterPetProfileRequest(
                 nickname = petProfileCreate.nickName,
-                pictureUrl = petProfileCreate.profileImageUri?.path ?: "https://via.placeholder.com/150",
+                pictureUrl =
+                    petProfileCreate.profileImageUri?.path
+                        ?: "https://via.placeholder.com/150",
                 introduction = petProfileCreate.bio,
                 profileType = petProfileCreate.type,
                 pet =
@@ -39,14 +41,14 @@ data class RegisterPetProfileRequest(
                 pictureUrl = petProfile.profileImageUri?.path ?: "https://via.placeholder.com/150",
                 introduction = petProfile.bio,
                 pet =
-                petProfile.pet?.let {
-                    PetDto(
-                        petType = it.petCategory,
-                        breed = petProfile.pet?.breed,
-                        feature = petProfile.pet?.feature?.joinToString(","),
-                        weight = petProfile.pet?.weight,
-                    )
-                },
+                    petProfile.pet?.let {
+                        PetDto(
+                            petType = it.petCategory,
+                            breed = petProfile.pet?.breed,
+                            feature = petProfile.pet?.feature?.joinToString(","),
+                            weight = petProfile.pet?.weight,
+                        )
+                    },
             )
     }
 }

@@ -19,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -181,14 +180,18 @@ open class AuthManager
             accountId: String,
             profiles: List<UserProfile>,
         ): UserProfile {
-            var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
-            if (defaultProfileId.isNullOrEmpty()) {
-                setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
-                defaultProfileId = profiles.first().id
-            }
+            try {
+                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
+                if (defaultProfileId.isNullOrEmpty()) {
+                    setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
+                    defaultProfileId = profiles.first().id
+                }
 
-            val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
-            return defaultProfile
+                val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
+                return defaultProfile
+            } catch (e: Exception) {
+                throw AuthException.NoDefaultProfileException(accountId = accountId)
+            }
         }
 
         @VisibleForTesting
@@ -202,7 +205,8 @@ open class AuthManager
         @VisibleForTesting
         suspend fun getProfiles(account: Account): List<UserProfile> =
             try {
-                getAllProfileUseCase!!().timeout(5.seconds).first()
+                val res = getAllProfileUseCase!!().timeout(5.seconds).first()
+                if (res.isEmpty()) throw AuthException.NoProfileException(account = account) else res
             } catch (e: Exception) {
                 throw AuthException.NoProfileException(
                     account = account,

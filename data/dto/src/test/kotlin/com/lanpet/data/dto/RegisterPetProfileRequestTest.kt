@@ -62,9 +62,9 @@ class RegisterPetProfileRequestTest {
                 pictureUrl = null,
                 introduction = null,
                 pet =
-                PetDto(
-                    petType = PetCategory.AMPHIBIAN,
-                ),
+                    PetDto(
+                        petType = PetCategory.CAT,
+                    ),
             )
 
         val registerPetProfileRequestJsonString =
@@ -75,7 +75,7 @@ class RegisterPetProfileRequestTest {
                     "pictureUrl": null,
                     "introduction": null,
                     "pet": {
-                        "petType": "AMPHIBIAN",
+                        "petType": "CAT",
                         "breed": null,
                         "feature": null,
                         "birthDate": null,

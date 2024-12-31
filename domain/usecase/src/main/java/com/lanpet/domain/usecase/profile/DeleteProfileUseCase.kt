@@ -11,4 +11,4 @@ class DeleteProfileUseCase
         private val profileRepository: ProfileRepository,
     ) {
         suspend operator fun invoke(profileId: String) = profileRepository.deleteProfile(profileId)
-    } 
+    }

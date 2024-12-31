@@ -62,7 +62,7 @@ val LightCustomColors =
         confirmText = Color.Blue,
         spacerLine = GrayColor.LIGHT,
         defaultIconColor = BlackColor.MEDIUM,
-        topBarTextButtonTextColor = GrayColor.Gray950
+        topBarTextButtonTextColor = GrayColor.Gray950,
     )
 
 val DarkCustomColors =
@@ -80,7 +80,7 @@ val DarkCustomColors =
         confirmText = Color.Blue,
         spacerLine = GrayColor.LIGHT,
         defaultIconColor = WhiteColor.White,
-        topBarTextButtonTextColor = GrayColor.Gray50
+        topBarTextButtonTextColor = GrayColor.Gray50,
     )
 
 val LocalCustomColorScheme =

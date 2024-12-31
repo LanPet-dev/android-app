@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -94,10 +95,14 @@ fun FreeBoardWriteScreen(
     val freeBoardPostCreate by freeBoardWriteViewModel.freeBoardPostCreate.collectAsState()
     val completeEnable by freeBoardWriteViewModel.completeEnable.collectAsState()
 
+    val currentOnNavigateUp by rememberUpdatedState {
+        mutableStateOf(onNavigateUp)
+    }
+
     LaunchedEffect(Unit) {
         freeBoardWriteViewModel.writeFreeBoardResult.collect { result ->
             when (result) {
-                is WriteFreeBoardResult.Success -> onNavigateUp()
+                is WriteFreeBoardResult.Success -> currentOnNavigateUp()
 
                 is WriteFreeBoardResult.Error -> {
                     // TODO
@@ -142,10 +147,10 @@ fun FreeBoardWriteScreen(
                             freeBoardWriteViewModel.writeFreeBoardPost()
                         },
                         colors =
-                        ButtonDefaults.textButtonColors().copy(
-                            contentColor = MaterialTheme.customColorScheme.topBarTextButtonTextColor,
-                            disabledContentColor = GrayColor.Gray300,
-                        ),
+                            ButtonDefaults.textButtonColors().copy(
+                                contentColor = MaterialTheme.customColorScheme.topBarTextButtonTextColor,
+                                disabledContentColor = GrayColor.Gray300,
+                            ),
                     ) {
                         Text(
                             text = stringResource(R.string.complete_action_freeboard_write),
@@ -178,17 +183,17 @@ fun FreeBoardWriteScreen(
                 LineWithSpacer()
                 SelectPetSection(
                     selectedCategory = freeBoardPostCreate.petCategory,
-                )  { category ->
+                ) { category ->
                     freeBoardWriteViewModel.setPetCategory(category)
                 }
                 LineWithSpacer()
-                TitleInputSection() { title ->
+                TitleInputSection { title ->
                     freeBoardWriteViewModel.setTitle(title)
                 }
                 ContentInputSection { body ->
                     freeBoardWriteViewModel.setBody(body)
                 }
-                ImagePickSection() { uri ->
+                ImagePickSection { uri ->
                     freeBoardWriteViewModel.addImage(uri)
                 }
                 LazyRow(
@@ -198,7 +203,7 @@ fun FreeBoardWriteScreen(
                     if (!imageList.isNullOrEmpty()) {
                         items(imageList.size) { index ->
                             ImageWithDeleteIcon(
-                                uri = imageList[index]
+                                uri = imageList[index],
                             ) {
                                 freeBoardWriteViewModel.removeImage(imageList[index])
                             }
@@ -229,13 +234,14 @@ private fun LineWithSpacer() {
 private fun SelectBoardSection(
     selectedCategory: String?,
     modifier: Modifier = Modifier,
-    onCategorySelect: (String) -> Unit,
+    onCategorySelect: (String) -> Unit = {},
 ) {
-    val categories = listOf(
-        FreeBoardCategoryType.COMMUNICATE,
-        FreeBoardCategoryType.RECOMMEND,
-        FreeBoardCategoryType.QUESTION
-    )
+    val categories =
+        listOf(
+            FreeBoardCategoryType.COMMUNICATE,
+            FreeBoardCategoryType.RECOMMEND,
+            FreeBoardCategoryType.QUESTION,
+        )
 
     Column {
         CommonSubHeading1(
@@ -253,7 +259,7 @@ private fun SelectBoardSection(
                 SelectableChip.Rounded(
                     title = category.value,
                     isSelected = selectedCategory == category.name,
-                ) {onCategorySelect(category.name) }
+                ) { onCategorySelect(category.name) }
             }
         }
     }
@@ -264,7 +270,7 @@ private fun SelectBoardSection(
 private fun SelectPetSection(
     selectedCategory: String?,
     modifier: Modifier = Modifier,
-    onCategorySelect: (String) -> Unit,
+    onCategorySelect: (String) -> Unit = {},
 ) {
     Column {
         CommonSubHeading1(
@@ -291,7 +297,7 @@ private fun SelectPetSection(
 @Composable
 private fun TitleInputSection(
     modifier: Modifier = Modifier,
-    onTextChange: (String) -> Unit,
+    onTextChange: (String) -> Unit = {},
 ) {
     var input by rememberSaveable {
         mutableStateOf("")
@@ -353,7 +359,7 @@ private fun TitleInputSection(
 @Composable
 private fun ContentInputSection(
     modifier: Modifier = Modifier,
-    onTextChange: (String) -> Unit,
+    onTextChange: (String) -> Unit = {},
 ) {
     var input by rememberSaveable {
         mutableStateOf("")
@@ -473,10 +479,10 @@ fun ImagePickSection(
     ButtonWithIcon(
         title = stringResource(R.string.complete_button_freeboard_write),
         modifier =
-        Modifier
-            .padding(
-                LanPetDimensions.Margin.medium,
-            ),
+            Modifier
+                .padding(
+                    LanPetDimensions.Margin.medium,
+                ),
         onClick = {
             scope.launch {
                 sheetState.show()
@@ -577,7 +583,7 @@ private fun ButtonWithIcon(
 private fun ImageWithDeleteIcon(
     uri: Uri,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit),
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier.padding(LanPetDimensions.Spacing.xxSmall),
@@ -587,10 +593,10 @@ private fun ImageWithDeleteIcon(
             contentDescription = "post_image",
             contentScale = ContentScale.Crop,
             modifier =
-            Modifier
-                .clip(
-                    shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
-                ).size(82.dp),
+                Modifier
+                    .clip(
+                        shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+                    ).size(82.dp),
             error = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
         )
         IconButton(
