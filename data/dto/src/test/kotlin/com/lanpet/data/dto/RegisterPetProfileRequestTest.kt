@@ -63,7 +63,7 @@ class RegisterPetProfileRequestTest {
                 introduction = null,
                 pet =
                     PetDto(
-                        petType = PetCategory.AMPHIBIAN,
+                        petType = PetCategory.CAT,
                     ),
             )
 
@@ -75,7 +75,7 @@ class RegisterPetProfileRequestTest {
                     "pictureUrl": null,
                     "introduction": null,
                     "pet": {
-                        "petType": "AMPHIBIAN",
+                        "petType": "CAT",
                         "breed": null,
                         "feature": null,
                         "birthDate": null,
