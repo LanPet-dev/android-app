@@ -180,14 +180,18 @@ open class AuthManager
             accountId: String,
             profiles: List<UserProfile>,
         ): UserProfile {
-            var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
-            if (defaultProfileId.isNullOrEmpty()) {
-                setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
-                defaultProfileId = profiles.first().id
-            }
+            try {
+                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
+                if (defaultProfileId.isNullOrEmpty()) {
+                    setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
+                    defaultProfileId = profiles.first().id
+                }
 
-            val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
-            return defaultProfile
+                val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
+                return defaultProfile
+            } catch (e: Exception) {
+                throw AuthException.NoDefaultProfileException(accountId = accountId)
+            }
         }
 
         @VisibleForTesting
