@@ -5,7 +5,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.Age
@@ -198,8 +197,7 @@ class ManageManProfileViewModel
             }
         }
 
-        private fun checkValidation(): Boolean =
-            _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
         fun modifyManProfile() {
             if (_uiState.value.manProfileUpdate == null) {

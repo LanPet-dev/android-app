@@ -35,7 +35,10 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideProfileRepository(profileService: ProfileApiService, authDatabase: AuthDatabase): ProfileRepository =
+    fun provideProfileRepository(
+        profileService: ProfileApiService,
+        authDatabase: AuthDatabase,
+    ): ProfileRepository =
         ProfileRepositoryImpl(
             profileService,
             authDatabase,

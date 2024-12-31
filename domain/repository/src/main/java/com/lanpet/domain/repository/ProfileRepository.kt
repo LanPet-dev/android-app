@@ -1,9 +1,9 @@
 package com.lanpet.domain.repository
 
-import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.ManProfile
-import com.lanpet.domain.model.PetProfileCreate
+import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfile
+import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.profile.UserProfileDetail
 import kotlinx.coroutines.flow.Flow

@@ -108,9 +108,8 @@ class FreeBoardRepositoryImpl
 //            emit(freeBoardApiService.getFreeBoardPostCommentList(id))
             }.flowOn(Dispatchers.IO)
 
-    override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit> {
-        return flow {
-            emit(Unit)
-        }.flowOn(Dispatchers.IO)
+        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit> =
+            flow {
+                emit(Unit)
+            }.flowOn(Dispatchers.IO)
     }
-}

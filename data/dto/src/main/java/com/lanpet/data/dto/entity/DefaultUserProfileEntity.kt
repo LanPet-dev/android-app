@@ -1,6 +1,5 @@
 package com.lanpet.data.dto.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

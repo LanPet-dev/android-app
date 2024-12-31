@@ -26,7 +26,7 @@ class FreeBoardWriteViewModel
     @Inject
     constructor(
         private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
-    ): ViewModel() {
+    ) : ViewModel() {
         private val _freeBoardPostCreate =
             MutableStateFlow(
                 FreeBoardPostCreate(
@@ -37,51 +37,51 @@ class FreeBoardWriteViewModel
                     imageList = emptyList(),
                 ),
             )
-        val freeBoardPostCreate : StateFlow<FreeBoardPostCreate> = _freeBoardPostCreate.asStateFlow()
+        val freeBoardPostCreate: StateFlow<FreeBoardPostCreate> = _freeBoardPostCreate.asStateFlow()
 
         private val _writeFreeBoardResult =
             MutableSharedFlow<WriteFreeBoardResult>()
-        val writeFreeBoardResult : SharedFlow<WriteFreeBoardResult> =
+        val writeFreeBoardResult: SharedFlow<WriteFreeBoardResult> =
             _writeFreeBoardResult.asSharedFlow()
 
         private val freeBoardWriteValidator =
             FreeBoardWriteValidator(
                 boardCategory =
-                FormValidator { category ->
-                    if (category.isEmpty()) {
-                        FormValidationStatus.Invalid("게시글 카테고리를 선택해주세요.")
-                    } else {
-                        FormValidationStatus.Valid()
-                    }
-                },
+                    FormValidator { category ->
+                        if (category.isEmpty()) {
+                            FormValidationStatus.Invalid("게시글 카테고리를 선택해주세요.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 petCategory =
-                FormValidator { category ->
-                    if (category.isEmpty()) {
-                        FormValidationStatus.Invalid("반려동물 카테고리를 선택해주세요.")
-                    } else {
-                        FormValidationStatus.Valid()
-                    }
-                },
+                    FormValidator { category ->
+                        if (category.isEmpty()) {
+                            FormValidationStatus.Invalid("반려동물 카테고리를 선택해주세요.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 title =
-                FormValidator { title ->
-                    if (title.isEmpty()) {
-                        FormValidationStatus.Invalid("제목을 입력해주세요.")
-                    } else {
-                        FormValidationStatus.Valid()
-                    }
-                },
+                    FormValidator { title ->
+                        if (title.isEmpty()) {
+                            FormValidationStatus.Invalid("제목을 입력해주세요.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 body =
-                FormValidator { body ->
-                    if (body.isEmpty()) {
-                        FormValidationStatus.Invalid("내용을 입력해주세요.")
-                    } else {
-                        FormValidationStatus.Valid()
-                    }
-                },
+                    FormValidator { body ->
+                        if (body.isEmpty()) {
+                            FormValidationStatus.Invalid("내용을 입력해주세요.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 imageList =
-                FormValidator { imageList ->
-                    FormValidationStatus.Valid()
-                }
+                    FormValidator { imageList ->
+                        FormValidationStatus.Valid()
+                    },
             )
         private val _freeBoardWriteValidationResult =
             MutableStateFlow(
@@ -96,13 +96,15 @@ class FreeBoardWriteViewModel
         val freeBoardWriteValidationResult: StateFlow<FreeBoardWriteValidationResult> =
             _freeBoardWriteValidationResult.asStateFlow()
 
-        val completeEnable: StateFlow<Boolean> = freeBoardWriteValidationResult.map { validationResult ->
-            validationResult.boardCategory is FormValidationStatus.Valid &&
-                    validationResult.petCategory is FormValidationStatus.Valid &&
-                    validationResult.title is FormValidationStatus.Valid &&
-                    validationResult.body is FormValidationStatus.Valid &&
-                    validationResult.imageList is FormValidationStatus.Valid
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+        val completeEnable: StateFlow<Boolean> =
+            freeBoardWriteValidationResult
+                .map { validationResult ->
+                    validationResult.boardCategory is FormValidationStatus.Valid &&
+                        validationResult.petCategory is FormValidationStatus.Valid &&
+                        validationResult.title is FormValidationStatus.Valid &&
+                        validationResult.body is FormValidationStatus.Valid &&
+                        validationResult.imageList is FormValidationStatus.Valid
+                }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
         fun setBoardCategory(category: String) {
             _freeBoardWriteValidationResult.value =
@@ -144,9 +146,10 @@ class FreeBoardWriteViewModel
                 currentImages.add(uri)
             }
 
-            _freeBoardWriteValidationResult.value = _freeBoardWriteValidationResult.value.copy(
-                imageList = freeBoardWriteValidator.imageList.validate(currentImages)
-            )
+            _freeBoardWriteValidationResult.value =
+                _freeBoardWriteValidationResult.value.copy(
+                    imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+                )
             _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = currentImages)
         }
 
@@ -154,9 +157,10 @@ class FreeBoardWriteViewModel
             val currentImages = _freeBoardPostCreate.value.imageList?.toMutableList() ?: mutableListOf()
             currentImages.remove(uri)
 
-            _freeBoardWriteValidationResult.value = _freeBoardWriteValidationResult.value.copy(
-                imageList = freeBoardWriteValidator.imageList.validate(currentImages)
-            )
+            _freeBoardWriteValidationResult.value =
+                _freeBoardWriteValidationResult.value.copy(
+                    imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+                )
             _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = currentImages)
         }
 
@@ -174,13 +178,12 @@ class FreeBoardWriteViewModel
         }
     }
 
-
 data class FreeBoardWriteValidator(
     val boardCategory: FormValidator<String>,
     val petCategory: FormValidator<String>,
     val title: FormValidator<String>,
     val body: FormValidator<String>,
-    val imageList: FormValidator<List<Uri>>
+    val imageList: FormValidator<List<Uri>>,
 )
 
 data class FreeBoardWriteValidationResult(
@@ -196,13 +199,14 @@ data class FreeBoardPostCreate(
     val petCategory: String,
     val title: String,
     val body: String,
-    val imageList: List<Uri>?
+    val imageList: List<Uri>?,
 )
 
-fun FreeBoardPostCreate.toDomain() = com.lanpet.domain.model.FreeBoardPostCreate(
-    boardCategory = boardCategory,
-    petCategory = petCategory,
-    title = title,
-    body = body,
-    imageList = imageList,
-)
+fun FreeBoardPostCreate.toDomain() =
+    com.lanpet.domain.model.FreeBoardPostCreate(
+        boardCategory = boardCategory,
+        petCategory = petCategory,
+        title = title,
+        body = body,
+        imageList = imageList,
+    )
