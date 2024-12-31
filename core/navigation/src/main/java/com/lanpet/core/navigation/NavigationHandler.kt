@@ -34,10 +34,11 @@ class NavigationHandler(
             return
         }
 
-        if (previousAuthState::class == currentAuthState::class) {
-            Timber.d("previousAuthState is same as currentAuthState")
-            return
-        }
+        // navigationHandleFlag 로 처리하는것으로 변경되어, 더이상 이전 AuthState 와 비교할 필요가 없습니다.
+//        if (previousAuthState::class == currentAuthState::class ) {
+//            Timber.d("previousAuthState is same as currentAuthState")
+//            return
+//        }
 
         when (currentAuthState) {
             is AuthState.Initial -> {

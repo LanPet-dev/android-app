@@ -11,7 +11,6 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileApiClient
@@ -22,13 +21,12 @@ class ProfileApiClient
     ) {
         private val headerInterceptor =
             Interceptor { chain ->
-                if (authStateHolder.authState.value !is AuthState.Success) {
-                    throw Exception("AuthState is not Success")
-                }
                 val token =
-                    (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
-
-                Timber.d("token: $token")
+                    when (authStateHolder.authState.value) {
+                        is AuthState.Loading -> (authStateHolder.authState.value as AuthState.Loading).socialAuthToken?.accessToken
+                        is AuthState.Success -> (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
+                        else -> throw SecurityException("x-access-token is required")
+                    }
 
                 val request =
                     chain
@@ -37,7 +35,7 @@ class ProfileApiClient
                         .addHeader("Content-Type", "application/json")
                         .addHeader(
                             "x-access-token",
-                            token ?: "",
+                            token ?: throw SecurityException("x-access-token is required"),
                         ).build()
                 chain.proceed(request)
             }
