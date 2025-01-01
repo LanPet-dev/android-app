@@ -3,6 +3,7 @@ package com.lanpet.profile.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.PetCategory
@@ -27,6 +28,7 @@ class PetProfileCreateViewModel
     constructor(
         private val registerPetProfileUseCase: RegisterPetProfileUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         /**
          * PetProfile 생성 모델
@@ -197,6 +199,7 @@ class PetProfileCreateViewModel
                     registerPetProfileUseCase(_petProfileCreate.value).collect {
                         _registerPetProfileResult.value = RegisterPetProfileResult.Success
                     }
+                    authManager.getProfiles()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     _registerPetProfileResult.value =
