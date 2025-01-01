@@ -33,6 +33,7 @@ import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToLogoutDialog
+import com.lanpet.feature.settings.navigation.navigateToMemberLeave
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
@@ -46,6 +47,7 @@ import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
 import com.lanpet.myprofile.navigation.navigateToMyProfileCreateProfile
+import com.lanpet.myprofile.navigation.navigateToMyProfileManageProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileModifyProfile
 import com.lanpet.profile.navigation.navigateToProfileCreateDone
 import com.lanpet.profile.navigation.navigateToProfileCreateHumanAge
@@ -198,6 +200,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateToMyProfileModifyProfile = {
                             navController.navigateToMyProfileModifyProfile()
                         },
+                        onNavigateToMyProfileManageProfile = { profileId, profileType ->
+                            navController.navigateToMyProfileManageProfile(
+                                profileId = profileId,
+                                profileType = profileType,
+                            )
+                        },
                     )
                     freeNavGraph(
                         onNavigateUp = {
@@ -206,6 +214,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateToFreeBoardWriteFreeBoard = {
                             navController.navigateToFreeBoardWriteScreen()
                         },
+                        navController = navController,
                     )
                     wikiNavGraph()
                 }
@@ -221,6 +230,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     },
                     onOpenLogoutDialog = {
                         navController.navigateToLogoutDialog()
+                    },
+                    onNavigateToMemberLeave = {
+                        navController.navigateToMemberLeave()
                     },
                 )
                 myPostsNavGraph(

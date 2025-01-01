@@ -1,9 +1,17 @@
 package com.lanpet.myprofile.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,15 +20,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +45,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.commonBorder
@@ -41,26 +61,100 @@ import com.lanpet.core.common.widget.CommonHeadingHint
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
+import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.myprofile.R
+import com.lanpet.myprofile.viewmodel.ProfileListViewModel
+import com.lanpet.myprofile.widget.DeleteProfileDialog
+import com.lanpet.myprofile.widget.SetDefaultProfileDialog
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileCreateProfileScreen(
     modifier: Modifier = Modifier,
+    profileListViewModel: ProfileListViewModel = hiltViewModel(),
     onNavigateUp: (() -> Unit)? = null,
     onNavigateToAddProfile: () -> Unit = {},
-    onNavigateToModifyProfile: () -> Unit = {},
+    onNavigateToModifyProfile: (String, ProfileType) -> Unit = { profileId, profileType -> },
 ) {
-    val authState = LocalAuthManager.current
-    val defaultUserProfile by authState.defaultUserProfile.collectAsState()
-    val userProfiles by authState.userProfiles.collectAsState()
+    val authManager = LocalAuthManager.current
+    val defaultUserProfile by authManager.defaultUserProfile.collectAsStateWithLifecycle()
+    val userProfiles by authManager.userProfiles.collectAsStateWithLifecycle()
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+
+    var showSetDefaultProfileDialog by remember { mutableStateOf(false) }
+    var showDeleteProfileDialog by remember { mutableStateOf(false) }
+    var selectedProfileId by remember { mutableStateOf<String>("") }
+    val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
+
+    if (showDeleteProfileDialog) {
+        Dialog(
+            onDismissRequest = { showDeleteProfileDialog = false },
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                ),
+        ) {
+            DeleteProfileDialog(
+                onDismiss = { showDeleteProfileDialog = false },
+                onSetDefaultProfile = {
+                    Timber.d("selectedProfileId: $selectedProfileId")
+                    scope.launch {
+                        try {
+                            if (selectedProfileId.isEmpty()) {
+                                showDeleteProfileDialog = false
+                                return@launch
+                            }
+
+                            profileListViewModel.deleteProfile(selectedProfileId)
+                            showDeleteProfileDialog = false
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                            showDeleteProfileDialog = false
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+    if (showSetDefaultProfileDialog) {
+        Dialog(
+            onDismissRequest = { showSetDefaultProfileDialog = false },
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                ),
+        ) {
+            SetDefaultProfileDialog(
+                onDismiss = { showSetDefaultProfileDialog = false },
+                onSetDefaultProfile = {
+                    Timber.d("selectedProfileId: $selectedProfileId")
+                    scope.launch {
+                        if (selectedProfileId.isEmpty()) {
+                            return@launch
+                        }
+
+                        authManager.updateUserProfile(
+                            selectedProfileId,
+                        )
+
+                        showSetDefaultProfileDialog = false
+                    }
+                },
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -93,7 +187,9 @@ fun MyProfileCreateProfileScreen(
                 Modifier
                     .fillMaxSize()
                     .padding(it)
-                    .padding(
+                    .verticalScroll(
+                        state = scrollState,
+                    ).padding(
                         horizontal = LanPetDimensions.Margin.Layout.horizontal,
                         vertical = LanPetDimensions.Margin.Layout.vertical,
                     ),
@@ -107,57 +203,109 @@ fun MyProfileCreateProfileScreen(
                     title = stringResource(R.string.heading_hint_my_profile_create),
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
+                if (!isExpanded) {
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        onClick = {
+                            isExpanded = true
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(R.string.title_button_do_edit_profile),
+                            style = MaterialTheme.customTypography().body1SemiBoldSingle,
+                        )
+                    }
+                } else {
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        onClick = {
+                            isExpanded = false
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(R.string.title_button_end_edit_profile),
+                            style = MaterialTheme.customTypography().body1SemiBoldSingle,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 ProfileListCard(
                     userProfile = defaultUserProfile,
                     isActive = true,
-                ) { onNavigateToModifyProfile() }
+                    isExpanded = isExpanded,
+                    onModifyClick = {
+                        onNavigateToModifyProfile(defaultUserProfile.id, defaultUserProfile.type)
+                    },
+                )
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+                userProfiles
+                    .filterNot { profile ->
+                        profile.id == defaultUserProfile.id
+                    }.forEach { userProfile ->
+                        Timber.d("userProfile: $userProfile")
+                        ProfileListCard(
+                            isExpanded = isExpanded,
+                            userProfile = userProfile,
+                            isActive = false,
+                            onProfileClick = {
+                                showSetDefaultProfileDialog = true
+                                selectedProfileId = userProfile.id
+                            },
+                            onModifyClick = {
+                                onNavigateToModifyProfile(userProfile.id, userProfile.type)
+                            },
+                            onDeleteClick = {
+                                selectedProfileId = userProfile.id
+                                showDeleteProfileDialog = true
+                            },
+                        )
+                        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+                    }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                AddProfileCard { onNavigateToAddProfile() }
+                if (userProfiles.size < 3) {
+                    AddProfileButton { onNavigateToAddProfile() }
+                }
             }
         }
     }
 }
 
 @Composable
-fun AddProfileCard(
+fun AddProfileButton(
     modifier: Modifier = Modifier,
     onAddProfileClick: () -> Unit = {},
 ) {
-    Surface(
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier =
             Modifier
+                .fillMaxWidth()
+                .background(
+                    PrimaryColor.PRIMARY,
+                    shape = RoundedCornerShape(LanPetDimensions.Corner.medium),
+                ).clip(RoundedCornerShape(LanPetDimensions.Corner.medium))
                 .clickable { onAddProfileClick() }
-                .commonBorder(
-                    shape =
-                        RoundedCornerShape(
-                            LanPetDimensions.Corner.small,
-                        ),
-                ).fillMaxWidth()
-                .wrapContentHeight(),
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier =
-                Modifier.padding(
+                .padding(
                     horizontal = LanPetDimensions.Margin.medium,
                     vertical = LanPetDimensions.Margin.medium,
                 ),
-        ) {
-            Image(
-                imageVector = MyIconPack.Plus,
-                contentDescription = "ic_plus",
-                colorFilter = ColorFilter.tint(GrayColor.Gray300),
-            )
-            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Image(
+            modifier =
+                Modifier.crop(
+                    size = 18.dp,
+                ),
+            imageVector = MyIconPack.Plus,
+            colorFilter = ColorFilter.tint(WhiteColor.White),
+            contentDescription = "Add Profile Picture",
+        )
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
+        Column {
             Text(
-                style =
-                    MaterialTheme.customTypography().body2MediumSingle.copy(
-                        color = GrayColor.Gray300,
-                    ),
-                text =
-                    stringResource(
-                        R.string.body_add_profile_profile_create,
-                    ),
+                style = MaterialTheme.customTypography().body2SemiBoldSingle,
+                text = stringResource(R.string.title_add_profile_button),
+                color = WhiteColor.White,
             )
         }
     }
@@ -168,20 +316,34 @@ fun ProfileListCard(
     userProfile: UserProfile,
     isActive: Boolean,
     modifier: Modifier = Modifier,
+    isExpanded: Boolean = false,
+    onProfileClick: () -> Unit = {},
     onModifyClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
     Surface(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .commonBorder(
-                    border = BorderStroke(1.dp, PrimaryColor.PRIMARY),
+                    border =
+                        if (isActive) {
+                            BorderStroke(
+                                1.dp,
+                                PrimaryColor.PRIMARY,
+                            )
+                        } else {
+                            BorderStroke(0.dp, GrayColor.Gray400)
+                        },
                     shape =
                         RoundedCornerShape(
                             LanPetDimensions.Corner.small,
                         ),
-                ),
+                ).clickable {
+                    if (isActive) return@clickable
+                    onProfileClick()
+                },
     ) {
         Column {
             Row(
@@ -215,29 +377,45 @@ fun ProfileListCard(
                         text = userProfile.introduction.toString(),
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Box(
-                    modifier =
-                        Modifier
-                            .commonBorder(
-                                shape =
-                                    RoundedCornerShape(
-                                        LanPetDimensions.Corner.xSmall,
-                                    ),
-                            ).clip(RoundedCornerShape(LanPetDimensions.Corner.xSmall))
-                            .clickable { onModifyClick() }
-                            .padding(
-                                horizontal = LanPetDimensions.Margin.medium,
-                                vertical = LanPetDimensions.Margin.xSmall,
+            }
+
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter =
+                    expandVertically(
+                        animationSpec =
+                            spring(
+                                dampingRatio = Spring.DampingRatioNoBouncy,
+                                stiffness = Spring.StiffnessLow,
                             ),
-                    contentAlignment = Alignment.Center,
+                    ) + fadeIn(),
+                exit =
+                    shrinkVertically(
+                        animationSpec =
+                            spring(
+                                dampingRatio = Spring.DampingRatioNoBouncy,
+                                stiffness = Spring.StiffnessLow,
+                            ),
+                    ) + fadeOut(),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(LanPetDimensions.Margin.Layout.horizontal),
                 ) {
-                    Text(
-                        stringResource(R.string.modify),
-                        style =
-                            MaterialTheme.customTypography().body2MediumSingle.copy(
-                                color = GrayColor.Gray400,
-                            ),
+                    ProfileBaseButton(
+                        modifier = Modifier.weight(1f),
+                        title = stringResource(R.string.title_manage_profile_button_2),
+                        onClick = {
+                            onModifyClick()
+                        },
+                    )
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+                    ProfileBaseButton(
+                        modifier = Modifier.weight(1f),
+                        title = stringResource(R.string.title_delete_profile_button),
+                        onClick = {
+                            onDeleteClick()
+                        },
                     )
                 }
             }
@@ -248,36 +426,79 @@ fun ProfileListCard(
 @PreviewLightDark
 @Composable
 private fun PreviewAddProfileCard() {
-    LanPetAppTheme {
-        AddProfileCard()
+    BasePreviewWrapper {
+        AddProfileButton()
     }
 }
 
 @PreviewLightDark
 @Composable
 private fun PreviewMyProfileCreate() {
-    LanPetAppTheme {
-        ProfileListCard(
-            userProfile =
-                UserProfile(
-                    nickname = "닉네임",
-                    introduction = "소개",
-                    id = "id",
-                    type = ProfileType.PET,
-                    isDefault = true,
-                    profileImageUri = null,
-                ),
-            isActive = true,
-        ) {}
+    BasePreviewWrapper {
+        Column {
+            ProfileListCard(
+                userProfile =
+                    UserProfile(
+                        nickname = "닉네임",
+                        introduction = "소개",
+                        id = "id",
+                        type = ProfileType.PET,
+                        isDefault = true,
+                        profileImageUri = null,
+                    ),
+                isActive = true,
+            )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
+            ProfileListCard(
+                userProfile =
+                    UserProfile(
+                        nickname = "닉네임",
+                        introduction = "소개",
+                        id = "id",
+                        type = ProfileType.PET,
+                        isDefault = true,
+                        profileImageUri = null,
+                    ),
+                isActive = false,
+            )
+
+            ProfileListCard(
+                userProfile =
+                    UserProfile(
+                        nickname = "닉네임",
+                        introduction = "소개",
+                        id = "id",
+                        type = ProfileType.PET,
+                        isDefault = true,
+                        profileImageUri = null,
+                    ),
+                isExpanded = true,
+                isActive = true,
+            )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
+            ProfileListCard(
+                userProfile =
+                    UserProfile(
+                        nickname = "닉네임",
+                        introduction = "소개",
+                        id = "id",
+                        type = ProfileType.PET,
+                        isDefault = true,
+                        profileImageUri = null,
+                    ),
+                isExpanded = true,
+                isActive = false,
+            )
+        }
     }
 }
 
 @PreviewLightDark
 @Composable
 private fun MyProfileCreatePreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MyProfileCreateProfileScreen(
             onNavigateUp = { },
-        ) {}
+        )
     }
 }

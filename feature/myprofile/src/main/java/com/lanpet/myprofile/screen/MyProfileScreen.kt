@@ -2,7 +2,9 @@ package com.lanpet.myprofile.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -18,16 +21,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.crop
@@ -37,7 +42,7 @@ import com.lanpet.core.common.myiconpack.File
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
 import com.lanpet.core.common.widget.LanPetTopAppBar
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
@@ -50,11 +55,12 @@ import com.lanpet.myprofile.R
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToProfileCreate: () -> Unit = { },
+    onNavigateToProfileManage: (String, ProfileType) -> Unit = { profileId: String, profileType: ProfileType -> },
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: () -> Unit = { },
 ) {
     val authManager = LocalAuthManager.current
-    val defaultUserProfile = authManager.defaultUserProfile.collectAsState()
+    val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -98,8 +104,33 @@ fun MyProfileScreen(
             Column {
                 MyProfileCard(
                     defaultUserProfile.value,
-                    onNavigateToProfileCreate = onNavigateToProfileCreate,
+                    onNavigateToProfileCreate = {},
                 )
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(LanPetDimensions.Margin.Layout.horizontal),
+                ) {
+                    ProfileBaseButton(
+                        modifier = Modifier.weight(1f),
+                        title = stringResource(R.string.title_manage_profile_button),
+                        onClick = {
+                            onNavigateToProfileManage(
+                                defaultUserProfile.value.id,
+                                defaultUserProfile.value.type,
+                            )
+                        },
+                    )
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
+                    ProfileBaseButton(
+                        modifier = Modifier.weight(1f),
+                        title = stringResource(R.string.title_profile_list_button),
+                        onClick = {
+                            onNavigateToProfileCreate()
+                        },
+                    )
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 Spacer(
                     modifier =
                         Modifier
@@ -220,22 +251,36 @@ private fun MyProfileCard(
                 text = myProfile.introduction.toString(),
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Box(
-            modifier =
-                Modifier
-                    .crop(
-                        size = 36.dp,
-                    ) {
-                        onNavigateToProfileCreate()
-                    },
-            contentAlignment = Alignment.Center,
-        ) {
-            Image(
-                imageVector = MyIconPack.ArrowRight,
-                contentDescription = "ic_arrow_right",
-            )
-        }
+    }
+}
+
+@Composable
+fun ProfileBaseButton(
+    title: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    Box(
+        modifier =
+            modifier
+                .border(
+                    width = 1.dp,
+                    color = GrayColor.Gray200,
+                    shape = RoundedCornerShape(LanPetDimensions.Corner.small),
+                ).clip(
+                    shape = RoundedCornerShape(LanPetDimensions.Corner.small),
+                ).clickable {
+                    onClick()
+                }.padding(
+                    horizontal = LanPetDimensions.Margin.medium,
+                    vertical = LanPetDimensions.Margin.medium,
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            style = MaterialTheme.customTypography().body2RegularMulti,
+            text = title,
+        )
     }
 }
 
@@ -271,26 +316,32 @@ fun ActivityListItem(
 @Composable
 @PreviewLightDark()
 private fun MyProfileCardPreview() {
-    LanPetAppTheme {
-        Surface {
-            MyProfileCard(
-                myProfile =
-                    UserProfile(
-                        id = "id",
-                        type = ProfileType.BUTLER,
-                        nickname = "I am nickname",
-                        profileImageUri = null,
-                        introduction = "Hello I am nickname. hahaha hell o",
-                    ),
-            ) {}
-        }
+    BasePreviewWrapper {
+        MyProfileCard(
+            myProfile =
+                UserProfile(
+                    id = "id",
+                    type = ProfileType.BUTLER,
+                    nickname = "I am nickname",
+                    profileImageUri = null,
+                    introduction = "Hello I am nickname. hahaha hell o",
+                ),
+        ) {}
+    }
+}
+
+@Composable
+@PreviewLightDark()
+private fun ProfileBaseButtonPreview() {
+    BasePreviewWrapper {
+        ProfileBaseButton(title = "Button") {}
     }
 }
 
 @Composable
 @PreviewLightDark()
 private fun MyProfileScreenPreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MyProfileScreen()
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_button_close">닫기</string>
+    <string name="title_button_camera">사진촬영</string>
+    <string name="title_button_gallery">사진앨범</string>
+</resources>

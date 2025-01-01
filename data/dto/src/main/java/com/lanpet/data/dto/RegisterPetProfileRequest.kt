@@ -1,39 +1,28 @@
 package com.lanpet.data.dto
 
 import com.google.gson.annotations.SerializedName
+import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.ProfileType
 import kotlinx.serialization.Serializable
 
-/** ex)
- * {
- *   "type": "PET",
- *   "nickname": "test2",
- *   "pictureUrl": "https://www.naver.com",
- *   "introduction": "잘 부탁 드립니다~",
- *   "pet": {
- *     "petType": "DOG",
- *     "breed": "푸들",
- *     "feature": "잘 먹어요, 분노를 조절을 잘 해요, 신기가 들린거 같아요",
- *     "weight": 5.5
- *   }
- * }
- */
 @Serializable
 data class RegisterPetProfileRequest(
     @SerializedName("type")
     val profileType: ProfileType = ProfileType.PET,
     val nickname: String,
-    val pictureUrl: String? = null,
-    val introduction: String? = null,
+    val pictureUrl: String?,
+    val introduction: String?,
     val pet: PetDto,
 ) {
     companion object {
         @JvmStatic
-        fun fromDomain(petProfileCreate: PetProfileCreate): RegisterPetProfileRequest =
+        fun fromDomainToRegisterRequest(petProfileCreate: PetProfileCreate): RegisterPetProfileRequest =
             RegisterPetProfileRequest(
                 nickname = petProfileCreate.nickName,
-                pictureUrl = petProfileCreate.profileImageUri?.path,
+                pictureUrl =
+                    petProfileCreate.profileImageUri?.path
+                        ?: "https://via.placeholder.com/150",
                 introduction = petProfileCreate.bio,
                 profileType = petProfileCreate.type,
                 pet =
@@ -43,6 +32,23 @@ data class RegisterPetProfileRequest(
                         feature = petProfileCreate.pet.feature.joinToString(","),
                         weight = petProfileCreate.pet.weight,
                     ),
+            )
+
+        @JvmStatic
+        fun fromDomainToUpdateRequest(petProfile: PetProfile): UpdateProfileRequest =
+            UpdateProfileRequest(
+                nickname = petProfile.nickName,
+                pictureUrl = petProfile.profileImageUri?.path ?: "https://via.placeholder.com/150",
+                introduction = petProfile.bio,
+                pet =
+                    petProfile.pet?.let {
+                        PetDto(
+                            petType = it.petCategory,
+                            breed = petProfile.pet?.breed,
+                            feature = petProfile.pet?.feature?.joinToString(","),
+                            weight = petProfile.pet?.weight,
+                        )
+                    },
             )
     }
 }

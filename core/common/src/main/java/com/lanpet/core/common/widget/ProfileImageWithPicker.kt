@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,17 +26,17 @@ import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 
 @Composable
-fun ProfileImageWithPicker() {
-    var imageUri: Uri? by rememberSaveable {
-        mutableStateOf(null)
-    }
-
+fun ProfileImageWithPicker(
+    imageUri: Uri?,
+    onImagePick: (Uri) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val launcher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
         ) { uri: Uri? ->
             uri?.let {
-                imageUri = it
+                onImagePick(it)
             }
         }
 
@@ -96,6 +94,9 @@ fun CommonImagePickerView(
 @Composable
 private fun PreviewProfileImageWithPicker() {
     LanPetAppTheme {
-        ProfileImageWithPicker()
+        ProfileImageWithPicker(
+            imageUri = null,
+            onImagePick = {},
+        )
     }
 }

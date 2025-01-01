@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +32,7 @@ import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 
@@ -39,9 +41,10 @@ import com.lanpet.core.designsystem.theme.customTypography
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
+    onNavigateToMemberLeave: () -> Unit = {},
     onOpenLogoutDialog: (() -> Unit)? = null,
 ) {
-    val authViewModel = LocalAuthManager.current
+    val authManager = LocalAuthManager.current
 
     Scaffold(
         topBar = {
@@ -178,6 +181,17 @@ fun SettingsScreen(
                         },
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(onClick = onNavigateToMemberLeave) {
+                    Text(
+                        stringResource(R.string.title_leave_member),
+                        style =
+                            MaterialTheme.customTypography().body3RegularSingle.copy(
+                                color = GrayColor.Gray400,
+                            ),
+                    )
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.large))
             }
         }
     }

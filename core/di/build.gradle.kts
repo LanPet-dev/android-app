@@ -29,6 +29,10 @@ dependencies {
     implementation(projects.data.service)
     implementation(projects.domain.repository)
     implementation(projects.data.repository)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.hilt.testing)
 }

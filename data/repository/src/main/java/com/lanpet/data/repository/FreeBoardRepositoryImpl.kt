@@ -3,6 +3,7 @@ package com.lanpet.data.repository
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
+import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.repository.FreeBoardRepository
@@ -105,5 +106,10 @@ class FreeBoardRepositoryImpl
                     ),
                 )
 //            emit(freeBoardApiService.getFreeBoardPostCommentList(id))
+            }.flowOn(Dispatchers.IO)
+
+        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit> =
+            flow {
+                emit(Unit)
             }.flowOn(Dispatchers.IO)
     }

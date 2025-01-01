@@ -3,22 +3,23 @@ package com.lanpet.profile.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Pet
+import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.RegisterPetProfileUseCase
 import com.lanpet.profile.model.RegisterPetProfileResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,8 @@ class PetProfileCreateViewModel
     @Inject
     constructor(
         private val registerPetProfileUseCase: RegisterPetProfileUseCase,
+        private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         /**
          * PetProfile 생성 모델
@@ -94,15 +97,15 @@ class PetProfileCreateViewModel
                         },
                     ),
                 nickName =
-                    FormValidator<String?>(
-                        validate = { nickName ->
-                            if (nickName.isNullOrEmpty() || nickName.length > 20) {
-                                FormValidationStatus.Invalid()
-                            } else {
-                                FormValidationStatus.Valid()
-                            }
-                        },
-                    ),
+                    FormValidator { nickName ->
+                        if (nickName.isNullOrBlank()) {
+                            FormValidationStatus.Invalid("닉네임을 입력해주세요.")
+                        } else if (nickName.length < 2 || nickName.length > 20) {
+                            FormValidationStatus.Invalid(" 닉네임은 2자 이상 20자 이하로 입력해주세요.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 petCategory =
                     FormValidator<PetCategory?>(
                         validate = { petCategory ->
@@ -196,6 +199,7 @@ class PetProfileCreateViewModel
                     registerPetProfileUseCase(_petProfileCreate.value).collect {
                         _registerPetProfileResult.value = RegisterPetProfileResult.Success
                     }
+                    authManager.getProfiles()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     _registerPetProfileResult.value =
@@ -204,15 +208,19 @@ class PetProfileCreateViewModel
             }
         }
 
-        // TODO("Satoshi"): Implement checkNickNameDuplicate
-        suspend fun checkNickNameDuplicate(): Boolean {
-            val nickname = _petProfileCreate.value.nickName
+        suspend fun checkNickNameDuplicate() {
+            if (_petProfileCreateValidationResult.value.nickName !is FormValidationStatus.Valid) {
+                return
+            }
 
-            return withContext(viewModelScope.coroutineContext) {
-                // TODO: Check nickname duplicate
-                delay(1000)
-                _isNicknameDuplicated.value = true
-                return@withContext true
+            try {
+                val nickname = _petProfileCreate.value.nickName
+
+                checkNicknameDuplicatedUseCase(nickname).collect {
+                    _isNicknameDuplicated.value = it
+                }
+            } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
             }
         }
 

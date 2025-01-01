@@ -19,6 +19,13 @@ class AccountApiClient
     ) {
         private val headerInterceptor =
             Interceptor { chain ->
+                val token =
+                    when (authStateHolder.authState.value) {
+                        is AuthState.Loading -> (authStateHolder.authState.value as AuthState.Loading).socialAuthToken?.accessToken
+                        is AuthState.Success -> (authStateHolder.authState.value as AuthState.Success).socialAuthToken?.accessToken
+                        else -> throw SecurityException("x-access-token is required")
+                    }
+
                 val request =
                     chain
                         .request()
@@ -26,14 +33,7 @@ class AccountApiClient
                         .addHeader("Content-Type", "application/json")
                         .addHeader(
                             "x-access-token",
-                            if (authStateHolder.authState.value is AuthState.Loading) {
-                                (authStateHolder.authState.value as AuthState.Loading)
-                                    .socialAuthToken
-                                    ?.accessToken
-                                    .toString()
-                            } else {
-                                ""
-                            },
+                            token ?: throw SecurityException("x-access-token is required"),
                         ).build()
                 chain.proceed(request)
             }

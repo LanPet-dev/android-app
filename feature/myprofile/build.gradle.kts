@@ -20,5 +20,6 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.core.auth)
     implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
     implementation(libs.androidx.lifecycle.viewmodel.android)
 }

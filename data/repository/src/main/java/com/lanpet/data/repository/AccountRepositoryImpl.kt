@@ -27,4 +27,6 @@ class AccountRepositoryImpl
                 val response = accountService.getAccount()
                 emit(response.toDomain())
             }.flowOn(Dispatchers.IO)
+
+        override suspend fun leaveMember(): Flow<Boolean> = throw NotImplementedError("Not yet implemented")
     }

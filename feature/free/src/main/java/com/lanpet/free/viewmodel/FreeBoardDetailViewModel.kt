@@ -1,5 +1,6 @@
 package com.lanpet.free.viewmodel
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.domain.model.FreeBoardComment
@@ -85,6 +86,7 @@ class FreeBoardDetailViewModel
         }
     }
 
+@Stable
 private sealed class DetailState {
     data object Loading : DetailState()
 
@@ -99,6 +101,7 @@ private sealed class DetailState {
     data object Initial : DetailState()
 }
 
+@Stable
 private sealed class CommentsState {
     data object Loading : CommentsState()
 
@@ -113,6 +116,7 @@ private sealed class CommentsState {
     data object Initial : CommentsState()
 }
 
+@Stable
 sealed class FreeBoardDetailState {
     data object Loading : FreeBoardDetailState()
 

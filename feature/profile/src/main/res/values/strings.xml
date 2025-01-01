@@ -49,5 +49,8 @@
     <string name="sub_heading_profile_create_done">다양한 정보도 얻고 소통의 재미를 느끼시길 바랄게요</string>
     <string name="check_duplicated_nickname_button_string">중복 확인</string>
     <string name="check_duplicated_nickname_ok_string">사용 가능한 닉네임이에요</string>>
-    <string name="check_duplicated_nickname_error_string">중복되는 닉네임이 있어요</string>>
+    <string name="check_duplicated_nickname_error_string">중복되는 닉네임이 있어요</string>
+    <string name="title_button_close">닫기</string>
+    <string name="title_button_camera">사진촬영</string>
+    <string name="title_button_gallery">사진앨범</string>>
 </resources>

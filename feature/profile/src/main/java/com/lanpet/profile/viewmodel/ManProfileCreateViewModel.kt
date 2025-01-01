@@ -3,6 +3,7 @@ package com.lanpet.profile.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.Age
@@ -10,15 +11,15 @@ import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Butler
+import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.RegisterManProfileUseCase
 import com.lanpet.profile.model.RegisterManProfileResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,8 @@ class ManProfileCreateViewModel
     @Inject
     constructor(
         private val registerManProfileUseCase: RegisterManProfileUseCase,
+        private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         private val _manProfileCreate =
             MutableStateFlow(
@@ -171,6 +174,7 @@ class ManProfileCreateViewModel
                     registerManProfileUseCase(_manProfileCreate.value).collect {
                         _registerManProfileResult.value = RegisterManProfileResult.Success
                     }
+                    authManager.getProfiles()
                 } catch (e: Exception) {
                     _registerManProfileResult.value =
                         RegisterManProfileResult.Error(e.message ?: "Unknown error")
@@ -178,15 +182,19 @@ class ManProfileCreateViewModel
             }
         }
 
-        // TODO("Satoshi"): Implement checkNickNameDuplicate
-        suspend fun checkNickNameDuplicate(): Boolean {
-            val nickname = _manProfileCreate.value.nickName
+        suspend fun checkNickNameDuplicate() {
+            if (_manProfileCreateValidationResult.value.nickName !is FormValidationStatus.Valid) {
+                return
+            }
 
-            return withContext(viewModelScope.coroutineContext) {
-                // TODO: Check nickname duplicate
-                delay(1000)
-                _isNicknameDuplicated.value = true
-                return@withContext true
+            try {
+                val nickname = _manProfileCreate.value.nickName
+
+                checkNicknameDuplicatedUseCase(nickname).collect {
+                    _isNicknameDuplicated.value = it
+                }
+            } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
             }
         }
 

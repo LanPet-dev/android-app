@@ -11,10 +11,14 @@ import com.lanpet.domain.model.SocialAuthType
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.account.Account
 import com.lanpet.domain.model.account.AccountToken
+import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
 import com.lanpet.domain.usecase.profile.GetAllProfileUseCase
+import com.lanpet.domain.usecase.profile.GetDefaultProfileUseCase
+import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
+import com.lanpet.domain.usecase.profile.SetDefaultProfileUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
@@ -38,8 +41,11 @@ class AuthManagerTest {
 
     private lateinit var getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase
     private lateinit var registerAccountUseCase: RegisterAccountUseCase
+    private lateinit var getProfileDetailUseCase: GetProfileDetailUseCase
     private lateinit var getAccountInformationUseCase: GetAccountInformationUseCase
     private lateinit var getAllProfileUseCase: GetAllProfileUseCase
+    private lateinit var getDefaultProfileUseCase: GetDefaultProfileUseCase
+    private lateinit var setDefaultProfileUseCase: SetDefaultProfileUseCase
     private lateinit var authStateHolder: AuthStateHolder
 
     @BeforeEach
@@ -48,6 +54,9 @@ class AuthManagerTest {
         registerAccountUseCase = mockk()
         getAccountInformationUseCase = mockk()
         getAllProfileUseCase = mockk()
+        getProfileDetailUseCase = mockk()
+        getDefaultProfileUseCase = mockk()
+        setDefaultProfileUseCase = mockk()
         authStateHolder = AuthStateHolder()
 
         authManager =
@@ -56,6 +65,9 @@ class AuthManagerTest {
                 registerAccountUseCase,
                 getAccountInformationUseCase,
                 getAllProfileUseCase,
+                getProfileDetailUseCase,
+                getDefaultProfileUseCase,
+                setDefaultProfileUseCase,
                 authStateHolder,
             )
     }
@@ -110,86 +122,346 @@ class AuthManagerTest {
 
     @Nested
     inner class `Cognito 토큰 받기 성공 시` {
-        @Test
-        fun `유저가 존재하는 경우, 인증상태는 AuthState_Success 을 반환한다`(): Unit =
-            runTest {
-                // Given
-                val authCode = "AUTH-CODE"
-                coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
-                    flow {
-                        emit(
-                            SocialAuthToken(
-                                SocialAuthType.GOOGLE,
-                                "accessToken",
-                                "refreshToken",
-                            ),
-                        )
-                    }
-
-                coEvery { getAccountInformationUseCase() } returns
-                    flow {
-                        emit(
-                            Account(
-                                "accountId",
-                                "authId",
-                                authority = AuthorityType.USER,
-                                exitDate = null,
-                                exitReason = null,
-                            ),
-                        )
-                    }
-
-                coEvery { getAllProfileUseCase() } returns
-                    flow {
-                        emit(
-                            listOf(
-                                UserProfile(
-                                    "profileId",
-                                    ProfileType.BUTLER,
-                                    "nickName",
-                                    "bio",
-                                    "profileImageUri",
+        @Nested
+        inner class `account 정보가 존재하는 경우` {
+            @Test
+            fun `DefaultProfile 정보가 없는경우, AuthState_Fail 를 반환한다`() =
+                runTest {
+                    coEvery { getCognitoSocialAuthTokenUseCase("AUTH-CODE") } returns
+                        flow {
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
                                 ),
-                            ),
-                        )
-                    }
+                            )
+                        }
 
-                authManager.authState.test {
-                    // Default AuthState value
-                    assertInstanceOf<AuthState.Initial>(awaitItem())
+                    coEvery { getAccountInformationUseCase() } returns
+                        flow {
+                            emit(
+                                Account(
+                                    "accountId",
+                                    "authId",
+                                    authority = AuthorityType.USER,
+                                    exitDate = null,
+                                    exitReason = null,
+                                ),
+                            )
+                        }
 
-                    // When
-                    authManager.handleAuthCode(authCode)
+                    coEvery { getAllProfileUseCase() } returns
+                        flow {
+                            emit(
+                                listOf(
+                                    UserProfile(
+                                        "profileId",
+                                        ProfileType.BUTLER,
+                                        "nickName",
+                                        "profileImageUri",
+                                        "bio",
+                                    ),
+                                ),
+                            )
+                        }
 
-                    // First AuthState value
-                    assertInstanceOf<AuthState.Loading>(awaitItem())
+                    coEvery { getDefaultProfileUseCase("accountId") } returns
+                        flow {
+                            throw Exception("Failed to get default profile")
+                        }
 
-                    // Second AuthState value
-                    assertInstanceOf<AuthState.Success>(awaitItem())
+                    authManager.authState.test {
+                        // Default AuthState value
+                        assertInstanceOf<AuthState.Initial>(awaitItem())
 
-                    // Third AuthState value
-                    assertInstanceOf<AuthState.Success>(awaitItem())
+                        // When
+                        authManager.handleAuthCode("AUTH-CODE")
 
-                    ensureAllEventsConsumed()
-                    expectNoEvents()
+                        // First AuthState value
+                        assertInstanceOf<AuthState.Loading>(awaitItem())
 
-                    coVerify(exactly = 1) {
-                        getCognitoSocialAuthTokenUseCase(authCode)
-                        getAccountInformationUseCase()
-                        getAllProfileUseCase()
-                    }
-                    coVerify(exactly = 0) {
-                        registerAccountUseCase()
+                        // Third AuthState value
+                        assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                        ensureAllEventsConsumed()
+                        expectNoEvents()
+
+                        coVerify(exactly = 1) {
+                            getCognitoSocialAuthTokenUseCase("AUTH-CODE")
+                            getAccountInformationUseCase()
+                            getAllProfileUseCase()
+                            getDefaultProfileUseCase("accountId")
+                        }
                     }
                 }
-            }
-    }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Nested
-    inner class `유저 정보가 존재하지 않는 경우` {
+            @Test
+            fun `ProfileDetail 정보가 없는경우, AuthState_Fail 를 반환한다`() =
+                runTest {
+                    coEvery { getCognitoSocialAuthTokenUseCase("AUTH-CODE") } returns
+                        flow {
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
+                        }
+
+                    coEvery { getAccountInformationUseCase() } returns
+                        flow {
+                            emit(
+                                Account(
+                                    "accountId",
+                                    "authId",
+                                    authority = AuthorityType.USER,
+                                    exitDate = null,
+                                    exitReason = null,
+                                ),
+                            )
+                        }
+
+                    coEvery { getAllProfileUseCase() } returns
+                        flow {
+                            emit(
+                                listOf(
+                                    UserProfile(
+                                        "profileId",
+                                        ProfileType.BUTLER,
+                                        "nickName",
+                                        "profileImageUri",
+                                        "bio",
+                                    ),
+                                ),
+                            )
+                        }
+
+                    coEvery { getDefaultProfileUseCase("accountId") } returns
+                        flow {
+                            emit("profileId")
+                        }
+
+                    coEvery { getProfileDetailUseCase("profileId") } returns
+                        flow {
+                            throw Exception("Failed to get profile detail")
+                        }
+
+                    authManager.authState.test {
+                        // Default AuthState value
+                        assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                        // When
+                        authManager.handleAuthCode("AUTH-CODE")
+
+                        // First AuthState value
+                        assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                        // Third AuthState value
+                        assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                        ensureAllEventsConsumed()
+                        expectNoEvents()
+
+                        coVerify(exactly = 1) {
+                            getCognitoSocialAuthTokenUseCase("AUTH-CODE")
+                            getAccountInformationUseCase()
+                            getAllProfileUseCase()
+                            getDefaultProfileUseCase("accountId")
+                            getProfileDetailUseCase("profileId")
+                        }
+                    }
+                }
+
+            @Test
+            fun `profile 정보가 없는경우, AuthState_Success 를 반환한다`() =
+                runTest {
+                    coEvery { getCognitoSocialAuthTokenUseCase("AUTH-CODE") } returns
+                        flow {
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
+                        }
+
+                    coEvery { getAccountInformationUseCase() } returns
+                        flow {
+                            emit(
+                                Account(
+                                    "accountId",
+                                    "authId",
+                                    authority = AuthorityType.USER,
+                                    exitDate = null,
+                                    exitReason = null,
+                                ),
+                            )
+                        }
+
+                    coEvery { getAllProfileUseCase() } returns
+                        flow {
+                            emit(emptyList())
+                        }
+
+                    authManager.authState.test {
+                        // Default AuthState value
+                        assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                        // When
+                        authManager.handleAuthCode("AUTH-CODE")
+
+                        // First AuthState value
+                        assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                        // Second AuthState value
+                        assertInstanceOf<AuthState.Success>(awaitItem())
+
+                        ensureAllEventsConsumed()
+                        expectNoEvents()
+
+                        coVerify(exactly = 1) {
+                            getCognitoSocialAuthTokenUseCase("AUTH-CODE")
+                            getAccountInformationUseCase()
+                            getAllProfileUseCase()
+                        }
+                    }
+                }
+        }
+
+        @Nested
+        inner class `account 정보가 존재하지 않는 경우` {
+            @Test
+            fun `account 정보를 등록하고, 등록이 실패한 경우 인증상태는 AuthState_Fail 을 반환한다`() =
+                runTest {
+                    // Given
+                    val authCode = "AUTH-CODE"
+                    coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
+                        flow {
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
+                        }
+
+                    coEvery { getAccountInformationUseCase() } returns
+                        flow {
+                            throw Exception("Failed to get account information")
+                        }
+
+                    coEvery { registerAccountUseCase() } returns
+                        flow {
+                            throw Exception("Failed to register account")
+                        }
+
+                    authManager.authState.test {
+                        // Default AuthState value
+                        assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                        // When
+                        authManager.handleAuthCode(authCode)
+
+                        // First AuthState value
+                        assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                        // Second AuthState value
+                        assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                        ensureAllEventsConsumed()
+                        expectNoEvents()
+
+                        // Then
+                        coVerify(exactly = 1) {
+                            getCognitoSocialAuthTokenUseCase(authCode)
+                            getAccountInformationUseCase()
+                            registerAccountUseCase()
+                        }
+
+                        assertInstanceOf<AuthState.Fail>(authManager.authState.value)
+                    }
+                }
+
+            @Test
+            fun `profile 정보를 가져오지 못한 경우, AuthState_Success 를 반환한다`() =
+                runTest {
+                    // Given
+                    val authCode = "AUTH-CODE"
+                    coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
+                        flow {
+                            emit(
+                                SocialAuthToken(
+                                    SocialAuthType.GOOGLE,
+                                    "accessToken",
+                                    "refreshToken",
+                                ),
+                            )
+                        }
+
+                    coEvery { registerAccountUseCase() } returns
+                        flow {
+                            emit(AccountToken("accountId"))
+                        }
+
+                    coEvery { getAccountInformationUseCase() } returnsMany
+                        listOf(
+                            flow {
+                                throw Exception("Failed to get account information")
+                            },
+                            flow {
+                                emit(
+                                    Account(
+                                        "accountId",
+                                        "authId",
+                                        authority = AuthorityType.USER,
+                                        exitDate = null,
+                                        exitReason = null,
+                                    ),
+                                )
+                            },
+                        )
+
+                    coEvery {
+                        getAllProfileUseCase()
+                    } returns
+                        flow {
+                            throw Exception("Failed to get profile")
+                        }
+
+                    authManager.authState.test {
+                        // Default AuthState value
+                        assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                        // When
+                        authManager.handleAuthCode(authCode)
+
+                        // First AuthState value
+                        assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                        // Second AuthState value
+                        assertInstanceOf<AuthState.Success>(awaitItem())
+
+                        ensureAllEventsConsumed()
+                        expectNoEvents()
+
+                        coVerify(exactly = 2) {
+                            getAccountInformationUseCase()
+                        }
+
+                        coVerify(exactly = 1) {
+                            getAllProfileUseCase()
+                            getCognitoSocialAuthTokenUseCase(authCode)
+                        }
+                    }
+                }
+        }
+
         @Test
-        fun `유저정보를 등록하고, 등록이 실패한 경우 인증상태는 AuthState_Fail 을 반환한다`() =
+        fun `defaultProfile 정보를 가져오지 못한 경우, AuthState_Fail 을 반환한다`() =
             runTest {
                 // Given
                 val authCode = "AUTH-CODE"
@@ -202,64 +474,11 @@ class AuthManagerTest {
                                 "refreshToken",
                             ),
                         )
-                    }
-
-                coEvery { getAccountInformationUseCase() } returns
-                    flow {
-                        throw Exception("Failed to get account information")
                     }
 
                 coEvery { registerAccountUseCase() } returns
                     flow {
-                        throw Exception("Failed to register account")
-                    }
-
-                authManager.authState.test {
-                    // Default AuthState value
-                    assertInstanceOf<AuthState.Initial>(awaitItem())
-
-                    // When
-                    authManager.handleAuthCode(authCode)
-                    advanceUntilIdle()
-
-                    // First AuthState value
-                    assertInstanceOf<AuthState.Loading>(awaitItem())
-
-                    // Second AuthState value
-                    assertInstanceOf<AuthState.Fail>(awaitItem())
-
-                    ensureAllEventsConsumed()
-                    expectNoEvents()
-
-                    // Then
-                    coVerify(exactly = 1) {
-                        getCognitoSocialAuthTokenUseCase(authCode)
-                        getAccountInformationUseCase()
-                        registerAccountUseCase()
-                    }
-
-                    coVerify(exactly = 0) {
-                        getAllProfileUseCase()
-                    }
-
-                    assertInstanceOf<AuthState.Fail>(authManager.authState.value)
-                }
-            }
-
-        @Test
-        fun `유저정보를 등록하고, 등록이 성공한 경우 인증상태는 AuthState_Success 을 반환한다`() =
-            runTest {
-                // Given
-                val authCode = "AUTH-CODE"
-                coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
-                    flow {
-                        emit(
-                            SocialAuthToken(
-                                SocialAuthType.GOOGLE,
-                                "accessToken",
-                                "refreshToken",
-                            ),
-                        )
+                        emit(AccountToken("accountId"))
                     }
 
                 coEvery { getAccountInformationUseCase() } returnsMany
@@ -279,12 +498,6 @@ class AuthManagerTest {
                             )
                         },
                     )
-
-                coEvery { registerAccountUseCase() } returns
-                    flow {
-                        emit(AccountToken("accountId"))
-                    }
-
                 coEvery { getAllProfileUseCase() } returns
                     flow {
                         emit(
@@ -293,9 +506,208 @@ class AuthManagerTest {
                                     "profileId",
                                     ProfileType.BUTLER,
                                     "nickName",
-                                    "bio",
                                     "profileImageUri",
+                                    "bio",
                                 ),
+                            ),
+                        )
+                    }
+
+                coEvery { getDefaultProfileUseCase("accountId") } returns
+                    flow {
+                        throw Exception("Failed to get default profile")
+                    }
+
+                authManager.authState.test {
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                    // When
+                    authManager.handleAuthCode(authCode)
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                    // Third AuthState value
+                    assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    coVerify(exactly = 2) {
+                        getAccountInformationUseCase()
+                    }
+
+                    coVerify(exactly = 1) {
+                        getAllProfileUseCase()
+                        getCognitoSocialAuthTokenUseCase(authCode)
+                        registerAccountUseCase()
+                        getDefaultProfileUseCase("accountId")
+                    }
+                }
+            }
+
+        @Test
+        fun `detailProfile 정보를 가져오지 못한경우, AuthState_Fail 을 반환한다`() {
+            runTest {
+                // Given
+                val authCode = "AUTH-CODE"
+                coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
+                    flow {
+                        emit(
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        )
+                    }
+
+                coEvery { registerAccountUseCase() } returns
+                    flow {
+                        emit(AccountToken("accountId"))
+                    }
+
+                coEvery { getAccountInformationUseCase() } returnsMany
+                    listOf(
+                        flow {
+                            throw Exception("Failed to get account information")
+                        },
+                        flow {
+                            emit(
+                                Account(
+                                    "accountId",
+                                    "authId",
+                                    authority = AuthorityType.USER,
+                                    exitDate = null,
+                                    exitReason = null,
+                                ),
+                            )
+                        },
+                    )
+                coEvery { getAllProfileUseCase() } returns
+                    flow {
+                        emit(
+                            listOf(
+                                UserProfile(
+                                    "profileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "profileImageUri",
+                                    "bio",
+                                ),
+                            ),
+                        )
+                    }
+
+                coEvery { getDefaultProfileUseCase("accountId") } returns
+                    flow {
+                        emit("profileId")
+                    }
+
+                coEvery { getProfileDetailUseCase("profileId") } returns
+                    flow {
+                        throw Exception("Failed to get profile detail")
+                    }
+
+                authManager.authState.test {
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                    // When
+                    authManager.handleAuthCode(authCode)
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Loading>(awaitItem())
+
+                    // Third AuthState value
+                    assertInstanceOf<AuthState.Fail>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+
+                    coVerify(exactly = 2) {
+                        getAccountInformationUseCase()
+                    }
+
+                    coVerify(exactly = 1) {
+                        getAllProfileUseCase()
+                        getCognitoSocialAuthTokenUseCase(authCode)
+                        registerAccountUseCase()
+                        getDefaultProfileUseCase("accountId")
+                        getProfileDetailUseCase("profileId")
+                    }
+                }
+            }
+        }
+
+        @Test
+        fun `handleNoAccount 성공 시, AuthState_Success 을 반환한다`() =
+            runTest {
+                // Given
+                val authCode = "AUTH-CODE"
+                coEvery { getCognitoSocialAuthTokenUseCase(authCode) } returns
+                    flow {
+                        emit(
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        )
+                    }
+
+                coEvery { registerAccountUseCase() } returns
+                    flow {
+                        emit(AccountToken("accountId"))
+                    }
+
+                coEvery { getAccountInformationUseCase() } returnsMany
+                    listOf(
+                        flow {
+                            throw Exception("Failed to get account information")
+                        },
+                        flow {
+                            emit(
+                                Account(
+                                    "accountId",
+                                    "authId",
+                                    authority = AuthorityType.USER,
+                                    exitDate = null,
+                                    exitReason = null,
+                                ),
+                            )
+                        },
+                    )
+                coEvery { getAllProfileUseCase() } returns
+                    flow {
+                        emit(
+                            listOf(
+                                UserProfile(
+                                    "profileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "profileImageUri",
+                                    "bio",
+                                ),
+                            ),
+                        )
+                    }
+
+                coEvery { getDefaultProfileUseCase("accountId") } returns
+                    flow {
+                        emit("profileId")
+                    }
+
+                coEvery { getProfileDetailUseCase("profileId") } returns
+                    flow {
+                        emit(
+                            UserProfileDetail(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
                             ),
                         )
                     }
@@ -309,9 +721,6 @@ class AuthManagerTest {
 
                     // First AuthState value
                     assertInstanceOf<AuthState.Loading>(awaitItem())
-
-                    // Second AuthState value
-                    assertInstanceOf<AuthState.Success>(awaitItem())
 
                     // Third AuthState value
                     assertInstanceOf<AuthState.Success>(awaitItem())
@@ -327,6 +736,8 @@ class AuthManagerTest {
                         getAllProfileUseCase()
                         getCognitoSocialAuthTokenUseCase(authCode)
                         registerAccountUseCase()
+                        getDefaultProfileUseCase("accountId")
+                        getProfileDetailUseCase("profileId")
                     }
                 }
             }

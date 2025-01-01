@@ -8,4 +8,7 @@ interface AccountRepository {
     suspend fun registerAccount(): Flow<AccountToken>
 
     suspend fun getAccount(): Flow<Account>
+
+    // TODO: Define exact params
+    suspend fun leaveMember(): Flow<Boolean>
 }
