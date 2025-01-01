@@ -21,8 +21,7 @@ data class RegisterPetProfileRequest(
             RegisterPetProfileRequest(
                 nickname = petProfileCreate.nickName,
                 pictureUrl =
-                    petProfileCreate.profileImageUri?.path
-                        ?: "https://via.placeholder.com/150",
+                    petProfileCreate.profileImageUri?.path,
                 introduction = petProfileCreate.bio,
                 profileType = petProfileCreate.type,
                 pet =
@@ -38,7 +37,7 @@ data class RegisterPetProfileRequest(
         fun fromDomainToUpdateRequest(petProfile: PetProfile): UpdateProfileRequest =
             UpdateProfileRequest(
                 nickname = petProfile.nickName,
-                pictureUrl = petProfile.profileImageUri?.path ?: "https://via.placeholder.com/150",
+                pictureUrl = petProfile.profileImageUri?.path,
                 introduction = petProfile.bio,
                 pet =
                     petProfile.pet?.let {

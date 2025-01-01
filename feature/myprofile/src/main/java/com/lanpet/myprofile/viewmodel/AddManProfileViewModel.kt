@@ -5,17 +5,16 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.Age
-import com.lanpet.domain.model.ManProfile
+import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Butler
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
-import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
-import com.lanpet.domain.usecase.profile.ModifyManProfileUseCase
-import com.lanpet.myprofile.model.ManProfileUpdate
+import com.lanpet.domain.usecase.profile.RegisterManProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,24 +25,35 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ManageManProfileViewModel
+class AddManProfileViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
-        private val modifyManProfileUseCase: ModifyManProfileUseCase,
-        private val getProfileDetailUseCase: GetProfileDetailUseCase,
+        private val registerManProfileUseCase: RegisterManProfileUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         private val _uiState =
             MutableStateFlow(
-                ManageManProfileUiState(
-                    manProfileUpdate = null,
+                AddManProfileUiState(
+                    manProfileCreate =
+                        ManProfileCreate(
+                            profileImageUri = null,
+                            nickName = "",
+                            bio = "",
+                            butler =
+                                Butler(
+                                    age = Age.NONE,
+                                    preferredPet = emptyList(),
+                                ),
+                            type = ProfileType.BUTLER,
+                        ),
                 ),
             )
         val uiState = _uiState.asStateFlow()
 
         private val manProfileUpdateValidator =
-            ManProfileUpdateValidator(
+            AddManProfileValidator(
                 profileImageUri =
                     FormValidator { uri ->
                         FormValidationStatus.Valid()
@@ -78,8 +88,8 @@ class ManageManProfileViewModel
         fun updateProfileImageUri(uri: Uri) {
             _uiState.value =
                 _uiState.value.copy(
-                    manProfileUpdate =
-                        _uiState.value.manProfileUpdate?.copy(
+                    manProfileCreate =
+                        _uiState.value.manProfileCreate?.copy(
                             profileImageUri = uri,
                         ),
                     validationStatus =
@@ -92,8 +102,8 @@ class ManageManProfileViewModel
         fun updateBio(bio: String) {
             _uiState.value =
                 _uiState.value.copy(
-                    manProfileUpdate =
-                        _uiState.value.manProfileUpdate?.copy(
+                    manProfileCreate =
+                        _uiState.value.manProfileCreate?.copy(
                             bio = bio,
                         ),
                     validationStatus =
@@ -106,13 +116,17 @@ class ManageManProfileViewModel
         fun updateButlerAge(age: Age) {
             _uiState.value =
                 _uiState.value.copy(
-                    manProfileUpdate =
-                        _uiState.value.manProfileUpdate?.copy(
-                            butler =
-                                _uiState.value.manProfileUpdate?.butler?.copy(
-                                    age = age,
-                                ),
-                        ),
+                    manProfileCreate =
+                        _uiState.value.manProfileCreate
+                            ?.butler
+                            ?.copy(
+                                age = age,
+                            )?.let {
+                                _uiState.value.manProfileCreate?.copy(
+                                    butler =
+                                    it,
+                                )
+                            },
                     validationStatus =
                         _uiState.value.validationStatus.copy(
                             butler =
@@ -120,7 +134,7 @@ class ManageManProfileViewModel
                                     Butler(
                                         age = age,
                                         preferredPet =
-                                            _uiState.value.manProfileUpdate
+                                            _uiState.value.manProfileCreate
                                                 ?.butler
                                                 ?.preferredPet
                                                 ?: emptyList(),
@@ -132,7 +146,7 @@ class ManageManProfileViewModel
 
         fun updateButlerPreferredPet(preferredPet: PetCategory) {
             val currentPreferredPet =
-                _uiState.value.manProfileUpdate
+                _uiState.value.manProfileCreate
                     ?.butler
                     ?.preferredPet
                     ?.toMutableList()
@@ -146,24 +160,31 @@ class ManageManProfileViewModel
 
             _uiState.value =
                 _uiState.value.copy(
-                    manProfileUpdate =
-                        _uiState.value.manProfileUpdate?.copy(
-                            butler =
-                                _uiState.value.manProfileUpdate?.butler?.copy(
-                                    preferredPet = currentPreferredPet,
-                                ),
-                        ),
+                    manProfileCreate =
+                        _uiState.value.manProfileCreate
+                            ?.butler
+                            ?.copy(
+                                preferredPet = currentPreferredPet,
+                            )?.let {
+                                _uiState.value.manProfileCreate?.copy(
+                                    butler =
+                                    it,
+                                )
+                            },
                     validationStatus =
                         _uiState.value.validationStatus.copy(
                             butler =
                                 manProfileUpdateValidator.butler.validate(
-                                    Butler(
-                                        age =
-                                            _uiState.value.manProfileUpdate
-                                                ?.butler
-                                                ?.age!!,
-                                        preferredPet = currentPreferredPet,
-                                    ),
+                                    _uiState.value.manProfileCreate
+                                        ?.butler
+                                        ?.age
+                                        ?.let {
+                                            Butler(
+                                                age =
+                                                it,
+                                                preferredPet = currentPreferredPet,
+                                            )
+                                        },
                                 ),
                         ),
                 )
@@ -173,15 +194,15 @@ class ManageManProfileViewModel
             _uiState.value =
                 _uiState.value.copy(
                     nicknameDuplicateCheck = null,
-                    manProfileUpdate =
-                        _uiState.value.manProfileUpdate?.copy(
+                    manProfileCreate =
+                        _uiState.value.manProfileCreate?.copy(
                             nickName = nickName,
                         ),
                 )
         }
 
         fun checkNicknameDuplicate() {
-            if (_uiState.value.manProfileUpdate
+            if (_uiState.value.manProfileCreate
                     ?.nickName
                     .isNullOrEmpty()
             ) {
@@ -189,7 +210,7 @@ class ManageManProfileViewModel
             }
             viewModelScope.launch {
                 checkNicknameDuplicatedUseCase(
-                    _uiState.value.manProfileUpdate?.nickName!!,
+                    _uiState.value.manProfileCreate?.nickName!!,
                 ).collect { isDuplicated ->
                     _uiState.value =
                         _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
@@ -199,10 +220,8 @@ class ManageManProfileViewModel
 
         private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
-        fun modifyManProfile() {
-            if (_uiState.value.manProfileUpdate == null) {
-                return
-            }
+        fun addManProfile() {
+            val manProfileCreate = _uiState.value.manProfileCreate ?: return
 
             _uiState.value =
                 _uiState.value.copy(
@@ -210,19 +229,19 @@ class ManageManProfileViewModel
                         _uiState.value.validationStatus.copy(
                             profileImageUri =
                                 manProfileUpdateValidator.profileImageUri.validate(
-                                    _uiState.value.manProfileUpdate!!.profileImageUri,
+                                    _uiState.value.manProfileCreate!!.profileImageUri,
                                 ),
                             nickName =
                                 manProfileUpdateValidator.nickName.validate(
-                                    _uiState.value.manProfileUpdate!!.nickName,
+                                    _uiState.value.manProfileCreate!!.nickName,
                                 ),
                             bio =
                                 manProfileUpdateValidator.bio.validate(
-                                    _uiState.value.manProfileUpdate!!.bio,
+                                    _uiState.value.manProfileCreate!!.bio,
                                 ),
                             butler =
                                 manProfileUpdateValidator.butler.validate(
-                                    _uiState.value.manProfileUpdate!!.butler,
+                                    _uiState.value.manProfileCreate!!.butler,
                                 ),
                         ),
                 )
@@ -234,70 +253,27 @@ class ManageManProfileViewModel
                 return
             }
 
-            val manProfile =
-                ManProfile(
-                    profileImageUri = _uiState.value.manProfileUpdate?.profileImageUri,
-                    nickName = _uiState.value.manProfileUpdate?.nickName,
-                    bio = _uiState.value.manProfileUpdate?.bio,
-                    butler = _uiState.value.manProfileUpdate?.butler,
-                    type = ProfileType.BUTLER,
-                )
-
-            Timber.d("manProfileUpdate: $manProfile")
-
             viewModelScope.launch {
-                modifyManProfileUseCase(
-                    _uiState.value.manProfileUpdate!!.id,
-                    manProfile,
-                ).collect {
-                    _uiEvent.emit(it)
-                }
-            }
-        }
-
-        init {
-            savedStateHandle.get<String>("profileId")?.let {
-                Timber.i("profileId: $it")
-
-                viewModelScope.launch {
-                    getProfileDetailUseCase(it).collect { profileDetail ->
-                        Timber.i("profileDetail: $profileDetail")
-
-                        _uiState.value =
-                            _uiState.value.copy(
-                                manProfileUpdate =
-                                    ManProfileUpdate(
-                                        profileImageUri =
-                                            profileDetail.pictureUrl?.let {
-                                                Uri.parse(
-                                                    profileDetail.pictureUrl,
-                                                )
-                                            },
-                                        nickName = profileDetail.nickname,
-                                        bio = profileDetail.introduction,
-                                        id = profileDetail.id,
-                                        type = ProfileType.BUTLER,
-                                        butler =
-                                            Butler(
-                                                age = profileDetail.butler!!.age,
-                                                preferredPet =
-                                                    profileDetail.butler?.preferredPet
-                                                        ?: emptyList(),
-                                            ),
-                                    ),
-                            )
+                runCatching {
+                    registerManProfileUseCase(
+                        manProfileCreate = manProfileCreate,
+                    ).collect {
+                        _uiEvent.emit(true)
+                        authManager.getProfiles()
                     }
+                }.onFailure {
+                    _uiEvent.emit(false)
                 }
             }
         }
     }
 
 @Stable
-data class ManageManProfileUiState(
-    val manProfileUpdate: ManProfileUpdate?,
+data class AddManProfileUiState(
+    val manProfileCreate: ManProfileCreate?,
     val nicknameDuplicateCheck: Boolean? = null,
-    val validationStatus: ManProfileUpdateValidationStatus =
-        ManProfileUpdateValidationStatus(
+    val validationStatus: AddManProfileValidationStatus =
+        AddManProfileValidationStatus(
             profileImageUri = FormValidationStatus.Initial(),
             nickName = FormValidationStatus.Initial(),
             bio = FormValidationStatus.Initial(),
@@ -306,7 +282,7 @@ data class ManageManProfileUiState(
 )
 
 @Stable
-data class ManProfileUpdateValidator(
+data class AddManProfileValidator(
     val profileImageUri: FormValidator<Uri?>,
     val nickName: FormValidator<String>,
     val bio: FormValidator<String?>,
@@ -314,7 +290,7 @@ data class ManProfileUpdateValidator(
 )
 
 @Stable
-data class ManProfileUpdateValidationStatus(
+data class AddManProfileValidationStatus(
     val profileImageUri: FormValidationStatus,
     val nickName: FormValidationStatus,
     val bio: FormValidationStatus,

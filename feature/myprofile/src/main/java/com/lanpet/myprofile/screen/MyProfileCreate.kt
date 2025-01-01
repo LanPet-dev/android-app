@@ -81,7 +81,7 @@ fun MyProfileCreateProfileScreen(
     modifier: Modifier = Modifier,
     profileListViewModel: ProfileListViewModel = hiltViewModel(),
     onNavigateUp: (() -> Unit)? = null,
-    onNavigateToAddProfile: () -> Unit = {},
+    onNavigateToAddProfileEntry: () -> Unit = {},
     onNavigateToModifyProfile: (String, ProfileType) -> Unit = { profileId, profileType -> },
 ) {
     val authManager = LocalAuthManager.current
@@ -263,7 +263,7 @@ fun MyProfileCreateProfileScreen(
                     }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
                 if (userProfiles.size < 3) {
-                    AddProfileButton { onNavigateToAddProfile() }
+                    AddProfileButton { onNavigateToAddProfileEntry() }
                 }
             }
         }
