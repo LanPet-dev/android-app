@@ -3,6 +3,7 @@ package com.lanpet.profile.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.Age
@@ -27,6 +28,7 @@ class ManProfileCreateViewModel
     constructor(
         private val registerManProfileUseCase: RegisterManProfileUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         private val _manProfileCreate =
             MutableStateFlow(
@@ -172,6 +174,7 @@ class ManProfileCreateViewModel
                     registerManProfileUseCase(_manProfileCreate.value).collect {
                         _registerManProfileResult.value = RegisterManProfileResult.Success
                     }
+                    authManager.getProfiles()
                 } catch (e: Exception) {
                     _registerManProfileResult.value =
                         RegisterManProfileResult.Error(e.message ?: "Unknown error")

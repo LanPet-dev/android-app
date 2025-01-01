@@ -240,7 +240,7 @@ fun MyProfileCreateProfileScreen(
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 userProfiles
                     .filterNot { profile ->
-                        profile.isDefault
+                        profile.id == defaultUserProfile.id
                     }.forEach { userProfile ->
                         Timber.d("userProfile: $userProfile")
                         ProfileListCard(
