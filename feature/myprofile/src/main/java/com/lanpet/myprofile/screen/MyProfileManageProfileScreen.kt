@@ -92,13 +92,13 @@ fun MyProfileManageProfileScreen(
     ) {
         Surface(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column(
                 modifier =
@@ -288,9 +288,9 @@ private fun BioInputSection(
 
             Box(
                 modifier =
-                Modifier
-                    .matchParentSize()
-                    .padding(bottom = 16.dp, end = 16.dp),
+                    Modifier
+                        .matchParentSize()
+                        .padding(bottom = 16.dp, end = 16.dp),
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Text(
