@@ -45,6 +45,7 @@ import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
+import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfileEntry
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
 import com.lanpet.myprofile.navigation.navigateToMyProfileCreateProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileManageProfile
@@ -189,7 +190,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                             navController.navigateToMyProfileCreateProfile()
                         },
                         onNavigateToMyProfileAddProfile = {
-                            navController.navigateToMyProfileAddProfile()
+                            navController.navigateToMyProfileAddProfile(
+                                profileType = it,
+                            )
                         },
                         onNavigateToSettings = {
                             navController.navigateToSettings()
@@ -205,6 +208,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                                 profileId = profileId,
                                 profileType = profileType,
                             )
+                        },
+                        onNavigateToMyProfileAddProfileEntry = {
+                            navController.navigateToMyProfileAddProfileEntry()
                         },
                     )
                     freeNavGraph(

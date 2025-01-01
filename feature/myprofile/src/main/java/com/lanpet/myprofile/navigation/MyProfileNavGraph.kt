@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.domain.model.ProfileType
+import com.lanpet.myprofile.screen.MyProfileAddProfileEntryScreen
 import com.lanpet.myprofile.screen.MyProfileAddProfileScreen
 import com.lanpet.myprofile.screen.MyProfileCreateProfileScreen
 import com.lanpet.myprofile.screen.MyProfileManageProfileScreen
@@ -17,7 +18,8 @@ fun NavGraphBuilder.myProfileNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToMyProfileCreateProfile: () -> Unit,
     onNavigateToMyProfileModifyProfile: () -> Unit,
-    onNavigateToMyProfileAddProfile: () -> Unit,
+    onNavigateToMyProfileAddProfile: (ProfileType) -> Unit,
+    onNavigateToMyProfileAddProfileEntry: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToMyPosts: () -> Unit,
     onNavigateToMyProfileManageProfile: (String, ProfileType) -> Unit,
@@ -38,29 +40,25 @@ fun NavGraphBuilder.myProfileNavGraph(
                 onNavigateUp = {
                     onNavigateUp()
                 },
-                onNavigateToAddProfile = onNavigateToMyProfileAddProfile,
+                onNavigateToAddProfileEntry = onNavigateToMyProfileAddProfileEntry,
                 onNavigateToModifyProfile = onNavigateToMyProfileManageProfile,
             )
         }
+        composable<MyProfileAddProfileEntry> {
+            MyProfileAddProfileEntryScreen(
+                onNavigateUp = {
+                    onNavigateUp()
+                },
+                onNavigateToAddPetProfile = {
+                    onNavigateToMyProfileAddProfile(ProfileType.PET)
+                },
+                onNavigateToAddManProfile = {
+                    onNavigateToMyProfileAddProfile(ProfileType.BUTLER)
+                },
+            )
+        }
+
         composable<MyProfileAddProfile> {
-            MyProfileAddProfileScreen(
-                onClose = {
-                    onNavigateUp()
-                },
-            )
-        }
-        composable<MyProfileModifyProfile> {
-            MyProfileModifyProfileScreen(
-                onClose = {
-                    onNavigateUp()
-                },
-            )
-        }
-        composable<MyProfileManageProfile>
-        {
-            val profileId =
-                it.arguments?.getString("profileId")
-                    ?: throw IllegalArgumentException("profileId is required")
             val profileType =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.arguments?.getSerializable("profileType", ProfileType::class.java)
@@ -71,21 +69,58 @@ fun NavGraphBuilder.myProfileNavGraph(
                 }
 
             argument("args") {
-                MyProfileManageProfile(
-                    profileId = profileId,
+                MyProfileAddProfile(
                     profileType = profileType,
                 )
             }
 
-            MyProfileManageProfileScreen(
+            MyProfileAddProfileScreen(
                 args =
-                    MyProfileManageProfile(
-                        profileId = profileId,
+                    MyProfileAddProfile(
                         profileType = profileType,
                     ),
-                onNavigateUp = onNavigateUp,
+                onNavigateUp = {
+                    onNavigateUp()
+                },
             )
         }
+    }
+    composable<MyProfileModifyProfile> {
+        MyProfileModifyProfileScreen(
+            onClose = {
+                onNavigateUp()
+            },
+        )
+    }
+    composable<MyProfileManageProfile>
+    {
+        val profileId =
+            it.arguments?.getString("profileId")
+                ?: throw IllegalArgumentException("profileId is required")
+        val profileType =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.arguments?.getSerializable("profileType", ProfileType::class.java)
+                    ?: throw IllegalArgumentException("profileType is required")
+            } else {
+                it.arguments?.getSerializable("profileType") as? ProfileType
+                    ?: throw IllegalArgumentException("profileType is required")
+            }
+
+        argument("args") {
+            MyProfileManageProfile(
+                profileId = profileId,
+                profileType = profileType,
+            )
+        }
+
+        MyProfileManageProfileScreen(
+            args =
+                MyProfileManageProfile(
+                    profileId = profileId,
+                    profileType = profileType,
+                ),
+            onNavigateUp = onNavigateUp,
+        )
     }
 }
 
@@ -100,9 +135,11 @@ fun NavController.navigateToMyProfileBaseRoute() {
     }
 }
 
-fun NavController.navigateToMyProfileAddProfile() {
+fun NavController.navigateToMyProfileAddProfile(profileType: ProfileType) {
     navigate(
-        MyProfileAddProfile,
+        MyProfileAddProfile(
+            profileType = profileType,
+        ),
     ) {
         launchSingleTop = true
         restoreState = true
@@ -163,6 +200,15 @@ fun NavController.navigateToMyProfile() {
     }
 }
 
+fun NavController.navigateToMyProfileAddProfileEntry() {
+    navigate(
+        MyProfileAddProfileEntry,
+    ) {
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
 @Serializable
 object MyProfileBaseRoute
 
@@ -175,7 +221,9 @@ data object MyProfile {
 object MyProfileCreateProfile
 
 @Serializable
-object MyProfileAddProfile
+data class MyProfileAddProfile(
+    val profileType: ProfileType,
+)
 
 @Serializable
 object MyProfileModifyProfile
@@ -188,3 +236,6 @@ data class MyProfileManageProfile(
     val profileId: String,
     val profileType: ProfileType,
 )
+
+@Serializable
+object MyProfileAddProfileEntry

@@ -254,6 +254,7 @@ open class AuthManager
                         profile = profile,
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
+                        navigationHandleFlag = false,
                     ),
                 )
             } catch (e: Exception) {
@@ -296,6 +297,7 @@ open class AuthManager
                         profile = res,
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
+                        navigationHandleFlag = false,
                     ),
                 )
             } catch (e: Exception) {
