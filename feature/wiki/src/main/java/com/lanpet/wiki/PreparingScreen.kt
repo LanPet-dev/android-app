@@ -26,13 +26,14 @@ import com.lanpet.core.designsystem.theme.customTypography
 @Composable
 fun PreparingScreen(modifier: Modifier = Modifier) {
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .offset(y = maxHeight * 0.2f),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .offset(y = maxHeight * 0.2f),
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,8 +42,8 @@ fun PreparingScreen(modifier: Modifier = Modifier) {
                     painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_preparing),
                     contentDescription = null,
                     modifier =
-                    Modifier
-                        .size(200.dp),
+                        Modifier
+                            .size(200.dp),
                 )
                 Text(
                     text = stringResource(R.string.preparing_screen_title),
@@ -57,12 +58,12 @@ fun PreparingScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun PreparingScreenPreview() {
     LanPetAppTheme {
-        Scaffold() {
+        Scaffold {
             Surface(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it),
             ) {
                 PreparingScreen()
             }

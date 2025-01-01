@@ -31,31 +31,31 @@ fun MemberLeaveCompleteScreen(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit = {},
 ) {
-
     BackHandler {
         onLogout()
     }
 
-    Scaffold() {
+    Scaffold {
         Surface(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(
-                    horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.Layout.vertical,
-                ),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(
+                        horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                        vertical = LanPetDimensions.Margin.Layout.vertical,
+                    ),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,12 +77,13 @@ fun MemberLeaveCompleteScreen(
                     onClick = {
                         onLogout()
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                            vertical = LanPetDimensions.Margin.Layout.vertical
-                        )
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = LanPetDimensions.Margin.Layout.horizontal,
+                                vertical = LanPetDimensions.Margin.Layout.vertical,
+                            ),
                 )
             }
         }
