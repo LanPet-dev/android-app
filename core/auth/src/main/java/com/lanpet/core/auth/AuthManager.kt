@@ -183,11 +183,14 @@ open class AuthManager
             try {
                 var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
                 if (defaultProfileId.isNullOrEmpty()) {
-                    setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
+                    setDefaultProfileUseCase!!(accountId, profiles.first().id)
+                        .timeout(5.seconds)
+                        .first()
                     defaultProfileId = profiles.first().id
                 }
 
-                val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
+                val defaultProfile =
+                    profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
                 return defaultProfile
             } catch (e: Exception) {
                 throw AuthException.NoDefaultProfileException(accountId = accountId)
