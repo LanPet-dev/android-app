@@ -186,7 +186,8 @@ open class AuthManager
             profiles: List<UserProfile>,
         ): UserProfile {
             try {
-                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).firstOrNull()
+                var defaultProfileId =
+                    getDefaultProfileUseCase!!(accountId).timeout(5.seconds).firstOrNull()
                 if (defaultProfileId.isNullOrEmpty()) {
                     setDefaultProfileUseCase!!(accountId, profiles.first().id)
                         .timeout(5.seconds)
@@ -216,7 +217,7 @@ open class AuthManager
         suspend fun getProfiles(account: Account): List<UserProfile> =
             try {
                 val res = getAllProfileUseCase!!().timeout(5.seconds).first()
-                if (res.isEmpty()) throw AuthException.NoProfileException(account = account) else res
+                res.ifEmpty { throw AuthException.NoProfileException(account = account) }
             } catch (e: Exception) {
                 throw AuthException.NoProfileException(
                     account = account,

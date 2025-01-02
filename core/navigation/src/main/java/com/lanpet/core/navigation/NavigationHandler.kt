@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
+import com.lanpet.profile.navigation.navigateToProfileCreateHasPet
 import timber.log.Timber
 
 class NavigationHandler(
@@ -47,10 +48,13 @@ class NavigationHandler(
             is AuthState.Success -> {
 //                 only for test
 //                navController.navigateToProfileCreateHasPet()
-
-                navController.navigateToMainScreen(
-                    bottomNavItem = BottomNavItem.Wiki,
-                )
+                if (currentAuthState.profile.isEmpty()) {
+                    navController.navigateToProfileCreateHasPet()
+                } else {
+                    navController.navigateToMainScreen(
+                        bottomNavItem = BottomNavItem.Wiki,
+                    )
+                }
             }
 
             is AuthState.Logout -> {
@@ -58,9 +62,7 @@ class NavigationHandler(
             }
 
             is AuthState.Fail -> {
-                navController.navigateToMainScreen(
-                    bottomNavItem = BottomNavItem.Wiki,
-                )
+                navController.navigateToLoginScreen()
             }
 
             is AuthState.Loading -> {
