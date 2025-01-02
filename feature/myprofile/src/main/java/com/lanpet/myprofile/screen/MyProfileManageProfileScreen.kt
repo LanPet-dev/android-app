@@ -138,7 +138,7 @@ private fun PetProfileAddView(
     val petProfileUiState by managePetProfileViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp }
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp() }
 
     LaunchedEffect(Unit) {
         managePetProfileViewModel.uiEvent.collectLatest { event ->
@@ -216,7 +216,7 @@ private fun ManProfileAddView(
     onNavigateUp: () -> Unit = { },
 ) {
     val manageProfileUiState by manageManProfileViewModel.uiState.collectAsStateWithLifecycle()
-    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp }
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp() }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
