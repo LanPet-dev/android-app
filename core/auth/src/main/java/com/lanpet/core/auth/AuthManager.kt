@@ -233,6 +233,8 @@ open class AuthManager
                 )
             }
 
+
+        // TODO("Satoshi"): refactor
         @OptIn(FlowPreview::class)
         suspend fun getProfiles() {
             try {
@@ -341,7 +343,6 @@ open class AuthManager
                     ),
                 )
             } catch (e: Exception) {
-                // TODO("Satoshi"): rethrow each exception type for better error handling, and throw UpdateProfileFailException when other type's exception is thrown
                 Timber.e(e)
                 when (e) {
                     is AuthException -> throw e
