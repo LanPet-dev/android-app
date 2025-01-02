@@ -57,6 +57,7 @@ open class AuthManager
          */
         val currentProfileDetail = authStateHolder.currentProfileDetail
 
+        @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
                 runCatching {
