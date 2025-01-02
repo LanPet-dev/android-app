@@ -34,6 +34,7 @@ import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToLogoutDialog
 import com.lanpet.feature.settings.navigation.navigateToMemberLeave
+import com.lanpet.feature.settings.navigation.navigateToMemberLeaveComplete
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
@@ -239,6 +240,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     },
                     onNavigateToMemberLeave = {
                         navController.navigateToMemberLeave()
+                    },
+                    onNavigateToMemberLeaveComplete = {
+                        navController.navigateToMemberLeaveComplete()
                     },
                 )
                 myPostsNavGraph(

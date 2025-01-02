@@ -59,6 +59,7 @@ fun MemberLeaveScreen(
     modifier: Modifier = Modifier,
     memberLeaveViewModel: MemberLeaveViewModel = hiltViewModel<MemberLeaveViewModel>(),
     onNavigateUp: () -> Unit = {},
+    onNavigateToMemberLeaveComplete: () -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
     val profile by LocalAuthManager.current.defaultUserProfile.collectAsStateWithLifecycle()
@@ -68,6 +69,7 @@ fun MemberLeaveScreen(
     LaunchedEffect(leaveState) {
         when (leaveState) {
             is MemberLeaveState.Success -> {
+                onNavigateToMemberLeaveComplete()
             }
 
             is MemberLeaveState.Error -> {
