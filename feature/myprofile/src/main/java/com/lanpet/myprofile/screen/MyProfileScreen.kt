@@ -135,7 +135,7 @@ fun MyProfileScreen(
                         Modifier
                             .padding(bottom = LanPetDimensions.Spacing.xLarge)
                             .fillMaxWidth()
-                            .size(LanPetDimensions.Spacing.xxxSmall)
+                            .size(LanPetDimensions.Spacing.xSmall)
                             .background(
                                 color = MaterialTheme.customColorScheme.spacerLine,
                             ),
@@ -214,7 +214,7 @@ private fun MyProfileCard(
             Modifier
                 .padding(
                     horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.xxLarge,
+                    vertical = LanPetDimensions.Margin.large,
                 ),
     ) {
         ProfileImage(
