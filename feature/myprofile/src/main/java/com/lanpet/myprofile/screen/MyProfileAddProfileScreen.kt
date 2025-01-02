@@ -146,12 +146,12 @@ private fun PetProfileAddView(
         addPetProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
-                    context.toast("프로필이 추가되었습니다.")
+                    context.toast(context.getString(R.string.toast_profile_create_success))
                     rememberOnNavigateUp()
                 }
 
                 false -> {
-                    context.toast("프로필 추가에 실패했습니다.")
+                    context.toast(context.getString(R.string.toast_profile_create_fail))
                 }
             }
         }
@@ -226,12 +226,12 @@ private fun ManProfileAddView(
         addManProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
-                    context.toast("프로필이 추가되었습니다.")
+                    context.toast(context.getString(R.string.toast_profile_create_success))
                     rememberOnNavigateUp()
                 }
 
                 false -> {
-                    context.toast("프로필 추가에 실패했습니다.")
+                    context.toast(context.getString(R.string.toast_profile_create_fail))
                 }
             }
         }
