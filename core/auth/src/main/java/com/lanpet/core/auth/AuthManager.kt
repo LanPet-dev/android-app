@@ -292,20 +292,20 @@ open class AuthManager
 
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
-                val setDefaultProfileRes =
-                    currentAuthState.account?.let {
+                currentAuthState.account?.let {
+                    val setDefaultProfileRes =
                         setDefaultProfileUseCase!!(
                             it.accountId,
                             profileId,
                         ).timeout(5.seconds).first()
-                    } ?: throw AuthException.NoAccountException("Account is null")
 
-                if (!setDefaultProfileRes) {
-                    throw AuthException.NoDefaultProfileException(
-                        accountId = currentAuthState.account!!.accountId,
-                        message = "Set default profile failed",
-                    )
-                }
+                    if (!setDefaultProfileRes) {
+                        throw AuthException.NoDefaultProfileException(
+                            accountId = currentAuthState.account!!.accountId,
+                            message = "Set default profile failed",
+                        )
+                    }
+                } ?: throw AuthException.NoAccountException("Account is null")
 
                 val res =
                     try {
