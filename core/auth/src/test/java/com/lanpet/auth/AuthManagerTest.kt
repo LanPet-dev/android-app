@@ -864,7 +864,7 @@ class AuthManagerTest {
             }
 
         @Test
-        fun `SetDefaultProfileUseCase 실패 시, AuthException_NoAccountException 을 반환한다`() =
+        fun `현재 AuthState 에 AccountId 가 존재하지 않으면, AuthException_NoAccountException 을 반환한다`() =
             runTest {
                 // Given
                 coEvery {
@@ -874,9 +874,28 @@ class AuthManagerTest {
                     )
                 } throws AuthException.NoAccountException("Account is null")
 
-                authStateHolder.updateState(fakeAuthState)
+                authStateHolder.updateState(
+                    fakeAuthState.copy(
+                        account = null,
+                    ),
+                )
 
                 assertThrows<AuthException.NoAccountException> {
+                    authManager.updateUserProfile(
+                        profileId = "profileId",
+                    )
+                }
+            }
+
+        @Test
+        fun `SetDefaultProfileUseCase 의 결과가 false 이면, AuthException_NoDefaultProfileException 을 반환한다`() =
+            runTest {
+                // Given
+                coEvery { setDefaultProfileUseCase.invoke(any(), any()) } returns flowOf(false)
+
+                authStateHolder.updateState(fakeAuthState)
+
+                assertThrows<AuthException.NoDefaultProfileException> {
                     authManager.updateUserProfile(
                         profileId = "profileId",
                     )
