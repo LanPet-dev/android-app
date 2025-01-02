@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.auth.BasePreviewWrapper
@@ -100,12 +101,14 @@ private fun Content(
         horizontalArrangement = Arrangement.Center,
     ) {
         HasPetSelectButton(
+            modifier = Modifier.weight(1f),
             onClick = onNavigateToYesPetScreen,
             painterResource = painterResource(com.lanpet.core.common.R.drawable.img_has_pet),
             title = stringResource(R.string.title_add_pet_profile),
         )
         Spacer(Modifier.padding(horizontal = LanPetDimensions.Margin.small))
         HasPetSelectButton(
+            modifier = Modifier.weight(1f),
             painterResource = painterResource(com.lanpet.core.common.R.drawable.img_no_pet),
             onClick = onNavigateToNoPetScreen,
             title = stringResource(R.string.title_add_man_profile),
@@ -124,7 +127,7 @@ fun HasPetSelectButton(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier =
-            Modifier
+            modifier
                 .wrapContentSize()
                 .clip(RoundedCornerShape(LanPetDimensions.Corner.small))
                 .border(
@@ -156,6 +159,9 @@ fun HasPetSelectButton(
 
 @Composable
 @PreviewLightDark
+@Preview(
+    widthDp = 250,
+)
 private fun MyProfileAddProfileEntryScreenPreview() {
     BasePreviewWrapper {
         MyProfileAddProfileEntryScreen()
