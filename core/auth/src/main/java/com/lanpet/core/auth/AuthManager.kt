@@ -287,7 +287,7 @@ open class AuthManager
         suspend fun updateUserProfile(profileId: String) {
             try {
                 if (authState.value !is AuthState.Success) {
-                    throw AuthException.UpdateProfileFailException("AuthState is not Success")
+                    throw IllegalStateException("AuthState is not Success")
                 }
 
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
@@ -343,7 +343,12 @@ open class AuthManager
             } catch (e: Exception) {
                 // TODO("Satoshi"): rethrow each exception type for better error handling, and throw UpdateProfileFailException when other type's exception is thrown
                 Timber.e(e)
-                throw AuthException.UpdateProfileFailException()
+                when (e) {
+                    is AuthException -> throw e
+                    else -> throw AuthException.UpdateProfileFailException(
+                        message = e.message,
+                    )
+                }
             }
         }
 
