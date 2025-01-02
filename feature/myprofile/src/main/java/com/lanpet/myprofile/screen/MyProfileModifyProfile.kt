@@ -101,6 +101,7 @@ fun MyProfileModifyProfileScreen(
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
                 ProfileImagePicker(
+                    profileType = com.lanpet.domain.model.ProfileType.PET,
                     profileImageUri = null,
                     onImageSelect = { },
                 )

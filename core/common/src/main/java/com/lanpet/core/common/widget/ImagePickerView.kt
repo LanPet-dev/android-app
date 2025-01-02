@@ -11,16 +11,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.lanpet.core.common.crop
+import com.lanpet.core.designsystem.theme.LanPetAppTheme
+import com.lanpet.domain.model.ProfileType
 
 @Composable
 fun ImagePickerView(
     imageUri: Uri?,
+    profileType: ProfileType,
     modifier: Modifier = Modifier,
+    size: Dp = 100.dp,
     onEditButtonClick: () -> Unit = {},
 ) {
     Box(
@@ -30,20 +34,10 @@ fun ImagePickerView(
         contentAlignment = Alignment.Center,
     ) {
         Box {
-            Image(
-                painter =
-                    if (imageUri != null) {
-                        rememberAsyncImagePainter(
-                            imageUri,
-                            error = painterResource(com.lanpet.core.common.R.drawable.img_default_profile),
-                            fallback = painterResource(com.lanpet.core.common.R.drawable.img_default_profile),
-                        )
-                    } else {
-                        painterResource(com.lanpet.core.common.R.drawable.img_default_profile)
-                    },
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.crop(),
+            ProfileImage(
+                profileType = profileType,
+                imageUri = imageUri.toString().ifEmpty { null },
+                modifier = Modifier.crop(size = size),
             )
             Image(
                 painter = painterResource(com.lanpet.core.common.R.drawable.ic_plus_circle),
@@ -59,5 +53,16 @@ fun ImagePickerView(
                         },
             )
         }
+    }
+}
+
+@Composable
+@PreviewLightDark
+fun ImagePickerViewPreview() {
+    LanPetAppTheme {
+        ImagePickerView(
+            imageUri = null,
+            profileType = ProfileType.PET,
+        )
     }
 }

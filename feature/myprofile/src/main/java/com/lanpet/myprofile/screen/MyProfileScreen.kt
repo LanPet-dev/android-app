@@ -42,6 +42,7 @@ import com.lanpet.core.common.myiconpack.File
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
@@ -218,25 +219,11 @@ private fun MyProfileCard(
                     vertical = LanPetDimensions.Margin.xxLarge,
                 ),
     ) {
-        if (!myProfile.profileImageUri.isNullOrEmpty()) {
-            AsyncImage(
-                myProfile.profileImageUri,
-                contentDescription = "profile_image",
-                modifier =
-                    Modifier.crop(
-                        size = 88.dp,
-                    ),
-            )
-        } else {
-            Image(
-                modifier =
-                    Modifier.crop(
-                        size = 88.dp,
-                    ),
-                painter = painterResource(id = com.lanpet.core.common.R.drawable.img_default_profile),
-                contentDescription = "profile_image",
-            )
-        }
+        ProfileImage(
+            size = 90.dp,
+            profileType = myProfile.type,
+            imageUri = myProfile.profileImageUri,
+        )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         Column {
             Text(

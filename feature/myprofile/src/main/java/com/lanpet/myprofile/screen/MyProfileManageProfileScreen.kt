@@ -131,6 +131,7 @@ private fun PetProfileAddView(
     Column {
         ProfileImagePicker(
             profileImageUri = petProfileUiState.petProfileUpdate?.profileImageUri,
+            profileType = ProfileType.PET,
             onImageSelect = {
                 managePetProfileViewModel.updateProfileImageUri(it)
             },
@@ -189,6 +190,7 @@ private fun ManProfileAddView(
     Column {
         ProfileImagePicker(
             profileImageUri = manageProfileUiState.manProfileUpdate?.profileImageUri,
+            profileType = ProfileType.PET,
             onImageSelect = {
                 manageManProfileViewModel.updateProfileImageUri(it)
             },
