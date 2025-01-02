@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -41,6 +42,7 @@ import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ButtonSize
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
@@ -53,6 +55,7 @@ import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.feature.settings.viewmodel.MemberLeaveState
 import com.lanpet.feature.settings.viewmodel.MemberLeaveViewModel
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,28 +68,30 @@ fun MemberLeaveScreen(
     val verticalScrollState = rememberScrollState()
     val profile by LocalAuthManager.current.defaultUserProfile.collectAsStateWithLifecycle()
     var reasonInput by rememberSaveable { mutableStateOf("") }
-    val leaveState by memberLeaveViewModel.leaveState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val rememberOnNavigateToMemberLeaveComplete by rememberUpdatedState(
         onNavigateToMemberLeaveComplete,
     )
 
-    LaunchedEffect(leaveState) {
-        when (leaveState) {
-            is MemberLeaveState.Success -> {
-                rememberOnNavigateToMemberLeaveComplete()
-            }
+    LaunchedEffect(Unit) {
+        memberLeaveViewModel.leaveState.collect { leaveState ->
+            when (leaveState) {
+                is MemberLeaveState.Success -> {
+                    rememberOnNavigateToMemberLeaveComplete()
+                }
 
-            is MemberLeaveState.Error -> {
-                // TODO
-            }
+                is MemberLeaveState.Error -> {
+                    leaveState.message?.let { context.toast(it) }
+                }
 
-            is MemberLeaveState.Initial -> {
-                // TODO
-            }
+                is MemberLeaveState.Initial -> {
+                    // TODO
+                }
 
-            is MemberLeaveState.Loading -> {
-                // TODO
+                is MemberLeaveState.Loading -> {
+                    // TODO
+                }
             }
         }
     }

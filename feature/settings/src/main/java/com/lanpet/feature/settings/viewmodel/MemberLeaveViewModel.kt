@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.domain.usecase.account.LeaveMemberUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -17,23 +17,23 @@ class MemberLeaveViewModel
     constructor(
         private val leaveMemberUseCase: LeaveMemberUseCase,
     ) : ViewModel() {
-        private val _leaveState = MutableStateFlow<MemberLeaveState>(MemberLeaveState.Initial)
-        val leaveState: StateFlow<MemberLeaveState> = _leaveState.asStateFlow()
+        private val _leaveState = MutableSharedFlow<MemberLeaveState>()
+        val leaveState: SharedFlow<MemberLeaveState> = _leaveState.asSharedFlow()
 
         fun leaveMember() {
             viewModelScope.launch {
                 try {
-                    _leaveState.value = MemberLeaveState.Loading
+                    _leaveState.emit(MemberLeaveState.Loading)
                     leaveMemberUseCase().collect {
                         if (it) {
-                            _leaveState.value = MemberLeaveState.Success
+                            _leaveState.emit(MemberLeaveState.Success)
                         } else {
                             throw Exception("LeaveMemberUseCase return false")
                         }
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
-                    _leaveState.value = MemberLeaveState.Error(e.message)
+                    _leaveState.emit(MemberLeaveState.Error(e.message))
                 }
             }
         }
