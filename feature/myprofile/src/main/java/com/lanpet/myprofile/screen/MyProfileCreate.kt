@@ -61,6 +61,7 @@ import com.lanpet.core.common.widget.CommonHeading
 import com.lanpet.core.common.widget.CommonHeadingHint
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
@@ -356,25 +357,11 @@ fun ProfileListCard(
                             vertical = LanPetDimensions.Margin.medium,
                         ),
             ) {
-                if(!userProfile.profileImageUri.isNullOrEmpty()) {
-                    AsyncImage(
-                        userProfile.profileImageUri,
-                        contentDescription = "profile_image",
-                        modifier =
-                            Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(LanPetDimensions.Corner.small)),
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = com.lanpet.core.common.R.drawable.img_default_profile),
-                        contentDescription = "default_profile_image",
-                        modifier =
-                            Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(LanPetDimensions.Corner.small)),
-                    )
-                }
+                ProfileImage(
+                    profileType = userProfile.type,
+                    imageUri = userProfile.profileImageUri,
+                    size = 88.dp,
+                )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 Column {
                     Text(
