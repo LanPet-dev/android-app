@@ -84,7 +84,7 @@ val DarkCustomColors =
         heading = WhiteColor.MEDIUM,
         errorText = Color.Red,
         confirmText = Color.Blue,
-        spacerLine = GrayColor.Gray50,
+        spacerLine = GrayColor.Gray950,
         defaultIconColor = WhiteColor.White,
         topBarTextButtonTextColor = GrayColor.Gray50,
     )
