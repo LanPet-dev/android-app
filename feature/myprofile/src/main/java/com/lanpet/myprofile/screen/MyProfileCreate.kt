@@ -49,6 +49,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
@@ -355,14 +356,25 @@ fun ProfileListCard(
                             vertical = LanPetDimensions.Margin.medium,
                         ),
             ) {
-                Image(
-                    modifier =
-                        Modifier.crop(
-                            size = 64.dp,
-                        ),
-                    painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-                    contentDescription = "Profile Picture",
-                )
+                if(!userProfile.profileImageUri.isNullOrEmpty()) {
+                    AsyncImage(
+                        userProfile.profileImageUri,
+                        contentDescription = "profile_image",
+                        modifier =
+                            Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(LanPetDimensions.Corner.small)),
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = com.lanpet.core.common.R.drawable.img_default_profile),
+                        contentDescription = "default_profile_image",
+                        modifier =
+                            Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(LanPetDimensions.Corner.small)),
+                    )
+                }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 Column {
                     Text(

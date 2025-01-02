@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -109,11 +110,15 @@ fun MyProfileAddProfileScreen(
             ) {
                 when (args!!.profileType) {
                     ProfileType.PET -> {
-                        PetProfileAddView()
+                        PetProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
 
                     ProfileType.BUTLER -> {
-                        ManProfileAddView()
+                        ManProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
                 }
             }
@@ -124,19 +129,25 @@ fun MyProfileAddProfileScreen(
 @Composable
 private fun PetProfileAddView(
     modifier: Modifier = Modifier,
+    @Suppress("ktlint:compose:lambda-param-in-effect")
+    onNavigateUp: () -> Unit = { },
     addPetProfileViewModel: AddPetProfileViewModel = hiltViewModel(),
 ) {
     val petProfileUiState by addPetProfileViewModel.uiState.collectAsStateWithLifecycle()
+
+    val rememberOnNavigateUp by rememberUpdatedState {
+        onNavigateUp()
+        onNavigateUp()
+    }
 
     LaunchedEffect(Unit) {
         addPetProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
-                    Timber.d("addPetProfileViewModel.uiEvent.collect { event -> true")
+                    rememberOnNavigateUp()
                 }
 
                 false -> {
-                    Timber.d("addPetProfileViewModel.uiEvent.collect { event -> false")
                 }
             }
         }
@@ -194,15 +205,22 @@ private fun PetProfileAddView(
 @Composable
 private fun ManProfileAddView(
     modifier: Modifier = Modifier,
+    onNavigateUp: () -> Unit = { },
     addManProfileViewModel: AddManProfileViewModel = hiltViewModel(),
 ) {
     val manageProfileUiState by addManProfileViewModel.uiState.collectAsStateWithLifecycle()
+
+    val rememberOnNavigateUp by rememberUpdatedState {
+        onNavigateUp()
+        onNavigateUp()
+    }
 
     LaunchedEffect(Unit) {
         addManProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
                     Timber.d("addManProfileViewModel.uiEvent.collect { event -> true")
+                    rememberOnNavigateUp()
                 }
 
                 false -> {

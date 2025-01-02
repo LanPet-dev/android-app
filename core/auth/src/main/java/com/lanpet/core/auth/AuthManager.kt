@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,6 +57,7 @@ open class AuthManager
          */
         val currentProfileDetail = authStateHolder.currentProfileDetail
 
+        @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
                 runCatching {
@@ -181,13 +183,16 @@ open class AuthManager
             profiles: List<UserProfile>,
         ): UserProfile {
             try {
-                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
+                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).firstOrNull()
                 if (defaultProfileId.isNullOrEmpty()) {
-                    setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
+                    setDefaultProfileUseCase!!(accountId, profiles.first().id)
+                        .timeout(5.seconds)
+                        .first()
                     defaultProfileId = profiles.first().id
                 }
 
-                val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
+                val defaultProfile =
+                    profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
                 return defaultProfile
             } catch (e: Exception) {
                 throw AuthException.NoDefaultProfileException(accountId = accountId)
@@ -228,7 +233,7 @@ open class AuthManager
                 var defaultProfileId =
                     getDefaultProfileUseCase!!(
                         account.accountId,
-                    ).timeout(5.seconds).first()
+                    ).timeout(5.seconds).firstOrNull()
 
                 if (defaultProfileId == null) {
                     setDefaultProfileUseCase!!(
