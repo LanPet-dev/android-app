@@ -341,6 +341,7 @@ open class AuthManager
                     ),
                 )
             } catch (e: Exception) {
+                // TODO("Satoshi"): rethrow each exception type for better error handling, and throw UpdateProfileFailException when other type's exception is thrown
                 Timber.e(e)
                 throw AuthException.UpdateProfileFailException()
             }
