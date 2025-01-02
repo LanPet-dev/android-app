@@ -37,6 +37,7 @@ fun ProfileImage(
             Image(
                 painter = painterResource(id = R.drawable.img_default_profile),
                 contentDescription = "Profile Image",
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                 modifier =
                     Modifier
                         .border(
@@ -55,6 +56,7 @@ fun ProfileImage(
                         color = VioletColor.Violet100,
                         shape = CircleShape,
                     ).crop(size = size),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
             )
         }
         if (profileType == ProfileType.PET) {
