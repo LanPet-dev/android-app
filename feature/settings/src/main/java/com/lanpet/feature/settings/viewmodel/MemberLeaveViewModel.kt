@@ -22,16 +22,17 @@ class MemberLeaveViewModel
 
         fun leaveMember() {
             viewModelScope.launch {
-                try {
-                    _leaveState.emit(MemberLeaveState.Loading)
-                    leaveMemberUseCase().collect {
-                        if (it) {
+                _leaveState.emit(MemberLeaveState.Loading)
+
+                runCatching {
+                    leaveMemberUseCase().collect { isSuccess ->
+                        if (isSuccess) {
                             _leaveState.emit(MemberLeaveState.Success)
                         } else {
-                            throw Exception("LeaveMemberUseCase return false")
+                            throw IllegalStateException("회원 탈퇴에 실패했습니다.")
                         }
                     }
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     Timber.e(e)
                     _leaveState.emit(MemberLeaveState.Error(e.message))
                 }
