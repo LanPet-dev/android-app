@@ -112,7 +112,7 @@ open class AuthManager
         }
 
         @VisibleForTesting
-        suspend fun handleNoDefaultProfileException() {
+        fun handleNoDefaultProfileException() {
             authStateHolder.updateState(
                 AuthState.Fail(),
             )
@@ -140,6 +140,7 @@ open class AuthManager
             )
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun handleNoAccount(socialAuthToken: SocialAuthToken) {
             try {
@@ -169,6 +170,7 @@ open class AuthManager
             }
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getAccount(): Account =
             try {
@@ -177,6 +179,7 @@ open class AuthManager
                 throw AuthException.NoAccountException()
             }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getDefaultProfile(
             accountId: String,
@@ -199,6 +202,7 @@ open class AuthManager
             }
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getProfileDetail(defaultProfileId: String): UserProfileDetail =
             try {
@@ -207,6 +211,7 @@ open class AuthManager
                 throw AuthException.NoProfileDetailException()
             }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getProfiles(account: Account): List<UserProfile> =
             try {
