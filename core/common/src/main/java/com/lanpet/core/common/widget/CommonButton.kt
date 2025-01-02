@@ -72,10 +72,9 @@ internal fun CommonButtonSmall(
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
-            if (isActive) {
-                onClick?.invoke()
-            }
+            onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
@@ -115,10 +114,9 @@ internal fun CommonButtonMedium(
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
-            if (isActive) {
-                onClick?.invoke()
-            }
+            onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
@@ -159,10 +157,9 @@ internal fun CommonButtonLarge(
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
-            if (isActive) {
-                onClick?.invoke()
-            }
+            onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
