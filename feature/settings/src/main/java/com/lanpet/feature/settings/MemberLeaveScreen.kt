@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
@@ -45,7 +47,6 @@ import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.VioletColor
 import com.lanpet.core.designsystem.theme.customColorScheme
@@ -66,10 +67,14 @@ fun MemberLeaveScreen(
     var reasonInput by rememberSaveable { mutableStateOf("") }
     val leaveState by memberLeaveViewModel.leaveState.collectAsStateWithLifecycle()
 
+    val rememberOnNavigateToMemberLeaveComplete by rememberUpdatedState(
+        onNavigateToMemberLeaveComplete,
+    )
+
     LaunchedEffect(leaveState) {
         when (leaveState) {
             is MemberLeaveState.Success -> {
-                onNavigateToMemberLeaveComplete()
+                rememberOnNavigateToMemberLeaveComplete()
             }
 
             is MemberLeaveState.Error -> {
@@ -242,7 +247,7 @@ fun LeaveReasonInputSection(
 @Composable
 @PreviewLightDark
 private fun MemberLeaveScreenPreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MemberLeaveScreen()
     }
 }

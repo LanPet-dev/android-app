@@ -47,7 +47,8 @@ fun ImagePickerView(
                     Modifier
                         .align(
                             alignment = Alignment.BottomEnd,
-                        ).offset(x = (-8).dp, y = (-8).dp).size(34.dp)
+                        ).offset(x = (-8).dp, y = (-8).dp)
+                        .size(34.dp)
                         .clip(shape = CircleShape)
                         .clickable {
                             onEditButtonClick()
@@ -59,7 +60,7 @@ fun ImagePickerView(
 
 @Composable
 @PreviewLightDark
-fun ImagePickerViewPreview() {
+private fun ImagePickerViewPreview() {
     LanPetAppTheme {
         ImagePickerView(
             imageUri = null,

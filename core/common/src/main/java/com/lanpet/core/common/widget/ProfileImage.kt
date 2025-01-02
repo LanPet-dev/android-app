@@ -63,13 +63,13 @@ fun ProfileImage(
             Image(
                 painter = painterResource(id = R.drawable.img_bell2),
                 contentDescription = "img_bell",
-                modifier = Modifier.scale(size.value/130).offset(y = 8.dp),
+                modifier = Modifier.scale(size.value / 130).offset(y = 8.dp),
             )
         } else {
             Image(
                 painter = painterResource(id = R.drawable.img_ribbon2),
                 contentDescription = "img_ribbon",
-                modifier = Modifier.scale(size.value/130).offset(y = 7.dp),
+                modifier = Modifier.scale(size.value / 130).offset(y = 7.dp),
             )
         }
     }
