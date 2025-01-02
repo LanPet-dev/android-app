@@ -29,6 +29,7 @@ enum class ButtonSize {
 fun CommonButton(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     buttonSize: ButtonSize = ButtonSize.MEDIUM,
     onClick: (() -> Unit)? = null,
 ) {
@@ -36,6 +37,7 @@ fun CommonButton(
         ButtonSize.SMALL -> {
             CommonButtonSmall(
                 title = title,
+                isActive = isActive,
                 modifier = modifier,
                 onClick = onClick,
             )
@@ -44,6 +46,7 @@ fun CommonButton(
         ButtonSize.MEDIUM -> {
             CommonButtonMedium(
                 title = title,
+                isActive = isActive,
                 modifier = modifier,
                 onClick = onClick,
             )
@@ -53,6 +56,7 @@ fun CommonButton(
             CommonButtonLarge(
                 title = title,
                 modifier = modifier,
+                isActive = isActive,
                 onClick = onClick,
             )
         }
@@ -63,16 +67,24 @@ fun CommonButton(
 internal fun CommonButtonSmall(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
-            onClick?.invoke()
+            if (isActive) {
+                onClick?.invoke()
+            }
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -81,7 +93,15 @@ internal fun CommonButtonSmall(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
@@ -90,16 +110,24 @@ internal fun CommonButtonSmall(
 internal fun CommonButtonMedium(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
-            onClick?.invoke()
+            if (isActive) {
+                onClick?.invoke()
+            }
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -109,7 +137,15 @@ internal fun CommonButtonMedium(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
@@ -118,16 +154,24 @@ internal fun CommonButtonMedium(
 internal fun CommonButtonLarge(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
-            onClick?.invoke()
+            if (isActive) {
+                onClick?.invoke()
+            }
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -137,7 +181,15 @@ internal fun CommonButtonLarge(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
@@ -161,6 +213,26 @@ private fun PreviewCommonButton() {
             Spacer(modifier = Modifier.height(8.dp))
             CommonButtonLarge(
                 title = "This is title",
+                modifier = Modifier,
+                onClick = {},
+            )
+            CommonButtonSmall(
+                title = "This is title",
+                isActive = false,
+                modifier = Modifier,
+                onClick = {},
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonButtonMedium(
+                title = "This is title",
+                isActive = false,
+                modifier = Modifier,
+                onClick = {},
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonButtonLarge(
+                title = "This is title",
+                isActive = false,
                 modifier = Modifier,
                 onClick = {},
             )

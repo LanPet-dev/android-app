@@ -32,7 +32,9 @@ val LightColorScheme =
 data class CustomColorScheme(
     val heading: Color,
     val buttonBackground: Color,
+    val buttonBackgroundDisabled: Color,
     val buttonText: Color,
+    val buttonTextDisabled: Color,
     val textFieldBackground: Color,
     val textFieldText: Color,
     val selectedText: Color,
@@ -50,6 +52,8 @@ data class CustomColorScheme(
 val LightCustomColors =
     CustomColorScheme(
         buttonBackground = PrimaryColor.PRIMARY,
+        buttonBackgroundDisabled = GrayColor.Gray100,
+        buttonTextDisabled = GrayColor.Gray300,
         buttonText = WhiteColor.LIGHT,
         textFieldBackground = WhiteColor.LIGHT,
         textFieldText = BlackColor.MEDIUM,
@@ -68,7 +72,9 @@ val LightCustomColors =
 val DarkCustomColors =
     CustomColorScheme(
         buttonBackground = WhiteColor.LIGHT,
+        buttonBackgroundDisabled = GrayColor.Gray100,
         buttonText = BlackColor.MEDIUM,
+        buttonTextDisabled = GrayColor.Gray300,
         textFieldBackground = BlackColor.MEDIUM,
         textFieldText = WhiteColor.MEDIUM,
         selectedText = PrimaryColor.PRIMARY,
