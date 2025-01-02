@@ -114,10 +114,10 @@ fun ProfileCreateNoPetNameScreen(
                 },
             )
             Spacer(Modifier.weight(1f))
-            CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                if (validationStatus.nickName !is FormValidationStatus.Valid) return@CommonButton
-                if (duplicateCheckState != true) return@CommonButton
-
+            CommonButton(
+                title = stringResource(DS_R.string.next_button_string),
+                isActive = validationStatus.nickName is FormValidationStatus.Valid && duplicateCheckState == true,
+            ) {
                 onNavigateToHumanAge()
             }
             Spacer(Modifier.padding(LanPetDimensions.Spacing.xxSmall))

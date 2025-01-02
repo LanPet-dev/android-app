@@ -119,7 +119,11 @@ class PetProfileCreateViewModel
                 breed =
                     FormValidator<String?>(
                         validate = { breed ->
-                            FormValidationStatus.Valid()
+                            if (breed.isNullOrEmpty()) {
+                                FormValidationStatus.Invalid("Please enter a breed")
+                            } else {
+                                FormValidationStatus.Valid()
+                            }
                         },
                     ),
                 bio =

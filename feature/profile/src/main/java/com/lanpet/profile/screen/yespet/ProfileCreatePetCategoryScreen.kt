@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.SelectableChip
@@ -73,7 +74,13 @@ fun ProfileCreatePetCategoryScreen(
                         }
                     }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                CommonButton(
+                    title = stringResource(DS_R.string.next_button_string),
+                    isActive =
+                        petProfileCreateViewModel.petProfileCreateValidationResult
+                            .collectAsState()
+                            .value.petCategory is FormValidationStatus.Valid,
+                ) {
                     onNavigateToPetSpecies()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))

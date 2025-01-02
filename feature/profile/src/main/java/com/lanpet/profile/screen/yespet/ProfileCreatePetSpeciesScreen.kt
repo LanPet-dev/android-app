@@ -18,10 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.BasePreviewWrapper
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.TextFieldWithDeleteButton
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.profile.R
 import com.lanpet.profile.viewmodel.PetProfileCreateViewModel
@@ -64,7 +66,13 @@ fun ProfileCreatePetSpeciesScreen(
                     petProfileCreateViewModel.setBreed(it)
                 }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                CommonButton(
+                    title = stringResource(DS_R.string.next_button_string),
+                    isActive =
+                        petProfileCreateViewModel.petProfileCreateValidationResult
+                            .collectAsStateWithLifecycle()
+                            .value.breed is FormValidationStatus.Valid,
+                ) {
                     onNavigateToPetBio()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
@@ -101,7 +109,7 @@ fun PetSpeciesInputSection(
 @PreviewLightDark
 @Composable
 private fun PreviewProfileCreatePetSpeciesScreen() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         ProfileCreatePetSpeciesScreen(
             petProfileCreateViewModel = hiltViewModel(),
         )
