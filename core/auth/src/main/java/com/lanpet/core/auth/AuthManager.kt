@@ -29,6 +29,15 @@ import kotlin.time.Duration.Companion.seconds
 
 @Singleton
 open class AuthManager
+
+/**
+     * AuthManager 의 생성자에서 각 UseCase 들이 null 을 초기값으로 가지는 이유는, AuthManager 이 CompositionLocalComponent 에 등록되는것과 관련이 있습니다.
+     * 특히 View 영역에서 Preview 를 사용할 때, 해당 Preview 에서 AuthManager 을 포함하는 View 영역을 포함하고 있다면, AuthManager 가 주입되지 않은 경우 Preview 가 제대로 실행되지 않습니다.
+     * 이를 해결하기 위해 AuthManager 의 생성자에서 각 UseCase 들을 null 로 초기화하고,
+     * Compose Preview 에서는 AuthManager 을 Fake 로 생성하여 사용하도록 합니다.
+     * 그러나 preview 가 아닌 실제 runtime 에서는 반드시 null 이 아닌 UseCase 들이 주입되어야 하고, 실제로 그렇게 동작하고 있습니다.
+     * 따라서 아래 생성자의 수정의 경우 반드시 주의해야 합니다.
+     */
     @Inject
     constructor(
         private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase? = null,
