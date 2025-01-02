@@ -28,6 +28,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -55,7 +57,6 @@ import com.lanpet.myprofile.R
 import com.lanpet.myprofile.navigation.MyProfileAddProfile
 import com.lanpet.myprofile.viewmodel.AddManProfileViewModel
 import com.lanpet.myprofile.viewmodel.AddPetProfileViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,6 +135,7 @@ private fun PetProfileAddView(
     addPetProfileViewModel: AddPetProfileViewModel = hiltViewModel(),
 ) {
     val petProfileUiState by addPetProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val rememberOnNavigateUp by rememberUpdatedState {
         onNavigateUp()
@@ -144,10 +146,12 @@ private fun PetProfileAddView(
         addPetProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
+                    context.toast("프로필이 추가되었습니다.")
                     rememberOnNavigateUp()
                 }
 
                 false -> {
+                    context.toast("프로필 추가에 실패했습니다.")
                 }
             }
         }
@@ -211,6 +215,7 @@ private fun ManProfileAddView(
     addManProfileViewModel: AddManProfileViewModel = hiltViewModel(),
 ) {
     val manageProfileUiState by addManProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val rememberOnNavigateUp by rememberUpdatedState {
         onNavigateUp()
@@ -221,12 +226,12 @@ private fun ManProfileAddView(
         addManProfileViewModel.uiEvent.collect { event ->
             when (event) {
                 true -> {
-                    Timber.d("addManProfileViewModel.uiEvent.collect { event -> true")
+                    context.toast("프로필이 추가되었습니다.")
                     rememberOnNavigateUp()
                 }
 
                 false -> {
-                    Timber.d("addManProfileViewModel.uiEvent.collect { event -> false")
+                    context.toast("프로필 추가에 실패했습니다.")
                 }
             }
         }
