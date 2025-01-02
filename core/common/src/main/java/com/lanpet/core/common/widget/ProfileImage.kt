@@ -33,7 +33,7 @@ fun ProfileImage(
         contentAlignment = Alignment.BottomCenter,
         modifier = modifier.padding(8.dp),
     ) {
-        if (imageUri == null) {
+        if (imageUri.isNullOrEmpty()) {
             Image(
                 painter = painterResource(id = R.drawable.img_default_profile),
                 contentDescription = "Profile Image",
