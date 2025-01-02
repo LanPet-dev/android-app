@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -181,7 +182,7 @@ open class AuthManager
             profiles: List<UserProfile>,
         ): UserProfile {
             try {
-                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
+                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).firstOrNull()
                 if (defaultProfileId.isNullOrEmpty()) {
                     setDefaultProfileUseCase!!(accountId, profiles.first().id)
                         .timeout(5.seconds)
@@ -231,7 +232,7 @@ open class AuthManager
                 var defaultProfileId =
                     getDefaultProfileUseCase!!(
                         account.accountId,
-                    ).timeout(5.seconds).first()
+                    ).timeout(5.seconds).firstOrNull()
 
                 if (defaultProfileId == null) {
                     setDefaultProfileUseCase!!(
