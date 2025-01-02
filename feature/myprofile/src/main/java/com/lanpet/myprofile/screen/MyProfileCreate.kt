@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -55,6 +56,7 @@ import com.lanpet.core.common.commonBorder
 import com.lanpet.core.common.crop
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.Plus
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonHeading
 import com.lanpet.core.common.widget.CommonHeadingHint
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -83,6 +85,7 @@ fun MyProfileCreateProfileScreen(
     onNavigateToAddProfileEntry: () -> Unit = {},
     onNavigateToModifyProfile: (String, ProfileType) -> Unit = { profileId, profileType -> },
 ) {
+    val context = LocalContext.current
     val authManager = LocalAuthManager.current
     val defaultUserProfile by authManager.defaultUserProfile.collectAsStateWithLifecycle()
     val userProfiles by authManager.userProfiles.collectAsStateWithLifecycle()
@@ -138,17 +141,24 @@ fun MyProfileCreateProfileScreen(
             SetDefaultProfileDialog(
                 onDismiss = { showSetDefaultProfileDialog = false },
                 onSetDefaultProfile = {
-                    Timber.d("selectedProfileId: $selectedProfileId")
                     scope.launch {
-                        if (selectedProfileId.isEmpty()) {
-                            return@launch
+                        runCatching {
+                            if (selectedProfileId.isEmpty()) {
+                                return@launch
+                            }
+
+                            authManager.updateUserProfile(
+                                selectedProfileId,
+                            )
+                        }.onFailure {
+                            Timber.e(it)
+                            context.toast(
+                                context.getString(R.string.toast_update_profile_fail),
+                            )
+                            showSetDefaultProfileDialog = false
+                        }.onSuccess {
+                            showSetDefaultProfileDialog = false
                         }
-
-                        authManager.updateUserProfile(
-                            selectedProfileId,
-                        )
-
-                        showSetDefaultProfileDialog = false
                     }
                 },
             )

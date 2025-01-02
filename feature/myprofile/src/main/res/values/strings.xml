@@ -44,4 +44,6 @@
     <string name="title_add_man_profile">키우고 있지 않아요</string>
     <string name="toast_profile_create_success">프로필이 생성되었어요</string>
     <string name="toast_profile_create_fail">프로필 생성에 실패했어요</string>
+    <string name="toast_update_profile_success">프로필이 업데이트 되었어요</string>
+    <string name="toast_update_profile_fail">프로필 업데이트에 실패했어요</string>
 </resources>

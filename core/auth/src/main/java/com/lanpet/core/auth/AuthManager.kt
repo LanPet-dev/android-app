@@ -279,6 +279,7 @@ open class AuthManager
                 )
             } catch (e: Exception) {
                 Timber.e(e)
+                throw e
             }
         }
 
@@ -286,8 +287,9 @@ open class AuthManager
         suspend fun updateUserProfile(profileId: String) {
             try {
                 if (authState.value !is AuthState.Success) {
-                    return
+                    throw AuthException.UpdateProfileFailException("AuthState is not Success")
                 }
+
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
                 val setDefaultProfileRes =
@@ -296,19 +298,37 @@ open class AuthManager
                             it.accountId,
                             profileId,
                         ).timeout(5.seconds).first()
-                    } ?: throw IllegalStateException("Account is null")
+                    } ?: throw AuthException.NoAccountException("Account is null")
 
                 if (!setDefaultProfileRes) {
-                    throw IllegalStateException("Set default profile failed")
+                    throw AuthException.NoDefaultProfileException(
+                        accountId = currentAuthState.account!!.accountId,
+                        message = "Set default profile failed",
+                    )
                 }
 
-                val res = getAllProfileUseCase!!().timeout(5.seconds).first()
+                val res =
+                    try {
+                        getAllProfileUseCase!!().timeout(5.seconds).first()
+                    } catch (e: Exception) {
+                        throw AuthException.NoProfileException(
+                            account = currentAuthState.account!!,
+                        )
+                    }
 
                 val defaultProfile =
                     res.firstOrNull { it.id == profileId }
-                        ?: throw IllegalStateException("Default profile not found")
+                        ?: throw AuthException.NoDefaultProfileException(
+                            accountId = currentAuthState.account!!.accountId,
+                            message = "Default profile not found",
+                        )
 
-                val detail = getProfileDetailUseCase!!(profileId).timeout(5.seconds).first()
+                val detail =
+                    try {
+                        getProfileDetailUseCase!!(profileId).timeout(5.seconds).first()
+                    } catch (e: Exception) {
+                        throw AuthException.NoProfileDetailException()
+                    }
 
                 authStateHolder.updateState(
                     AuthState.Success(
@@ -322,9 +342,7 @@ open class AuthManager
                 )
             } catch (e: Exception) {
                 Timber.e(e)
-                authStateHolder.updateState(
-                    AuthState.Fail(),
-                )
+                throw AuthException.UpdateProfileFailException()
             }
         }
 
