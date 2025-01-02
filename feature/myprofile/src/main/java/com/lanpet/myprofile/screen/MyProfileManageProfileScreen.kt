@@ -22,11 +22,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -52,8 +55,11 @@ import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.myprofile.R
 import com.lanpet.myprofile.navigation.MyProfileManageProfile
+import com.lanpet.myprofile.viewmodel.ManageManProfileUiEvent
 import com.lanpet.myprofile.viewmodel.ManageManProfileViewModel
 import com.lanpet.myprofile.viewmodel.ManagePetProfileViewModel
+import com.lanpet.myprofile.viewmodel.PetProfileUpdateEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +115,9 @@ fun MyProfileManageProfileScreen(
             ) {
                 when (args!!.profileType) {
                     ProfileType.PET -> {
-                        PetProfileAddView()
+                        PetProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
 
                     ProfileType.BUTLER -> {
@@ -125,8 +133,31 @@ fun MyProfileManageProfileScreen(
 private fun PetProfileAddView(
     modifier: Modifier = Modifier,
     managePetProfileViewModel: ManagePetProfileViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit = { },
 ) {
     val petProfileUiState by managePetProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp }
+
+    LaunchedEffect(Unit) {
+        managePetProfileViewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is PetProfileUpdateEvent.Error -> {
+                    context.toast(event.message ?: "Error")
+                    rememberOnNavigateUp()
+                }
+
+                is PetProfileUpdateEvent.Fail -> {
+                    context.toast(event.message ?: "Fail")
+                }
+
+                is PetProfileUpdateEvent.Success -> {
+                    rememberOnNavigateUp()
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(
@@ -182,10 +213,30 @@ private fun PetProfileAddView(
 private fun ManProfileAddView(
     modifier: Modifier = Modifier,
     manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit = { },
 ) {
     val manageProfileUiState by manageManProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp }
+    val context = LocalContext.current
 
-    val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
+    LaunchedEffect(Unit) {
+        manageManProfileViewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is ManageManProfileUiEvent.Error -> {
+                    context.toast(event.message ?: "Error")
+                    rememberOnNavigateUp()
+                }
+
+                is ManageManProfileUiEvent.Fail -> {
+                    context.toast(event.message ?: "Fail")
+                }
+
+                ManageManProfileUiEvent.Success -> {
+                    rememberOnNavigateUp()
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(

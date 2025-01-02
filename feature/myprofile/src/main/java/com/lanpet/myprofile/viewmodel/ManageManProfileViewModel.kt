@@ -72,7 +72,7 @@ class ManageManProfileViewModel
                     },
             )
 
-        private val _uiEvent = MutableSharedFlow<Boolean>()
+        private val _uiEvent = MutableSharedFlow<ManageManProfileUiEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
 
         fun updateProfileImageUri(uri: Uri) {
@@ -246,11 +246,17 @@ class ManageManProfileViewModel
             Timber.d("manProfileUpdate: $manProfile")
 
             viewModelScope.launch {
-                modifyManProfileUseCase(
-                    _uiState.value.manProfileUpdate!!.id,
-                    manProfile,
-                ).collect {
-                    _uiEvent.emit(it)
+                runCatching {
+                    modifyManProfileUseCase(
+                        _uiState.value.manProfileUpdate!!.id,
+                        manProfile,
+                    ).collect {
+                        _uiEvent.emit(
+                            ManageManProfileUiEvent.Success,
+                        )
+                    }
+                }.onFailure {
+                    _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                 }
             }
         }
@@ -260,33 +266,39 @@ class ManageManProfileViewModel
                 Timber.i("profileId: $it")
 
                 viewModelScope.launch {
-                    getProfileDetailUseCase(it).collect { profileDetail ->
-                        Timber.i("profileDetail: $profileDetail")
+                    runCatching {
+                        getProfileDetailUseCase(it).collect { profileDetail ->
+                            Timber.i("profileDetail: $profileDetail")
 
-                        _uiState.value =
-                            _uiState.value.copy(
-                                manProfileUpdate =
+                            _uiState.value =
+                                _uiState.value.copy(
+                                    manProfileUpdate =
                                     ManProfileUpdate(
                                         profileImageUri =
-                                            profileDetail.pictureUrl?.let {
-                                                Uri.parse(
-                                                    profileDetail.pictureUrl,
-                                                )
-                                            },
+                                        profileDetail.pictureUrl?.let {
+                                            Uri.parse(
+                                                profileDetail.pictureUrl,
+                                            )
+                                        },
                                         nickName = profileDetail.nickname,
                                         bio = profileDetail.introduction,
                                         id = profileDetail.id,
                                         type = ProfileType.BUTLER,
                                         butler =
-                                            Butler(
-                                                age = profileDetail.butler!!.age,
-                                                preferredPet =
-                                                    profileDetail.butler?.preferredPet
-                                                        ?: emptyList(),
-                                            ),
+                                        Butler(
+                                            age = profileDetail.butler!!.age,
+                                            preferredPet =
+                                            profileDetail.butler?.preferredPet
+                                                ?: emptyList(),
+                                        ),
                                     ),
-                            )
+                                )
+                        }
+                    }.onFailure {
+                        Timber.e(it.stackTraceToString())
+                        _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                     }
+
                 }
             }
         }
@@ -326,4 +338,17 @@ data class ManProfileUpdateValidationStatus(
                 nickName is FormValidationStatus.Valid &&
                 bio is FormValidationStatus.Valid &&
                 butler is FormValidationStatus.Valid
+}
+
+@Stable
+sealed class ManageManProfileUiEvent {
+    data object Success : ManageManProfileUiEvent()
+
+    data class Error(
+        val message: String?,
+    ) : ManageManProfileUiEvent()
+
+    data class Fail(
+        val message: String?,
+    ) : ManageManProfileUiEvent()
 }

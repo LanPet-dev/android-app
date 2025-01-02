@@ -41,7 +41,7 @@ class ManagePetProfileViewModel
             )
         val uiState = _uiState.asStateFlow()
 
-        private val _uiEvent = MutableSharedFlow<Boolean>()
+        private val _uiEvent = MutableSharedFlow<PetProfileUpdateEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
 
         private val petProfileUpdateValidator =
@@ -198,11 +198,15 @@ class ManagePetProfileViewModel
 
             if (_uiState.value.validationStatus.isValid) {
                 viewModelScope.launch {
-                    modifyPetProfileUseCase(
-                        profileId = petProfileUpdate.id,
-                        petProfile = petProfile,
-                    ).collect {
-                        _uiEvent.emit(true)
+                    runCatching {
+                        modifyPetProfileUseCase(
+                            profileId = petProfileUpdate.id,
+                            petProfile = petProfile,
+                        ).collect {
+                            _uiEvent.emit(PetProfileUpdateEvent.Success(petProfile))
+                        }
+                    }.onFailure {
+                        _uiEvent.emit(PetProfileUpdateEvent.Fail(it.message))
                     }
                 }
             }
@@ -213,35 +217,41 @@ class ManagePetProfileViewModel
                 Timber.i("profileId: $it")
 
                 viewModelScope.launch {
-                    getProfileDetailUseCase(it).collect { profileDetail ->
-                        Timber.i("profileDetail: $profileDetail")
+                    runCatching {
+                        getProfileDetailUseCase(it)
+                            .collect { profileDetail ->
+                                Timber.i("profileDetail: $profileDetail")
 
-                        _uiState.value =
-                            _uiState.value.copy(
-                                petProfileUpdate =
-                                    PetProfileUpdate(
-                                        profileImageUri =
-                                            profileDetail.pictureUrl?.let {
-                                                Uri.parse(
-                                                    profileDetail.pictureUrl,
-                                                )
-                                            },
-                                        nickName = profileDetail.nickname,
-                                        bio = profileDetail.introduction,
-                                        id = profileDetail.id,
-                                        type = ProfileType.PET,
-                                        pet =
-                                            Pet(
-                                                petCategory =
-                                                    profileDetail.pet?.petCategory
-                                                        ?: PetCategory.OTHER,
-                                                breed = profileDetail.pet?.breed,
-                                                feature = profileDetail.pet?.feature ?: emptyList(),
-                                                weight = profileDetail.pet?.weight,
-                                                birthDate = profileDetail.pet?.birthDate,
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        petProfileUpdate =
+                                            PetProfileUpdate(
+                                                profileImageUri =
+                                                    profileDetail.pictureUrl?.let {
+                                                        Uri.parse(
+                                                            profileDetail.pictureUrl,
+                                                        )
+                                                    },
+                                                nickName = profileDetail.nickname,
+                                                bio = profileDetail.introduction,
+                                                id = profileDetail.id,
+                                                type = ProfileType.PET,
+                                                pet =
+                                                    Pet(
+                                                        petCategory =
+                                                            profileDetail.pet?.petCategory
+                                                                ?: PetCategory.OTHER,
+                                                        breed = profileDetail.pet?.breed,
+                                                        feature = profileDetail.pet?.feature ?: emptyList(),
+                                                        weight = profileDetail.pet?.weight,
+                                                        birthDate = profileDetail.pet?.birthDate,
+                                                    ),
                                             ),
-                                    ),
-                            )
+                                    )
+                            }
+                    }.onFailure {
+                        Timber.e(it.stackTraceToString())
+                        _uiEvent.emit(PetProfileUpdateEvent.Error(it.message))
                     }
                 }
             }
@@ -286,4 +296,19 @@ data class PetProfileUpdateValidationStatus(
                 bio is FormValidationStatus.Valid &&
                 petCategory is FormValidationStatus.Valid &&
                 breed is FormValidationStatus.Valid
+}
+
+@Stable
+sealed class PetProfileUpdateEvent {
+    data class Success(
+        val petProfile: PetProfile,
+    ) : PetProfileUpdateEvent()
+
+    data class Fail(
+        val message: String?,
+    ) : PetProfileUpdateEvent()
+
+    data class Error(
+        val message: String?,
+    ) : PetProfileUpdateEvent()
 }
