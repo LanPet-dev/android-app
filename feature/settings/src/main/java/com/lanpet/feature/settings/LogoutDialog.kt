@@ -14,6 +14,7 @@ import com.lanpet.core.common.widget.BaseDialog
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.PrimaryColor
+import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
@@ -61,7 +62,7 @@ fun LogoutDialog(
                 stringResource(R.string.dialog_logout_content),
                 style =
                     MaterialTheme.customTypography().body3RegularMulti.copy(
-                        color = GrayColor.Gray700,
+                        color = MaterialTheme.customColorScheme.dialogContentColor,
                     ),
             )
         },
