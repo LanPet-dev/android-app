@@ -71,11 +71,13 @@ fun ProfileCreateHumanAgeScreen(
                     manProfileCreateViewModel.setAge(age)
                 }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
-                    if (manProfileCreateViewModel.manProfileCreateValidationResult.value.age !is FormValidationStatus.Valid) {
-                        return@CommonButton
-                    }
-
+                CommonButton(
+                    title = stringResource(DS_R.string.next_button_string),
+                    isActive =
+                        manProfileCreateViewModel.manProfileCreateValidationResult
+                            .collectAsState()
+                            .value.age is FormValidationStatus.Valid,
+                ) {
                     onNavigateToPreferPet()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))

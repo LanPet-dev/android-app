@@ -86,6 +86,8 @@ class ManProfileCreateViewModel
                     FormValidator { preferredPet ->
                         if (preferredPet.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("선호하는 반려동물을 선택해주세요.")
+                        } else if (preferredPet.size > 3) {
+                            FormValidationStatus.Invalid("3개를 초과하여 선택할 수 없습니다.")
                         } else {
                             FormValidationStatus.Valid()
                         }
@@ -156,6 +158,11 @@ class ManProfileCreateViewModel
             } else {
                 tmpList.add(category)
                 tmpList.distinct()
+            }
+
+            // 3개를 초과하여 선택할 수 없습니다.
+            if (tmpList.size > 3) {
+                return
             }
 
             _manProfileCreateValidationResult.value =

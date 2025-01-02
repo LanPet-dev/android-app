@@ -2,6 +2,7 @@ package com.lanpet.auth
 
 import app.cash.turbine.test
 import com.lanpet.core.auth.AuthManager
+import com.lanpet.core.common.exception.AuthException
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.model.AuthorityType
@@ -26,6 +27,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
+import org.junit.jupiter.api.assertThrows
 
 class AuthManagerTest {
     private lateinit var authManager: AuthManager
@@ -739,6 +742,206 @@ class AuthManagerTest {
                         getDefaultProfileUseCase("accountId")
                         getProfileDetailUseCase("profileId")
                     }
+                }
+            }
+    }
+
+    @Nested
+    inner class `UpdateUserProfile test` {
+        @Test
+        fun `현재 AuthState 가 Success 이 아니면, AuthException_UpdateProfileFailException 을 반환한다`() =
+            runTest {
+                // Given
+                authStateHolder.updateState(
+                    AuthState.Fail(),
+                )
+
+                // When
+                assertThrows<AuthException.UpdateProfileFailException> {
+                    authManager.updateUserProfile(
+                        profileId = "profileId",
+                    )
+                }
+            }
+
+        @Test
+        fun `UpdateUserProfile 성공 시, AuthState_Success 을 반환한다`() =
+            runTest {
+                // Given
+                val fakeAuthState =
+                    AuthState.Success(
+                        account =
+                            Account(
+                                "accountId",
+                                "authId",
+                                authority = AuthorityType.USER,
+                                exitDate = null,
+                                exitReason = null,
+                            ),
+                        defaultProfile =
+                            UserProfile(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
+                            ),
+                        profileDetail =
+                            UserProfileDetail(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
+                            ),
+                        socialAuthToken =
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        profile =
+                            listOf(
+                                UserProfile(
+                                    "profileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "profileImageUri",
+                                    "bio",
+                                ),
+                                UserProfile(
+                                    "profileId2",
+                                    ProfileType.PET,
+                                    "nickName2",
+                                    "profileImageUri2",
+                                    "bio2",
+                                ),
+                            ),
+                        navigationHandleFlag = false,
+                    )
+                val fakeProfile =
+                    UserProfile(
+                        "profileId",
+                        ProfileType.PET,
+                        "nickName2",
+                        "profileImageUri2",
+                        "bio2",
+                    )
+                val fakeDetail =
+                    UserProfileDetail(
+                        "profileId",
+                        ProfileType.BUTLER,
+                        "nickName",
+                        "profileImageUri",
+                        "bio",
+                    )
+
+                coEvery { setDefaultProfileUseCase.invoke(any(), any()) } returns flowOf(true)
+                coEvery { getAllProfileUseCase.invoke() } returns flowOf(listOf(fakeProfile))
+                coEvery { getProfileDetailUseCase.invoke(any()) } returns flowOf(fakeDetail)
+
+                authManager.authState.test {
+                    authStateHolder.updateState(fakeAuthState)
+
+                    // Default AuthState value
+                    assertInstanceOf<AuthState.Initial>(awaitItem())
+
+                    // When
+                    authManager.updateUserProfile(
+                        profileId = "profileId",
+                    )
+
+                    // First AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    // Second AuthState value
+                    assertInstanceOf<AuthState.Success>(awaitItem())
+
+                    ensureAllEventsConsumed()
+                    expectNoEvents()
+                }
+            }
+
+        @Test
+        fun `UpdateUserProfile 실패 시, AuthException_UpdateProfileFailException 을 반환한다`() =
+            runTest {
+                // Given
+                val fakeAuthState =
+                    AuthState.Success(
+                        account =
+                            Account(
+                                "accountId",
+                                "authId",
+                                authority = AuthorityType.USER,
+                                exitDate = null,
+                                exitReason = null,
+                            ),
+                        defaultProfile =
+                            UserProfile(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
+                            ),
+                        profileDetail =
+                            UserProfileDetail(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
+                            ),
+                        socialAuthToken =
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        profile =
+                            listOf(
+                                UserProfile(
+                                    "profileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "profileImageUri",
+                                    "bio",
+                                ),
+                                UserProfile(
+                                    "profileId2",
+                                    ProfileType.PET,
+                                    "nickName2",
+                                    "profileImageUri2",
+                                    "bio2",
+                                ),
+                            ),
+                        navigationHandleFlag = false,
+                    )
+                val fakeProfile =
+                    UserProfile(
+                        "profileId",
+                        ProfileType.PET,
+                        "nickName2",
+                        "profileImageUri2",
+                        "bio2",
+                    )
+                val fakeDetail =
+                    UserProfileDetail(
+                        "profileId",
+                        ProfileType.BUTLER,
+                        "nickName",
+                        "profileImageUri",
+                        "bio",
+                    )
+
+                coEvery { setDefaultProfileUseCase.invoke(any(), any()) } throws Exception("Failed to update profile")
+                coEvery { getAllProfileUseCase.invoke() } returns flowOf(listOf(fakeProfile))
+                coEvery { getProfileDetailUseCase.invoke(any()) } returns flowOf(fakeDetail)
+
+                assertThrows<AuthException.UpdateProfileFailException> {
+                    authManager.updateUserProfile(
+                        profileId = "profileId",
+                    )
                 }
             }
     }

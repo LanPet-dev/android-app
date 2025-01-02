@@ -1,5 +1,7 @@
 package com.lanpet.core.common.widget
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
@@ -29,6 +31,7 @@ enum class ButtonSize {
 fun CommonButton(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     buttonSize: ButtonSize = ButtonSize.MEDIUM,
     onClick: (() -> Unit)? = null,
 ) {
@@ -36,6 +39,7 @@ fun CommonButton(
         ButtonSize.SMALL -> {
             CommonButtonSmall(
                 title = title,
+                isActive = isActive,
                 modifier = modifier,
                 onClick = onClick,
             )
@@ -44,6 +48,7 @@ fun CommonButton(
         ButtonSize.MEDIUM -> {
             CommonButtonMedium(
                 title = title,
+                isActive = isActive,
                 modifier = modifier,
                 onClick = onClick,
             )
@@ -53,6 +58,7 @@ fun CommonButton(
             CommonButtonLarge(
                 title = title,
                 modifier = modifier,
+                isActive = isActive,
                 onClick = onClick,
             )
         }
@@ -63,16 +69,23 @@ fun CommonButton(
 internal fun CommonButtonSmall(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
             onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -81,7 +94,15 @@ internal fun CommonButtonSmall(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
@@ -90,16 +111,23 @@ internal fun CommonButtonSmall(
 internal fun CommonButtonMedium(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
             onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -109,7 +137,15 @@ internal fun CommonButtonMedium(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
@@ -118,16 +154,23 @@ internal fun CommonButtonMedium(
 internal fun CommonButtonLarge(
     title: String,
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+        enabled = isActive,
         onClick = {
             onClick?.invoke()
         },
         colors =
             ButtonDefaults.buttonColors().copy(
-                containerColor = MaterialTheme.customColorScheme.buttonBackground,
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
             ),
         modifier =
             modifier
@@ -137,12 +180,21 @@ internal fun CommonButtonLarge(
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.bodyMedium,
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color =
+                        if (isActive) {
+                            MaterialTheme.customColorScheme.buttonText
+                        } else {
+                            MaterialTheme.customColorScheme.buttonTextDisabled
+                        },
+                ),
         )
     }
 }
 
-@PreviewLightDark
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, showBackground = true)
 @Composable()
 private fun PreviewCommonButton() {
     LanPetAppTheme {
@@ -161,6 +213,26 @@ private fun PreviewCommonButton() {
             Spacer(modifier = Modifier.height(8.dp))
             CommonButtonLarge(
                 title = "This is title",
+                modifier = Modifier,
+                onClick = {},
+            )
+            CommonButtonSmall(
+                title = "This is title",
+                isActive = false,
+                modifier = Modifier,
+                onClick = {},
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonButtonMedium(
+                title = "This is title",
+                isActive = false,
+                modifier = Modifier,
+                onClick = {},
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CommonButtonLarge(
+                title = "This is title",
+                isActive = false,
                 modifier = Modifier,
                 onClick = {},
             )

@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,6 +29,15 @@ import kotlin.time.Duration.Companion.seconds
 
 @Singleton
 open class AuthManager
+
+/**
+     * AuthManager 의 생성자에서 각 UseCase 들이 null 을 초기값으로 가지는 이유는, AuthManager 이 CompositionLocalComponent 에 등록되는것과 관련이 있습니다.
+     * 특히 View 영역에서 Preview 를 사용할 때, 해당 Preview 에서 AuthManager 을 포함하는 View 영역을 포함하고 있다면, AuthManager 가 주입되지 않은 경우 Preview 가 제대로 실행되지 않습니다.
+     * 이를 해결하기 위해 AuthManager 의 생성자에서 각 UseCase 들을 null 로 초기화하고,
+     * Compose Preview 에서는 AuthManager 을 Fake 로 생성하여 사용하도록 합니다.
+     * 그러나 preview 가 아닌 실제 runtime 에서는 반드시 null 이 아닌 UseCase 들이 주입되어야 하고, 실제로 그렇게 동작하고 있습니다.
+     * 따라서 아래 생성자의 수정의 경우 반드시 주의해야 합니다.
+     */
     @Inject
     constructor(
         private val getCognitoSocialAuthTokenUseCase: GetCognitoSocialAuthTokenUseCase? = null,
@@ -56,6 +66,7 @@ open class AuthManager
          */
         val currentProfileDetail = authStateHolder.currentProfileDetail
 
+        @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
                 runCatching {
@@ -110,7 +121,7 @@ open class AuthManager
         }
 
         @VisibleForTesting
-        suspend fun handleNoDefaultProfileException() {
+        fun handleNoDefaultProfileException() {
             authStateHolder.updateState(
                 AuthState.Fail(),
             )
@@ -138,6 +149,7 @@ open class AuthManager
             )
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun handleNoAccount(socialAuthToken: SocialAuthToken) {
             try {
@@ -167,6 +179,7 @@ open class AuthManager
             }
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getAccount(): Account =
             try {
@@ -175,25 +188,31 @@ open class AuthManager
                 throw AuthException.NoAccountException()
             }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getDefaultProfile(
             accountId: String,
             profiles: List<UserProfile>,
         ): UserProfile {
             try {
-                var defaultProfileId = getDefaultProfileUseCase!!(accountId).timeout(5.seconds).first()
+                var defaultProfileId =
+                    getDefaultProfileUseCase!!(accountId).timeout(5.seconds).firstOrNull()
                 if (defaultProfileId.isNullOrEmpty()) {
-                    setDefaultProfileUseCase!!(accountId, profiles.first().id).timeout(5.seconds).first()
+                    setDefaultProfileUseCase!!(accountId, profiles.first().id)
+                        .timeout(5.seconds)
+                        .first()
                     defaultProfileId = profiles.first().id
                 }
 
-                val defaultProfile = profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
+                val defaultProfile =
+                    profiles.firstOrNull { it.id == defaultProfileId } ?: profiles.first()
                 return defaultProfile
             } catch (e: Exception) {
                 throw AuthException.NoDefaultProfileException(accountId = accountId)
             }
         }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getProfileDetail(defaultProfileId: String): UserProfileDetail =
             try {
@@ -202,11 +221,12 @@ open class AuthManager
                 throw AuthException.NoProfileDetailException()
             }
 
+        @OptIn(FlowPreview::class)
         @VisibleForTesting
         suspend fun getProfiles(account: Account): List<UserProfile> =
             try {
                 val res = getAllProfileUseCase!!().timeout(5.seconds).first()
-                if (res.isEmpty()) throw AuthException.NoProfileException(account = account) else res
+                res.ifEmpty { throw AuthException.NoProfileException(account = account) }
             } catch (e: Exception) {
                 throw AuthException.NoProfileException(
                     account = account,
@@ -228,7 +248,7 @@ open class AuthManager
                 var defaultProfileId =
                     getDefaultProfileUseCase!!(
                         account.accountId,
-                    ).timeout(5.seconds).first()
+                    ).timeout(5.seconds).firstOrNull()
 
                 if (defaultProfileId == null) {
                     setDefaultProfileUseCase!!(
@@ -254,10 +274,12 @@ open class AuthManager
                         profile = profile,
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
+                        navigationHandleFlag = false,
                     ),
                 )
             } catch (e: Exception) {
                 Timber.e(e)
+                throw e
             }
         }
 
@@ -265,8 +287,9 @@ open class AuthManager
         suspend fun updateUserProfile(profileId: String) {
             try {
                 if (authState.value !is AuthState.Success) {
-                    return
+                    throw AuthException.UpdateProfileFailException("AuthState is not Success")
                 }
+
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
                 val setDefaultProfileRes =
@@ -275,19 +298,37 @@ open class AuthManager
                             it.accountId,
                             profileId,
                         ).timeout(5.seconds).first()
-                    } ?: throw IllegalStateException("Account is null")
+                    } ?: throw AuthException.NoAccountException("Account is null")
 
                 if (!setDefaultProfileRes) {
-                    throw IllegalStateException("Set default profile failed")
+                    throw AuthException.NoDefaultProfileException(
+                        accountId = currentAuthState.account!!.accountId,
+                        message = "Set default profile failed",
+                    )
                 }
 
-                val res = getAllProfileUseCase!!().timeout(5.seconds).first()
+                val res =
+                    try {
+                        getAllProfileUseCase!!().timeout(5.seconds).first()
+                    } catch (e: Exception) {
+                        throw AuthException.NoProfileException(
+                            account = currentAuthState.account!!,
+                        )
+                    }
 
                 val defaultProfile =
                     res.firstOrNull { it.id == profileId }
-                        ?: throw IllegalStateException("Default profile not found")
+                        ?: throw AuthException.NoDefaultProfileException(
+                            accountId = currentAuthState.account!!.accountId,
+                            message = "Default profile not found",
+                        )
 
-                val detail = getProfileDetailUseCase!!(profileId).timeout(5.seconds).first()
+                val detail =
+                    try {
+                        getProfileDetailUseCase!!(profileId).timeout(5.seconds).first()
+                    } catch (e: Exception) {
+                        throw AuthException.NoProfileDetailException()
+                    }
 
                 authStateHolder.updateState(
                     AuthState.Success(
@@ -296,13 +337,12 @@ open class AuthManager
                         profile = res,
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
+                        navigationHandleFlag = false,
                     ),
                 )
             } catch (e: Exception) {
                 Timber.e(e)
-                authStateHolder.updateState(
-                    AuthState.Fail(),
-                )
+                throw AuthException.UpdateProfileFailException()
             }
         }
 

@@ -13,7 +13,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
@@ -93,7 +93,6 @@ fun SettingsScreen(
                                         .clip(
                                             shape = CircleShape,
                                         ).clickable {
-//                                            authViewModel.logout()
                                             onOpenLogoutDialog?.invoke()
                                         },
                             ) {
@@ -102,26 +101,27 @@ fun SettingsScreen(
                         },
                     )
                 }
-                Spacer(modifier = Modifier.padding(8.dp))
-                SettingsBaseSection(
-                    sectionLabel = stringResource(R.string.notification_label_settings),
-                ) {
-                    // TODO("Satoshi"): separate switch values
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                stringResource(R.string.title_notification_option_switch_settings),
-                                style = MaterialTheme.customTypography().body2RegularSingle,
-                            )
-                        },
-                        trailingContent = {
-                            Switch(
-                                checked = true,
-                                onCheckedChange = { },
-                            )
-                        },
-                    )
-                }
+                // TODO: 알림은 1차 MVP 에서 제외되었습니다. 추후 추가될 수 있습니다.
+//                Spacer(modifier = Modifier.padding(8.dp))
+//                SettingsBaseSection(
+//                    sectionLabel = stringResource(R.string.notification_label_settings),
+//                ) {
+//                    // TODO("Satoshi"): separate switch values
+//                    ListItem(
+//                        headlineContent = {
+//                            Text(
+//                                stringResource(R.string.title_notification_option_switch_settings),
+//                                style = MaterialTheme.customTypography().body2RegularSingle,
+//                            )
+//                        },
+//                        trailingContent = {
+//                            Switch(
+//                                checked = true,
+//                                onCheckedChange = { },
+//                            )
+//                        },
+//                    )
+//                }
                 Spacer(modifier = Modifier.padding(8.dp))
                 SettingsBaseSection(
                     sectionLabel = stringResource(R.string.tos_label_settings),
@@ -260,7 +260,7 @@ private fun SettingsBaseSectionPreview() {
 @Composable
 @PreviewLightDark
 private fun SettingsScreenPreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         SettingsScreen()
     }
 }

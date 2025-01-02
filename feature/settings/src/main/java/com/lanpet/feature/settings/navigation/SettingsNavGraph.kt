@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import com.lanpet.feature.settings.LogoutDialog
+import com.lanpet.feature.settings.MemberLeaveCompleteScreen
 import com.lanpet.feature.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
@@ -14,6 +15,7 @@ fun NavGraphBuilder.settingsNavGraph(
     onOpenLogoutDialog: () -> Unit,
     onDismissLogoutDialog: () -> Unit,
     onLogout: () -> Unit,
+    onNavigateToMemberLeaveComplete: () -> Unit,
 ) {
     composable<Settings> {
         SettingsScreen(
@@ -31,6 +33,12 @@ fun NavGraphBuilder.settingsNavGraph(
     composable<MemberLeave> {
         com.lanpet.feature.settings.MemberLeaveScreen(
             onNavigateUp = onNavigateUp,
+            onNavigateToMemberLeaveComplete = onNavigateToMemberLeaveComplete,
+        )
+    }
+    composable<MemberLeaveComplete> {
+        MemberLeaveCompleteScreen(
+            onLogout = onLogout,
         )
     }
 }
@@ -60,6 +68,14 @@ fun NavController.navigateToMemberLeave() {
     }
 }
 
+fun NavController.navigateToMemberLeaveComplete() {
+    navigate(
+        MemberLeaveComplete,
+    ) {
+        launchSingleTop = true
+    }
+}
+
 @Serializable
 data object Settings
 
@@ -68,3 +84,6 @@ data object LogoutDialog
 
 @Serializable
 object MemberLeave
+
+@Serializable
+object MemberLeaveComplete

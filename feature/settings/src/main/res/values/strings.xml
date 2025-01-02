@@ -18,4 +18,7 @@
     <string name="placeholder_reaseon_member_leave">소중한 의견은 더 나은 랜펫이 되는데 큰 도움이 돼요!</string>
     <string name="title_button_member_leave">제출하기</string>
     <string name="title_leave_member">회원탈퇴</string>
+    <string name="header_member_leave_complete">회원탈퇴가 완료되었습니다.</string>
+    <string name="sub_header_member_leave_complete">보다 나은 랜펫으로 다시 만나요</string>
+    <string name="title_button_member_leave_complete">홈으로</string>
 </resources>

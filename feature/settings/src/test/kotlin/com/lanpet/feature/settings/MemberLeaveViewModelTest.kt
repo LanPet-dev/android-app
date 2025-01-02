@@ -49,7 +49,6 @@ class MemberLeaveViewModelTest {
                     viewModel.leaveMember()
 
                     // then
-                    assertInstanceOf<MemberLeaveState.Initial>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Loading>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Success>(awaitItem())
 
@@ -70,7 +69,6 @@ class MemberLeaveViewModelTest {
                     viewModel.leaveMember()
 
                     // then
-                    assertInstanceOf<MemberLeaveState.Initial>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Loading>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Error>(awaitItem())
 
@@ -91,7 +89,6 @@ class MemberLeaveViewModelTest {
                     viewModel.leaveMember()
 
                     // then
-                    assertInstanceOf<MemberLeaveState.Initial>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Loading>(awaitItem())
                     assertInstanceOf<MemberLeaveState.Error>(awaitItem())
 

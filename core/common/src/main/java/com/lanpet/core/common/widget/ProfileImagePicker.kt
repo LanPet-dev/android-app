@@ -22,12 +22,14 @@ import com.lanpet.core.common.createProfileImageUri
 import com.lanpet.core.common.rememberCameraPermissionLauncher
 import com.lanpet.core.common.rememberCameraTakePictureLauncher
 import com.lanpet.core.common.rememberGalleryLauncher
+import com.lanpet.domain.model.ProfileType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileImagePicker(
     profileImageUri: Uri?,
+    profileType: ProfileType,
     modifier: Modifier = Modifier,
     onImageSelect: (Uri) -> Unit = { },
 ) {
@@ -72,6 +74,7 @@ fun ProfileImagePicker(
 
     ImagePickerView(
         imageUri = profileImageUri,
+        profileType = profileType,
     ) {
         scope.launch {
             sheetState.show()

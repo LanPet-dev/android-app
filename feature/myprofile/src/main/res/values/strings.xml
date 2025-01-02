@@ -39,4 +39,11 @@
     <string name="dialog_delete_profile_content">프로필을 삭제하시겠습니까?</string>
     <string name="dialog_delete_profile_dismiss">취소</string>
     <string name="dialog_delete_profile_confirm">삭제할게요</string>
+    <string name="heading_add_profile_entry">현재 반려동물을 키우고 계신가요?</string>
+    <string name="title_add_pet_profile">키우고 있어요</string>
+    <string name="title_add_man_profile">키우고 있지 않아요</string>
+    <string name="toast_profile_create_success">프로필이 생성되었어요</string>
+    <string name="toast_profile_create_fail">프로필 생성에 실패했어요</string>
+    <string name="toast_update_profile_success">프로필이 업데이트 되었어요</string>
+    <string name="toast_update_profile_fail">프로필 업데이트에 실패했어요</string>
 </resources>

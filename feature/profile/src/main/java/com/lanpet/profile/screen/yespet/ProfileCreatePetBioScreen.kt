@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -104,7 +105,13 @@ fun ProfileCreatePetBioScreen(
                     petProfileCreateViewModel.setBio(bioText)
                 }
                 Spacer(Modifier.weight(1f))
-                CommonButton(title = stringResource(DS_R.string.next_button_string)) {
+                CommonButton(
+                    title = stringResource(DS_R.string.next_button_string),
+                    isActive =
+                        petProfileCreateViewModel.petProfileCreateValidationResult
+                            .collectAsState()
+                            .value.bio is FormValidationStatus.Valid,
+                ) {
                     petProfileCreateViewModel.registerPetProfile()
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))

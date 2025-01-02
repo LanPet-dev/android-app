@@ -25,13 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
@@ -42,6 +40,7 @@ import com.lanpet.core.common.myiconpack.File
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customColorScheme
@@ -136,7 +135,7 @@ fun MyProfileScreen(
                         Modifier
                             .padding(bottom = LanPetDimensions.Spacing.xLarge)
                             .fillMaxWidth()
-                            .size(LanPetDimensions.Spacing.xxxSmall)
+                            .size(LanPetDimensions.Spacing.xSmall)
                             .background(
                                 color = MaterialTheme.customColorScheme.spacerLine,
                             ),
@@ -215,28 +214,14 @@ private fun MyProfileCard(
             Modifier
                 .padding(
                     horizontal = LanPetDimensions.Margin.Layout.horizontal,
-                    vertical = LanPetDimensions.Margin.xxLarge,
+                    vertical = LanPetDimensions.Margin.large,
                 ),
     ) {
-        if (!myProfile.profileImageUri.isNullOrEmpty()) {
-            AsyncImage(
-                myProfile.profileImageUri,
-                contentDescription = "profile_image",
-                modifier =
-                    Modifier.crop(
-                        size = 88.dp,
-                    ),
-            )
-        } else {
-            Image(
-                modifier =
-                    Modifier.crop(
-                        size = 88.dp,
-                    ),
-                painter = painterResource(id = com.lanpet.core.common.R.drawable.img_default_profile),
-                contentDescription = "profile_image",
-            )
-        }
+        ProfileImage(
+            size = 90.dp,
+            profileType = myProfile.type,
+            imageUri = myProfile.profileImageUri,
+        )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         Column {
             Text(

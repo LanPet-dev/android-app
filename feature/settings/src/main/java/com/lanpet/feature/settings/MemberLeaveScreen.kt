@@ -24,34 +24,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ButtonSize
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.designsystem.theme.GrayColor
-import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.VioletColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.feature.settings.viewmodel.MemberLeaveState
 import com.lanpet.feature.settings.viewmodel.MemberLeaveViewModel
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,27 +63,35 @@ fun MemberLeaveScreen(
     modifier: Modifier = Modifier,
     memberLeaveViewModel: MemberLeaveViewModel = hiltViewModel<MemberLeaveViewModel>(),
     onNavigateUp: () -> Unit = {},
+    onNavigateToMemberLeaveComplete: () -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
     val profile by LocalAuthManager.current.defaultUserProfile.collectAsStateWithLifecycle()
     var reasonInput by rememberSaveable { mutableStateOf("") }
-    val leaveState by memberLeaveViewModel.leaveState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    LaunchedEffect(leaveState) {
-        when (leaveState) {
-            is MemberLeaveState.Success -> {
-            }
+    val rememberOnNavigateToMemberLeaveComplete by rememberUpdatedState(
+        onNavigateToMemberLeaveComplete,
+    )
 
-            is MemberLeaveState.Error -> {
-                // TODO
-            }
+    LaunchedEffect(Unit) {
+        memberLeaveViewModel.leaveState.collect { leaveState ->
+            when (leaveState) {
+                is MemberLeaveState.Success -> {
+                    rememberOnNavigateToMemberLeaveComplete()
+                }
 
-            is MemberLeaveState.Initial -> {
-                // TODO
-            }
+                is MemberLeaveState.Error -> {
+                    leaveState.message?.let { context.toast(it) }
+                }
 
-            is MemberLeaveState.Loading -> {
-                // TODO
+                is MemberLeaveState.Initial -> {
+                    // TODO
+                }
+
+                is MemberLeaveState.Loading -> {
+                    // TODO
+                }
             }
         }
     }
@@ -240,7 +252,7 @@ fun LeaveReasonInputSection(
 @Composable
 @PreviewLightDark
 private fun MemberLeaveScreenPreview() {
-    LanPetAppTheme {
+    BasePreviewWrapper {
         MemberLeaveScreen()
     }
 }

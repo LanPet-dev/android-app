@@ -32,7 +32,9 @@ val LightColorScheme =
 data class CustomColorScheme(
     val heading: Color,
     val buttonBackground: Color,
+    val buttonBackgroundDisabled: Color,
     val buttonText: Color,
+    val buttonTextDisabled: Color,
     val textFieldBackground: Color,
     val textFieldText: Color,
     val selectedText: Color,
@@ -44,12 +46,15 @@ data class CustomColorScheme(
     val spacerLine: Color,
     val defaultIconColor: Color,
     val topBarTextButtonTextColor: Color,
+    val dialogContentColor: Color,
     // TODO("Satoshi"): define another colors
 )
 
 val LightCustomColors =
     CustomColorScheme(
         buttonBackground = PrimaryColor.PRIMARY,
+        buttonBackgroundDisabled = GrayColor.Gray100,
+        buttonTextDisabled = GrayColor.Gray300,
         buttonText = WhiteColor.LIGHT,
         textFieldBackground = WhiteColor.LIGHT,
         textFieldText = BlackColor.MEDIUM,
@@ -60,15 +65,18 @@ val LightCustomColors =
         heading = BlackColor.MEDIUM,
         errorText = Color.Red,
         confirmText = Color.Blue,
-        spacerLine = GrayColor.LIGHT,
+        spacerLine = GrayColor.Gray50,
         defaultIconColor = BlackColor.MEDIUM,
         topBarTextButtonTextColor = GrayColor.Gray950,
+        dialogContentColor = GrayColor.Gray700,
     )
 
 val DarkCustomColors =
     CustomColorScheme(
         buttonBackground = WhiteColor.LIGHT,
+        buttonBackgroundDisabled = GrayColor.Gray100,
         buttonText = BlackColor.MEDIUM,
+        buttonTextDisabled = GrayColor.Gray300,
         textFieldBackground = BlackColor.MEDIUM,
         textFieldText = WhiteColor.MEDIUM,
         selectedText = PrimaryColor.PRIMARY,
@@ -78,9 +86,10 @@ val DarkCustomColors =
         heading = WhiteColor.MEDIUM,
         errorText = Color.Red,
         confirmText = Color.Blue,
-        spacerLine = GrayColor.LIGHT,
+        spacerLine = GrayColor.Gray950,
         defaultIconColor = WhiteColor.White,
         topBarTextButtonTextColor = GrayColor.Gray50,
+        dialogContentColor = GrayColor.Gray300,
     )
 
 val LocalCustomColorScheme =

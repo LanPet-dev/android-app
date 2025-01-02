@@ -40,7 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -56,14 +56,15 @@ import com.lanpet.core.common.commonBorder
 import com.lanpet.core.common.crop
 import com.lanpet.core.common.myiconpack.ArrowLeft
 import com.lanpet.core.common.myiconpack.Plus
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonHeading
 import com.lanpet.core.common.widget.CommonHeadingHint
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
-import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
@@ -81,9 +82,10 @@ fun MyProfileCreateProfileScreen(
     modifier: Modifier = Modifier,
     profileListViewModel: ProfileListViewModel = hiltViewModel(),
     onNavigateUp: (() -> Unit)? = null,
-    onNavigateToAddProfile: () -> Unit = {},
+    onNavigateToAddProfileEntry: () -> Unit = {},
     onNavigateToModifyProfile: (String, ProfileType) -> Unit = { profileId, profileType -> },
 ) {
+    val context = LocalContext.current
     val authManager = LocalAuthManager.current
     val defaultUserProfile by authManager.defaultUserProfile.collectAsStateWithLifecycle()
     val userProfiles by authManager.userProfiles.collectAsStateWithLifecycle()
@@ -139,17 +141,24 @@ fun MyProfileCreateProfileScreen(
             SetDefaultProfileDialog(
                 onDismiss = { showSetDefaultProfileDialog = false },
                 onSetDefaultProfile = {
-                    Timber.d("selectedProfileId: $selectedProfileId")
                     scope.launch {
-                        if (selectedProfileId.isEmpty()) {
-                            return@launch
+                        runCatching {
+                            if (selectedProfileId.isEmpty()) {
+                                return@launch
+                            }
+
+                            authManager.updateUserProfile(
+                                selectedProfileId,
+                            )
+                        }.onFailure {
+                            Timber.e(it)
+                            context.toast(
+                                context.getString(R.string.toast_update_profile_fail),
+                            )
+                            showSetDefaultProfileDialog = false
+                        }.onSuccess {
+                            showSetDefaultProfileDialog = false
                         }
-
-                        authManager.updateUserProfile(
-                            selectedProfileId,
-                        )
-
-                        showSetDefaultProfileDialog = false
                     }
                 },
             )
@@ -262,9 +271,9 @@ fun MyProfileCreateProfileScreen(
                         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                     }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (userProfiles.size < 3) {
-                    AddProfileButton { onNavigateToAddProfile() }
-                }
+                AddProfileButton(
+                    isActive = userProfiles.size < 3,
+                ) { onNavigateToAddProfileEntry() }
             }
         }
     }
@@ -273,6 +282,7 @@ fun MyProfileCreateProfileScreen(
 @Composable
 fun AddProfileButton(
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onAddProfileClick: () -> Unit = {},
 ) {
     Row(
@@ -281,11 +291,18 @@ fun AddProfileButton(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    PrimaryColor.PRIMARY,
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
                     shape = RoundedCornerShape(LanPetDimensions.Corner.medium),
                 ).clip(RoundedCornerShape(LanPetDimensions.Corner.medium))
-                .clickable { onAddProfileClick() }
-                .padding(
+                .clickable(
+                    enabled = isActive,
+                ) {
+                    onAddProfileClick()
+                }.padding(
                     horizontal = LanPetDimensions.Margin.medium,
                     vertical = LanPetDimensions.Margin.medium,
                 ),
@@ -297,7 +314,14 @@ fun AddProfileButton(
                     size = 18.dp,
                 ),
             imageVector = MyIconPack.Plus,
-            colorFilter = ColorFilter.tint(WhiteColor.White),
+            colorFilter =
+                if (isActive) {
+                    ColorFilter.tint(MaterialTheme.customColorScheme.buttonText)
+                } else {
+                    ColorFilter.tint(
+                        MaterialTheme.customColorScheme.buttonTextDisabled,
+                    )
+                },
             contentDescription = "Add Profile Picture",
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -305,7 +329,12 @@ fun AddProfileButton(
             Text(
                 style = MaterialTheme.customTypography().body2SemiBoldSingle,
                 text = stringResource(R.string.title_add_profile_button),
-                color = WhiteColor.White,
+                color =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonText
+                    } else {
+                        MaterialTheme.customColorScheme.buttonTextDisabled
+                    },
             )
         }
     }
@@ -355,13 +384,10 @@ fun ProfileListCard(
                             vertical = LanPetDimensions.Margin.medium,
                         ),
             ) {
-                Image(
-                    modifier =
-                        Modifier.crop(
-                            size = 64.dp,
-                        ),
-                    painter = painterResource(id = com.lanpet.core.designsystem.R.drawable.img_animals),
-                    contentDescription = "Profile Picture",
+                ProfileImage(
+                    profileType = userProfile.type,
+                    imageUri = userProfile.profileImageUri,
+                    size = 88.dp,
                 )
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                 Column {
@@ -427,7 +453,11 @@ fun ProfileListCard(
 @Composable
 private fun PreviewAddProfileCard() {
     BasePreviewWrapper {
-        AddProfileButton()
+        Column {
+            AddProfileButton()
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
+            AddProfileButton(isActive = false)
+        }
     }
 }
 

@@ -20,4 +20,8 @@ sealed class AuthException : Exception() {
     data class NoProfileDetailException(
         override val message: String? = null,
     ) : AuthException()
+
+    data class UpdateProfileFailException(
+        override val message: String? = null,
+    ) : AuthException()
 }

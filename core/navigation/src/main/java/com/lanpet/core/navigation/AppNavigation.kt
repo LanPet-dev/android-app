@@ -34,6 +34,7 @@ import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
 import com.lanpet.feature.settings.navigation.navigateToLogoutDialog
 import com.lanpet.feature.settings.navigation.navigateToMemberLeave
+import com.lanpet.feature.settings.navigation.navigateToMemberLeaveComplete
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
@@ -45,6 +46,7 @@ import com.lanpet.myprofile.navigation.MyProfile
 import com.lanpet.myprofile.navigation.MyProfileBaseRoute
 import com.lanpet.myprofile.navigation.myProfileNavGraph
 import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfile
+import com.lanpet.myprofile.navigation.navigateToMyProfileAddProfileEntry
 import com.lanpet.myprofile.navigation.navigateToMyProfileBaseRoute
 import com.lanpet.myprofile.navigation.navigateToMyProfileCreateProfile
 import com.lanpet.myprofile.navigation.navigateToMyProfileManageProfile
@@ -189,7 +191,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                             navController.navigateToMyProfileCreateProfile()
                         },
                         onNavigateToMyProfileAddProfile = {
-                            navController.navigateToMyProfileAddProfile()
+                            navController.navigateToMyProfileAddProfile(
+                                profileType = it,
+                            )
                         },
                         onNavigateToSettings = {
                             navController.navigateToSettings()
@@ -205,6 +209,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                                 profileId = profileId,
                                 profileType = profileType,
                             )
+                        },
+                        onNavigateToMyProfileAddProfileEntry = {
+                            navController.navigateToMyProfileAddProfileEntry()
                         },
                     )
                     freeNavGraph(
@@ -233,6 +240,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     },
                     onNavigateToMemberLeave = {
                         navController.navigateToMemberLeave()
+                    },
+                    onNavigateToMemberLeaveComplete = {
+                        navController.navigateToMemberLeaveComplete()
                     },
                 )
                 myPostsNavGraph(

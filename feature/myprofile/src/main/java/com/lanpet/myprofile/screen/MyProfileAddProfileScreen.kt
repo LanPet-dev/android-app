@@ -22,11 +22,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -51,18 +54,17 @@ import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.myprofile.R
-import com.lanpet.myprofile.navigation.MyProfileManageProfile
-import com.lanpet.myprofile.viewmodel.ManageManProfileViewModel
-import com.lanpet.myprofile.viewmodel.ManagePetProfileViewModel
+import com.lanpet.myprofile.navigation.MyProfileAddProfile
+import com.lanpet.myprofile.viewmodel.AddManProfileViewModel
+import com.lanpet.myprofile.viewmodel.AddPetProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileManageProfileScreen(
+fun MyProfileAddProfileScreen(
     modifier: Modifier = Modifier,
-    args: MyProfileManageProfile? = null,
+    args: MyProfileAddProfile? = null,
     onNavigateUp: () -> Unit = { },
 ) {
-    assert(args?.profileId != null)
     assert(args?.profileType != null)
 
     val verticalScrollState = rememberScrollState()
@@ -84,7 +86,7 @@ fun MyProfileManageProfileScreen(
                 },
                 title = {
                     CommonAppBarTitle(
-                        title = stringResource(R.string.title_appbar_my_profile_manage_profile),
+                        title = stringResource(R.string.title_appbar_my_profile_add_profile),
                     )
                 },
             )
@@ -109,11 +111,15 @@ fun MyProfileManageProfileScreen(
             ) {
                 when (args!!.profileType) {
                     ProfileType.PET -> {
-                        PetProfileAddView()
+                        PetProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
 
                     ProfileType.BUTLER -> {
-                        ManProfileAddView()
+                        ManProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
                 }
             }
@@ -124,55 +130,79 @@ fun MyProfileManageProfileScreen(
 @Composable
 private fun PetProfileAddView(
     modifier: Modifier = Modifier,
-    managePetProfileViewModel: ManagePetProfileViewModel = hiltViewModel(),
+    @Suppress("ktlint:compose:lambda-param-in-effect")
+    onNavigateUp: () -> Unit = { },
+    addPetProfileViewModel: AddPetProfileViewModel = hiltViewModel(),
 ) {
-    val petProfileUiState by managePetProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val petProfileUiState by addPetProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val rememberOnNavigateUp by rememberUpdatedState {
+        onNavigateUp()
+        onNavigateUp()
+    }
+
+    LaunchedEffect(Unit) {
+        addPetProfileViewModel.uiEvent.collect { event ->
+            when (event) {
+                true -> {
+                    context.toast(context.getString(R.string.toast_profile_create_success))
+                    rememberOnNavigateUp()
+                }
+
+                false -> {
+                    context.toast(context.getString(R.string.toast_profile_create_fail))
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(
-            profileImageUri = petProfileUiState.petProfileUpdate?.profileImageUri,
+            profileImageUri = petProfileUiState.petProfileCreate?.profileImageUri,
             profileType = ProfileType.PET,
             onImageSelect = {
-                managePetProfileViewModel.updateProfileImageUri(it)
+                addPetProfileViewModel.updateProfileImageUri(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         NickNameSection(
             duplicatedStatus = petProfileUiState.nicknameDuplicateCheck,
-            nickname = petProfileUiState.petProfileUpdate?.nickName ?: "",
+            nickname = petProfileUiState.petProfileCreate?.nickName ?: "",
             onNicknameChange = {
-                managePetProfileViewModel.updateNickName(it)
+                addPetProfileViewModel.updateNickName(it)
             },
             onCheckDuplicatedNickname = {
-                managePetProfileViewModel.checkNicknameDuplicated()
+                addPetProfileViewModel.checkNicknameDuplicated()
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         PetCategorySection(
-            petCategory = petProfileUiState.petProfileUpdate?.pet?.petCategory ?: PetCategory.OTHER,
+            petCategory = petProfileUiState.petProfileCreate?.pet?.petCategory,
             onPetCategoryChange = {
-                managePetProfileViewModel.updatePetCategory(it)
+                addPetProfileViewModel.updatePetCategory(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         PetBreedSection(
-            petBreed = petProfileUiState.petProfileUpdate?.pet?.breed ?: "",
+            petBreed = petProfileUiState.petProfileCreate?.pet?.breed ?: "",
             onPetBreedChange = {
-                managePetProfileViewModel.updateBreed(it)
+                addPetProfileViewModel.updateBreed(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         BioInputSection(
-            text = petProfileUiState.petProfileUpdate?.bio ?: "",
+            text = petProfileUiState.petProfileCreate?.bio ?: "",
             onTextChange = {
-                managePetProfileViewModel.updateBio(it)
+                addPetProfileViewModel.updateBio(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         CommonButton(
             title = stringResource(R.string.title_register_button),
+            isActive = addPetProfileViewModel.isValidState.collectAsStateWithLifecycle().value,
         ) {
-            managePetProfileViewModel.modifyPetProfile()
+            addPetProfileViewModel.addPetProfile()
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }
@@ -181,59 +211,78 @@ private fun PetProfileAddView(
 @Composable
 private fun ManProfileAddView(
     modifier: Modifier = Modifier,
-    manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit = { },
+    addManProfileViewModel: AddManProfileViewModel = hiltViewModel(),
 ) {
-    val manageProfileUiState by manageManProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val manageProfileUiState by addManProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
+    val rememberOnNavigateUp by rememberUpdatedState {
+        onNavigateUp()
+        onNavigateUp()
+    }
+
+    LaunchedEffect(Unit) {
+        addManProfileViewModel.uiEvent.collect { event ->
+            when (event) {
+                true -> {
+                    context.toast(context.getString(R.string.toast_profile_create_success))
+                    rememberOnNavigateUp()
+                }
+
+                false -> {
+                    context.toast(context.getString(R.string.toast_profile_create_fail))
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(
-            profileImageUri = manageProfileUiState.manProfileUpdate?.profileImageUri,
-            profileType = ProfileType.PET,
+            profileImageUri = manageProfileUiState.manProfileCreate?.profileImageUri,
+            profileType = ProfileType.BUTLER,
             onImageSelect = {
-                manageManProfileViewModel.updateProfileImageUri(it)
+                addManProfileViewModel.updateProfileImageUri(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
             duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
-            nickname = manageProfileUiState.manProfileUpdate?.nickName ?: "",
+            nickname = manageProfileUiState.manProfileCreate?.nickName ?: "",
             onNicknameChange = {
-                manageManProfileViewModel.updateNickName(it)
+                addManProfileViewModel.updateNickName(it)
             },
             onCheckDuplicatedNickname = {
-                manageManProfileViewModel.checkNicknameDuplicate()
+                addManProfileViewModel.checkNicknameDuplicate()
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-        manageProfileUiState.manProfileUpdate?.butler?.let { it1 ->
-            SelectAgeSection(
-                age = it1.age,
-                onAgeChange = {
-                    manageManProfileViewModel.updateButlerAge(it)
-                },
-            )
-        }
+        SelectAgeSection(
+            age = manageProfileUiState.manProfileCreate?.butler?.age,
+            onAgeChange = {
+                addManProfileViewModel.updateButlerAge(it)
+            },
+        )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         SelectPreferPetSection(
-            preferPet = manageProfileUiState.manProfileUpdate?.butler?.preferredPet ?: emptyList(),
+            preferPet = manageProfileUiState.manProfileCreate?.butler?.preferredPet ?: emptyList(),
             onPreferPetChange = {
-                manageManProfileViewModel.updateButlerPreferredPet(it)
+                addManProfileViewModel.updateButlerPreferredPet(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         BioInputSection(
-            text = manageProfileUiState.manProfileUpdate?.bio ?: "",
+            text = manageProfileUiState.manProfileCreate?.bio ?: "",
             onTextChange = {
-                manageManProfileViewModel.updateBio(it)
+                addManProfileViewModel.updateBio(it)
             },
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         CommonButton(
             title = stringResource(R.string.title_register_button),
+            isActive = addManProfileViewModel.isValidState.collectAsStateWithLifecycle().value,
         ) {
-            manageManProfileViewModel.modifyManProfile()
+            addManProfileViewModel.addManProfile()
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }
@@ -401,7 +450,7 @@ private fun PetBreedSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PetCategorySection(
-    petCategory: PetCategory,
+    petCategory: PetCategory?,
     modifier: Modifier = Modifier,
     onPetCategoryChange: (PetCategory) -> Unit = {},
 ) {
@@ -474,7 +523,7 @@ private fun PetCategorySection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelectAgeSection(
-    age: Age,
+    age: Age?,
     modifier: Modifier = Modifier,
     onAgeChange: (Age) -> Unit = {},
 ) {
@@ -582,12 +631,24 @@ private fun DuplicatedNicknameErrorText(modifier: Modifier = Modifier) {
 
 @Composable
 @PreviewLightDark
-private fun MyProfileManageProfilePreview() {
+private fun MyProfileAddPetProfilePreview() {
     BasePreviewWrapper {
-        MyProfileManageProfileScreen(
+        MyProfileAddProfileScreen(
             args =
-                MyProfileManageProfile(
-                    profileId = "1",
+                MyProfileAddProfile(
+                    profileType = ProfileType.PET,
+                ),
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun MyProfileAddManProfilePreview() {
+    BasePreviewWrapper {
+        MyProfileAddProfileScreen(
+            args =
+                MyProfileAddProfile(
                     profileType = ProfileType.BUTLER,
                 ),
         )
