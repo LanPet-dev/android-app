@@ -836,7 +836,6 @@ class AuthManagerTest {
                         "bio",
                     )
 
-
                 coEvery { setDefaultProfileUseCase.invoke(any(), any()) } returns flowOf(true)
                 coEvery { getAllProfileUseCase.invoke() } returns flowOf(listOf(fakeProfile))
                 coEvery { getProfileDetailUseCase.invoke(any()) } returns flowOf(fakeDetail)
@@ -870,37 +869,14 @@ class AuthManagerTest {
                 val fakeAuthState =
                     AuthState.Success(
                         account =
-                        Account(
-                            "accountId",
-                            "authId",
-                            authority = AuthorityType.USER,
-                            exitDate = null,
-                            exitReason = null,
-                        ),
+                            Account(
+                                "accountId",
+                                "authId",
+                                authority = AuthorityType.USER,
+                                exitDate = null,
+                                exitReason = null,
+                            ),
                         defaultProfile =
-                        UserProfile(
-                            "profileId",
-                            ProfileType.BUTLER,
-                            "nickName",
-                            "profileImageUri",
-                            "bio",
-                        ),
-                        profileDetail =
-                        UserProfileDetail(
-                            "profileId",
-                            ProfileType.BUTLER,
-                            "nickName",
-                            "profileImageUri",
-                            "bio",
-                        ),
-                        socialAuthToken =
-                        SocialAuthToken(
-                            SocialAuthType.GOOGLE,
-                            "accessToken",
-                            "refreshToken",
-                        ),
-                        profile =
-                        listOf(
                             UserProfile(
                                 "profileId",
                                 ProfileType.BUTLER,
@@ -908,14 +884,37 @@ class AuthManagerTest {
                                 "profileImageUri",
                                 "bio",
                             ),
-                            UserProfile(
-                                "profileId2",
-                                ProfileType.PET,
-                                "nickName2",
-                                "profileImageUri2",
-                                "bio2",
+                        profileDetail =
+                            UserProfileDetail(
+                                "profileId",
+                                ProfileType.BUTLER,
+                                "nickName",
+                                "profileImageUri",
+                                "bio",
                             ),
-                        ),
+                        socialAuthToken =
+                            SocialAuthToken(
+                                SocialAuthType.GOOGLE,
+                                "accessToken",
+                                "refreshToken",
+                            ),
+                        profile =
+                            listOf(
+                                UserProfile(
+                                    "profileId",
+                                    ProfileType.BUTLER,
+                                    "nickName",
+                                    "profileImageUri",
+                                    "bio",
+                                ),
+                                UserProfile(
+                                    "profileId2",
+                                    ProfileType.PET,
+                                    "nickName2",
+                                    "profileImageUri2",
+                                    "bio2",
+                                ),
+                            ),
                         navigationHandleFlag = false,
                     )
                 val fakeProfile =
@@ -934,7 +933,6 @@ class AuthManagerTest {
                         "profileImageUri",
                         "bio",
                     )
-
 
                 coEvery { setDefaultProfileUseCase.invoke(any(), any()) } throws Exception("Failed to update profile")
                 coEvery { getAllProfileUseCase.invoke() } returns flowOf(listOf(fakeProfile))
