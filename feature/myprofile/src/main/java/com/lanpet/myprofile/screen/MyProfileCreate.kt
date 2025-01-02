@@ -63,7 +63,6 @@ import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
-import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.ProfileType
@@ -273,6 +272,7 @@ fun MyProfileCreateProfileScreen(
 @Composable
 fun AddProfileButton(
     modifier: Modifier = Modifier,
+    isActive: Boolean = true,
     onAddProfileClick: () -> Unit = {},
 ) {
     Row(
@@ -281,11 +281,14 @@ fun AddProfileButton(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    PrimaryColor.PRIMARY,
+                    if (isActive) MaterialTheme.customColorScheme.buttonBackground else MaterialTheme.customColorScheme.buttonBackgroundDisabled,
                     shape = RoundedCornerShape(LanPetDimensions.Corner.medium),
                 ).clip(RoundedCornerShape(LanPetDimensions.Corner.medium))
-                .clickable { onAddProfileClick() }
-                .padding(
+                .clickable(
+                    enabled = isActive,
+                ) {
+                    onAddProfileClick()
+                }.padding(
                     horizontal = LanPetDimensions.Margin.medium,
                     vertical = LanPetDimensions.Margin.medium,
                 ),
@@ -297,7 +300,14 @@ fun AddProfileButton(
                     size = 18.dp,
                 ),
             imageVector = MyIconPack.Plus,
-            colorFilter = ColorFilter.tint(WhiteColor.White),
+            colorFilter =
+                if (isActive) {
+                    ColorFilter.tint(MaterialTheme.customColorScheme.buttonText)
+                } else {
+                    ColorFilter.tint(
+                        MaterialTheme.customColorScheme.buttonTextDisabled,
+                    )
+                },
             contentDescription = "Add Profile Picture",
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -305,7 +315,12 @@ fun AddProfileButton(
             Text(
                 style = MaterialTheme.customTypography().body2SemiBoldSingle,
                 text = stringResource(R.string.title_add_profile_button),
-                color = WhiteColor.White,
+                color =
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonText
+                    } else {
+                        MaterialTheme.customColorScheme.buttonTextDisabled
+                    },
             )
         }
     }
@@ -424,7 +439,11 @@ fun ProfileListCard(
 @Composable
 private fun PreviewAddProfileCard() {
     BasePreviewWrapper {
-        AddProfileButton()
+        Column {
+            AddProfileButton()
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
+            AddProfileButton(isActive = false)
+        }
     }
 }
 
