@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -93,4 +94,11 @@ fun Context.createProfileImageUri(): Uri {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         },
     )!!
+}
+
+fun Context.toast(
+    message: String,
+    duration: Int = Toast.LENGTH_SHORT,
+) {
+    Toast.makeText(this, message, duration).show()
 }
