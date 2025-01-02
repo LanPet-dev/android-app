@@ -196,6 +196,7 @@ private fun PetProfileAddView(
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         CommonButton(
             title = stringResource(R.string.title_register_button),
+            isActive = addPetProfileViewModel.isValidState.collectAsStateWithLifecycle().value,
         ) {
             addPetProfileViewModel.addPetProfile()
         }
@@ -274,6 +275,7 @@ private fun ManProfileAddView(
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         CommonButton(
             title = stringResource(R.string.title_register_button),
+            isActive = addManProfileViewModel.isValidState.collectAsStateWithLifecycle().value,
         ) {
             addManProfileViewModel.addManProfile()
         }

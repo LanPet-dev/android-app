@@ -261,9 +261,9 @@ fun MyProfileCreateProfileScreen(
                         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
                     }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (userProfiles.size < 3) {
-                    AddProfileButton { onNavigateToAddProfileEntry() }
-                }
+                AddProfileButton(
+                    isActive = userProfiles.size < 3,
+                ) { onNavigateToAddProfileEntry() }
             }
         }
     }
@@ -281,7 +281,11 @@ fun AddProfileButton(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    if (isActive) MaterialTheme.customColorScheme.buttonBackground else MaterialTheme.customColorScheme.buttonBackgroundDisabled,
+                    if (isActive) {
+                        MaterialTheme.customColorScheme.buttonBackground
+                    } else {
+                        MaterialTheme.customColorScheme.buttonBackgroundDisabled
+                    },
                     shape = RoundedCornerShape(LanPetDimensions.Corner.medium),
                 ).clip(RoundedCornerShape(LanPetDimensions.Corner.medium))
                 .clickable(

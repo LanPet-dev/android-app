@@ -17,9 +17,13 @@ import com.lanpet.domain.usecase.profile.RegisterPetProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +55,32 @@ class AddPetProfileViewModel
                 ),
             )
         val uiState = _uiState.asStateFlow()
+
+        val isValidState =
+            _uiState
+                .map { state ->
+                    val nicknameValidation =
+                        petProfileUpdateValidator.nickName.validate(state.petProfileCreate?.nickName)
+                    val bioValidation =
+                        petProfileUpdateValidator.bio.validate(state.petProfileCreate?.bio)
+                    val petCategoryValidation =
+                        petProfileUpdateValidator.petCategory.validate(state.petProfileCreate?.pet?.petCategory)
+                    val breedValidation =
+                        petProfileUpdateValidator.breed.validate(state.petProfileCreate?.pet?.breed)
+                    val profileImageUriValidation =
+                        petProfileUpdateValidator.profileImageUri.validate(state.petProfileCreate?.profileImageUri)
+
+                    nicknameValidation is FormValidationStatus.Valid &&
+                        bioValidation is FormValidationStatus.Valid &&
+                        petCategoryValidation is FormValidationStatus.Valid &&
+                        breedValidation is FormValidationStatus.Valid &&
+                        profileImageUriValidation is FormValidationStatus.Valid &&
+                        state.nicknameDuplicateCheck == true
+                }.stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = false,
+                )
 
         private val _uiEvent = MutableSharedFlow<Boolean>()
         val uiEvent = _uiEvent.asSharedFlow()
@@ -182,38 +212,23 @@ class AddPetProfileViewModel
                 )
         }
 
-        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
         fun addPetProfile() {
             val petProfileCreate = _uiState.value.petProfileCreate ?: return
 
-            _uiState.value =
-                _uiState.value.copy(
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            nickName = petProfileUpdateValidator.nickName.validate(petProfileCreate.nickName),
-                            bio = petProfileUpdateValidator.bio.validate(petProfileCreate.bio),
-                            petCategory = petProfileUpdateValidator.petCategory.validate(petProfileCreate.pet.petCategory),
-                            breed = petProfileUpdateValidator.breed.validate(petProfileCreate.pet.breed),
-                            profileImageUri =
-                                petProfileUpdateValidator.profileImageUri.validate(
-                                    petProfileCreate.profileImageUri,
-                                ),
-                        ),
-                )
+            if (!isValidState.value) {
+                return
+            }
 
-            if (!checkValidation()) return
-
-            if (_uiState.value.validationStatus.isValid) {
-                viewModelScope.launch {
-                    runCatching {
-                        registerPetProfileUseCase(petProfileCreate).collect {
-                            _uiEvent.emit(true)
-                            authManager.getProfiles()
-                        }
-                    }.onFailure {
-                        _uiEvent.emit(false)
+            viewModelScope.launch {
+                runCatching {
+                    registerPetProfileUseCase(petProfileCreate).collect {
+                        _uiEvent.emit(true)
+                        authManager.getProfiles()
                     }
+                }.onFailure {
+                    _uiEvent.emit(false)
                 }
             }
         }

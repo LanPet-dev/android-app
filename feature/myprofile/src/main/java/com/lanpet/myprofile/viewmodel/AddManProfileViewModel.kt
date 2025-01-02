@@ -18,8 +18,11 @@ import com.lanpet.domain.usecase.profile.RegisterManProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -51,6 +54,31 @@ class AddManProfileViewModel
                 ),
             )
         val uiState = _uiState.asStateFlow()
+
+        val isValidState =
+            _uiState
+                .map { state ->
+                    val nickNameValidation =
+                        manProfileUpdateValidator.nickName.validate(
+                            state.manProfileCreate?.nickName ?: "",
+                        )
+                    val bioValidation =
+                        manProfileUpdateValidator.bio.validate(state.manProfileCreate?.bio ?: "")
+                    val butlerValidation =
+                        manProfileUpdateValidator.butler.validate(state.manProfileCreate?.butler)
+                    val profileImageValidation =
+                        manProfileUpdateValidator.profileImageUri.validate(state.manProfileCreate?.profileImageUri)
+
+                    nickNameValidation is FormValidationStatus.Valid &&
+                        bioValidation is FormValidationStatus.Valid &&
+                        butlerValidation is FormValidationStatus.Valid &&
+                        profileImageValidation is FormValidationStatus.Valid &&
+                        state.nicknameDuplicateCheck == true
+                }.stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = false,
+                )
 
         private val manProfileUpdateValidator =
             AddManProfileValidator(
@@ -218,38 +246,12 @@ class AddManProfileViewModel
             }
         }
 
-        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
         fun addManProfile() {
             val manProfileCreate = _uiState.value.manProfileCreate ?: return
 
-            _uiState.value =
-                _uiState.value.copy(
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            profileImageUri =
-                                manProfileUpdateValidator.profileImageUri.validate(
-                                    _uiState.value.manProfileCreate!!.profileImageUri,
-                                ),
-                            nickName =
-                                manProfileUpdateValidator.nickName.validate(
-                                    _uiState.value.manProfileCreate!!.nickName,
-                                ),
-                            bio =
-                                manProfileUpdateValidator.bio.validate(
-                                    _uiState.value.manProfileCreate!!.bio,
-                                ),
-                            butler =
-                                manProfileUpdateValidator.butler.validate(
-                                    _uiState.value.manProfileCreate!!.butler,
-                                ),
-                        ),
-                )
-
-            Timber.d("validationStatus: ${_uiState.value.validationStatus}")
-            Timber.d("nicknameDuplicateCheck: ${_uiState.value.nicknameDuplicateCheck}")
-
-            if (!checkValidation()) {
+            if (!isValidState.value) {
                 return
             }
 
