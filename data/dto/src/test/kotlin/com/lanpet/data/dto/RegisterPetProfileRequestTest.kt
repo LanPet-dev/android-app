@@ -96,4 +96,47 @@ class RegisterPetProfileRequestTest {
         assertEquals(registerPetProfileRequest, deserialized)
         assertEquals(registerPetProfileRequestJsonString, serialized)
     }
+
+    @Test
+    fun `RegisterPetProfileRequest serializing test3`() {
+        val registerPetProfileRequest =
+            RegisterPetProfileRequest(
+                nickname = "nickname",
+                pictureUrl = null,
+                introduction = null,
+                pet =
+                    PetDto(
+                        petType = PetCategory.CAT,
+                    ),
+            )
+
+        val registerPetProfileRequestJsonString =
+            """
+                {
+                    "profileType": "PET",
+                    "nickname": "nickname",
+                    "pictureUrl": null,
+                    "introduction": null,
+                    "pet": {
+                        "petType": "CAT",
+                        "breed": null,
+                        "feature": null,
+                        "birthDate": null,
+                        "weight":null 
+                    }
+                }
+                """.removeWhiteSpace().removeLineBreak()
+
+        val json =
+            Json {
+                encodeDefaults = true
+            }
+
+        val serialized =
+            json.encodeToString(RegisterPetProfileRequest.serializer(), registerPetProfileRequest)
+        val deserialized = json.decodeFromString(RegisterPetProfileRequest.serializer(), serialized)
+
+        assertEquals(registerPetProfileRequest, deserialized)
+        assertEquals(registerPetProfileRequestJsonString, serialized)
+    }
 }
