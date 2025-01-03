@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -108,7 +109,10 @@ fun ProfileCreateHumanBioScreen(
                 Spacer(Modifier.weight(1f))
                 CommonButton(
                     title = stringResource(DS_R.string.next_button_string),
-                    isActive = manProfileCreateViewModel.manProfileCreateValidationResult.value.bio is FormValidationStatus.Valid,
+                    isActive =
+                        manProfileCreateViewModel.manProfileCreateValidationResult
+                            .collectAsStateWithLifecycle()
+                            .value.bio is FormValidationStatus.Valid,
                 ) {
                     manProfileCreateViewModel.registerManProfile()
                 }

@@ -41,7 +41,7 @@ class ProfileListViewModel
 
 @Stable
 sealed class ProfileListEvent {
-    object DeleteProfileSuccess : ProfileListEvent()
+    data object DeleteProfileSuccess : ProfileListEvent()
 
-    object DeleteProfileFail : ProfileListEvent()
+    data object DeleteProfileFail : ProfileListEvent()
 }
