@@ -144,6 +144,7 @@ class ManagePetProfileViewModel
         fun updateNickName(nickName: String) {
             _uiState.value =
                 _uiState.value.copy(
+                    nicknameDuplicateCheck = null,
                     petProfileUpdate =
                         _uiState.value.petProfileUpdate?.copy(nickName = nickName),
                     validationStatus =

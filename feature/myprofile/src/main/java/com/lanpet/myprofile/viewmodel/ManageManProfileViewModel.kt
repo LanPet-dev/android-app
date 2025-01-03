@@ -273,32 +273,31 @@ class ManageManProfileViewModel
                             _uiState.value =
                                 _uiState.value.copy(
                                     manProfileUpdate =
-                                    ManProfileUpdate(
-                                        profileImageUri =
-                                        profileDetail.pictureUrl?.let {
-                                            Uri.parse(
-                                                profileDetail.pictureUrl,
-                                            )
-                                        },
-                                        nickName = profileDetail.nickname,
-                                        bio = profileDetail.introduction,
-                                        id = profileDetail.id,
-                                        type = ProfileType.BUTLER,
-                                        butler =
-                                        Butler(
-                                            age = profileDetail.butler!!.age,
-                                            preferredPet =
-                                            profileDetail.butler?.preferredPet
-                                                ?: emptyList(),
+                                        ManProfileUpdate(
+                                            profileImageUri =
+                                                profileDetail.pictureUrl?.let {
+                                                    Uri.parse(
+                                                        profileDetail.pictureUrl,
+                                                    )
+                                                },
+                                            nickName = profileDetail.nickname,
+                                            bio = profileDetail.introduction,
+                                            id = profileDetail.id,
+                                            type = ProfileType.BUTLER,
+                                            butler =
+                                                Butler(
+                                                    age = profileDetail.butler!!.age,
+                                                    preferredPet =
+                                                        profileDetail.butler?.preferredPet
+                                                            ?: emptyList(),
+                                                ),
                                         ),
-                                    ),
                                 )
                         }
                     }.onFailure {
                         Timber.e(it.stackTraceToString())
                         _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                     }
-
                 }
             }
         }
