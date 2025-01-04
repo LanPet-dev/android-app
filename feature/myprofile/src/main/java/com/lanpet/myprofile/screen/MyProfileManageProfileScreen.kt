@@ -169,6 +169,7 @@ private fun PetProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         NickNameSection(
+            isActive = petProfileUiState.shouldCheckNicknameDuplicate,
             duplicatedStatus = petProfileUiState.nicknameDuplicateCheck,
             nickname = petProfileUiState.petProfileUpdate?.nickName ?: "",
             onNicknameChange = {
@@ -248,6 +249,8 @@ private fun ManProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
+            // TODO: isActive 조건 변경
+            isActive = true,
             duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
             nickname = manageProfileUiState.manProfileUpdate?.nickName ?: "",
             onNicknameChange = {
@@ -573,6 +576,7 @@ private fun NickNameSection(
     nickname: String,
     duplicatedStatus: Boolean?,
     modifier: Modifier = Modifier,
+    isActive: Boolean,
     onNicknameChange: (String) -> Unit = {},
     onCheckDuplicatedNickname: () -> Unit = {},
 ) {
@@ -592,6 +596,7 @@ private fun NickNameSection(
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             CommonButton(
+                isActive = isActive,
                 modifier = Modifier.width(100.dp),
                 title = stringResource(R.string.check_duplicated_nickname_button_string),
                 onClick = {

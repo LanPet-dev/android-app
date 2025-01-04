@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.PetCategory
@@ -32,7 +33,10 @@ class ManagePetProfileViewModel
         private val modifyPetProfileUseCase: ModifyPetProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
+        private lateinit var originPetProfileUpdate: PetProfileUpdate
+
         private val _uiState =
             MutableStateFlow(
                 ManagePetProfileUiState(
@@ -52,6 +56,11 @@ class ManagePetProfileViewModel
                     },
                 nickName =
                     FormValidator {
+                        // 원래 닉네임과 차이가 없다면 닉네임을 변경하는것이 아니므로 Valid 상태 반환
+                        if (it == originPetProfileUpdate.nickName) {
+                            return@FormValidator FormValidationStatus.Valid()
+                        }
+
                         if (it.isNullOrBlank()) {
                             FormValidationStatus.Invalid("Nick name is required")
                         } else if (it.length > 20 || it.length < 2) {
@@ -145,6 +154,7 @@ class ManagePetProfileViewModel
             _uiState.value =
                 _uiState.value.copy(
                     nicknameDuplicateCheck = null,
+                    shouldCheckNicknameDuplicate = checkNicknameModified(nickName),
                     petProfileUpdate =
                         _uiState.value.petProfileUpdate?.copy(nickName = nickName),
                     validationStatus =
@@ -166,7 +176,11 @@ class ManagePetProfileViewModel
                 )
         }
 
-        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        private fun checkNicknameModified(nickName: String): Boolean = nickName != originPetProfileUpdate.nickName
+
+        private fun checkValidation(): Boolean =
+            _uiState.value.validationStatus.isValid &&
+                if (_uiState.value.shouldCheckNicknameDuplicate) _uiState.value.nicknameDuplicateCheck == true else true
 
         fun modifyPetProfile() {
             val petProfileUpdate = _uiState.value.petProfileUpdate ?: return
@@ -204,6 +218,7 @@ class ManagePetProfileViewModel
                             profileId = petProfileUpdate.id,
                             petProfile = petProfile,
                         ).collect {
+                            authManager.getProfiles()
                             _uiEvent.emit(PetProfileUpdateEvent.Success(petProfile))
                         }
                     }.onFailure {
@@ -223,31 +238,35 @@ class ManagePetProfileViewModel
                             .collect { profileDetail ->
                                 Timber.i("profileDetail: $profileDetail")
 
+                                val petProfileUpdate =
+                                    PetProfileUpdate(
+                                        profileImageUri =
+                                            profileDetail.pictureUrl?.let {
+                                                Uri.parse(
+                                                    profileDetail.pictureUrl,
+                                                )
+                                            },
+                                        nickName = profileDetail.nickname,
+                                        bio = profileDetail.introduction,
+                                        id = profileDetail.id,
+                                        type = ProfileType.PET,
+                                        pet =
+                                            Pet(
+                                                petCategory =
+                                                    profileDetail.pet?.petCategory
+                                                        ?: PetCategory.OTHER,
+                                                breed = profileDetail.pet?.breed,
+                                                feature = profileDetail.pet?.feature ?: emptyList(),
+                                                weight = profileDetail.pet?.weight,
+                                                birthDate = profileDetail.pet?.birthDate,
+                                            ),
+                                    )
+
+                                originPetProfileUpdate = petProfileUpdate
+
                                 _uiState.value =
                                     _uiState.value.copy(
-                                        petProfileUpdate =
-                                            PetProfileUpdate(
-                                                profileImageUri =
-                                                    profileDetail.pictureUrl?.let {
-                                                        Uri.parse(
-                                                            profileDetail.pictureUrl,
-                                                        )
-                                                    },
-                                                nickName = profileDetail.nickname,
-                                                bio = profileDetail.introduction,
-                                                id = profileDetail.id,
-                                                type = ProfileType.PET,
-                                                pet =
-                                                    Pet(
-                                                        petCategory =
-                                                            profileDetail.pet?.petCategory
-                                                                ?: PetCategory.OTHER,
-                                                        breed = profileDetail.pet?.breed,
-                                                        feature = profileDetail.pet?.feature ?: emptyList(),
-                                                        weight = profileDetail.pet?.weight,
-                                                        birthDate = profileDetail.pet?.birthDate,
-                                                    ),
-                                            ),
+                                        petProfileUpdate = petProfileUpdate,
                                     )
                             }
                     }.onFailure {
@@ -263,6 +282,7 @@ class ManagePetProfileViewModel
 data class ManagePetProfileUiState(
     val petProfileUpdate: PetProfileUpdate?,
     val nicknameDuplicateCheck: Boolean? = null,
+    val shouldCheckNicknameDuplicate: Boolean = false,
     val validationStatus: PetProfileUpdateValidationStatus =
         PetProfileUpdateValidationStatus(
             profileImageUri = FormValidationStatus.Initial(),
