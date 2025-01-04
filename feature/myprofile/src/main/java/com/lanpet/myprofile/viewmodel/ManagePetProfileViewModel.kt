@@ -206,7 +206,7 @@ class ManagePetProfileViewModel
                 PetProfile(
                     type = petProfileUpdate.type,
                     profileImageUri = petProfileUpdate.profileImageUri,
-                    nickName = petProfileUpdate.nickName,
+                    nickName = if (_uiState.value.shouldCheckNicknameDuplicate) _uiState.value.petProfileUpdate?.nickName else null,
                     bio = petProfileUpdate.bio,
                     pet = petProfileUpdate.pet,
                 )
@@ -243,7 +243,7 @@ class ManagePetProfileViewModel
                                         profileImageUri =
                                             profileDetail.pictureUrl?.let {
                                                 Uri.parse(
-                                                    profileDetail.pictureUrl,
+                                                    it,
                                                 )
                                             },
                                         nickName = profileDetail.nickname,

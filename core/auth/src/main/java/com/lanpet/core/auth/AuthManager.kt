@@ -233,7 +233,6 @@ open class AuthManager
                 )
             }
 
-
         // TODO("Satoshi"): refactor
         @OptIn(FlowPreview::class)
         suspend fun getProfiles() {

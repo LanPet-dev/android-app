@@ -251,8 +251,7 @@ private fun ManProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
-            // TODO: isActive 조건 변경
-            isActive = true,
+            isActive = manageProfileUiState.shouldCheckNicknameDuplicate,
             duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
             nickname = manageProfileUiState.manProfileUpdate?.nickName ?: "",
             onNicknameChange = {
@@ -577,8 +576,8 @@ private fun SelectAgeSection(
 private fun NickNameSection(
     nickname: String,
     duplicatedStatus: Boolean?,
-    modifier: Modifier = Modifier,
     isActive: Boolean,
+    modifier: Modifier = Modifier,
     onNicknameChange: (String) -> Unit = {},
     onCheckDuplicatedNickname: () -> Unit = {},
 ) {

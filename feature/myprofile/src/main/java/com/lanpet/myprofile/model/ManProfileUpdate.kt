@@ -10,7 +10,7 @@ data class ManProfileUpdate(
     val id: String,
     val type: ProfileType?,
     val profileImageUri: Uri?,
-    val nickName: String,
+    val nickName: String?,
     val bio: String?,
     val butler: Butler?,
 )
