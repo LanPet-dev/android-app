@@ -2,7 +2,7 @@ package com.lanpet.data.service
 
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.CreateFreeBoardPostResponse
-import com.lanpet.data.dto.UploadPostResourceResponse
+import com.lanpet.data.dto.ResourceUploadUrlResponse
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostDetail
@@ -29,10 +29,10 @@ interface FreeBoardApiService {
     ): CreateFreeBoardPostResponse
 
     @POST("/sarangbangs/{sarangbangId}/resources")
-    suspend fun uploadPostResource(
+    suspend fun getResourceUploadUrl(
         @Path("sarangbangId")
         sarangbangId: String,
         @Query("size")
         size: Int,
-    ): UploadPostResourceResponse
+    ): ResourceUploadUrlResponse
 }

@@ -1,9 +1,9 @@
-package com.lanpet.data.dto
+package com.lanpet.domain.model.free
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UploadPostResourceResponse(
+data class ResourceUploadUrl(
     val items: List<String>,
     val totalCount: Int,
 )

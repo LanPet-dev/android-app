@@ -11,6 +11,7 @@ import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.usecase.freeboard.CreateFreeBoardPostUseCase
+import com.lanpet.domain.usecase.freeboard.GetResourceUploadUrlUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +27,8 @@ import javax.inject.Inject
 class FreeBoardWriteViewModel
     @Inject
     constructor(
-        savedStateHandle: SavedStateHandle,
         private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
+        private val getResourceUploadUrlUseCase: GetResourceUploadUrlUseCase,
     ) : ViewModel() {
 
         private val _uiState =
@@ -124,26 +125,6 @@ class FreeBoardWriteViewModel
 
         private val _uiEvent = MutableSharedFlow<Boolean>()
         val uiEvent = _uiEvent.asSharedFlow()
-
-
-        /*private val _freeBoardWriteValidationResult =
-            MutableStateFlow(
-                FreeBoardWriteValidationResult(
-                    boardCategory = FormValidationStatus.Initial(),
-                    petCategory = FormValidationStatus.Initial(),
-                    title = FormValidationStatus.Initial(),
-                    body = FormValidationStatus.Initial(),
-                    imageList = FormValidationStatus.Valid(),
-                ),
-            )
-        val freeBoardWriteValidationResult: StateFlow<FreeBoardWriteValidationResult> =
-            _freeBoardWriteValidationResult.asStateFlow()
-
-
-        private val _writeFreeBoardResult =
-            MutableSharedFlow<WriteFreeBoardResult>()
-        val writeFreeBoardResult: SharedFlow<WriteFreeBoardResult> =
-            _writeFreeBoardResult.asSharedFlow()*/
 
         fun setProfileId(id: String) {
             _uiState.value =
@@ -263,6 +244,28 @@ class FreeBoardWriteViewModel
                 runCatching {
                     postFreeBoardUseCase(
                         freeBoardPostCreate = freeBoardPostCreate
+                    ).collect {
+                        if ((freeBoardPostCreate.imageList?.size ?: 0) > 0) {
+                            getResourceUploadUrl(
+                                sarangbangId = it,
+                                size = freeBoardPostCreate.imageList?.size!!
+                            )
+                        } else {
+                            _uiEvent.emit(true)
+                        }
+                    }
+                }.onFailure {
+                    _uiEvent.emit(false)
+                }
+            }
+        }
+
+        private fun getResourceUploadUrl(sarangbangId: String, size: Int) {
+            viewModelScope.launch {
+                runCatching {
+                    getResourceUploadUrlUseCase(
+                        sarangbangId = sarangbangId,
+                        size = size,
                     ).collect {
                         _uiEvent.emit(true)
                     }

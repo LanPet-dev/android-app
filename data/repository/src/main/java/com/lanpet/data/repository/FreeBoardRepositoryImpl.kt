@@ -7,6 +7,7 @@ import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.repository.FreeBoardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -113,7 +114,12 @@ class FreeBoardRepositoryImpl
             flow {
                 val request = CreateFreeBoardPostRequest.fromDomainToCreateRequest(freeBoardPostCreate)
                 val res = freeBoardApiService.createFreeBoardPost(request)
-                //TODO upload photo
                 emit(res.id)
+            }.flowOn(Dispatchers.IO)
+
+        override fun getResourceUploadUrl(sarangbangId: String, size: Int): Flow<ResourceUploadUrl> =
+            flow {
+                val res = freeBoardApiService.getResourceUploadUrl(sarangbangId, size)
+                emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
     }
