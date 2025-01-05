@@ -27,6 +27,12 @@ android {
     }
 }
 
+composeCompiler {
+    // Analyze stability
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    metricsDestination = layout.buildDirectory.dir("compose_compiler")
+}
+
 dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.appcompat)

@@ -5,6 +5,7 @@ import org.gradle.kotlin.dsl.dependencies
 
 class AndroidUiComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+
         with(target) {
             with(pluginManager) {
             }

@@ -295,7 +295,7 @@ class ManageManProfileViewModel
                                     profileImageUri =
                                         profileDetail.pictureUrl?.let {
                                             Uri.parse(
-                                                it
+                                                it,
                                             )
                                         },
                                     nickName = profileDetail.nickname,
