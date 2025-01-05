@@ -17,9 +17,9 @@ data class CreateFreeBoardPostRequest(
         @JvmStatic
         fun fromDomainToCreateRequest(freeBoardPostCreate: FreeBoardPostCreate): CreateFreeBoardPostRequest =
             CreateFreeBoardPostRequest(
-                profileId = freeBoardPostCreate.profileId,
-                category = freeBoardPostCreate.boardCategory,
-                petType = freeBoardPostCreate.petCategory,
+                profileId = freeBoardPostCreate.profileId!!,
+                category = freeBoardPostCreate.boardCategory!!,
+                petType = freeBoardPostCreate.petCategory!!,
                 title = freeBoardPostCreate.title,
                 content = freeBoardPostCreate.body,
             )

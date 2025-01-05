@@ -32,11 +32,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,6 +64,7 @@ import com.lanpet.core.common.rememberCameraTakePictureLauncher
 import com.lanpet.core.common.rememberGalleryLauncher
 import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ActionButton
+import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonCenterAlignedAppBarTitle
 import com.lanpet.core.common.widget.CommonIconButtonBox
 import com.lanpet.core.common.widget.CommonSubHeading1
@@ -84,7 +83,6 @@ import com.lanpet.domain.model.PetCategory
 import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +97,6 @@ fun FreeBoardWriteScreen(
     val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
 
     val freeBoardPostCreate by freeBoardWriteViewModel.uiState.collectAsStateWithLifecycle()
-    val completeEnable by freeBoardWriteViewModel.isValidState.collectAsState()
     val context = LocalContext.current
 
     val currentOnNavigateUp by rememberUpdatedState(onNavigateUp)
@@ -142,26 +139,6 @@ fun FreeBoardWriteScreen(
                         title = stringResource(R.string.title_freeboard_write),
                     )
                 },
-                actions = {
-                    TextButton(
-                        enabled = completeEnable,
-                        onClick = {
-                            Timber.d(freeBoardWriteViewModel.uiState.value.freeBoardPostCreate.toString())
-                            freeBoardWriteViewModel.writeFreeBoardPost()
-                        },
-                        colors =
-                            ButtonDefaults.textButtonColors().copy(
-                                contentColor = MaterialTheme.customColorScheme.topBarTextButtonTextColor,
-                                disabledContentColor = GrayColor.Gray300,
-                            ),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.complete_action_freeboard_write),
-                            style =
-                                MaterialTheme.customTypography().body1SemiBoldSingle,
-                        )
-                    }
-                },
             )
         },
     ) {
@@ -196,23 +173,44 @@ fun FreeBoardWriteScreen(
                 ContentInputSection { body ->
                     freeBoardWriteViewModel.setBody(body)
                 }
-                ImagePickSection { uri ->
+                ImagePickSection(
+                    isEnable = (freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) <= 5
+                ) { uri ->
                     freeBoardWriteViewModel.addImage(uri)
                 }
-                LazyRow(
-                    modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
-                ) {
-                    val imageList: List<Uri>? = freeBoardPostCreate.freeBoardPostCreate?.imageList
-                    if (!imageList.isNullOrEmpty()) {
-                        items(imageList.size) { index ->
-                            ImageWithDeleteIcon(
-                                uri = imageList[index],
-                            ) {
-                                freeBoardWriteViewModel.removeImage(imageList[index])
+                if((freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) > 0) {
+                    Text(
+                        stringResource(R.string.attach_photo_desc),
+                        style = MaterialTheme.customTypography().body3RegularSingle.copy(
+                            color = GrayColor.Gray400,
+                        ),
+                        modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
+                    )
+                    Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Margin.small))
+                    LazyRow(
+                        modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
+                    ) {
+                        val imageList: List<Uri>? = freeBoardPostCreate.freeBoardPostCreate?.imageList
+                        if (!imageList.isNullOrEmpty()) {
+                            items(imageList.size) { index ->
+                                ImageWithDeleteIcon(
+                                    uri = imageList[index],
+                                ) {
+                                    freeBoardWriteViewModel.removeImage(imageList[index])
+                                }
                             }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+                CommonButton(
+                    title = stringResource(R.string.complete_action_freeboard_write),
+                    isActive = freeBoardWriteViewModel.isValidState.collectAsStateWithLifecycle().value,
+                    modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.small),
+                ) {
+                    freeBoardWriteViewModel.writeFreeBoardPost()
+                }
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
             }
         }
     }
@@ -306,29 +304,29 @@ private fun TitleInputSection(
         mutableStateOf("")
     }
 
-    val maxLength = 50
+    val maxLength = 20
 
     Column(
         modifier =
-            Modifier.padding(
-                horizontal = LanPetDimensions.Margin.medium,
-            ),
+            Modifier
+                .padding(horizontal = LanPetDimensions.Margin.medium)
+                .padding(bottom = LanPetDimensions.Margin.medium),
     ) {
         CommonSubHeading1(
             title = stringResource(R.string.title_title_input_freeboard_write),
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xSmall))
-        OutlinedTextField(
-            modifier =
+        Box {
+            OutlinedTextField(
+                modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = LanPetDimensions.Margin.medium),
-            value = input,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
-            maxLines = 1,
-            minLines = 1,
-            colors =
+                    .fillMaxWidth(),
+                value = input,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+                maxLines = 1,
+                minLines = 1,
+                colors =
                 OutlinedTextFieldDefaults.colors().copy(
                     unfocusedIndicatorColor = GrayColor.LIGHT,
                     focusedIndicatorColor = GrayColor.LIGHT,
@@ -342,20 +340,34 @@ private fun TitleInputSection(
                     disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
                     errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
                 ),
-            singleLine = false,
-            onValueChange = { newText ->
-                if (newText.length <= maxLength) {
-                    input = newText
-                    onTextChange(newText)
-                }
-            },
-            placeholder = {
+                singleLine = false,
+                onValueChange = { newText ->
+                    if (newText.length <= maxLength) {
+                        input = newText
+                        onTextChange(newText)
+                    }
+                },
+                placeholder = {
+                    Text(
+                        stringResource(R.string.title_title_input_freeboard_write),
+                        style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
+                    )
+                },
+            )
+
+            Box(
+                modifier =
+                Modifier
+                    .matchParentSize()
+                    .padding(end = LanPetDimensions.Margin.medium),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
                 Text(
-                    stringResource(R.string.title_title_input_freeboard_write),
-                    style = MaterialTheme.typography.bodyMedium.copy(color = GrayColor.LIGHT),
+                    text = "${input.length}/${maxLength}자",
+                    style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
                 )
-            },
-        )
+            }
+        }
     }
 }
 
@@ -368,7 +380,7 @@ private fun ContentInputSection(
         mutableStateOf("")
     }
 
-    val maxLength = 1000
+    val maxLength = 500
 
     Column(
         modifier =
@@ -425,7 +437,7 @@ private fun ContentInputSection(
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Text(
-                    text = "${input.length}/${String.format("%,d", maxLength)}자",
+                    text = "${input.length}/${maxLength}자",
                     style = MaterialTheme.typography.bodySmall.copy(color = GrayColor.LIGHT),
                 )
             }
@@ -437,6 +449,7 @@ private fun ContentInputSection(
 @Composable
 fun ImagePickSection(
     modifier: Modifier = Modifier,
+    isEnable: Boolean,
     onImageSelect: (Uri) -> Unit = { },
 ) {
     val context = LocalContext.current
@@ -480,7 +493,8 @@ fun ImagePickSection(
         )
 
     ButtonWithIcon(
-        title = stringResource(R.string.complete_button_freeboard_write),
+        title = stringResource(R.string.attach_photo),
+        isEnable = isEnable,
         modifier =
             Modifier
                 .padding(
@@ -541,10 +555,12 @@ fun ImagePickSection(
 @Composable
 private fun ButtonWithIcon(
     title: String,
+    isEnable: Boolean,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
     Button(
+        enabled = isEnable,
         shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
         onClick = {
             onClick?.invoke()
