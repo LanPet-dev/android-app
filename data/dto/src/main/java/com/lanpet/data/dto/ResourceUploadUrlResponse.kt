@@ -8,8 +8,9 @@ data class ResourceUploadUrlResponse(
     val items: List<String>,
     val totalCount: Int,
 ) {
-    fun toDomain() = ResourceUploadUrl(
-        items = items,
-        totalCount = totalCount,
-    )
+    fun toDomain() =
+        ResourceUploadUrl(
+            items = items,
+            totalCount = totalCount,
+        )
 }

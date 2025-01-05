@@ -117,7 +117,10 @@ class FreeBoardRepositoryImpl
                 emit(res.id)
             }.flowOn(Dispatchers.IO)
 
-        override fun getResourceUploadUrl(sarangbangId: String, size: Int): Flow<ResourceUploadUrl> =
+        override fun getResourceUploadUrl(
+            sarangbangId: String,
+            size: Int,
+        ): Flow<ResourceUploadUrl> =
             flow {
                 val res = freeBoardApiService.getResourceUploadUrl(sarangbangId, size)
                 emit(res.toDomain())

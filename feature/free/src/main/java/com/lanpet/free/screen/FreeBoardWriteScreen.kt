@@ -174,16 +174,17 @@ fun FreeBoardWriteScreen(
                     freeBoardWriteViewModel.setBody(body)
                 }
                 ImagePickSection(
-                    isEnable = (freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) <= 5
+                    isEnable = (freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) <= 5,
                 ) { uri ->
                     freeBoardWriteViewModel.addImage(uri)
                 }
-                if((freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) > 0) {
+                if ((freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) > 0) {
                     Text(
                         stringResource(R.string.attach_photo_desc),
-                        style = MaterialTheme.customTypography().body3RegularSingle.copy(
-                            color = GrayColor.Gray400,
-                        ),
+                        style =
+                            MaterialTheme.customTypography().body3RegularSingle.copy(
+                                color = GrayColor.Gray400,
+                            ),
                         modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
                     )
                     Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Margin.small))
@@ -319,27 +320,27 @@ private fun TitleInputSection(
         Box {
             OutlinedTextField(
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
                 value = input,
                 textStyle = MaterialTheme.typography.bodyMedium,
                 shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
                 maxLines = 1,
                 minLines = 1,
                 colors =
-                OutlinedTextFieldDefaults.colors().copy(
-                    unfocusedIndicatorColor = GrayColor.LIGHT,
-                    focusedIndicatorColor = GrayColor.LIGHT,
-                    disabledIndicatorColor = GrayColor.LIGHT,
-                    focusedPlaceholderColor = GrayColor.MEDIUM,
-                    unfocusedPlaceholderColor = GrayColor.MEDIUM,
-                    disabledPlaceholderColor = GrayColor.MEDIUM,
-                    cursorColor = GrayColor.MEDIUM,
-                    focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                    errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
-                ),
+                    OutlinedTextFieldDefaults.colors().copy(
+                        unfocusedIndicatorColor = GrayColor.LIGHT,
+                        focusedIndicatorColor = GrayColor.LIGHT,
+                        disabledIndicatorColor = GrayColor.LIGHT,
+                        focusedPlaceholderColor = GrayColor.MEDIUM,
+                        unfocusedPlaceholderColor = GrayColor.MEDIUM,
+                        disabledPlaceholderColor = GrayColor.MEDIUM,
+                        cursorColor = GrayColor.MEDIUM,
+                        focusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        unfocusedContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        disabledContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                        errorContainerColor = MaterialTheme.customColorScheme.textFieldBackground,
+                    ),
                 singleLine = false,
                 onValueChange = { newText ->
                     if (newText.length <= maxLength) {
@@ -357,9 +358,9 @@ private fun TitleInputSection(
 
             Box(
                 modifier =
-                Modifier
-                    .matchParentSize()
-                    .padding(end = LanPetDimensions.Margin.medium),
+                    Modifier
+                        .matchParentSize()
+                        .padding(end = LanPetDimensions.Margin.medium),
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Text(
@@ -449,7 +450,7 @@ private fun ContentInputSection(
 @Composable
 fun ImagePickSection(
     modifier: Modifier = Modifier,
-    isEnable: Boolean,
+    isEnable: Boolean = false,
     onImageSelect: (Uri) -> Unit = { },
 ) {
     val context = LocalContext.current

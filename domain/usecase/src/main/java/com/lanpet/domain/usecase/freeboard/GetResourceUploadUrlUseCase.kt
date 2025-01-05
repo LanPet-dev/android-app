@@ -8,6 +8,8 @@ class GetResourceUploadUrlUseCase
     constructor(
         private val freeBoardRepository: FreeBoardRepository,
     ) {
-    operator fun invoke(sarangbangId: String, size: Int)
-        = freeBoardRepository.getResourceUploadUrl(sarangbangId, size)
-}
+        operator fun invoke(
+            sarangbangId: String,
+            size: Int,
+        ) = freeBoardRepository.getResourceUploadUrl(sarangbangId, size)
+    }

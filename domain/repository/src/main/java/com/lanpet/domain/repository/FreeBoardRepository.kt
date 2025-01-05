@@ -16,5 +16,8 @@ interface FreeBoardRepository {
 
     fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String>
 
-    fun getResourceUploadUrl(sarangbangId: String, size: Int): Flow<ResourceUploadUrl>
+    fun getResourceUploadUrl(
+        sarangbangId: String,
+        size: Int,
+    ): Flow<ResourceUploadUrl>
 }
