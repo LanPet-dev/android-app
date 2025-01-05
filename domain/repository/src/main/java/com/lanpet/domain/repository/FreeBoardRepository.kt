@@ -13,5 +13,5 @@ interface FreeBoardRepository {
 
     fun getFreeBoardCommentList(id: String): Flow<List<FreeBoardComment>>
 
-    fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit>
+    fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String>
 }

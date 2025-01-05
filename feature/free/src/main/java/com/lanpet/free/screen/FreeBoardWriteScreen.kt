@@ -55,13 +55,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createProfileImageUri
 import com.lanpet.core.common.myiconpack.Close
 import com.lanpet.core.common.rememberCameraPermissionLauncher
 import com.lanpet.core.common.rememberCameraTakePictureLauncher
 import com.lanpet.core.common.rememberGalleryLauncher
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ActionButton
 import com.lanpet.core.common.widget.CommonCenterAlignedAppBarTitle
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -79,41 +82,40 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.free.R
-import com.lanpet.free.model.WriteFreeBoardResult
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardWriteScreen(
-    freeBoardWriteViewModel: FreeBoardWriteViewModel,
     modifier: Modifier = Modifier,
+    freeBoardWriteViewModel: FreeBoardWriteViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit = {},
 ) {
     val verticalScrollState = rememberScrollState()
 
-    val freeBoardPostCreate by freeBoardWriteViewModel.freeBoardPostCreate.collectAsState()
-    val completeEnable by freeBoardWriteViewModel.completeEnable.collectAsState()
+    val authManager = LocalAuthManager.current
+    val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
 
-    val currentOnNavigateUp by rememberUpdatedState {
-        mutableStateOf(onNavigateUp)
-    }
+    val freeBoardPostCreate by freeBoardWriteViewModel.uiState.collectAsStateWithLifecycle()
+    val completeEnable by freeBoardWriteViewModel.isValidState.collectAsState()
+    val context = LocalContext.current
+
+    val currentOnNavigateUp by rememberUpdatedState(onNavigateUp)
 
     LaunchedEffect(Unit) {
-        freeBoardWriteViewModel.writeFreeBoardResult.collect { result ->
-            when (result) {
-                is WriteFreeBoardResult.Success -> currentOnNavigateUp()
+        freeBoardWriteViewModel.setProfileId(defaultUserProfile.value.id)
 
-                is WriteFreeBoardResult.Error -> {
-                    // TODO
+        freeBoardWriteViewModel.uiEvent.collect { event ->
+            when (event) {
+                true -> {
+                    context.toast(context.getString(R.string.toast_post_create_success))
+                    currentOnNavigateUp()
                 }
 
-                WriteFreeBoardResult.Initial -> {
-                    // TODO
-                }
-
-                WriteFreeBoardResult.Loading -> {
-                    // TODO
+                false -> {
+                    context.toast(context.getString(R.string.toast_post_create_fail))
                 }
             }
         }
@@ -144,6 +146,7 @@ fun FreeBoardWriteScreen(
                     TextButton(
                         enabled = completeEnable,
                         onClick = {
+                            Timber.d(freeBoardWriteViewModel.uiState.value.freeBoardPostCreate.toString())
                             freeBoardWriteViewModel.writeFreeBoardPost()
                         },
                         colors =
@@ -176,13 +179,13 @@ fun FreeBoardWriteScreen(
                         ),
             ) {
                 SelectBoardSection(
-                    selectedCategory = freeBoardPostCreate.boardCategory,
+                    selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.boardCategory,
                 ) { category ->
                     freeBoardWriteViewModel.setBoardCategory(category)
                 }
                 LineWithSpacer()
                 SelectPetSection(
-                    selectedCategory = freeBoardPostCreate.petCategory,
+                    selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.petCategory,
                 ) { category ->
                     freeBoardWriteViewModel.setPetCategory(category)
                 }
@@ -199,7 +202,7 @@ fun FreeBoardWriteScreen(
                 LazyRow(
                     modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
                 ) {
-                    val imageList: List<Uri>? = freeBoardPostCreate.imageList
+                    val imageList: List<Uri>? = freeBoardPostCreate.freeBoardPostCreate?.imageList
                     if (!imageList.isNullOrEmpty()) {
                         items(imageList.size) { index ->
                             ImageWithDeleteIcon(
@@ -232,15 +235,15 @@ private fun LineWithSpacer() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelectBoardSection(
-    selectedCategory: String?,
+    selectedCategory: FreeBoardCategoryType?,
     modifier: Modifier = Modifier,
-    onCategorySelect: (String) -> Unit = {},
+    onCategorySelect: (FreeBoardCategoryType) -> Unit = {},
 ) {
     val categories =
         listOf(
-            FreeBoardCategoryType.COMMUNICATE,
-            FreeBoardCategoryType.RECOMMEND,
-            FreeBoardCategoryType.QUESTION,
+            FreeBoardCategoryType.COMMUNICATION,
+            FreeBoardCategoryType.RECOMMENDATION,
+            FreeBoardCategoryType.CURIOUS,
         )
 
     Column {
@@ -258,8 +261,8 @@ private fun SelectBoardSection(
             categories.forEach { category ->
                 SelectableChip.Rounded(
                     title = category.value,
-                    isSelected = selectedCategory == category.name,
-                ) { onCategorySelect(category.name) }
+                    isSelected = selectedCategory == category,
+                ) { onCategorySelect(category) }
             }
         }
     }
@@ -268,9 +271,9 @@ private fun SelectBoardSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelectPetSection(
-    selectedCategory: String?,
+    selectedCategory: PetCategory?,
     modifier: Modifier = Modifier,
-    onCategorySelect: (String) -> Unit = {},
+    onCategorySelect: (PetCategory) -> Unit = {},
 ) {
     Column {
         CommonSubHeading1(
@@ -287,8 +290,8 @@ private fun SelectPetSection(
             PetCategory.entries.forEach { category ->
                 SelectableChip.Rounded(
                     title = category.value,
-                    isSelected = selectedCategory == category.name,
-                ) { onCategorySelect(category.toString()) }
+                    isSelected = selectedCategory == category,
+                ) { onCategorySelect(category) }
             }
         }
     }
@@ -634,7 +637,6 @@ private fun FreeBoardWriteScreenDarkPreview() {
     LanPetAppTheme {
         FreeBoardWriteScreen(
             onNavigateUp = {},
-            freeBoardWriteViewModel = hiltViewModel(),
         )
     }
 }

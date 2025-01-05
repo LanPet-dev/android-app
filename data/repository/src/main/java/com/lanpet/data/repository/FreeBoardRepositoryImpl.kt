@@ -1,5 +1,6 @@
 package com.lanpet.data.repository
 
+import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
@@ -108,8 +109,11 @@ class FreeBoardRepositoryImpl
 //            emit(freeBoardApiService.getFreeBoardPostCommentList(id))
             }.flowOn(Dispatchers.IO)
 
-        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit> =
+        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =
             flow {
-                emit(Unit)
+                val request = CreateFreeBoardPostRequest.fromDomainToCreateRequest(freeBoardPostCreate)
+                val res = freeBoardApiService.createFreeBoardPost(request)
+                //TODO upload photo
+                emit(res.id)
             }.flowOn(Dispatchers.IO)
     }
