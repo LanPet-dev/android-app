@@ -8,8 +8,11 @@
     <string name="pet_category_hint_freeboard_write">반려동물 카테고리를 선택해주세요.</string>
     <string name="title_title_input_freeboard_write">제목</string>
     <string name="title_content_input_freeboard_write">내용</string>
-    <string name="complete_button_freeboard_write">사진 첨부하기</string>
+    <string name="attach_photo">사진 첨부하기</string>
+    <string name="attach_photo_desc">사진은 최대 5장까지 첨부 가능해요</string>
     <string name="title_button_close">닫기</string>
     <string name="title_button_camera">사진촬영</string>
-    <string name="title_button_gallery">사진앨범</string>>
+    <string name="title_button_gallery">사진앨범</string>
+    <string name="toast_post_create_success">게시글이 등록되었어요</string>
+    <string name="toast_post_create_fail">게시글 등록에 실패했어요</string>
 </resources>

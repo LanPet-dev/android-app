@@ -1,11 +1,13 @@
 package com.lanpet.data.repository
 
+import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.repository.FreeBoardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -108,8 +110,19 @@ class FreeBoardRepositoryImpl
 //            emit(freeBoardApiService.getFreeBoardPostCommentList(id))
             }.flowOn(Dispatchers.IO)
 
-        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<Unit> =
+        override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =
             flow {
-                emit(Unit)
+                val request = CreateFreeBoardPostRequest.fromDomainToCreateRequest(freeBoardPostCreate)
+                val res = freeBoardApiService.createFreeBoardPost(request)
+                emit(res.id)
+            }.flowOn(Dispatchers.IO)
+
+        override fun getResourceUploadUrl(
+            sarangbangId: String,
+            size: Int,
+        ): Flow<ResourceUploadUrl> =
+            flow {
+                val res = freeBoardApiService.getResourceUploadUrl(sarangbangId, size)
+                emit(res.toDomain())
             }.flowOn(Dispatchers.IO)
     }
