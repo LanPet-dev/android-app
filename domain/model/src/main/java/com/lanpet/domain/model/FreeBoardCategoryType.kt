@@ -1,10 +1,11 @@
 package com.lanpet.domain.model
 
 enum class FreeBoardCategoryType(
-    val value: String,
+    val value: String?,
+    val title: String,
 ) {
-    ALL("전체"),
-    COMMUNICATE("소통해요"),
-    RECOMMEND("추천해요"),
-    QUESTION("궁금해요"),
+    ALL(title = "전체", value = null),
+    COMMUNICATE(title = "소통해요", value = "COMMUNICATION"),
+    RECOMMEND(title = "추천해요", value = "RECOMMENDATION"),
+    QUESTION(title = "궁금해요", value = "CURIOUS"),
 }
