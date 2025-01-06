@@ -42,7 +42,7 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideFreeBoardApiClient(
-        @Named("BaseApiUrl") baseApiUrl: String,
+        @Named("FreeBoardBaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
     ): FreeBoardApiClient = FreeBoardApiClient(baseApiUrl, authStateHolder)
 
