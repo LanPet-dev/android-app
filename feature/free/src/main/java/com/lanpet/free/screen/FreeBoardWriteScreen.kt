@@ -257,7 +257,7 @@ private fun SelectBoardSection(
         ) {
             categories.forEach { category ->
                 SelectableChip.Rounded(
-                    title = category.value,
+                    title = category.title,
                     isSelected = selectedCategory == category.name,
                 ) { onCategorySelect(category.name) }
             }
