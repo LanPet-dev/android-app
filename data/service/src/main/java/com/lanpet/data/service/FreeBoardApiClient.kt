@@ -3,8 +3,10 @@ package com.lanpet.data.service
 import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.dto.typeadapter.AuthorityTypeTypeAdapter
+import com.lanpet.data.dto.typeadapter.FreeBoardCategoryTypeTypeAdapter
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.model.AuthorityType
+import com.lanpet.domain.model.FreeBoardCategoryType
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -43,7 +45,10 @@ class FreeBoardApiClient
                 .registerTypeAdapter(
                     AuthorityType::class.java,
                     AuthorityTypeTypeAdapter(),
-                ).create()
+                ).registerTypeAdapter(
+                    FreeBoardCategoryType::class.java,
+                    FreeBoardCategoryTypeTypeAdapter(),
+               ).create()
 
         private val okHttpClient = OkHttpClient.Builder().addInterceptor(headerInterceptor).build()
 
