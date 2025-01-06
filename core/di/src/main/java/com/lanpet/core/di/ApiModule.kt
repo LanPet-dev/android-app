@@ -52,7 +52,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    @Named("FreeBoardApiUrl")
+    @Named("FreeBoardBaseApiUrl")
     fun provideFreeBoardApiUrl(
         @Named("BaseApiUrl") baseUrl: String,
     ): String = baseUrl + "sarangbangs/"

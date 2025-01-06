@@ -7,10 +7,10 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
 
+// TODO("Satoshi"): replace with production endpoint
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModuleProd {
-    // TODO("Satoshi"): replace with production endpoint
     @Singleton
     @Provides
     @Named("BaseApiUrl")
