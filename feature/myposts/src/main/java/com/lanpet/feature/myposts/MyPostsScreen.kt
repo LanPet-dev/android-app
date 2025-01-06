@@ -39,6 +39,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.PetCategory
 
@@ -112,6 +113,7 @@ fun MyPostsScreen(
                                         updatedAt = "",
                                         likeCount = 10,
                                         commentCount = 111,
+                                        freeBoardCategoryType = FreeBoardCategoryType.ALL,
                                     )
                                 },
                             onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,

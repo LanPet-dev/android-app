@@ -1,9 +1,16 @@
 package com.lanpet.domain.model
 
 enum class FreeBoardCategoryType(
-    val value: String,
+    val value: String?,
+    val title: String,
 ) {
-    COMMUNICATION("소통해요"),
-    RECOMMENDATION("추천해요"),
-    CURIOUS("궁금해요"),
+    ALL(title = "전체", value = null),
+    COMMUNICATION(title = "소통해요", value = "COMMUNICATION"),
+    RECOMMENDATION(title = "추천해요", value = "RECOMMENDATION"),
+    CURIOUS(title = "궁금해요", value = "CURIOUS"),
+    ;
+
+    companion object {
+        fun fromValue(value: String?): FreeBoardCategoryType? = FreeBoardCategoryType.entries.find { it.value == value }
+    }
 }

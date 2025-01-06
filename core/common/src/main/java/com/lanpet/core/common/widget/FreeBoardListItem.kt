@@ -32,6 +32,7 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.PetCategory
 
@@ -166,6 +167,7 @@ private fun FreeBoardListItemPreview() {
                         commentCount = 9,
                         petCategory = PetCategory.DOG,
                         images = listOf(),
+                        freeBoardCategoryType = FreeBoardCategoryType.ALL,
                     ),
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
@@ -181,6 +183,7 @@ private fun FreeBoardListItemPreview() {
                         likeCount = 999,
                         commentCount = 9,
                         petCategory = PetCategory.DOG,
+                        freeBoardCategoryType = FreeBoardCategoryType.ALL,
                         images =
                             listOf(
                                 "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",

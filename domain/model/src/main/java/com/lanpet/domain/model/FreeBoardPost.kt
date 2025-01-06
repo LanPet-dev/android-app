@@ -7,6 +7,7 @@ import java.util.TimeZone
 data class FreeBoardPost(
     val id: Int,
     val petCategory: PetCategory,
+    val freeBoardCategoryType: FreeBoardCategoryType,
     val title: String,
     val tags: List<String>,
     val content: String,
@@ -16,6 +17,8 @@ data class FreeBoardPost(
     val likeCount: Int,
     val commentCount: Int,
 ) {
+
+    @Deprecated("Core:common:extension 에 정의되어있는 함수를 사용하세요")
     // UTC 문자열을 파싱하여 한국 시간으로 변환
     val createdAtKorString: String
         get() {
