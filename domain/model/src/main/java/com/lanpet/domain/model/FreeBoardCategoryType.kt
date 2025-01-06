@@ -8,4 +8,9 @@ enum class FreeBoardCategoryType(
     COMMUNICATE(title = "소통해요", value = "COMMUNICATION"),
     RECOMMEND(title = "추천해요", value = "RECOMMENDATION"),
     QUESTION(title = "궁금해요", value = "CURIOUS"),
+    ;
+
+    companion object {
+        fun fromValue(value: String?): FreeBoardCategoryType? = FreeBoardCategoryType.entries.find { it.value == value }
+    }
 }
