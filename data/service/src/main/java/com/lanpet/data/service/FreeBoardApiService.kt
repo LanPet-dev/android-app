@@ -16,7 +16,7 @@ interface FreeBoardApiService {
     @GET
     suspend fun getFreeBoardPostList(): List<FreeBoardPost>
 
-    @GET("/{id}")
+    @GET("{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
     ): FreeBoardPostDetail
@@ -24,13 +24,13 @@ interface FreeBoardApiService {
     @GET
     suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
 
-    @POST("/sarangbangs")
+    @POST
     suspend fun createFreeBoardPost(
         @Body
         createFreeBoardPostRequest: CreateFreeBoardPostRequest,
     ): CreateFreeBoardPostResponse
 
-    @POST("/sarangbangs/{sarangbangId}/resources")
+    @POST("{sarangbangId}/resources")
     suspend fun getResourceUploadUrl(
         @Path("sarangbangId")
         sarangbangId: String,

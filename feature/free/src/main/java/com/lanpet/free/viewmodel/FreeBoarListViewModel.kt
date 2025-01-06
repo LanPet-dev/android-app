@@ -31,13 +31,8 @@ class FreeBoarListViewModel
                             if (it.isEmpty()) {
                                 FreeBoardListState.Empty
                             } else {
-                                if(_uiState.value is FreeBoardListState.Success) {
-                                    FreeBoardListState.Success(
-                                        (uiState.value as FreeBoardListState.Success).data + it
-                                    )
-                                } else {
                                 FreeBoardListState.Success(
-
+                                    (uiState.value as FreeBoardListState.Success).data + it,
                                 )
                             }
                     }
