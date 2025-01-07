@@ -36,12 +36,8 @@ fun NavGraphBuilder.freeNavGraph(
             }
         }
         composable<FreeBoardWrite> {
-            val parentEntry = remember { navController.getBackStackEntry(FreeBoardBaseRoute) }
-            val viewModel = hiltViewModel<FreeBoardWriteViewModel>(parentEntry)
-
             FreeBoardWriteScreen(
                 onNavigateUp = onNavigateUp,
-                freeBoardWriteViewModel = viewModel,
             )
         }
     }
