@@ -8,33 +8,37 @@ import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostDetail
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FreeBoardApiService {
-    @GET
+    @GET(PATH)
     suspend fun getFreeBoardPostList(): List<FreeBoardPost>
 
-    @GET("{id}")
+    @GET("$PATH/{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
     ): FreeBoardPostDetail
 
-    @GET
+    @GET(PATH)
     suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
 
-    @POST
+    @POST(PATH)
     suspend fun createFreeBoardPost(
         @Body
         createFreeBoardPostRequest: CreateFreeBoardPostRequest,
     ): CreateFreeBoardPostResponse
 
-    @POST("{sarangbangId}/resources")
+    @POST("$PATH/{sarangbangId}/resources")
     suspend fun getResourceUploadUrl(
         @Path("sarangbangId")
         sarangbangId: String,
         @Query("size")
         size: Int,
     ): ResourceUploadUrlResponse
+
+    companion object {
+        const val PATH = "/sarangbangs"
+    }
 }
