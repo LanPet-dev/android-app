@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -39,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -132,30 +132,35 @@ fun FreeBoardScreen(
                         }
 
                         is FreeBoardListState.Success -> {
-                            PullToRefreshBox(
-                                onRefresh = { freeBoardListViewModel.refresh() },
-                                isRefreshing = false,
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .weight(1f),
-                            ) {
-                                FreeBoardPostList(
-                                    modifier =
-                                        Modifier.verticalScroll(
-                                            state = scrollState,
-                                        ),
-                                    isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value,
-                                    freeBoardItemList = (uiState as FreeBoardListState.Success).data,
-                                    onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
-                                    onLoadMore = {
-                                        freeBoardListViewModel.getFreeBoardPostList()
-                                    },
+                            if ((uiState as FreeBoardListState.Success).data.isEmpty()) {
+                                PreparingScreen(
+                                    titleResId = R.string.title_no_freeboard_post,
                                 )
+                            } else {
+                                PullToRefreshBox(
+                                    onRefresh = { freeBoardListViewModel.refresh() },
+                                    isRefreshing = false,
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .weight(1f),
+                                ) {
+                                    FreeBoardPostList(
+                                        modifier =
+                                            Modifier.verticalScroll(
+                                                state = scrollState,
+                                            ),
+                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value,
+                                        freeBoardItemList = (uiState as FreeBoardListState.Success).data,
+                                        onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
+                                        onLoadMore = {
+                                            freeBoardListViewModel.getFreeBoardPostList()
+                                        },
+                                    )
+                                }
                             }
                         }
 
-                        FreeBoardListState.Empty -> Text("Empty")
                         is FreeBoardListState.Error -> Text((uiState as FreeBoardListState.Error).message.toString())
                     }
                 }
