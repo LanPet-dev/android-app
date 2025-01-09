@@ -1,38 +1,32 @@
 package com.lanpet.domain.model
 
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
-
 data class FreeBoardPost(
-    val id: Int,
-    val petCategory: PetCategory,
-    val freeBoardCategoryType: FreeBoardCategoryType,
+    val items: List<FreeBoardItem>?,
+    val totalCount: Int?,
+    val nextCursor: String?,
+)
+
+data class FreeBoardItem(
+    val id: String,
+    val category: String,
+    val petType: String,
+    val text: FreeBoardText,
+    val stat: FreeBoardStat?,
+    val resources: List<FreeBoardResource>?,
+    val created: String,
+)
+
+data class FreeBoardText(
     val title: String,
-    val tags: List<String>,
     val content: String,
-    val images: List<String>,
-    val createdAt: String,
-    val updatedAt: String,
-    val likeCount: Int,
-    val commentCount: Int,
-) {
+)
 
-    @Deprecated("Core:common:extension 에 정의되어있는 함수를 사용하세요")
-    // UTC 문자열을 파싱하여 한국 시간으로 변환
-    val createdAtKorString: String
-        get() {
-            try {
-                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-                inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+data class FreeBoardStat(
+    val likeCount: Int?,
+    val commentCount: Int?,
+)
 
-                val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                outputFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-                val date = inputFormat.parse(createdAt) ?: return ""
-                return outputFormat.format(date)
-            } catch (e: Exception) {
-                return ""
-            }
-        }
-}
+data class FreeBoardResource(
+    val id: String,
+    val url: String,
+)

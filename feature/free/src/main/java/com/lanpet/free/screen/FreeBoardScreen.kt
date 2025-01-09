@@ -1,6 +1,5 @@
 package com.lanpet.free.screen
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -19,11 +18,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.SelectableChip
 import com.lanpet.core.designsystem.R
@@ -32,16 +33,22 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.domain.model.FreeBoardCategoryType
+import com.lanpet.free.viewmodel.FreeBoardListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardScreen(
     modifier: Modifier = Modifier,
+    freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
     onNavigateUp: (() -> Unit)? = null,
     onNavigateToFreeBoardWrite: () -> Unit = {},
     // TODO: 게시글 디테일 페이지로 이동. 게시글 디테일 id 필요할듯.
 ) {
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        freeBoardListViewModel.getFreeBoardPostList()
+    }
 
     Scaffold(
         floatingActionButton = {

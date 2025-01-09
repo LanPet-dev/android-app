@@ -3,37 +3,37 @@ package com.lanpet.data.dto.freeboard
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FreeBoardListResponse(
-    val items: List<FreeBoardItem>?,
+data class FreeBoardPostListResponse(
+    val items: List<FreeBoardItemDto>?,
     val totalCount: Int?,
     val nextCursor: String?,
 )
 
 @Serializable
-data class FreeBoardItem(
+data class FreeBoardItemDto(
     val id: String,
     val category: String,
     val petType: String,
-    val text: FreeBoardText,
-    val stat: FreeBoardStat?,
-    val resources: List<FreeBoardResource>?,
+    val text: FreeBoardTextDto,
+    val stat: FreeBoardStatDto?,
+    val resources: List<FreeBoardResourceDto>?,
     val created: String,
 )
 
 @Serializable
-data class FreeBoardText(
+data class FreeBoardTextDto(
     val title: String,
     val content: String,
 )
 
 @Serializable
-data class FreeBoardStat(
+data class FreeBoardStatDto(
     val likeCount: Int?,
     val commentCount: Int?,
 )
 
 @Serializable
-data class FreeBoardResource(
+data class FreeBoardResourceDto(
     val id: String,
     val url: String,
 )

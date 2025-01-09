@@ -8,13 +8,16 @@ import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostDetail
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface FreeBoardApiService {
     @GET
-    suspend fun getFreeBoardPostList(): List<FreeBoardPost>
+    suspend fun getFreeBoardPostList(
+        @QueryMap queries: Map<String, String>,
+    ): FreeBoardPost
 
     @GET("{id}")
     suspend fun getFreeBoardPostDetail(

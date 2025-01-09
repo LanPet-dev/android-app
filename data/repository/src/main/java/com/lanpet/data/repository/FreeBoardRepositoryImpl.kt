@@ -1,12 +1,14 @@
 package com.lanpet.data.repository
 
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
+import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.repository.FreeBoardRepository
 import kotlinx.coroutines.Dispatchers
@@ -20,9 +22,14 @@ class FreeBoardRepositoryImpl
     constructor(
         private val freeBoardApiService: FreeBoardApiService,
     ) : FreeBoardRepository {
-        override fun getFreeBoardPostList(): Flow<List<FreeBoardPost>> =
+        override fun getFreeBoardPostList(getFreeBoardPostListRequest: GetFreeBoardPostListRequest): Flow<FreeBoardPost> =
             flow {
-                emit(freeBoardApiService.getFreeBoardPostList())
+                val requestDto = GetFreeBoardListRequestDto.fromDomain(getFreeBoardPostListRequest)
+                emit(
+                    freeBoardApiService.getFreeBoardPostList(
+                        requestDto.toQueryMap(),
+                    ),
+                )
             }.flowOn(Dispatchers.IO)
 
         // TODO: Remove this dummy data
