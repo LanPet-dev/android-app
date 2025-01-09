@@ -1,5 +1,6 @@
 package com.lanpet.free.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,7 +57,8 @@ class FreeBoardListViewModel
             getFreeBoardPostList()
         }
 
-        private fun getPagingRequest(): GetFreeBoardPostListRequest =
+        @VisibleForTesting
+        fun getPagingRequest(): GetFreeBoardPostListRequest =
             when (val currentUiState = _uiState.value) {
                 is FreeBoardListState.Success -> {
                     currentUiState.freeBoardPostListRequest
@@ -72,14 +74,11 @@ class FreeBoardListViewModel
                 }
             }
 
-        private fun handleGetFreeBoardPostList(
+        @VisibleForTesting
+        fun handleGetFreeBoardPostList(
             currentUiState: FreeBoardListState,
             data: FreeBoardPost,
         ): FreeBoardListState {
-            if (data.items?.isEmpty() == true) {
-                return FreeBoardListState.Empty
-            }
-
             val request =
                 GetFreeBoardPostListRequest(
                     cursor = data.nextCursor,
@@ -89,14 +88,6 @@ class FreeBoardListViewModel
                 )
 
             when (currentUiState) {
-                FreeBoardListState.Empty -> {
-                    return FreeBoardListState.Success(
-                        data = data.items.orEmpty(),
-                        freeBoardPostListRequest =
-                        request,
-                    )
-                }
-
                 is FreeBoardListState.Error -> {
                     return FreeBoardListState.Success(
                         data = data.items.orEmpty(),
@@ -114,10 +105,15 @@ class FreeBoardListViewModel
                 }
 
                 is FreeBoardListState.Success -> {
+                    if(!currentUiState.hasNextData){
+                        return currentUiState
+                    }
+
                     return FreeBoardListState.Success(
                         data = currentUiState.data + data.items.orEmpty(),
                         freeBoardPostListRequest =
                         request,
+                        hasNextData = data.items?.isNotEmpty() == true,
                     )
                 }
             }
@@ -170,9 +166,6 @@ sealed class FreeBoardListState {
     ) : FreeBoardListState()
 
     @Stable
-    data object Empty : FreeBoardListState()
-
-    @Stable
     data class Success(
         val data: List<FreeBoardItem> = emptyList(),
         val freeBoardPostListRequest: GetFreeBoardPostListRequest =
@@ -182,6 +175,7 @@ sealed class FreeBoardListState {
                 freeBoardCategoryType = null,
                 direction = CursorDirection.NEXT,
             ),
+        val hasNextData: Boolean = true,
     ) : FreeBoardListState()
 
     @Stable
