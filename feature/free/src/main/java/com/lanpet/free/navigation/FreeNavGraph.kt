@@ -1,7 +1,5 @@
 package com.lanpet.free.navigation
 
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -10,13 +8,12 @@ import androidx.navigation.toRoute
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
-import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.freeNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
-    navController: NavController,
+    onNavigateToFreeBoardDetail: (postId: String) -> Unit,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
@@ -25,12 +22,13 @@ fun NavGraphBuilder.freeNavGraph(
             FreeBoardScreen(
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
+                onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail
             )
         }
         composable<FreeBoardDetail> {
             it.toRoute<FreeBoardDetail>().postId.let { postId ->
                 FreeBoardDetailScreen(
-                    postId = postId.toInt(),
+                    postId = postId,
                     onNavigateUp = onNavigateUp,
                 )
             }

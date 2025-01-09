@@ -50,20 +50,20 @@ class FreeBoardDetailViewModel
                 initialValue = FreeBoardDetailState.Loading,
             )
 
-        fun init(postId: Int) {
+        fun init(postId: String) {
             viewModelScope.launch {
                 async { fetchDetail(postId) }
                 async { fetchComments(postId) }
             }
         }
 
-        fun refreshComments(postId: Int) {
+        fun refreshComments(postId: String) {
             viewModelScope.launch {
                 fetchComments(postId)
             }
         }
 
-        private suspend fun fetchDetail(postId: Int) {
+        private suspend fun fetchDetail(postId: String) {
             detailState.value = DetailState.Loading
 
             getFreeBoardDetailUseCase(postId)
@@ -74,7 +74,7 @@ class FreeBoardDetailViewModel
                 }
         }
 
-        private suspend fun fetchComments(postId: Int) {
+        private suspend fun fetchComments(postId: String) {
             commentsState.value = CommentsState.Loading
 
             getFreeBoardCommentListUseCase(postId)

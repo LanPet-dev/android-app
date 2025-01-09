@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
-import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.designsystem.R
@@ -32,13 +31,11 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.FreeBoardItem
 
 @Composable
 fun FreeBoardListItem(
-    freeBoardPost: FreeBoardPost,
+    freeBoardPostItem: FreeBoardItem,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -55,13 +52,11 @@ fun FreeBoardListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall),
             ) {
-                freeBoardPost.tags.map {
-                    CommonChip(it)
-                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
-                }
+                CommonChip(freeBoardPostItem.category.title)
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 Text(
-                    freeBoardPost.petCategory.value,
+                    freeBoardPostItem.petType.value,
                     style = MaterialTheme.customTypography().body3RegularSingle,
                 )
             }
@@ -73,25 +68,21 @@ fun FreeBoardListItem(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(
-                        freeBoardPost.title,
+                        freeBoardPostItem.text.title,
                         style = MaterialTheme.customTypography().body2RegularSingle,
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                     Text(
-                        freeBoardPost.content,
+                        freeBoardPostItem.text.content,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.customTypography().body3RegularMulti,
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (freeBoardPost.images.isNotEmpty() &&
-                    freeBoardPost.images
-                        .first()
-                        .isNotEmpty()
-                ) {
+                if (freeBoardPostItem.resources?.isNotEmpty() == true) {
                     AsyncImage(
-                        model = freeBoardPost.images.first(),
+                        model = freeBoardPostItem.resources!!.first().url,
                         contentDescription = "post_image",
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                         modifier =
@@ -115,7 +106,7 @@ fun FreeBoardListItem(
             ) {
                 Text(
                     // TODO
-                    createdAtPostString(freeBoardPost.createdAt),
+                    createdAtPostString(freeBoardPostItem.created),
                     style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray300),
                     modifier = Modifier.weight(1f),
                 )
@@ -128,7 +119,7 @@ fun FreeBoardListItem(
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
-                        freeBoardPost.likeCount.toString(),
+                        (freeBoardPostItem.stat?.likeCount ?: 0).toString(),
                         style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400),
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
@@ -140,7 +131,7 @@ fun FreeBoardListItem(
                     )
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxxSmall))
                     Text(
-                        freeBoardPost.commentCount.toString(),
+                        (freeBoardPostItem.stat?.commentCount ?: 0).toString(),
                         style = MaterialTheme.customTypography().body3RegularSingle.copy(color = GrayColor.Gray400),
                     )
                 }
@@ -154,42 +145,6 @@ fun FreeBoardListItem(
 private fun FreeBoardListItemPreview() {
     LanPetAppTheme {
         Column {
-            FreeBoardListItem(
-                freeBoardPost =
-                    FreeBoardPost(
-                        id = 1,
-                        title = "Title",
-                        content = loremIpsum(),
-                        tags = listOf("Tag1", "Tag2"),
-                        createdAt = "2021-10-10",
-                        updatedAt = "2021-10-10",
-                        likeCount = 999,
-                        commentCount = 9,
-                        petCategory = PetCategory.DOG,
-                        images = listOf(),
-                        freeBoardCategoryType = FreeBoardCategoryType.ALL,
-                    ),
-            )
-            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-            FreeBoardListItem(
-                freeBoardPost =
-                    FreeBoardPost(
-                        id = 1,
-                        title = "Title",
-                        content = loremIpsum(),
-                        tags = listOf("Tag1", "Tag2"),
-                        createdAt = "2021-10-10",
-                        updatedAt = "2021-10-10",
-                        likeCount = 999,
-                        commentCount = 9,
-                        petCategory = PetCategory.DOG,
-                        freeBoardCategoryType = FreeBoardCategoryType.ALL,
-                        images =
-                            listOf(
-                                "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-                            ),
-                    ),
-            )
         }
     }
 }

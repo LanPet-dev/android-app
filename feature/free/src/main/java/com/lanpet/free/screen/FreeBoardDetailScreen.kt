@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -74,7 +75,7 @@ import com.lanpet.core.designsystem.R as DS_R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardDetailScreen(
-    postId: Int,
+    postId: String,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
@@ -153,12 +154,12 @@ fun ContentUI(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                state.postDetail.tags?.map {
+                state.postDetail.tags.map {
                     CommonChip(it)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                state.postDetail.petCategory?.let {
+                state.postDetail.petCategory.let {
                     Text(
                         it.value,
                         style = MaterialTheme.customTypography().body3RegularSingle,
@@ -323,7 +324,7 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
         ) {
             TextField(
                 value = input,
-                maxLines = 1,
+                maxLines = 4,
                 onValueChange = {
                     input = it
                 },
@@ -332,7 +333,9 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                     Modifier
                         .weight(1f)
                         .padding(horizontal = LanPetDimensions.Spacing.small)
-                        .clip(shape = CircleShape),
+                        .clip(shape = RoundedCornerShape(
+                            LanPetDimensions.Corner.medium
+                        )),
                 textStyle =
                     MaterialTheme.customTypography().body2RegularSingle.copy(
                         color = GrayColor.Gray400,
@@ -489,7 +492,7 @@ private fun FreeBoardDetailPreview() {
 
     LanPetAppTheme {
         FreeBoardDetailScreen(
-            postId = 1,
+            postId = "1",
             onNavigateUp = {},
         )
     }
