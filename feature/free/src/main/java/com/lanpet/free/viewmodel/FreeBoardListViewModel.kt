@@ -26,8 +26,10 @@ class FreeBoardListViewModel
         private val getFreeBoardPostListUseCase: GetFreeBoardPostListUseCase,
     ) : ViewModel() {
         private val _uiState: MutableStateFlow<FreeBoardListState> =
-            MutableStateFlow(FreeBoardListState.Initial())
+            MutableStateFlow(FreeBoardListState.Initial)
         val uiState = _uiState.asStateFlow()
+
+        private var _cursorPagingState: CursorPagingState = CursorPagingState()
 
         private val _selectedCategory =
             MutableStateFlow<FreeBoardCategoryType>(FreeBoardCategoryType.ALL)
@@ -37,8 +39,6 @@ class FreeBoardListViewModel
         val isProcess = _isProcess.asStateFlow()
 
         // TODO("Satoshi"): Set UiEvent
-
-        // TODO("Satoshi"): Cursor pagination
 
         fun setCategory(
             category: FreeBoardCategoryType,
@@ -53,74 +53,67 @@ class FreeBoardListViewModel
         }
 
         fun refresh() {
-            _uiState.value = FreeBoardListState.Initial()
+            _uiState.value = FreeBoardListState.Initial
+            _cursorPagingState = CursorPagingState()
             getFreeBoardPostList()
         }
 
         @VisibleForTesting
         fun getPagingRequest(): GetFreeBoardPostListRequest =
-            when (val currentUiState = _uiState.value) {
-                is FreeBoardListState.Success -> {
-                    currentUiState.freeBoardPostListRequest
-                }
-
-                else -> {
-                    GetFreeBoardPostListRequest(
-                        cursor = null,
-                        size = 10,
-                        freeBoardCategoryType = _selectedCategory.value,
-                        direction = CursorDirection.NEXT,
-                    )
-                }
-            }
+            GetFreeBoardPostListRequest(
+                cursor = _cursorPagingState.cursor,
+                size = _cursorPagingState.size,
+                freeBoardCategoryType = _selectedCategory.value,
+                direction = _cursorPagingState.direction,
+            )
 
         @VisibleForTesting
         fun handleGetFreeBoardPostList(
             currentUiState: FreeBoardListState,
             data: FreeBoardPost,
         ): FreeBoardListState {
-            val request =
-                GetFreeBoardPostListRequest(
-                    cursor = data.nextCursor,
-                    size = SIZE,
-                    freeBoardCategoryType = _selectedCategory.value,
-                    direction = CursorDirection.NEXT,
-                )
+            _cursorPagingState =
+                if (data.items.isNullOrEmpty()) {
+                    _cursorPagingState.copy(
+                        cursor = data.nextCursor,
+                        hasNext = false,
+                    )
+                } else {
+                    _cursorPagingState.copy(
+                        cursor = data.nextCursor,
+                        hasNext = true,
+                    )
+                }
 
             when (currentUiState) {
                 is FreeBoardListState.Error -> {
                     return FreeBoardListState.Success(
                         data = data.items.orEmpty(),
-                        freeBoardPostListRequest =
-                        request,
                     )
                 }
 
                 is FreeBoardListState.Initial -> {
                     return FreeBoardListState.Success(
                         data = data.items.orEmpty(),
-                        freeBoardPostListRequest =
-                        request,
                     )
                 }
 
                 is FreeBoardListState.Success -> {
-                    if(!currentUiState.hasNextData){
-                        return currentUiState
-                    }
-
                     return FreeBoardListState.Success(
                         data = currentUiState.data + data.items.orEmpty(),
-                        freeBoardPostListRequest =
-                        request,
-                        hasNextData = data.items?.isNotEmpty() == true,
                     )
                 }
             }
         }
 
         fun getFreeBoardPostList() {
-            if (_isProcess.value) return
+            if (!_cursorPagingState.hasNext) {
+                return
+            }
+            if (_isProcess.value) {
+                return
+            }
+
             _isProcess.value = true
             runCatching {
                 val getFreeBoardPostListRequest = getPagingRequest()
@@ -146,36 +139,16 @@ class FreeBoardListViewModel
         init {
             getFreeBoardPostList()
         }
-
-        companion object {
-            const val SIZE = 10
-        }
     }
 
 @Stable
 sealed class FreeBoardListState {
     @Stable
-    data class Initial(
-        val freeBoardPostListRequest: GetFreeBoardPostListRequest =
-            GetFreeBoardPostListRequest(
-                cursor = null,
-                size = 10,
-                freeBoardCategoryType = null,
-                direction = CursorDirection.NEXT,
-            ),
-    ) : FreeBoardListState()
+    data object Initial : FreeBoardListState()
 
     @Stable
     data class Success(
         val data: List<FreeBoardItem> = emptyList(),
-        val freeBoardPostListRequest: GetFreeBoardPostListRequest =
-            GetFreeBoardPostListRequest(
-                cursor = null,
-                size = 10,
-                freeBoardCategoryType = null,
-                direction = CursorDirection.NEXT,
-            ),
-        val hasNextData: Boolean = true,
     ) : FreeBoardListState()
 
     @Stable
@@ -183,3 +156,11 @@ sealed class FreeBoardListState {
         val message: String?,
     ) : FreeBoardListState()
 }
+
+@Stable
+data class CursorPagingState(
+    val cursor: String? = null,
+    val size: Int = 10,
+    val direction: CursorDirection = CursorDirection.NEXT,
+    val hasNext: Boolean = true,
+)
