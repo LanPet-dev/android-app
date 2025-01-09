@@ -74,7 +74,7 @@ import com.lanpet.core.designsystem.R as DS_R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardDetailScreen(
-    postId: Int,
+    postId: String,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
@@ -153,12 +153,12 @@ fun ContentUI(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                state.postDetail.tags?.map {
+                state.postDetail.tags.map {
                     CommonChip(it)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                state.postDetail.petCategory?.let {
+                state.postDetail.petCategory.let {
                     Text(
                         it.value,
                         style = MaterialTheme.customTypography().body3RegularSingle,
@@ -489,7 +489,7 @@ private fun FreeBoardDetailPreview() {
 
     LanPetAppTheme {
         FreeBoardDetailScreen(
-            postId = 1,
+            postId = "1",
             onNavigateUp = {},
         )
     }

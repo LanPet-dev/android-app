@@ -3,10 +3,15 @@ package com.lanpet.data.repository
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.service.FreeBoardApiService
+import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardComment
+import com.lanpet.domain.model.FreeBoardItem
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.domain.model.FreeBoardResource
+import com.lanpet.domain.model.FreeBoardStat
+import com.lanpet.domain.model.FreeBoardText
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
@@ -25,11 +30,205 @@ class FreeBoardRepositoryImpl
         override fun getFreeBoardPostList(getFreeBoardPostListRequest: GetFreeBoardPostListRequest): Flow<FreeBoardPost> =
             flow {
                 val requestDto = GetFreeBoardListRequestDto.fromDomain(getFreeBoardPostListRequest)
-                emit(
-                    freeBoardApiService.getFreeBoardPostList(
-                        requestDto.toQueryMap(),
-                    ),
-                )
+//                val res =
+//                    freeBoardApiService.getFreeBoardPostList(
+//                        requestDto.toQueryMap(),
+//                    )
+                val res =
+                    FreeBoardPost(
+                        items =
+                            listOf(
+                                FreeBoardItem(
+                                    id = "1",
+                                    category = FreeBoardCategoryType.COMMUNICATION,
+                                    petType = PetCategory.DOG,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목1",
+                                            content = "내용1",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "1",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "2",
+                                    category = FreeBoardCategoryType.COMMUNICATION,
+                                    petType = PetCategory.CAT,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목2",
+                                            content = "내용2",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "2",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "3",
+                                    category = FreeBoardCategoryType.CURIOUS,
+                                    petType = PetCategory.FISH,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목3",
+                                            content = "내용3",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "3",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "4",
+                                    category = FreeBoardCategoryType.RECOMMENDATION,
+                                    petType = PetCategory.TURTLE,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목4",
+                                            content = "내용4",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "4",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "5",
+                                    category = FreeBoardCategoryType.RECOMMENDATION,
+                                    petType = PetCategory.OTHER,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목5",
+                                            content = "내용5",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "5",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "6",
+                                    category = FreeBoardCategoryType.CURIOUS,
+                                    petType = PetCategory.OTHER,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목6",
+                                            content = "내용6",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "6",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+                                FreeBoardItem(
+                                    id = "7",
+                                    category = FreeBoardCategoryType.RECOMMENDATION,
+                                    petType = PetCategory.OTHER,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목7",
+                                            content = "내용7",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "7",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+
+                                FreeBoardItem(
+                                    id = "8",
+                                    category = FreeBoardCategoryType.RECOMMENDATION,
+                                    petType = PetCategory.OTHER,
+                                    text =
+                                        FreeBoardText(
+                                            title = "제목8",
+                                            content = "내용8",
+                                        ),
+                                    stat =
+                                        FreeBoardStat(
+                                            likeCount = 10,
+                                            commentCount = 5,
+                                        ),
+                                    resources =
+                                        listOf(
+                                            FreeBoardResource(
+                                                id = "8",
+                                                url = "https://www.naver.com",
+                                            ),
+                                        ),
+                                    created = "2021-08-01T12:34:56+09:00",
+                                ),
+
+                            ),
+                        totalCount = 3,
+                        nextCursor = "nextCursor",
+                    )
+                emit(res)
             }.flowOn(Dispatchers.IO)
 
         // TODO: Remove this dummy data

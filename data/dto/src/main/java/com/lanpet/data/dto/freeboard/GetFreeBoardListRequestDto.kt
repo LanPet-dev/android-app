@@ -10,12 +10,13 @@ data class GetFreeBoardListRequestDto(
     val category: String?,
     val direction: String,
 ) {
-    fun toQueryMap(): Map<String, String> = buildMap {
-        cursor?.let { put("cursor", it) }
-        put("size", size.toString())
-        category?.let { put("category", it) }
-        put("direction", direction)
-    }
+    fun toQueryMap(): Map<String, String> =
+        buildMap {
+            cursor?.let { put("cursor", it) }
+            put("size", this@GetFreeBoardListRequestDto.size.toString())
+            if (category != null) put("category", category) else put("category", "NULL")
+            put("direction", direction)
+        }
 
     companion object {
         fun fromDomain(getFreeBoardPostListRequest: GetFreeBoardPostListRequest): GetFreeBoardListRequestDto =

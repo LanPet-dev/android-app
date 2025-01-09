@@ -8,8 +8,8 @@ data class FreeBoardPost(
 
 data class FreeBoardItem(
     val id: String,
-    val category: String,
-    val petType: String,
+    val category: FreeBoardCategoryType,
+    val petType: PetCategory,
     val text: FreeBoardText,
     val stat: FreeBoardStat?,
     val resources: List<FreeBoardResource>?,

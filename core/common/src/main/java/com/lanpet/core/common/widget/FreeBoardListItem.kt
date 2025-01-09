@@ -52,11 +52,11 @@ fun FreeBoardListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall),
             ) {
-                CommonChip(freeBoardPostItem.category)
+                CommonChip(freeBoardPostItem.category.title)
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 Text(
-                    freeBoardPostItem.petType,
+                    freeBoardPostItem.petType.value,
                     style = MaterialTheme.customTypography().body3RegularSingle,
                 )
             }

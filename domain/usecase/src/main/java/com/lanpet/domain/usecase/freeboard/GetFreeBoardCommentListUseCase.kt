@@ -8,5 +8,5 @@ class GetFreeBoardCommentListUseCase
     constructor(
         private val freeBoardRepository: FreeBoardRepository,
     ) {
-        operator fun invoke(postId: Int) = freeBoardRepository.getFreeBoardCommentList(postId.toString())
+        operator fun invoke(postId: String) = freeBoardRepository.getFreeBoardCommentList(postId)
     }
