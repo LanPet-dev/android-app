@@ -14,30 +14,34 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface FreeBoardApiService {
-    @GET
+    @GET(PATH)
     suspend fun getFreeBoardPostList(
         @QueryMap queries: Map<String, String>,
     ): FreeBoardPost
 
-    @GET("{id}")
+    @GET("$PATH/{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
     ): FreeBoardPostDetail
 
-    @GET
+    @GET(PATH)
     suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
 
-    @POST
+    @POST(PATH)
     suspend fun createFreeBoardPost(
         @Body
         createFreeBoardPostRequest: CreateFreeBoardPostRequest,
     ): CreateFreeBoardPostResponse
 
-    @POST("{sarangbangId}/resources")
+    @POST("$PATH/{sarangbangId}/resources")
     suspend fun getResourceUploadUrl(
         @Path("sarangbangId")
         sarangbangId: String,
         @Query("size")
         size: Int,
     ): ResourceUploadUrlResponse
+
+    companion object {
+        const val PATH = "/sarangbangs"
+    }
 }
