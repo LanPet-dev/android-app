@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -323,7 +324,7 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
         ) {
             TextField(
                 value = input,
-                maxLines = 1,
+                maxLines = 4,
                 onValueChange = {
                     input = it
                 },
@@ -332,7 +333,9 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                     Modifier
                         .weight(1f)
                         .padding(horizontal = LanPetDimensions.Spacing.small)
-                        .clip(shape = CircleShape),
+                        .clip(shape = RoundedCornerShape(
+                            LanPetDimensions.Corner.medium
+                        )),
                 textStyle =
                     MaterialTheme.customTypography().body2RegularSingle.copy(
                         color = GrayColor.Gray400,
