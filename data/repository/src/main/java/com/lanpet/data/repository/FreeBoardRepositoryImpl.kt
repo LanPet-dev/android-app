@@ -60,7 +60,7 @@ class FreeBoardRepositoryImpl
                                         listOf(
                                             FreeBoardResource(
                                                 id = "1",
-                                                url = "https://www.naver.com",
+                                                url = "https://dummyimage.com/400x400/000/fff",
                                             ),
                                         ),
                                     created = "2021-08-01T12:34:56+09:00",

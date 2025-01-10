@@ -4,12 +4,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.manager.AuthStateHolder
+import com.lanpet.core.manager.CoilManager
+import com.lanpet.core.manager.LocalCoilManager
 
 /**
  * Preview Composable 을 만들때 사용되는 Wrapper Composable 입니다.
  * LocalAuthManager 가 기본으로 제공되어 Preview render 오류를 방지합니다.
+ * LocalCoilManager 를 제공하여 Preview render 오류를 방지합니다.
  * 또한 LanPetAppTheme 와 Surface 를 제공하여 기본적인 Theme 을 제공합니다.
  */
 @Composable
@@ -23,9 +27,14 @@ fun BasePreviewWrapper(
                 authStateHolder = AuthStateHolder(),
             ),
     ) {
-        LanPetAppTheme {
-            Surface {
-                content()
+        CompositionLocalProvider(
+            LocalCoilManager provides
+                CoilManager(context = LocalContext.current),
+        ) {
+            LanPetAppTheme {
+                Surface {
+                    content()
+                }
             }
         }
     }
