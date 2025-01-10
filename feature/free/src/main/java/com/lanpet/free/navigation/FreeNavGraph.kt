@@ -1,10 +1,10 @@
 package com.lanpet.free.navigation
 
+import android.os.Build
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
@@ -26,12 +26,25 @@ fun NavGraphBuilder.freeNavGraph(
             )
         }
         composable<FreeBoardDetail> {
-            it.toRoute<FreeBoardDetail>().postId.let { postId ->
-                FreeBoardDetailScreen(
+            val postId =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.arguments?.getSerializable("postId", String::class.java)
+                        ?: throw IllegalArgumentException("profileType is required")
+                } else {
+                    it.arguments?.getSerializable("profileType") as? String
+                        ?: throw IllegalArgumentException("profileType is required")
+                }
+
+            argument("args") {
+                FreeBoardDetail(
                     postId = postId,
-                    onNavigateUp = onNavigateUp,
                 )
             }
+            
+            FreeBoardDetailScreen(
+                postId = postId,
+                onNavigateUp = onNavigateUp,
+            )
         }
         composable<FreeBoardWrite> {
             FreeBoardWriteScreen(

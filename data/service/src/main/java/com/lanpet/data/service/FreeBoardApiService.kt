@@ -4,6 +4,7 @@ import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.CreateFreeBoardPostResponse
 import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.ResourceUploadUrlResponse
+import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
 import com.lanpet.domain.model.FreeBoardComment
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostDetail
@@ -24,7 +25,7 @@ interface FreeBoardApiService {
     @GET("$PATH/{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
-    ): FreeBoardPostDetail
+    ): FreeBoardDetailItemDto
 
     @GET(PATH)
     suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>

@@ -1,6 +1,7 @@
 package com.lanpet.free.viewmodel
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.domain.model.FreeBoardComment
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +25,7 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
+        savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val detailState: MutableStateFlow<DetailState> =
             MutableStateFlow<DetailState>(DetailState.Initial)
@@ -89,6 +92,15 @@ class FreeBoardDetailViewModel
                 }.collect {
                     commentsState.value = CommentsState.Success(it)
                 }
+        }
+
+        init {
+            savedStateHandle.get<String>("postId")?.let {
+                Timber.d("postId: $it")
+                init(it)
+            } ?: run {
+                Timber.e("postId is null")
+            }
         }
     }
 

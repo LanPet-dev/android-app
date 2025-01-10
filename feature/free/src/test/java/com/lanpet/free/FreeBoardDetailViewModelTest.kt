@@ -1,5 +1,6 @@
 package com.lanpet.free
 
+import androidx.lifecycle.SavedStateHandle
 import com.lanpet.core.testing.rule.data.freeBoardCommentTestData
 import com.lanpet.core.testing.rule.data.freeBoardPostDetailTestData
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
@@ -32,12 +33,6 @@ class FreeBoardDetailViewModelTest {
     fun setUp() {
         getFreeBoardDetailUseCase = mockk()
         getFreeBoardCommentListUseCase = mockk()
-
-        viewModel =
-            FreeBoardDetailViewModel(
-                getFreeBoardDetailUseCase,
-                getFreeBoardCommentListUseCase,
-            )
     }
 
     @AfterEach
@@ -73,16 +68,25 @@ class FreeBoardDetailViewModelTest {
                         )
                     }
 
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                ),
+                            ),
+                    )
+                advanceUntilIdle()
+
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
                 val job =
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Success)
@@ -107,16 +111,25 @@ class FreeBoardDetailViewModelTest {
                         )
                     }
 
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                ),
+                            ),
+                    )
+                advanceUntilIdle()
+
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
                 val job =
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)
@@ -141,6 +154,18 @@ class FreeBoardDetailViewModelTest {
                     flow {
                         throw Exception("Failed to fetch comments")
                     }
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                ),
+                            ),
+                    )
+                advanceUntilIdle()
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
@@ -148,10 +173,6 @@ class FreeBoardDetailViewModelTest {
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)

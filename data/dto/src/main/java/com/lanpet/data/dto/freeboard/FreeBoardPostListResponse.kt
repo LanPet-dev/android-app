@@ -1,5 +1,6 @@
 package com.lanpet.data.dto.freeboard
 
+import com.lanpet.domain.model.FreeBoardResource
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,3 +38,9 @@ data class FreeBoardResourceDto(
     val id: String,
     val url: String,
 )
+
+fun FreeBoardResourceDto.toDomain(): FreeBoardResource =
+    FreeBoardResource(
+        id = id,
+        url = url,
+    )

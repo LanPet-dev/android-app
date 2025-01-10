@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,10 +79,6 @@ fun FreeBoardDetailScreen(
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
-    LaunchedEffect(postId) {
-        freeBoardDetailViewModel.init(postId)
-    }
-
     val state = freeBoardDetailViewModel.uiState.collectAsState()
 
     Scaffold(
@@ -154,17 +149,15 @@ fun ContentUI(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                state.postDetail.tags.map {
+                state.postDetail.freeBoardCategory.value?.let {
                     CommonChip(it)
                     Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
-                state.postDetail.petCategory.let {
-                    Text(
-                        it.value,
-                        style = MaterialTheme.customTypography().body3RegularSingle,
-                    )
-                }
+                Text(
+                    state.postDetail.petCategory.value,
+                    style = MaterialTheme.customTypography().body3RegularSingle,
+                )
             }
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
 

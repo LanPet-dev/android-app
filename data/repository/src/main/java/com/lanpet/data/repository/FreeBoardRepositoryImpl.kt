@@ -3,6 +3,7 @@ package com.lanpet.data.repository
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
+import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardComment
@@ -235,29 +236,7 @@ class FreeBoardRepositoryImpl
         // TODO: Remove this dummy data
         override fun getFreeBoardDetail(id: String): Flow<FreeBoardPostDetail> =
             flow {
-                emit(
-                    FreeBoardPostDetail(
-                        id = 1,
-                        title = "제목",
-                        content =
-                            "awheoifhioawehf oihwieo fiowa hfiowaehf oiawioef hio\nawhiofhwaioefhio\n" +
-                                "awehfiowaheiofhioawehfiohioawefhio\n",
-                        writer = "작성자",
-                        writerImage = "https://dummyimage.com/600x400/000/fff",
-                        createdAt = "2021-08-01T12:34:56+09:00",
-                        updatedAt = "2021-08-01T12:34:56+09:00",
-                        likeCount = 10,
-                        commentCount = 5,
-                        images =
-                            listOf(
-                                "https://example.com/image1.jpg",
-                                "https://example.com/image2.jpg",
-                            ),
-                        tags = listOf("태그1", "태그2"),
-                        petCategory = PetCategory.DOG,
-                    ),
-                )
-//            emit(freeBoardApiService.getFreeBoardPostDetail(id))
+                emit(freeBoardApiService.getFreeBoardPostDetail(id).toDomain())
             }.flowOn(Dispatchers.IO)
 
         // TODO: Remove this dummy data
