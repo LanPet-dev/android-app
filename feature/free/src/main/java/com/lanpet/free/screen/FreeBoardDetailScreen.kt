@@ -195,12 +195,10 @@ fun ContentUI(
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
-                state.postDetail.let {
-                    Text(
-                        it.writer,
-                        style = MaterialTheme.customTypography().body3RegularSingle,
-                    )
-                }
+                Text(
+                    state.postDetail.writer,
+                    style = MaterialTheme.customTypography().body3RegularSingle,
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     createdAtPostString(state.postDetail.createdAt),
@@ -235,7 +233,18 @@ fun ContentUI(
                 model = it,
                 contentDescription = "post_image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = LanPetDimensions.Spacing.small,
+                            vertical = LanPetDimensions.Spacing.small,
+                        ).clip(
+                            shape =
+                                RoundedCornerShape(
+                                    LanPetDimensions.Corner.medium,
+                                ),
+                        ),
                 error = painterResource(id = DS_R.drawable.img_animals),
             )
         }
@@ -333,9 +342,12 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                     Modifier
                         .weight(1f)
                         .padding(horizontal = LanPetDimensions.Spacing.small)
-                        .clip(shape = RoundedCornerShape(
-                            LanPetDimensions.Corner.medium
-                        )),
+                        .clip(
+                            shape =
+                                RoundedCornerShape(
+                                    LanPetDimensions.Corner.medium,
+                                ),
+                        ),
                 textStyle =
                     MaterialTheme.customTypography().body2RegularSingle.copy(
                         color = GrayColor.Gray400,

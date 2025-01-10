@@ -8,7 +8,7 @@ import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -52,8 +52,14 @@ class FreeBoardDetailViewModel
 
         fun init(postId: String) {
             viewModelScope.launch {
-                async { fetchDetail(postId) }
-                async { fetchComments(postId) }
+                coroutineScope {
+                    launch {
+                        fetchDetail(postId)
+                    }
+                    launch {
+                        fetchComments(postId)
+                    }
+                }
             }
         }
 

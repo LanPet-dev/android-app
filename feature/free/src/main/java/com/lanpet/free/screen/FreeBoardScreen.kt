@@ -1,9 +1,11 @@
 package com.lanpet.free.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,6 +48,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
+import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.FreeBoardItem
 import com.lanpet.domain.model.FreeBoardResource
@@ -110,6 +114,13 @@ fun FreeBoardScreen(
                     onCategoryClick = {
                         freeBoardListViewModel.setCategory(it, forceRefresh = true)
                     },
+                )
+                Spacer(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .size(LanPetDimensions.Spacing.xxSmall)
+                            .background(MaterialTheme.customColorScheme.spacerLine),
                 )
                 Column(
                     modifier =

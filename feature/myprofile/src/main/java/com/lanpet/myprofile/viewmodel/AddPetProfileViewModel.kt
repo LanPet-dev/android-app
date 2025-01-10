@@ -46,7 +46,7 @@ class AddPetProfileViewModel
                             bio = null,
                             pet =
                                 Pet(
-                                    petCategory = PetCategory.OTHER,
+                                    petCategory = PetCategory.NONE,
                                     breed = null,
                                     weight = null,
                                     birthDate = null,

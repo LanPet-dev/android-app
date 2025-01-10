@@ -95,8 +95,13 @@ class ManagePetProfileViewModel
             val nickname = _uiState.value.petProfileUpdate?.nickName ?: return
 
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
-                    _uiState.value = _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
+                        _uiState.value = _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    }
+                }.onFailure {
+                    Timber.e(it.stackTraceToString())
+                    _uiEvent.emit(PetProfileUpdateEvent.Error(it.message))
                 }
             }
         }
