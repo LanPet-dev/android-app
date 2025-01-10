@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +46,7 @@ class AddPetProfileViewModel
                             bio = null,
                             pet =
                                 Pet(
-                                    petCategory = PetCategory.OTHER,
+                                    petCategory = PetCategory.NONE,
                                     breed = null,
                                     weight = null,
                                     birthDate = null,
@@ -126,8 +127,12 @@ class AddPetProfileViewModel
             val nickname = _uiState.value.petProfileCreate?.nickName ?: return
 
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
-                    _uiState.value = _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
+                        _uiState.value = _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    }
+                }.onFailure {
+                    Timber.e(it)
                 }
             }
         }

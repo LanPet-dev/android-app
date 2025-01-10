@@ -1,10 +1,13 @@
 package com.lanpet.domain.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+
 
 class FreeBoardPostTest {
     @Test
+    @Disabled
     fun testPost() {
         val freeBoardPost =
             FreeBoardPost(

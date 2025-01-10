@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -235,12 +236,17 @@ class AddManProfileViewModel
             ) {
                 return
             }
+
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(
-                    _uiState.value.manProfileCreate?.nickName!!,
-                ).collect { isDuplicated ->
-                    _uiState.value =
-                        _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(
+                        _uiState.value.manProfileCreate?.nickName!!,
+                    ).collect { isDuplicated ->
+                        _uiState.value =
+                            _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    }
+                }.onFailure {
+                    Timber.e(it)
                 }
             }
         }

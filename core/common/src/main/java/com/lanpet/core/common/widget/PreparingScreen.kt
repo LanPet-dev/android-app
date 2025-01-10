@@ -1,5 +1,7 @@
-package com.lanpet.wiki
+package com.lanpet.core.common.widget
 
+
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.EaseInBounce
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.RepeatMode
@@ -34,20 +36,23 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customTypography
 
 @Composable
-fun PreparingScreen(modifier: Modifier = Modifier) {
+fun PreparingScreen(
+    @StringRes titleResId: Int,
+    modifier: Modifier = Modifier,
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "infinite")
     val rotationFloat by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = 10f,
         animationSpec =
-            infiniteRepeatable(
-                animation =
-                    tween(
-                        durationMillis = 900,
-                        easing = EaseInBounce,
-                    ),
-                repeatMode = RepeatMode.Reverse,
+        infiniteRepeatable(
+            animation =
+            tween(
+                durationMillis = 900,
+                easing = EaseInBounce,
             ),
+            repeatMode = RepeatMode.Reverse,
+        ),
         label = "anim",
     )
 
@@ -55,14 +60,14 @@ fun PreparingScreen(modifier: Modifier = Modifier) {
         initialValue = 1f,
         targetValue = 1.05f,
         animationSpec =
-            infiniteRepeatable(
-                animation =
-                    tween(
-                        durationMillis = 1500,
-                        easing = EaseInOut,
-                    ),
-                repeatMode = RepeatMode.Reverse,
+        infiniteRepeatable(
+            animation =
+            tween(
+                durationMillis = 1500,
+                easing = EaseInOut,
             ),
+            repeatMode = RepeatMode.Reverse,
+        ),
         label = "anim",
     )
 
@@ -71,9 +76,9 @@ fun PreparingScreen(modifier: Modifier = Modifier) {
     ) {
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .offset(y = maxHeight * 0.2f),
+            Modifier
+                .fillMaxWidth()
+                .offset(y = maxHeight * 0.2f),
             contentAlignment = Alignment.Center,
         ) {
             Column(
@@ -83,16 +88,16 @@ fun PreparingScreen(modifier: Modifier = Modifier) {
                     painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_preparing),
                     contentDescription = null,
                     modifier =
-                        Modifier
-                            .size(200.dp)
-                            .graphicsLayer {
-                                rotationZ = rotationFloat
-                                scaleX = scaleFloat
-                                scaleY = scaleFloat
-                            },
+                    Modifier
+                        .size(200.dp)
+                        .graphicsLayer {
+                            rotationZ = rotationFloat
+                            scaleX = scaleFloat
+                            scaleY = scaleFloat
+                        },
                 )
                 Text(
-                    text = stringResource(R.string.preparing_screen_title),
+                    text = stringResource(titleResId),
                     style = MaterialTheme.customTypography().body1SemiBoldMulti,
                     textAlign = TextAlign.Center,
                 )
@@ -108,11 +113,13 @@ private fun PreparingScreenPreview() {
         Scaffold {
             Surface(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(it),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
             ) {
-                PreparingScreen()
+                PreparingScreen(
+                    titleResId = com.lanpet.core.designsystem.R.string.next_button_string,
+                )
             }
         }
     }

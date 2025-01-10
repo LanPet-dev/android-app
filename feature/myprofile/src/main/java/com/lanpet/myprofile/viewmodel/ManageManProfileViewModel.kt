@@ -196,11 +196,16 @@ class ManageManProfileViewModel
                 return
             }
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(
-                    _uiState.value.manProfileUpdate?.nickName!!,
-                ).collect { isDuplicated ->
-                    _uiState.value =
-                        _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(
+                        _uiState.value.manProfileUpdate?.nickName!!,
+                    ).collect { isDuplicated ->
+                        _uiState.value =
+                            _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    }
+                }.onFailure {
+                    Timber.e(it.stackTraceToString())
+                    _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                 }
             }
         }
@@ -295,7 +300,7 @@ class ManageManProfileViewModel
                                     profileImageUri =
                                         profileDetail.pictureUrl?.let {
                                             Uri.parse(
-                                                it
+                                                it,
                                             )
                                         },
                                     nickName = profileDetail.nickname,

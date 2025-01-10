@@ -8,7 +8,7 @@ import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -50,20 +50,26 @@ class FreeBoardDetailViewModel
                 initialValue = FreeBoardDetailState.Loading,
             )
 
-        fun init(postId: Int) {
+        fun init(postId: String) {
             viewModelScope.launch {
-                async { fetchDetail(postId) }
-                async { fetchComments(postId) }
+                coroutineScope {
+                    launch {
+                        fetchDetail(postId)
+                    }
+                    launch {
+                        fetchComments(postId)
+                    }
+                }
             }
         }
 
-        fun refreshComments(postId: Int) {
+        fun refreshComments(postId: String) {
             viewModelScope.launch {
                 fetchComments(postId)
             }
         }
 
-        private suspend fun fetchDetail(postId: Int) {
+        private suspend fun fetchDetail(postId: String) {
             detailState.value = DetailState.Loading
 
             getFreeBoardDetailUseCase(postId)
@@ -74,7 +80,7 @@ class FreeBoardDetailViewModel
                 }
         }
 
-        private suspend fun fetchComments(postId: Int) {
+        private suspend fun fetchComments(postId: String) {
             commentsState.value = CommentsState.Loading
 
             getFreeBoardCommentListUseCase(postId)

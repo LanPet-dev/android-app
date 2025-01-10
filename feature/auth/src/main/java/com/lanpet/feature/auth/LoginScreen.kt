@@ -1,6 +1,7 @@
 package com.lanpet.feature.auth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import com.lanpet.core.auth.CognitoAuthManager
 import com.lanpet.core.common.crop
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.customColorScheme
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
@@ -56,13 +58,24 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     RoundedCornerShape(
                         LanPetDimensions.Corner.xSmall,
                     ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            MaterialTheme.customColorScheme.buttonBackground,
+                            shape = RoundedCornerShape(LanPetDimensions.Corner.xSmall),
+                        ),
                 onClick = {
                     CognitoAuthManager(context).startGoogleSignIn()
                 },
             ) {
                 Text(
                     text = stringResource(R.string.button_login_with_google),
+                    Modifier.padding(LanPetDimensions.Spacing.small),
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            color = MaterialTheme.customColorScheme.buttonText,
+                        ),
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
