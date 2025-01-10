@@ -58,7 +58,7 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 성공,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Success 를 반환한다`() =
             runTest {
                 // given
-                val postId = 1
+                val postId = "1"
                 coEvery { getFreeBoardDetailUseCase(postId) } returns
                     flow {
                         emit(
@@ -94,7 +94,7 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 성공,PostDetailData fetch 실패 시, uiState 은 FreeBoardDetailState_Error 을 반환한다`() =
             runTest {
                 // given
-                val postId = 1
+                val postId = "1"
                 coEvery { getFreeBoardDetailUseCase(postId) } returns
                     flow {
                         throw Exception("Failed to fetch detail")
@@ -129,7 +129,7 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 실패,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Error 을 반환한다`() =
             runTest {
                 // given
-                val postId = 1
+                val postId = "1"
                 coEvery { getFreeBoardDetailUseCase(postId) } returns
                     flow {
                         emit(

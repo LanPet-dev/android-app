@@ -1,6 +1,7 @@
 package com.lanpet.data.repository
 
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
+import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.FreeBoardCategoryType
@@ -9,6 +10,7 @@ import com.lanpet.domain.model.FreeBoardItem
 import com.lanpet.domain.model.FreeBoardPost
 import com.lanpet.domain.model.FreeBoardPostCreate
 import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.domain.model.FreeBoardPostLike
 import com.lanpet.domain.model.FreeBoardResource
 import com.lanpet.domain.model.FreeBoardStat
 import com.lanpet.domain.model.FreeBoardText
@@ -20,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 import javax.inject.Inject
 
 class FreeBoardRepositoryImpl
@@ -330,5 +333,34 @@ class FreeBoardRepositoryImpl
             flow {
                 val res = freeBoardApiService.getResourceUploadUrl(sarangbangId, size)
                 emit(res.toDomain())
+            }.flowOn(Dispatchers.IO)
+
+        override fun doPostLike(
+            sarangbangId: String,
+            freeBoardPostLike: FreeBoardPostLike,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    val request = DoPostLikeRequest.fromDomainToRequest(freeBoardPostLike)
+                    freeBoardApiService.doPostLike(sarangbangId, request)
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }.flowOn(Dispatchers.IO)
+
+        override fun cancelPostLike(
+            sarangbangId: String,
+            profileId: String,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    freeBoardApiService.cancelPostLike(sarangbangId, profileId)
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
             }.flowOn(Dispatchers.IO)
     }
