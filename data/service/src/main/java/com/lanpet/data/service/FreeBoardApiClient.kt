@@ -48,7 +48,7 @@ class FreeBoardApiClient
                 ).registerTypeAdapter(
                     FreeBoardCategoryType::class.java,
                     FreeBoardCategoryTypeTypeAdapter(),
-               ).create()
+                ).create()
 
         private val okHttpClient = OkHttpClient.Builder().addInterceptor(headerInterceptor).build()
 

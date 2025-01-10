@@ -22,7 +22,7 @@ fun NavGraphBuilder.freeNavGraph(
             FreeBoardScreen(
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
-                onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail
+                onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
             )
         }
         composable<FreeBoardDetail> {

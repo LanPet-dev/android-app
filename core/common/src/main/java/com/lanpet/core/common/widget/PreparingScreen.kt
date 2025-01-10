@@ -1,6 +1,5 @@
 package com.lanpet.core.common.widget
 
-
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.EaseInBounce
 import androidx.compose.animation.core.EaseInOut
@@ -45,14 +44,14 @@ fun PreparingScreen(
         initialValue = 1f,
         targetValue = 10f,
         animationSpec =
-        infiniteRepeatable(
-            animation =
-            tween(
-                durationMillis = 900,
-                easing = EaseInBounce,
+            infiniteRepeatable(
+                animation =
+                    tween(
+                        durationMillis = 900,
+                        easing = EaseInBounce,
+                    ),
+                repeatMode = RepeatMode.Reverse,
             ),
-            repeatMode = RepeatMode.Reverse,
-        ),
         label = "anim",
     )
 
@@ -60,14 +59,14 @@ fun PreparingScreen(
         initialValue = 1f,
         targetValue = 1.05f,
         animationSpec =
-        infiniteRepeatable(
-            animation =
-            tween(
-                durationMillis = 1500,
-                easing = EaseInOut,
+            infiniteRepeatable(
+                animation =
+                    tween(
+                        durationMillis = 1500,
+                        easing = EaseInOut,
+                    ),
+                repeatMode = RepeatMode.Reverse,
             ),
-            repeatMode = RepeatMode.Reverse,
-        ),
         label = "anim",
     )
 
@@ -76,9 +75,9 @@ fun PreparingScreen(
     ) {
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .offset(y = maxHeight * 0.2f),
+                Modifier
+                    .fillMaxWidth()
+                    .offset(y = maxHeight * 0.2f),
             contentAlignment = Alignment.Center,
         ) {
             Column(
@@ -88,13 +87,13 @@ fun PreparingScreen(
                     painter = painterResource(com.lanpet.core.designsystem.R.drawable.img_preparing),
                     contentDescription = null,
                     modifier =
-                    Modifier
-                        .size(200.dp)
-                        .graphicsLayer {
-                            rotationZ = rotationFloat
-                            scaleX = scaleFloat
-                            scaleY = scaleFloat
-                        },
+                        Modifier
+                            .size(200.dp)
+                            .graphicsLayer {
+                                rotationZ = rotationFloat
+                                scaleX = scaleFloat
+                                scaleY = scaleFloat
+                            },
                 )
                 Text(
                     text = stringResource(titleResId),
@@ -113,9 +112,9 @@ private fun PreparingScreenPreview() {
         Scaffold {
             Surface(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it),
             ) {
                 PreparingScreen(
                     titleResId = com.lanpet.core.designsystem.R.string.next_button_string,

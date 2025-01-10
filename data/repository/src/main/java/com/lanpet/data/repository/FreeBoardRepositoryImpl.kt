@@ -202,7 +202,6 @@ class FreeBoardRepositoryImpl
                                         ),
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
-
                                 FreeBoardItem(
                                     id = "8",
                                     category = FreeBoardCategoryType.RECOMMENDATION,
@@ -226,7 +225,6 @@ class FreeBoardRepositoryImpl
                                         ),
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
-
                             ),
                         totalCount = 3,
                         nextCursor = "nextCursor",
