@@ -3,6 +3,7 @@ package com.lanpet.core.common.widget
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -39,7 +40,7 @@ fun LanPetTopAppBar(
         navigationIcon = { navigationIcon?.invoke() },
         actions = actions,
         colors = colors,
-        modifier = modifier.systemBarsPadding(),
+        modifier = modifier.statusBarsPadding(),
     )
 }
 
@@ -87,7 +88,7 @@ fun LanPetCenterAlignedTopAppBar(
         navigationIcon = { navigationIcon?.invoke() },
         actions = actions,
         colors = colors,
-        modifier = modifier.systemBarsPadding(),
+        modifier = modifier.statusBarsPadding(),
     )
 }
 
