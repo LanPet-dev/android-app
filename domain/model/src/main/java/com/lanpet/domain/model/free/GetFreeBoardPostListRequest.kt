@@ -1,6 +1,5 @@
 package com.lanpet.domain.model.free
 
-import com.lanpet.domain.model.FreeBoardCategoryType
 import com.lanpet.domain.model.pagination.CursorDirection
 
 data class GetFreeBoardPostListRequest(

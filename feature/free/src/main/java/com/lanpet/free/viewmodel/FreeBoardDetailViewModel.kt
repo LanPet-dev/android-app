@@ -4,14 +4,22 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.domain.model.FreeBoardComment
-import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardPostDetail
+import com.lanpet.domain.model.free.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardWriteComment
+import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
+import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
+import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -25,12 +33,21 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
+        private val doPostLikeUseCase: DoPostLikeUseCase,
+        private val cancelPostLikeUseCase: CancelPostLikeUseCase,
+        private val writeCommentUseCase: WriteCommentUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val detailState: MutableStateFlow<DetailState> =
             MutableStateFlow<DetailState>(DetailState.Initial)
         private val commentsState: MutableStateFlow<CommentsState> =
             MutableStateFlow<CommentsState>(CommentsState.Initial)
+
+        private val _uiEvent = MutableSharedFlow<FreeBoardDetailEvent>()
+        val uiEvent = _uiEvent.asSharedFlow()
+
+        private val _isProcess = MutableStateFlow(false)
+        val isProcess = _isProcess.asStateFlow()
 
         // UI에서 observe할 combined state
         val uiState =
@@ -53,15 +70,79 @@ class FreeBoardDetailViewModel
                 initialValue = FreeBoardDetailState.Loading,
             )
 
-        fun init(postId: String) {
+        fun init(
+            postId: String,
+            profileId: String,
+        ) {
             viewModelScope.launch {
-                coroutineScope {
-                    launch {
-                        fetchDetail(postId)
+                runCatching {
+                    coroutineScope {
+                        launch {
+                            fetchDetail(postId, profileId)
+                        }
+                        launch {
+                            fetchComments(postId)
+                        }
                     }
-                    launch {
-                        fetchComments(postId)
+                }.onFailure { e ->
+                    detailState.value = DetailState.Error(e.message ?: "Failed to fetch detail")
+                }
+            }
+        }
+
+        fun doLikePost(
+            postId: String,
+            profileId: String,
+        ) {
+            if (_isProcess.value) return
+            _isProcess.value = true
+
+            viewModelScope.launch {
+                runCatching {
+                    doPostLikeUseCase(postId, FreeBoardPostLike(profileId)).collect {
+                        _isProcess.value = false
                     }
+                }.onFailure {
+                    _isProcess.value = false
+                }
+            }
+        }
+
+        fun cancelLikePost(
+            postId: String,
+            profileId: String,
+        ) {
+            if (_isProcess.value) return
+            _isProcess.value = true
+
+            viewModelScope.launch {
+                runCatching {
+                    cancelPostLikeUseCase(postId, profileId).collect {
+                        _isProcess.value = false
+                    }
+                }.onFailure {
+                    _isProcess.value = false
+                }
+            }
+        }
+
+        fun writeComment(
+            postId: String,
+            profileId: String,
+            comment: String,
+        ) {
+            if (_isProcess.value) return
+            _isProcess.value = true
+
+            viewModelScope.launch {
+                runCatching {
+                    writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
+                        _isProcess.value = false
+                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
+                    }
+                }.onFailure {
+                    _isProcess.value = false
+                    _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
                 }
             }
         }
@@ -72,10 +153,13 @@ class FreeBoardDetailViewModel
             }
         }
 
-        private suspend fun fetchDetail(postId: String) {
+        private suspend fun fetchDetail(
+            postId: String,
+            profileId: String,
+        ) {
             detailState.value = DetailState.Loading
 
-            getFreeBoardDetailUseCase(postId)
+            getFreeBoardDetailUseCase(postId, profileId)
                 .catch {
                     detailState.value = DetailState.Error("Failed to fetch detail")
                 }.collect {
@@ -95,11 +179,15 @@ class FreeBoardDetailViewModel
         }
 
         init {
-            savedStateHandle.get<String>("postId")?.let {
-                Timber.d("postId: $it")
-                init(it)
-            } ?: run {
-                Timber.e("postId is null")
+            val postId = savedStateHandle.get<String>("postId")
+            val profileId = savedStateHandle.get<String>("profileId")
+
+            Timber.d("postId: $postId, profileId: $profileId")
+
+            if (postId != null && profileId != null) {
+                init(postId, profileId)
+            } else {
+                detailState.value = DetailState.Error("Failed to fetch detail")
             }
         }
     }
@@ -146,4 +234,11 @@ sealed class FreeBoardDetailState {
     data class Error(
         val message: String,
     ) : FreeBoardDetailState()
+}
+
+@Stable
+sealed class FreeBoardDetailEvent {
+    data object WriteCommentSuccess : FreeBoardDetailEvent()
+
+    data object WriteCommentFail : FreeBoardDetailEvent()
 }

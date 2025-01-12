@@ -2,7 +2,7 @@ package com.lanpet.free.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.domain.model.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardPostLike
 import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow

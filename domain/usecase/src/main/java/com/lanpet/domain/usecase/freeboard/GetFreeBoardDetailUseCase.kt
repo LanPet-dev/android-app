@@ -8,5 +8,5 @@ class GetFreeBoardDetailUseCase
     constructor(
         private val freeBoardRepository: FreeBoardRepository,
     ) {
-        operator fun invoke(postId: String) = freeBoardRepository.getFreeBoardDetail(postId)
+        operator fun invoke(postId: String, profileId:String) = freeBoardRepository.getFreeBoardDetail(postId, profileId)
     }

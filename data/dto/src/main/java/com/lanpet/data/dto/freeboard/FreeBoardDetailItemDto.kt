@@ -1,8 +1,8 @@
 package com.lanpet.data.dto.freeboard
 
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardPostDetail
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardPostDetail
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +14,9 @@ data class FreeBoardDetailItemDto(
     val stat: FreeBoardStatDto?,
     val resources: List<FreeBoardResourceDto>?,
     val created: String,
+    val profile: ProfileDto,
     val profileId: String,
+    val isLike: Boolean,
 )
 
 fun FreeBoardDetailItemDto.toDomain(): FreeBoardPostDetail =
@@ -22,7 +24,7 @@ fun FreeBoardDetailItemDto.toDomain(): FreeBoardPostDetail =
         id = id,
         title = text.title,
         content = text.content,
-        writer = id,
+        writer = profile.nickname,
         writerImage = null,
         petCategory = PetCategory.valueOf(petType),
         createdAt = created,
@@ -30,4 +32,5 @@ fun FreeBoardDetailItemDto.toDomain(): FreeBoardPostDetail =
         commentCount = stat?.commentCount ?: 0,
         images = resources?.map { it.toDomain() } ?: emptyList(),
         freeBoardCategory = FreeBoardCategoryType.valueOf(category),
+        isLike = isLike,
     )

@@ -34,7 +34,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.core.manager.LocalCoilManager
-import com.lanpet.domain.model.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardItem
 
 @Composable
 fun FreeBoardListItem(

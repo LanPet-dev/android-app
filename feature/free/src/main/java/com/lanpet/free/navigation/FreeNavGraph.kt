@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
@@ -13,19 +14,20 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.freeNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
-    onNavigateToFreeBoardDetail: (postId: String) -> Unit,
+    onNavigateToFreeBoardDetail: (postId: String, profileId: String) -> Unit,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
     ) {
         composable<FreeBoard> {
             FreeBoardScreen(
-                onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
                 onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
             )
         }
         composable<FreeBoardDetail> {
+            val authManager = LocalAuthManager.current
+
             val postId =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.arguments?.getSerializable("postId", String::class.java)
@@ -35,14 +37,16 @@ fun NavGraphBuilder.freeNavGraph(
                         ?: throw IllegalArgumentException("profileType is required")
                 }
 
+            val profileId = authManager.defaultUserProfile.value.id
+
             argument("args") {
                 FreeBoardDetail(
                     postId = postId,
+                    profileId = profileId,
                 )
             }
-            
+
             FreeBoardDetailScreen(
-                postId = postId,
                 onNavigateUp = onNavigateUp,
             )
         }
@@ -76,9 +80,12 @@ fun NavController.navigateToFreeBoardScreen() {
     }
 }
 
-fun NavController.navigateToFreeBoardDetailScreen(postId: String) {
+fun NavController.navigateToFreeBoardDetailScreen(
+    postId: String,
+    profileId: String,
+) {
     navigate(
-        FreeBoardDetail(postId = postId),
+        FreeBoardDetail(postId = postId, profileId = profileId),
     ) {}
 }
 
@@ -94,6 +101,7 @@ object FreeBoardBaseRoute
 @Serializable
 data class FreeBoardDetail(
     val postId: String,
+    val profileId: String,
 )
 
 @Serializable

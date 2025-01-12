@@ -4,9 +4,9 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardItem
-import com.lanpet.domain.model.FreeBoardPost
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardPostListUseCase

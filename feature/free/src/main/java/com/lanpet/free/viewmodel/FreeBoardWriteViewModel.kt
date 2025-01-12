@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardPostCreate
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.usecase.freeboard.CreateFreeBoardPostUseCase
 import com.lanpet.domain.usecase.freeboard.GetResourceUploadUrlUseCase

@@ -5,9 +5,10 @@ import com.lanpet.data.dto.CreateFreeBoardPostResponse
 import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.ResourceUploadUrlResponse
 import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
-import com.lanpet.domain.model.FreeBoardComment
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
+import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardPost
+import com.lanpet.domain.model.free.FreeBoardWriteComment
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -25,6 +26,7 @@ interface FreeBoardApiService {
     @GET("$PATH/{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
+        @Query("reader") profileId: String,
     ): FreeBoardDetailItemDto
 
     @GET(PATH)
@@ -59,6 +61,15 @@ interface FreeBoardApiService {
         @Query("profileId")
         profileId: String,
     ): Unit
+
+    @POST("$PATH/{sarangbangId}/comments")
+    suspend fun writeComment(
+        @Path("sarangbangId")
+        sarangbangId: String,
+        @Body
+        writeComment: FreeBoardWriteComment
+    ): Unit
+
 
     companion object {
         const val PATH = "/sarangbangs"

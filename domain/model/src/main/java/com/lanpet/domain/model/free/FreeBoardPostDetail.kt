@@ -1,4 +1,6 @@
-package com.lanpet.domain.model
+package com.lanpet.domain.model.free
+
+import com.lanpet.domain.model.PetCategory
 
 data class FreeBoardPostDetail(
     val id: String,
@@ -9,6 +11,7 @@ data class FreeBoardPostDetail(
     val petCategory: PetCategory,
     val createdAt: String,
     val likeCount: Int,
+    val isLike: Boolean,
     val commentCount: Int,
     val images: List<FreeBoardResource> = emptyList(),
     val freeBoardCategory: FreeBoardCategoryType,

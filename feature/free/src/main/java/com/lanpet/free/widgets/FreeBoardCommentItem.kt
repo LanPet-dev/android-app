@@ -30,7 +30,7 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardComment
 
 @Composable
 fun FreeBoardCommentItem(

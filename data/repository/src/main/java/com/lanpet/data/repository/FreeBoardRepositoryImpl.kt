@@ -5,17 +5,18 @@ import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardComment
-import com.lanpet.domain.model.FreeBoardItem
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.FreeBoardPostCreate
-import com.lanpet.domain.model.FreeBoardPostDetail
-import com.lanpet.domain.model.FreeBoardPostLike
-import com.lanpet.domain.model.FreeBoardResource
-import com.lanpet.domain.model.FreeBoardStat
-import com.lanpet.domain.model.FreeBoardText
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardPost
+import com.lanpet.domain.model.free.FreeBoardPostCreate
+import com.lanpet.domain.model.free.FreeBoardPostDetail
+import com.lanpet.domain.model.free.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardResource
+import com.lanpet.domain.model.free.FreeBoardStat
+import com.lanpet.domain.model.free.FreeBoardText
+import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.repository.FreeBoardRepository
@@ -31,6 +32,7 @@ class FreeBoardRepositoryImpl
     constructor(
         private val freeBoardApiService: FreeBoardApiService,
     ) : FreeBoardRepository {
+        // TODO: Remove this dummy data
         override fun getFreeBoardPostList(getFreeBoardPostListRequest: GetFreeBoardPostListRequest): Flow<FreeBoardPost> =
             flow {
                 val requestDto = GetFreeBoardListRequestDto.fromDomain(getFreeBoardPostListRequest)
@@ -43,7 +45,7 @@ class FreeBoardRepositoryImpl
                         items =
                             listOf(
                                 FreeBoardItem(
-                                    id = "1",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.COMMUNICATION,
                                     petType = PetCategory.DOG,
                                     text =
@@ -66,7 +68,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "2",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.COMMUNICATION,
                                     petType = PetCategory.CAT,
                                     text =
@@ -89,7 +91,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "3",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.CURIOUS,
                                     petType = PetCategory.FISH,
                                     text =
@@ -112,7 +114,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "4",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.RECOMMENDATION,
                                     petType = PetCategory.TURTLE,
                                     text =
@@ -135,7 +137,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "5",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.RECOMMENDATION,
                                     petType = PetCategory.OTHER,
                                     text =
@@ -158,7 +160,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "6",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.CURIOUS,
                                     petType = PetCategory.OTHER,
                                     text =
@@ -181,7 +183,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "7",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.RECOMMENDATION,
                                     petType = PetCategory.OTHER,
                                     text =
@@ -204,7 +206,7 @@ class FreeBoardRepositoryImpl
                                     created = "2021-08-01T12:34:56+09:00",
                                 ),
                                 FreeBoardItem(
-                                    id = "8",
+                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
                                     category = FreeBoardCategoryType.RECOMMENDATION,
                                     petType = PetCategory.OTHER,
                                     text =
@@ -221,7 +223,7 @@ class FreeBoardRepositoryImpl
                                         listOf(
                                             FreeBoardResource(
                                                 id = "8",
-                                                url = "https://www.naver.com",
+                                                url = "https://dummyimage.com/400x400/000/fff",
                                             ),
                                         ),
                                     created = "2021-08-01T12:34:56+09:00",
@@ -234,9 +236,39 @@ class FreeBoardRepositoryImpl
             }.flowOn(Dispatchers.IO)
 
         // TODO: Remove this dummy data
-        override fun getFreeBoardDetail(id: String): Flow<FreeBoardPostDetail> =
+        override fun getFreeBoardDetail(id: String, profileId: String): Flow<FreeBoardPostDetail> =
             flow {
-                emit(freeBoardApiService.getFreeBoardPostDetail(id).toDomain())
+                emit(freeBoardApiService.getFreeBoardPostDetail(id, profileId).toDomain())
+//                emit(
+//                    FreeBoardPostDetail(
+//                        id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
+//                        title = "제목1",
+//                        content = "내용1",
+//                        writer = "작성자1",
+//                        writerImage = "https://dummyimage.com/600x400/000/fff",
+//                        petCategory = PetCategory.DOG,
+//                        createdAt = "2021-08-01T12:34:56+09:00",
+//                        likeCount = 10,
+//                        commentCount = 5,
+//                        images =
+//                            listOf(
+//                                FreeBoardResource(
+//                                    id = "1",
+//                                    url = "https://dummyimage.com/400x400/000/fff",
+//                                ),
+//                                FreeBoardResource(
+//                                    id = "2",
+//                                    url = "https://dummyimage.com/400x400/000/fff",
+//                                ),
+//                                FreeBoardResource(
+//                                    id = "3",
+//                                    url = "https://dummyimage.com/400x400/000/fff",
+//                                ),
+//                            ),
+//                        freeBoardCategory = FreeBoardCategoryType.COMMUNICATION,
+//                        isLike = true,
+//                    ),
+//                )
             }.flowOn(Dispatchers.IO)
 
         // TODO: Remove this dummy data
@@ -340,4 +372,18 @@ class FreeBoardRepositoryImpl
                     emit(false)
                 }
             }.flowOn(Dispatchers.IO)
+
+        override fun writeComment(
+            sarangbangId: String,
+            writeComment: FreeBoardWriteComment,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    freeBoardApiService.writeComment(sarangbangId, writeComment)
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }
     }

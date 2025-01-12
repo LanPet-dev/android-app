@@ -1,6 +1,7 @@
-package com.lanpet.domain.model
+package com.lanpet.domain.model.free
 
 import android.net.Uri
+import com.lanpet.domain.model.PetCategory
 
 data class FreeBoardPostCreate(
     val profileId: String?,

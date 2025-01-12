@@ -3,6 +3,7 @@ package com.lanpet.free.screen
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +54,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.lanpet.core.auth.BasePreviewWrapper
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.loremIpsum
@@ -60,11 +63,13 @@ import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
+import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
@@ -74,7 +79,6 @@ import com.lanpet.core.designsystem.R as DS_R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardDetailScreen(
-    postId: String,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
@@ -104,11 +108,38 @@ fun FreeBoardDetailScreen(
                 }
 
                 is FreeBoardDetailState.Success -> {
-                    ContentUI(state.value as FreeBoardDetailState.Success)
+                    var input by rememberSaveable { mutableStateOf("") }
+                    val authManager = LocalAuthManager.current
+                    val defaultProfile =
+                        authManager.defaultUserProfile
+                            .collectAsState()
+                            .value
+
+                    ContentUI(
+                        state.value as FreeBoardDetailState.Success,
+                        commentInput = input,
+                        onInputValueChange = { value ->
+                            input = value
+                        },
+                        onWriteComment = {
+                            freeBoardDetailViewModel.writeComment(
+                                postId = (state.value as FreeBoardDetailState.Success).postDetail.id,
+                                comment = input,
+                                profileId = defaultProfile.id,
+                            )
+                        },
+                    )
                 }
 
                 is FreeBoardDetailState.Error -> {
-                    Text((state.value as FreeBoardDetailState.Error).message)
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        PreparingScreen(
+                            titleResId = R.string.title_error_freeboard_detail,
+                        )
+                    }
                 }
             }
         }
@@ -132,6 +163,9 @@ fun LoadingUI(modifier: Modifier = Modifier) {
 @Composable
 fun ContentUI(
     state: FreeBoardDetailState.Success,
+    onInputValueChange: (String) -> Unit,
+    commentInput: String,
+    onWriteComment: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val verticalScrollState = rememberScrollState()
@@ -149,10 +183,8 @@ fun ContentUI(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                state.postDetail.freeBoardCategory.value?.let {
-                    CommonChip(it)
-                    Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
-                }
+                CommonChip(state.postDetail.freeBoardCategory.title)
+                Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxxSmall))
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
                 Text(
                     state.postDetail.petCategory.value,
@@ -241,7 +273,12 @@ fun ContentUI(
                 error = painterResource(id = DS_R.drawable.img_animals),
             )
         }
-
+        Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
+        LikeButton(
+            isLiked = state.postDetail.isLike,
+            likeCount = state.postDetail.likeCount,
+            onLikeClick = {},
+        )
         // line
         Spacer(
             modifier =
@@ -264,7 +301,11 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         Spacer(modifier = Modifier.weight(1f))
-        CommentInputSection()
+        CommentInputSection(
+            onWriteComment = onWriteComment,
+            input = commentInput,
+            onInputValueChange = onInputValueChange,
+        )
         Spacer(modifier = Modifier.navigationBarsPadding())
     }
 }
@@ -295,6 +336,7 @@ fun FreeBoardCommentSection(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
+            Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         } else {
             Column {
                 comments.forEach { comment ->
@@ -306,9 +348,12 @@ fun FreeBoardCommentSection(
 }
 
 @Composable
-fun CommentInputSection(modifier: Modifier = Modifier) {
-    var input by rememberSaveable { mutableStateOf("") }
-
+fun CommentInputSection(
+    modifier: Modifier = Modifier,
+    input: String = "",
+    onInputValueChange: (String) -> Unit = {},
+    onWriteComment: () -> Unit = {},
+) {
     Column {
         Spacer(
             modifier =
@@ -328,7 +373,7 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                 value = input,
                 maxLines = 4,
                 onValueChange = {
-                    input = it
+                    onInputValueChange(it)
                 },
                 placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
                 modifier =
@@ -357,7 +402,9 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                     ),
             )
             IconButton(
-                onClick = {},
+                onClick = {
+                    onWriteComment()
+                },
             ) {
                 Image(
                     imageVector = MyIconPack.Send,
@@ -366,6 +413,41 @@ fun CommentInputSection(modifier: Modifier = Modifier) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun LikeButton(
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val likedBorderColor = if (isLiked) PrimaryColor.PRIMARY else GrayColor.Gray500
+    val likedTextColor = if (isLiked) PrimaryColor.PRIMARY else GrayColor.Gray500
+
+    Box(
+        modifier =
+            modifier
+                .padding(
+                    horizontal = LanPetDimensions.Spacing.small,
+                    vertical = LanPetDimensions.Spacing.small,
+                ).border(
+                    width = 1.dp,
+                    color = likedBorderColor,
+                    shape = CircleShape,
+                ).clip(CircleShape)
+                .clickable { onLikeClick() }
+                .padding(LanPetDimensions.Spacing.small),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            "좋아요 $likeCount",
+            style =
+                MaterialTheme.customTypography().body2RegularSingle.copy(
+                    color = likedTextColor,
+                ),
+        )
     }
 }
 
@@ -497,8 +579,141 @@ private fun FreeBoardDetailPreview() {
 
     LanPetAppTheme {
         FreeBoardDetailScreen(
-            postId = "1",
             onNavigateUp = {},
         )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun FreeBoardCommentSection_Empty_Preview() {
+    BasePreviewWrapper {
+        Column {
+            FreeBoardCommentSection()
+        }
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun FreeBoardCommentSection_Filled_Preview() {
+    BasePreviewWrapper {
+        FreeBoardCommentSection(
+            comments =
+                listOf(
+                    FreeBoardComment(
+                        id = 1,
+                        content = loremIpsum().slice(0..100),
+                        writer = "writer",
+                        writerImage = null,
+                        createdAt = "2021-01-01T00:00:00Z",
+                        updatedAt = "2021-01-01",
+                        freeBoardId = 1,
+                        likeCount = 1,
+                        commentCount = 3,
+                        subComments =
+                            listOf(
+                                FreeBoardComment(
+                                    id = 1,
+                                    content = loremIpsum().slice(0..200),
+                                    writer = "writer",
+                                    writerImage = null,
+                                    createdAt = "2021-01-01T00:00:00Z",
+                                    updatedAt = "2021-01-01",
+                                    freeBoardId = 1,
+                                    likeCount = 1,
+                                    commentCount = null,
+                                    subComments = emptyList(),
+                                ),
+                                FreeBoardComment(
+                                    id = 1,
+                                    content = loremIpsum().slice(0..50),
+                                    writer = "writer",
+                                    writerImage = null,
+                                    createdAt = "2021-01-01T00:00:00Z",
+                                    updatedAt = "2021-01-01",
+                                    freeBoardId = 1,
+                                    likeCount = 1,
+                                    commentCount = null,
+                                    subComments = emptyList(),
+                                ),
+                                FreeBoardComment(
+                                    id = 1,
+                                    content = loremIpsum(),
+                                    writer = "writer",
+                                    writerImage = null,
+                                    createdAt = "2021-01-01T00:00:00Z",
+                                    updatedAt = "2021-01-01",
+                                    freeBoardId = 1,
+                                    likeCount = 1,
+                                    commentCount = null,
+                                    subComments = emptyList(),
+                                ),
+                            ),
+                    ),
+                    FreeBoardComment(
+                        id = 1,
+                        content = loremIpsum().slice(0..100),
+                        writer = "writer",
+                        writerImage = null,
+                        createdAt = "2021-01-01T00:00:00Z",
+                        updatedAt = "2021-01-01",
+                        freeBoardId = 1,
+                        likeCount = 1,
+                        commentCount = null,
+                        subComments = emptyList(),
+                    ),
+                ),
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun SuccessUIPreview() {
+    BasePreviewWrapper {
+        ContentUI(
+            state =
+                FreeBoardDetailState.Success(
+                    postDetail =
+                        com.lanpet.domain.model.free.FreeBoardPostDetail(
+                            id = "1",
+                            title = "title",
+                            content = "content",
+                            writer = "Writer",
+                            writerImage = null,
+                            petCategory = com.lanpet.domain.model.PetCategory.DOG,
+                            createdAt = "2021-01-01T00:00:00Z",
+                            likeCount = 1,
+                            commentCount = 1,
+                            images = emptyList(),
+                            freeBoardCategory = com.lanpet.domain.model.free.FreeBoardCategoryType.CURIOUS,
+                            isLike = true,
+                        ),
+                    comments = emptyList(),
+                ),
+            onInputValueChange = {},
+            commentInput = "",
+            onWriteComment = {},
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+private fun LikeButtonPreview() {
+    LanPetAppTheme {
+        Column {
+            LikeButton(
+                isLiked = false,
+                likeCount = 10,
+                onLikeClick = {},
+            )
+            LikeButton(
+                isLiked = true,
+                likeCount = 10,
+                onLikeClick = {},
+            )
+        }
     }
 }
