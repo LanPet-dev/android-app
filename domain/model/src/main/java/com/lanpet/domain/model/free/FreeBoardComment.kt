@@ -5,10 +5,9 @@ data class FreeBoardComment(
     val content: String,
     val writer: String,
     val writerImage: String?,
-    val createdAt: String,
-    val updatedAt: String,
-    val freeBoardId: Int,
-    val likeCount: Int,
+    val createdAt: String?,
+    val updatedAt: String?,
+    val likeCount: Int?,
     val commentCount: Int?,
     val subComments: List<FreeBoardComment> = emptyList(),
 )
