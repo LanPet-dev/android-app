@@ -61,11 +61,6 @@ open class AuthManager
          */
         val userProfiles = authStateHolder.userProfiles
 
-        /**
-         * 현재 유저의 프로필 상세 정보
-         */
-        val currentProfileDetail = authStateHolder.currentProfileDetail
-
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {

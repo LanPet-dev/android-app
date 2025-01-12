@@ -20,16 +20,9 @@ class AuthStateHolder {
 
     val authState = _authState.asStateFlow()
 
-    val currentProfileDetail =
-        authState
-            .map { state ->
-                (state as? AuthState.Success)?.profileDetail
-            }.stateIn(
-                scope = CoroutineScope(Dispatchers.IO),
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = null,
-            )
-
+    /**
+     * 유자가 가진 모든 프로필 정보.
+     */
     val userProfiles =
         authState
             .map { state ->
@@ -40,6 +33,10 @@ class AuthStateHolder {
                 initialValue = emptyList(),
             )
 
+    /**
+     * 대표 프로필 정보.
+     * 현재 유저가 선택한 프로필과 동일합니다.
+     */
     val defaultProfile =
         authState
             .map { state ->
