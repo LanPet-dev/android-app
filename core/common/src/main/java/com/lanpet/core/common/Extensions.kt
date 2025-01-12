@@ -35,9 +35,11 @@ fun loremIpsum() =
 
 @SuppressLint("SimpleDateFormat")
 fun createdAtPostString(
-    createdAt: String,
+    createdAt: String?,
     currentTime: String? = null,
 ): String {
+    if (createdAt == null) return ""
+
     try {
         val createdAtTimeMillis = createdAt.toLocalDate().time
         val currentTimeTimeMillis =
