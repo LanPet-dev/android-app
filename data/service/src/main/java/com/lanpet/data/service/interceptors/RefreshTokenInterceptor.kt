@@ -4,10 +4,14 @@ import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.usecase.cognitoauth.RefreshCognitoSocialAuthTokenUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 class RefreshTokenInterceptor
     @Inject
@@ -15,6 +19,7 @@ class RefreshTokenInterceptor
         private val refreshTokenUseCase: RefreshCognitoSocialAuthTokenUseCase,
         private val authStateHolder: AuthStateHolder,
     ) : Interceptor {
+        @OptIn(FlowPreview::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             if (authStateHolder.authState.value !is AuthState.Success) {
                 return chain.proceed(chain.request())
@@ -32,14 +37,18 @@ class RefreshTokenInterceptor
 
                 runBlocking(Dispatchers.IO) {
                     runCatching {
-                        refreshTokenUseCase(socialAuthToken.refreshToken!!).collect {
-                            authStateHolder.updateState(
-                                (authStateHolder.authState.value as AuthState.Success).copy(
-                                    socialAuthToken = it,
-                                    navigationHandleFlag = false,
-                                ),
-                            )
-                        }
+                        refreshTokenUseCase(socialAuthToken.refreshToken!!)
+                            .timeout(5.seconds)
+                            .retryWhen { cause, attempt ->
+                                cause is Exception && attempt < 3
+                            }.collect {
+                                authStateHolder.updateState(
+                                    (authStateHolder.authState.value as AuthState.Success).copy(
+                                        socialAuthToken = it,
+                                        navigationHandleFlag = false,
+                                    ),
+                                )
+                            }
                     }.onFailure {
                         authStateHolder.updateState(AuthState.Fail())
                         throw it
