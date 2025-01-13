@@ -11,6 +11,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.domain.usecase)
     implementation(projects.domain.model)
     implementation(projects.data.dto)
     implementation(libs.androidx.core.ktx)
