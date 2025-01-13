@@ -30,7 +30,7 @@ class RefreshTokenInterceptor
                     ?: throw SecurityException("socialAuthToken is required")
 
             // 만료시간이 3분 이내로 남았을 경우 refreshToken을 사용하여 accessToken을 갱신한다.
-            if (socialAuthToken.expireDateTime.time <= System.currentTimeMillis() + 1000 * 60 * 3) {
+            if (socialAuthToken.shouldRefresh()) {
                 if (socialAuthToken.refreshToken == null) {
                     throw SecurityException("refreshToken is required")
                 }

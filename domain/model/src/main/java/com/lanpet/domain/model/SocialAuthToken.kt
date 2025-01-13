@@ -11,4 +11,8 @@ data class SocialAuthToken(
 ) {
     override fun toString(): String =
         "SocialAuthToken(socialAuthType=$socialAuthType, accessToken=$accessToken, refreshToken=$refreshToken)"
+
+    fun isExpired(): Boolean = expireDateTime.time - System.currentTimeMillis() <= 0
+
+    fun shouldRefresh(): Boolean = expireDateTime.time - System.currentTimeMillis() + 1000 * 60 * 3 <= 0
 }
