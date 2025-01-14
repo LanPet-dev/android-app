@@ -72,17 +72,10 @@ class FreeBoardListViewModel
             data: FreeBoardPost,
         ): FreeBoardListState {
             _cursorPagingState =
-                if (data.items.isNullOrEmpty()) {
-                    _cursorPagingState.copy(
-                        cursor = data.nextCursor,
-                        hasNext = false,
-                    )
-                } else {
-                    _cursorPagingState.copy(
-                        cursor = data.nextCursor,
-                        hasNext = true,
-                    )
-                }
+                _cursorPagingState.copy(
+                    cursor = data.nextCursor,
+                    hasNext = data.nextCursor != null,
+                )
 
             when (currentUiState) {
                 is FreeBoardListState.Error -> {
@@ -119,6 +112,7 @@ class FreeBoardListViewModel
                 .launch {
                     runCatching {
                         val getFreeBoardPostListRequest = getPagingRequest()
+
                         getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
                             _uiState.update { currentState ->
                                 handleGetFreeBoardPostList(currentState, data)

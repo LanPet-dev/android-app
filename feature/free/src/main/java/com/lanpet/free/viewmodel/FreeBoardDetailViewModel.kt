@@ -8,6 +8,7 @@ import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardPostLike
 import com.lanpet.domain.model.free.FreeBoardWriteComment
+import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +38,13 @@ class FreeBoardDetailViewModel
         private val writeCommentUseCase: WriteCommentUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
+        private val postId =
+            savedStateHandle.get<String?>("postId")
+                ?: throw IllegalArgumentException("postId is required")
+        private val profileId =
+            savedStateHandle.get<String?>("profileId")
+                ?: throw IllegalArgumentException("profileId is required")
+
         private val detailState: MutableStateFlow<DetailState> =
             MutableStateFlow<DetailState>(DetailState.Initial)
         private val commentsState: MutableStateFlow<CommentsState> =
@@ -78,10 +85,10 @@ class FreeBoardDetailViewModel
                 runCatching {
                     coroutineScope {
                         launch {
-                            fetchDetail(postId, profileId)
+                            fetchDetail()
                         }
                         launch {
-                            fetchComments(postId)
+                            fetchComments()
                         }
                     }
                 }.onFailure { e ->
@@ -147,16 +154,13 @@ class FreeBoardDetailViewModel
             }
         }
 
-        fun refreshComments(postId: String) {
+        fun refreshComments() {
             viewModelScope.launch {
-                fetchComments(postId)
+                fetchComments()
             }
         }
 
-        private suspend fun fetchDetail(
-            postId: String,
-            profileId: String,
-        ) {
+        private suspend fun fetchDetail() {
             detailState.value = DetailState.Loading
 
             getFreeBoardDetailUseCase(postId, profileId)
@@ -167,28 +171,72 @@ class FreeBoardDetailViewModel
                 }
         }
 
-        private suspend fun fetchComments(postId: String) {
-            commentsState.value = CommentsState.Loading
+        private suspend fun fetchComments() {
+            val pagingState =
+                when (commentsState.value) {
+                    is CommentsState.Error ->
+                        CursorPagingState(
+                            size = 20,
+                            direction = CursorDirection.NEXT,
+                        )
 
-            getFreeBoardCommentListUseCase(postId)
-                .catch {
-                    commentsState.value = CommentsState.Error("Failed to fetch comments")
-                }.collect {
-                    commentsState.value = CommentsState.Success(it)
+                    CommentsState.Initial ->
+                        CursorPagingState(
+                            size = 20,
+                            direction = CursorDirection.NEXT,
+                        )
+
+                    CommentsState.Loading ->
+                        CursorPagingState(
+                            size = 20,
+                            direction = CursorDirection.NEXT,
+                        )
+
+                    is CommentsState.Success -> (commentsState.value as CommentsState.Success).cursorPagingState
                 }
+
+            getFreeBoardCommentListUseCase(
+                postId,
+                cursor = pagingState.cursor,
+                size = pagingState.size,
+                direction = pagingState.direction,
+            ).catch {
+                commentsState.value = CommentsState.Error("Failed to fetch comments")
+            }.collect {
+                when (commentsState.value) {
+                    is CommentsState.Success -> {
+                        commentsState.value =
+                            CommentsState.Success(
+//                                comments = (commentsState.value as CommentsState.Success).comments + it.data,
+                                comments = it.data,
+                                cursorPagingState =
+                                    CursorPagingState(
+                                        hasNext = it.paginationInfo.hasNext,
+                                        cursor = it.paginationInfo.nextCursor,
+                                        size = 20,
+                                        direction = CursorDirection.NEXT,
+                                    ),
+                            )
+                    }
+
+                    else ->
+                        commentsState.value =
+                            CommentsState.Success(
+                                comments = it.data,
+                                cursorPagingState =
+                                    CursorPagingState(
+                                        hasNext = it.paginationInfo.hasNext,
+                                        cursor = it.paginationInfo.nextCursor,
+                                        size = 20,
+                                        direction = CursorDirection.NEXT,
+                                    ),
+                            )
+                }
+            }
         }
 
         init {
-            val postId = savedStateHandle.get<String>("postId")
-            val profileId = savedStateHandle.get<String>("profileId")
-
-            Timber.d("postId: $postId, profileId: $profileId")
-
-            if (postId != null && profileId != null) {
-                init(postId, profileId)
-            } else {
-                detailState.value = DetailState.Error("Failed to fetch detail")
-            }
+            init(postId, profileId)
         }
     }
 
@@ -213,6 +261,8 @@ private sealed class CommentsState {
 
     data class Success(
         val comments: List<FreeBoardComment>,
+        val cursorPagingState: CursorPagingState = CursorPagingState(),
+        val isLoadingMore: Boolean = false,
     ) : CommentsState()
 
     data class Error(

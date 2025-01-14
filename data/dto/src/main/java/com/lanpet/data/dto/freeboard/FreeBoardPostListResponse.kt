@@ -50,4 +50,10 @@ fun FreeBoardResourceDto.toDomain(): FreeBoardResource =
 @Serializable
 data class ProfileDto(
     val nickname: String = "",
-)
+) {
+    fun toDomain(): com.lanpet.domain.model.Profile =
+        com.lanpet.domain.model.Profile(
+            nickname = nickname,
+            profileImage = null,
+        )
+}

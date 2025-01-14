@@ -4,9 +4,9 @@ import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.CreateFreeBoardPostResponse
 import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.ResourceUploadUrlResponse
+import com.lanpet.data.dto.freeboard.FreeBoardCommentResponse
 import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
 import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
-import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import retrofit2.http.Body
@@ -29,8 +29,12 @@ interface FreeBoardApiService {
         @Query("reader") profileId: String,
     ): FreeBoardDetailItemDto
 
-    @GET(PATH)
-    suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
+    @GET("$PATH/{id}/comments")
+    suspend fun getFreeBoardPostCommentList(
+        @Path("id")
+        id: String,
+        @QueryMap queries: Map<String, String>?,
+    ): FreeBoardCommentResponse
 
     @POST(PATH)
     suspend fun createFreeBoardPost(
@@ -67,9 +71,8 @@ interface FreeBoardApiService {
         @Path("sarangbangId")
         sarangbangId: String,
         @Body
-        writeComment: FreeBoardWriteComment
+        writeComment: FreeBoardWriteComment,
     ): Unit
-
 
     companion object {
         const val PATH = "/sarangbangs"

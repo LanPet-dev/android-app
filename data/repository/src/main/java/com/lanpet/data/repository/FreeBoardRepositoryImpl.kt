@@ -5,6 +5,7 @@ import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
+import com.lanpet.domain.model.PaginationData
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
@@ -13,6 +14,7 @@ import com.lanpet.domain.model.free.FreeBoardPostLike
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
+import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.repository.FreeBoardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,288 +36,35 @@ class FreeBoardRepositoryImpl
                     freeBoardApiService.getFreeBoardPostList(
                         requestDto.toQueryMap(),
                     )
-//                val res =
-//                    FreeBoardPost(
-//                        items =
-//                            listOf(
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.COMMUNICATION,
-//                                    petType = PetCategory.DOG,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목1",
-//                                            content = "내용1",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "1",
-//                                                url = "https://dummyimage.com/400x400/000/fff",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.COMMUNICATION,
-//                                    petType = PetCategory.CAT,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목2",
-//                                            content = "내용2",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "2",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.CURIOUS,
-//                                    petType = PetCategory.FISH,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목3",
-//                                            content = "내용3",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "3",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.RECOMMENDATION,
-//                                    petType = PetCategory.TURTLE,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목4",
-//                                            content = "내용4",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "4",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.RECOMMENDATION,
-//                                    petType = PetCategory.OTHER,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목5",
-//                                            content = "내용5",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "5",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.CURIOUS,
-//                                    petType = PetCategory.OTHER,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목6",
-//                                            content = "내용6",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "6",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.RECOMMENDATION,
-//                                    petType = PetCategory.OTHER,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목7",
-//                                            content = "내용7",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "7",
-//                                                url = "https://www.naver.com",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                                FreeBoardItem(
-//                                    id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                                    category = FreeBoardCategoryType.RECOMMENDATION,
-//                                    petType = PetCategory.OTHER,
-//                                    text =
-//                                        FreeBoardText(
-//                                            title = "제목8",
-//                                            content = "내용8",
-//                                        ),
-//                                    stat =
-//                                        FreeBoardStat(
-//                                            likeCount = 10,
-//                                            commentCount = 5,
-//                                        ),
-//                                    resources =
-//                                        listOf(
-//                                            FreeBoardResource(
-//                                                id = "8",
-//                                                url = "https://dummyimage.com/400x400/000/fff",
-//                                            ),
-//                                        ),
-//                                    created = "2021-08-01T12:34:56+09:00",
-//                                ),
-//                            ),
-//                        totalCount = 3,
-//                        nextCursor = "nextCursor",
-//                    )
                 emit(res)
             }.flowOn(Dispatchers.IO)
 
-        // TODO: Remove this dummy data
-        override fun getFreeBoardDetail(id: String, profileId: String): Flow<FreeBoardPostDetail> =
+        override fun getFreeBoardDetail(
+            id: String,
+            profileId: String,
+        ): Flow<FreeBoardPostDetail> =
             flow {
                 emit(freeBoardApiService.getFreeBoardPostDetail(id, profileId).toDomain())
-//                emit(
-//                    FreeBoardPostDetail(
-//                        id = "01JHCTA1X4Z4E4WQTMFWSEJC6A",
-//                        title = "제목1",
-//                        content = "내용1",
-//                        writer = "작성자1",
-//                        writerImage = "https://dummyimage.com/600x400/000/fff",
-//                        petCategory = PetCategory.DOG,
-//                        createdAt = "2021-08-01T12:34:56+09:00",
-//                        likeCount = 10,
-//                        commentCount = 5,
-//                        images =
-//                            listOf(
-//                                FreeBoardResource(
-//                                    id = "1",
-//                                    url = "https://dummyimage.com/400x400/000/fff",
-//                                ),
-//                                FreeBoardResource(
-//                                    id = "2",
-//                                    url = "https://dummyimage.com/400x400/000/fff",
-//                                ),
-//                                FreeBoardResource(
-//                                    id = "3",
-//                                    url = "https://dummyimage.com/400x400/000/fff",
-//                                ),
-//                            ),
-//                        freeBoardCategory = FreeBoardCategoryType.COMMUNICATION,
-//                        isLike = true,
-//                    ),
-//                )
             }.flowOn(Dispatchers.IO)
 
-        // TODO: Remove this dummy data
-        override fun getFreeBoardCommentList(id: String): Flow<List<FreeBoardComment>> =
+        override fun getFreeBoardCommentList(
+            id: String,
+            cursor: String?,
+            size: Int?,
+            direction: CursorDirection?,
+        ): Flow<PaginationData<List<FreeBoardComment>>> =
             flow {
-                emit(
-                    listOf(
-                        FreeBoardComment(
-                            id = 1,
-                            content = "댓글1",
-                            writer = "작성자1",
-                            writerImage = "https://dummyimage.com/600x400/000/fff",
-                            createdAt = "2021-08-01T12:34:56+09:00",
-                            updatedAt = "2021-08-01T12:34:56+09:00",
-                            likeCount = 10,
-                            commentCount = 5,
-                            subComments =
-                                listOf(
-                                    FreeBoardComment(
-                                        id = 1,
-                                        content = "대댓글1",
-                                        writer = "작성자1",
-                                        writerImage = "https://dummyimage.com/600x400/000/fff",
-                                        createdAt = "2021-08-01T12:34:56+09:00",
-                                        updatedAt = "2021-08-01T12:34:56+09:00",
-                                        likeCount = 10,
-                                        commentCount = 5,
-                                    ),
-                                    FreeBoardComment(
-                                        id = 2,
-                                        content = "대댓글2",
-                                        writer = "작성자2",
-                                        writerImage = "https://dummyimage.com/600x400/000/fff",
-                                        createdAt = "2021-08-01T12:34:56+09:00",
-                                        updatedAt = "2021-08-01T12:34:56+09:00",
-                                        likeCount = 10,
-                                        commentCount = 5,
-                                    ),
-                                ),
-                        ),
-                        FreeBoardComment(
-                            id = 2,
-                            content = "댓글2",
-                            writer = "작성자2",
-                            writerImage = "https://dummyimage.com/600x400/000/fff",
-                            createdAt = "2021-08-01T12:34:56+09:00",
-                            updatedAt = "2021-08-01T12:34:56+09:00",
-                            likeCount = 10,
-                            commentCount = 5,
-                        ),
-                    ),
-                )
-//            emit(freeBoardApiService.getFreeBoardPostCommentList(id))
+                try {
+                    val queries = mutableMapOf<String, String>()
+                    cursor?.let { queries["cursor"] = it }
+                    size?.let { queries["size"] = it.toString() }
+                    direction?.let { queries["direction"] = it.name }
+
+                    emit(freeBoardApiService.getFreeBoardPostCommentList(id, queries).toDomain())
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    throw e
+                }
             }.flowOn(Dispatchers.IO)
 
         override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =

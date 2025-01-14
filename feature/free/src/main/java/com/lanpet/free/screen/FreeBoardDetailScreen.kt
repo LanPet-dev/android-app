@@ -35,9 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -58,8 +61,8 @@ import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
-import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.myiconpack.Send
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -71,9 +74,11 @@ import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.free.R
+import com.lanpet.free.viewmodel.FreeBoardDetailEvent
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
+import kotlinx.coroutines.launch
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +89,7 @@ fun FreeBoardDetailScreen(
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -114,6 +120,30 @@ fun FreeBoardDetailScreen(
                         authManager.defaultUserProfile
                             .collectAsState()
                             .value
+                    val scope = rememberCoroutineScope()
+                    DisposableEffect(freeBoardDetailViewModel) {
+                        val job =
+                            scope.launch {
+                                freeBoardDetailViewModel.uiEvent.collect { event ->
+                                    when (event) {
+                                        FreeBoardDetailEvent.WriteCommentFail -> {
+                                            context.toast("댓글 작성에 실패했습니다.")
+                                        }
+
+                                        FreeBoardDetailEvent.WriteCommentSuccess -> {
+                                            context.toast("댓글이 작성되었습니다.")
+                                            // TODO("Satoshi"): update cache
+                                            freeBoardDetailViewModel.refreshComments()
+                                            input = ""
+                                        }
+                                    }
+                                }
+                            }
+
+                        onDispose {
+                            job.cancel()
+                        }
+                    }
 
                     ContentUI(
                         state.value as FreeBoardDetailState.Success,
@@ -255,7 +285,7 @@ fun ContentUI(
 
         state.postDetail.images.map {
             AsyncImage(
-                model = it,
+                model = it.url,
                 contentDescription = "post_image",
                 contentScale = ContentScale.Crop,
                 modifier =
@@ -270,7 +300,7 @@ fun ContentUI(
                                     LanPetDimensions.Corner.medium,
                                 ),
                         ),
-                error = painterResource(id = DS_R.drawable.img_animals),
+                error = painterResource(id = DS_R.drawable.img_preparing),
             )
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
@@ -511,67 +541,6 @@ private fun PreviewCommentInputSection() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, heightDp = 2000)
 @Composable
 private fun FreeBoardDetailPreview() {
-    val freeBoardComment1 =
-        FreeBoardComment(
-            id = 1,
-            content = loremIpsum().slice(0..100),
-            writer = "writer",
-            writerImage = null,
-            createdAt = "2021-01-01T00:00:00Z",
-            updatedAt = "2021-01-01",
-            likeCount = 1,
-            commentCount = 3,
-            subComments =
-                listOf(
-                    FreeBoardComment(
-                        id = 1,
-                        content = loremIpsum().slice(0..200),
-                        writer = "writer",
-                        writerImage = null,
-                        createdAt = "2021-01-01T00:00:00Z",
-                        updatedAt = "2021-01-01",
-                        likeCount = 1,
-                        commentCount = null,
-                        subComments = emptyList(),
-                    ),
-                    FreeBoardComment(
-                        id = 1,
-                        content = loremIpsum().slice(0..50),
-                        writer = "writer",
-                        writerImage = null,
-                        createdAt = "2021-01-01T00:00:00Z",
-                        updatedAt = "2021-01-01",
-                        likeCount = 1,
-                        commentCount = null,
-                        subComments = emptyList(),
-                    ),
-                    FreeBoardComment(
-                        id = 1,
-                        content = loremIpsum(),
-                        writer = "writer",
-                        writerImage = null,
-                        createdAt = "2021-01-01T00:00:00Z",
-                        updatedAt = "2021-01-01",
-                        likeCount = 1,
-                        commentCount = null,
-                        subComments = emptyList(),
-                    ),
-                ),
-        )
-
-    val freeBoardComment2 =
-        FreeBoardComment(
-            id = 1,
-            content = loremIpsum().slice(0..100),
-            writer = "writer",
-            writerImage = null,
-            createdAt = "2021-01-01T00:00:00Z",
-            updatedAt = "2021-01-01",
-            likeCount = 1,
-            commentCount = null,
-            subComments = emptyList(),
-        )
-
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
@@ -593,68 +562,7 @@ private fun FreeBoardCommentSection_Empty_Preview() {
 @PreviewLightDark
 private fun FreeBoardCommentSection_Filled_Preview() {
     BasePreviewWrapper {
-        FreeBoardCommentSection(
-            comments =
-                listOf(
-                    FreeBoardComment(
-                        id = 1,
-                        content = loremIpsum().slice(0..100),
-                        writer = "writer",
-                        writerImage = null,
-                        createdAt = "2021-01-01T00:00:00Z",
-                        updatedAt = "2021-01-01",
-                        likeCount = 1,
-                        commentCount = 3,
-                        subComments =
-                            listOf(
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum().slice(0..200),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList(),
-                                ),
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum().slice(0..50),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList(),
-                                ),
-                                FreeBoardComment(
-                                    id = 1,
-                                    content = loremIpsum(),
-                                    writer = "writer",
-                                    writerImage = null,
-                                    createdAt = "2021-01-01T00:00:00Z",
-                                    updatedAt = "2021-01-01",
-                                    likeCount = 1,
-                                    commentCount = null,
-                                    subComments = emptyList(),
-                                ),
-                            ),
-                    ),
-                    FreeBoardComment(
-                        id = 1,
-                        content = loremIpsum().slice(0..100),
-                        writer = "writer",
-                        writerImage = null,
-                        createdAt = "2021-01-01T00:00:00Z",
-                        updatedAt = "2021-01-01",
-                        likeCount = 1,
-                        commentCount = null,
-                        subComments = emptyList(),
-                    ),
-                ),
-        )
+        FreeBoardCommentSection()
     }
 }
 
