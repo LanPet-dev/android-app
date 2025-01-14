@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.config.AppConfig
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardItem
 import com.lanpet.domain.model.free.FreeBoardPost
@@ -110,10 +111,13 @@ class FreeBoardListViewModel
                         runCatching {
                             val getFreeBoardPostListRequest = getPagingRequest()
 
-                            getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
-                                _uiState.update { currentState ->
-                                    handleGetFreeBoardPostList(currentState, data)
-                                }
+                            val data =
+                                getFreeBoardPostListUseCase(
+                                    AppConfig.IMAGE_BASE_URL,
+                                    getFreeBoardPostListRequest,
+                                )
+                            _uiState.update { currentState ->
+                                handleGetFreeBoardPostList(currentState, data)
                             }
                         }.onFailure {
                             Timber.e(it)

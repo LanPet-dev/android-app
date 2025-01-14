@@ -44,6 +44,7 @@ dependencies {
     implementation(projects.core.auth)
     implementation(projects.core.common)
     implementation(projects.core.testing)
+    implementation(projects.core.config)
     implementation(projects.feature.auth)
     implementation(projects.feature.landing)
     implementation(projects.feature.profile)

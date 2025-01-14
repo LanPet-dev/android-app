@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -38,6 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.FreeBoardListItem
@@ -72,6 +75,19 @@ fun FreeBoardScreen(
 ) {
     val scrollState = rememberScrollState()
     val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            Timber.i("FreeBoardScreenLifecycle : $event")
+        }
+
+        lifecycle.addObserver(observer)
+        onDispose {
+            Timber.i("FreeBoardScreenLifecycle : onDispose")
+            lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
