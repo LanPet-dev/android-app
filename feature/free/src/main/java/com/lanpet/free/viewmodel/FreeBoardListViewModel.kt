@@ -111,13 +111,13 @@ class FreeBoardListViewModel
                         runCatching {
                             val getFreeBoardPostListRequest = getPagingRequest()
 
-                            val data =
-                                getFreeBoardPostListUseCase(
-                                    AppConfig.IMAGE_BASE_URL,
-                                    getFreeBoardPostListRequest,
-                                )
-                            _uiState.update { currentState ->
-                                handleGetFreeBoardPostList(currentState, data)
+                            getFreeBoardPostListUseCase(
+                                AppConfig.IMAGE_BASE_URL,
+                                getFreeBoardPostListRequest,
+                            ).collect { data ->
+                                _uiState.update { currentState ->
+                                    handleGetFreeBoardPostList(currentState, data)
+                                }
                             }
                         }.onFailure {
                             Timber.e(it)
