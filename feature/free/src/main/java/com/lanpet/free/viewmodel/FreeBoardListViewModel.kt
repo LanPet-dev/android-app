@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,7 +36,7 @@ class FreeBoardListViewModel
             MutableStateFlow<FreeBoardCategoryType>(FreeBoardCategoryType.ALL)
         val selectedCategoryFlow = _selectedCategory.asStateFlow()
 
-        private val _isProcess = MutableStateFlow(false)
+        private val _isProcess = MutableStateFlow(Mutex(false))
         val isProcess = _isProcess.asStateFlow()
 
         // TODO("Satoshi"): Set UiEvent
@@ -102,28 +104,21 @@ class FreeBoardListViewModel
             if (!_cursorPagingState.hasNext) {
                 return
             }
-            if (_isProcess.value) {
-                return
-            }
-
-            _isProcess.value = true
-
             viewModelScope
                 .launch {
-                    runCatching {
-                        val getFreeBoardPostListRequest = getPagingRequest()
+                    _isProcess.value.withLock {
+                        runCatching {
+                            val getFreeBoardPostListRequest = getPagingRequest()
 
-                        getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
-                            _uiState.update { currentState ->
-                                handleGetFreeBoardPostList(currentState, data)
+                            getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
+                                _uiState.update { currentState ->
+                                    handleGetFreeBoardPostList(currentState, data)
+                                }
                             }
-
-                            _isProcess.value = false
+                        }.onFailure {
+                            Timber.e(it)
+                            _uiState.value = FreeBoardListState.Error(it.message)
                         }
-                    }.onFailure {
-                        Timber.e(it)
-                        _isProcess.value = false
-                        _uiState.value = FreeBoardListState.Error(it.message)
                     }
                 }
         }

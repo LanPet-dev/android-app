@@ -161,7 +161,7 @@ fun FreeBoardScreen(
                                             Modifier.verticalScroll(
                                                 state = scrollState,
                                             ),
-                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value,
+                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value.isLocked,
                                         freeBoardItemList = (uiState as FreeBoardListState.Success).data,
                                         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                                         onLoadMore = {
