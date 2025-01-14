@@ -22,4 +22,5 @@ fun TokenResponse.toSocialAuthToken(socialAuthType: SocialAuthType) =
         accessToken = accessToken,
         refreshToken = refreshToken,
         socialAuthType = socialAuthType,
+        expiresIn = expiresIn,
     )

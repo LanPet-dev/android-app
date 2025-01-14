@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.dto.typeadapter.PetCategoryTypeAdapter
 import com.lanpet.data.dto.typeadapter.ProfileTypeTypeAdapter
+import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
@@ -18,6 +19,7 @@ class ProfileApiClient
     constructor(
         private val baseUrl: String,
         private val authStateHolder: AuthStateHolder,
+        private val refreshTokenInterceptor: RefreshTokenInterceptor,
     ) {
         private val headerInterceptor =
             Interceptor { chain ->
@@ -61,6 +63,7 @@ class ProfileApiClient
         private val okHttpClient =
             OkHttpClient
                 .Builder()
+                .addInterceptor(refreshTokenInterceptor)
                 .addInterceptor(headerInterceptor)
                 .addInterceptor(accessTokenInterceptor)
                 .build()

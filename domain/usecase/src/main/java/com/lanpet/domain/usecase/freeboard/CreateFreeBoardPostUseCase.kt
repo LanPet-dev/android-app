@@ -1,6 +1,6 @@
 package com.lanpet.domain.usecase.freeboard
 
-import com.lanpet.domain.model.FreeBoardPostCreate
+import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.repository.FreeBoardRepository
 import javax.inject.Inject
 

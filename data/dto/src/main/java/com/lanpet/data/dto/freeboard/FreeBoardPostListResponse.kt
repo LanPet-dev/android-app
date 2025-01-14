@@ -1,5 +1,6 @@
 package com.lanpet.data.dto.freeboard
 
+import com.lanpet.domain.model.free.FreeBoardResource
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,6 +18,7 @@ data class FreeBoardItemDto(
     val text: FreeBoardTextDto,
     val stat: FreeBoardStatDto?,
     val resources: List<FreeBoardResourceDto>?,
+    val profile: ProfileDto,
     val created: String,
 )
 
@@ -30,6 +32,7 @@ data class FreeBoardTextDto(
 data class FreeBoardStatDto(
     val likeCount: Int?,
     val commentCount: Int?,
+    val subCommentCount: Int?,
 )
 
 @Serializable
@@ -37,3 +40,20 @@ data class FreeBoardResourceDto(
     val id: String,
     val url: String,
 )
+
+fun FreeBoardResourceDto.toDomain(): FreeBoardResource =
+    FreeBoardResource(
+        id = id,
+        url = url,
+    )
+
+@Serializable
+data class ProfileDto(
+    val nickname: String = "",
+) {
+    fun toDomain(): com.lanpet.domain.model.Profile =
+        com.lanpet.domain.model.Profile(
+            nickname = nickname,
+            profileImage = null,
+        )
+}

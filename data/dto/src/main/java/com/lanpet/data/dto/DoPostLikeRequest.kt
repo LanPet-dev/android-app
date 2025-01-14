@@ -1,6 +1,6 @@
 package com.lanpet.data.dto
 
-import com.lanpet.domain.model.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardPostLike
 import kotlinx.serialization.Serializable
 
 @Serializable

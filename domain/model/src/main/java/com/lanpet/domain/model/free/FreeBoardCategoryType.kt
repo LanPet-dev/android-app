@@ -1,4 +1,4 @@
-package com.lanpet.domain.model
+package com.lanpet.domain.model.free
 
 enum class FreeBoardCategoryType(
     val value: String?,

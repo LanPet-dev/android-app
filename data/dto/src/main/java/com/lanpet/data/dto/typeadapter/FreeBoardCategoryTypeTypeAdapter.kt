@@ -3,7 +3,7 @@ package com.lanpet.data.dto.typeadapter
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import com.lanpet.domain.model.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 
 class FreeBoardCategoryTypeTypeAdapter : TypeAdapter<FreeBoardCategoryType>() {
     override fun write(

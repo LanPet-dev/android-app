@@ -14,7 +14,7 @@ data class GetFreeBoardListRequestDto(
         buildMap {
             cursor?.let { put("cursor", it) }
             put("size", this@GetFreeBoardListRequestDto.size.toString())
-            if (category != null) put("category", category) else put("category", "NULL")
+            if (category != null) put("category", category) else put("category", "null")
             put("direction", direction)
         }
 

@@ -7,6 +7,7 @@ import com.lanpet.data.service.FreeBoardApiClient
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.data.service.ProfileApiClient
 import com.lanpet.data.service.ProfileApiService
+import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,8 @@ object ApiModule {
     fun provideAuthApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): ProfileApiClient = ProfileApiClient(baseApiUrl, authStateHolder)
+        refreshTokenInterceptor: RefreshTokenInterceptor,
+    ): ProfileApiClient = ProfileApiClient(baseApiUrl, authStateHolder, refreshTokenInterceptor)
 
     @Singleton
     @Provides
@@ -44,7 +46,8 @@ object ApiModule {
     fun provideFreeBoardApiClient(
         @Named("BaseApiUrl") baseApiUrl: String,
         authStateHolder: AuthStateHolder,
-    ): FreeBoardApiClient = FreeBoardApiClient(baseApiUrl, authStateHolder)
+        refreshTokenInterceptor: RefreshTokenInterceptor,
+    ): FreeBoardApiClient = FreeBoardApiClient(baseApiUrl, authStateHolder, refreshTokenInterceptor)
 
     @Singleton
     @Provides

@@ -78,7 +78,7 @@ import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel

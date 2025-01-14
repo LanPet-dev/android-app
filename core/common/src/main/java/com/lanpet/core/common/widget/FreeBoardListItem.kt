@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
@@ -31,12 +33,14 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardItem
+import com.lanpet.core.manager.LocalCoilManager
+import com.lanpet.domain.model.free.FreeBoardItem
 
 @Composable
 fun FreeBoardListItem(
     freeBoardPostItem: FreeBoardItem,
     modifier: Modifier = Modifier,
+    imageLoader: ImageLoader = LocalCoilManager.current.memoryCacheImageLoader,
     onClick: () -> Unit = {},
 ) {
     Surface {
@@ -84,7 +88,8 @@ fun FreeBoardListItem(
                     AsyncImage(
                         model = freeBoardPostItem.resources!!.first().url,
                         contentDescription = "post_image",
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        contentScale = ContentScale.Crop,
+                        imageLoader = imageLoader,
                         modifier =
                             Modifier
                                 .clip(

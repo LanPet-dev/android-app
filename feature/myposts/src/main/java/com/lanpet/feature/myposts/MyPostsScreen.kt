@@ -38,7 +38,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +46,7 @@ fun MyPostsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
     initialPage: Int = 0,
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
+    onNavigateToFreeBoardDetail: (postId: String, profileId:String) -> Unit = { _, _ -> },
 ) {
     var currentTabIndex by rememberSaveable {
         mutableIntStateOf(initialPage)

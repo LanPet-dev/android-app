@@ -4,9 +4,11 @@ import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.CreateFreeBoardPostResponse
 import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.ResourceUploadUrlResponse
-import com.lanpet.domain.model.FreeBoardComment
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.FreeBoardPostDetail
+import com.lanpet.data.dto.freeboard.FreeBoardCommentResponse
+import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
+import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
+import com.lanpet.domain.model.free.FreeBoardPost
+import com.lanpet.domain.model.free.FreeBoardWriteComment
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -24,10 +26,15 @@ interface FreeBoardApiService {
     @GET("$PATH/{id}")
     suspend fun getFreeBoardPostDetail(
         @Path("id") id: String,
-    ): FreeBoardPostDetail
+        @Query("reader") profileId: String,
+    ): FreeBoardDetailItemDto
 
-    @GET(PATH)
-    suspend fun getFreeBoardPostCommentList(id: String): List<FreeBoardComment>
+    @GET("$PATH/{id}/comments")
+    suspend fun getFreeBoardPostCommentList(
+        @Path("id")
+        id: String,
+        @QueryMap queries: Map<String, String>?,
+    ): FreeBoardCommentResponse
 
     @POST(PATH)
     suspend fun createFreeBoardPost(
@@ -57,6 +64,14 @@ interface FreeBoardApiService {
         sarangbangId: String,
         @Query("profileId")
         profileId: String,
+    ): Unit
+
+    @POST("$PATH/{sarangbangId}/comments")
+    suspend fun writeComment(
+        @Path("sarangbangId")
+        sarangbangId: String,
+        @Body
+        writeComment: FreeBoardWriteComment,
     ): Unit
 
     companion object {

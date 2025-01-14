@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.PreparingScreen
@@ -49,12 +50,12 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardItem
-import com.lanpet.domain.model.FreeBoardResource
-import com.lanpet.domain.model.FreeBoardStat
-import com.lanpet.domain.model.FreeBoardText
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardResource
+import com.lanpet.domain.model.free.FreeBoardStat
+import com.lanpet.domain.model.free.FreeBoardText
 import com.lanpet.free.viewmodel.FreeBoardListState
 import com.lanpet.free.viewmodel.FreeBoardListViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -65,9 +66,8 @@ import timber.log.Timber
 fun FreeBoardScreen(
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
-    onNavigateUp: (() -> Unit)? = null,
     onNavigateToFreeBoardWrite: () -> Unit = {},
-    onNavigateToFreeBoardDetail: (String) -> Unit = {},
+    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
     // TODO: 게시글 디테일 페이지로 이동. 게시글 디테일 id 필요할듯.
 ) {
     val scrollState = rememberScrollState()
@@ -161,7 +161,7 @@ fun FreeBoardScreen(
                                             Modifier.verticalScroll(
                                                 state = scrollState,
                                             ),
-                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value,
+                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value.isLocked,
                                         freeBoardItemList = (uiState as FreeBoardListState.Success).data,
                                         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                                         onLoadMore = {
@@ -235,11 +235,15 @@ fun FreeBoardPostList(
     freeBoardItemList: List<FreeBoardItem>,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onNavigateToFreeBoardDetail: (String) -> Unit = {},
+    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
     onLoadMore: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
     val rememberOnLoadMore = remember { onLoadMore }
+    val profileId =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.id
 
     LaunchedEffect(state) {
         snapshotFlow {
@@ -265,7 +269,7 @@ fun FreeBoardPostList(
                 FreeBoardListItem(
                     freeBoardPostItem = freeBoardItemList[index],
                     onClick = {
-                        onNavigateToFreeBoardDetail(freeBoardItemList[index].id)
+                        onNavigateToFreeBoardDetail(freeBoardItemList[index].id, profileId)
                     },
                 )
             }
@@ -342,7 +346,7 @@ private fun FreeBoardPostListPreview() {
                     ),
                 ),
             isLoading = true,
-            onNavigateToFreeBoardDetail = {},
+            onNavigateToFreeBoardDetail = { _, _ -> },
             onLoadMore = {},
         )
     }

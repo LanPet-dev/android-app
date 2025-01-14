@@ -4,18 +4,19 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.domain.model.FreeBoardCategoryType
-import com.lanpet.domain.model.FreeBoardItem
-import com.lanpet.domain.model.FreeBoardPost
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardPostListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class FreeBoardListViewModel
             MutableStateFlow<FreeBoardCategoryType>(FreeBoardCategoryType.ALL)
         val selectedCategoryFlow = _selectedCategory.asStateFlow()
 
-        private val _isProcess = MutableStateFlow(false)
+        private val _isProcess = MutableStateFlow(Mutex(false))
         val isProcess = _isProcess.asStateFlow()
 
         // TODO("Satoshi"): Set UiEvent
@@ -73,17 +74,10 @@ class FreeBoardListViewModel
             data: FreeBoardPost,
         ): FreeBoardListState {
             _cursorPagingState =
-                if (data.items.isNullOrEmpty()) {
-                    _cursorPagingState.copy(
-                        cursor = data.nextCursor,
-                        hasNext = false,
-                    )
-                } else {
-                    _cursorPagingState.copy(
-                        cursor = data.nextCursor,
-                        hasNext = true,
-                    )
-                }
+                _cursorPagingState.copy(
+                    cursor = data.nextCursor,
+                    hasNext = data.nextCursor != null,
+                )
 
             when (currentUiState) {
                 is FreeBoardListState.Error -> {
@@ -110,30 +104,23 @@ class FreeBoardListViewModel
             if (!_cursorPagingState.hasNext) {
                 return
             }
-            if (_isProcess.value) {
-                return
-            }
+            viewModelScope
+                .launch {
+                    _isProcess.value.withLock {
+                        runCatching {
+                            val getFreeBoardPostListRequest = getPagingRequest()
 
-            _isProcess.value = true
-            runCatching {
-                val getFreeBoardPostListRequest = getPagingRequest()
-
-                viewModelScope
-                    .launch {
-                        delay(1000)
-                        getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
-                            _uiState.update { currentState ->
-                                handleGetFreeBoardPostList(currentState, data)
+                            getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
+                                _uiState.update { currentState ->
+                                    handleGetFreeBoardPostList(currentState, data)
+                                }
                             }
-
-                            _isProcess.value = false
+                        }.onFailure {
+                            Timber.e(it)
+                            _uiState.value = FreeBoardListState.Error(it.message)
                         }
                     }
-            }.onFailure {
-                Timber.e(it)
-                _isProcess.value = false
-                _uiState.value = FreeBoardListState.Error(it.message)
-            }
+                }
         }
 
         init {

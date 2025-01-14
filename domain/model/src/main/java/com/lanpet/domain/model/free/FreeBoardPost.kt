@@ -1,4 +1,6 @@
-package com.lanpet.domain.model
+package com.lanpet.domain.model.free
+
+import com.lanpet.domain.model.PetCategory
 
 data class FreeBoardPost(
     val items: List<FreeBoardItem>?,

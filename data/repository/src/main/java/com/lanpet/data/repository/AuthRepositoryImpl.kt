@@ -1,5 +1,6 @@
 package com.lanpet.data.repository
 
+import com.lanpet.data.dto.RefreshTokenResponse
 import com.lanpet.data.dto.TokenResponse
 import com.lanpet.data.dto.toSocialAuthToken
 import com.lanpet.data.service.AuthService
@@ -33,4 +34,29 @@ class AuthRepositoryImpl
                     ),
                 )
             }.flowOn(Dispatchers.IO)
+
+        override suspend fun refreshAuthToken(refreshToken: String): Flow<SocialAuthToken> =
+            flow<SocialAuthToken> {
+                val response: RefreshTokenResponse =
+                    authService.refreshTokens(
+                        grantType = "refresh_token",
+                        refreshToken = refreshToken,
+                        clientId = "1me4f6pjgepjiur33u3j5dj3r7",
+                    )
+
+                val tokenResponse: TokenResponse =
+                    TokenResponse(
+                        accessToken = response.accessToken,
+                        expiresIn = response.expiresIn,
+                        refreshToken = refreshToken,
+                        tokenType = response.tokenType,
+                        idToken = response.idToken,
+                    )
+
+                emit(
+                    tokenResponse.toSocialAuthToken(
+                        socialAuthType = SocialAuthType.GOOGLE,
+                    ),
+                )
+            }
     }
