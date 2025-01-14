@@ -11,7 +11,6 @@ import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardPostListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -115,12 +114,11 @@ class FreeBoardListViewModel
             }
 
             _isProcess.value = true
-            runCatching {
-                val getFreeBoardPostListRequest = getPagingRequest()
 
-                viewModelScope
-                    .launch {
-                        delay(1000)
+            viewModelScope
+                .launch {
+                    runCatching {
+                        val getFreeBoardPostListRequest = getPagingRequest()
                         getFreeBoardPostListUseCase(getFreeBoardPostListRequest).collect { data ->
                             _uiState.update { currentState ->
                                 handleGetFreeBoardPostList(currentState, data)
@@ -128,12 +126,12 @@ class FreeBoardListViewModel
 
                             _isProcess.value = false
                         }
+                    }.onFailure {
+                        Timber.e(it)
+                        _isProcess.value = false
+                        _uiState.value = FreeBoardListState.Error(it.message)
                     }
-            }.onFailure {
-                Timber.e(it)
-                _isProcess.value = false
-                _uiState.value = FreeBoardListState.Error(it.message)
-            }
+                }
         }
 
         init {
