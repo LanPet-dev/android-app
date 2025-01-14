@@ -12,12 +12,14 @@ import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardPostListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,6 +41,8 @@ class FreeBoardListViewModel
 
         private val _isProcess = MutableStateFlow(Mutex(false))
         val isProcess = _isProcess.asStateFlow()
+
+        private var getPostListJob: Job? = null
 
         // TODO("Satoshi"): Set UiEvent
 
@@ -105,9 +109,14 @@ class FreeBoardListViewModel
             if (!_cursorPagingState.hasNext) {
                 return
             }
-            viewModelScope
-                .launch {
-                    _isProcess.value.withLock {
+
+            if (getPostListJob != null && getPostListJob?.isActive == true) {
+                getPostListJob!!.cancel()
+            }
+
+            getPostListJob =
+                viewModelScope
+                    .launch {
                         runCatching {
                             val getFreeBoardPostListRequest = getPagingRequest()
 
@@ -121,10 +130,12 @@ class FreeBoardListViewModel
                             }
                         }.onFailure {
                             Timber.e(it)
-                            _uiState.value = FreeBoardListState.Error(it.message)
+                            when (it) {
+                                is CancellationException -> return@onFailure
+                                is Exception -> _uiState.value = FreeBoardListState.Error(it.message)
+                            }
                         }
                     }
-                }
         }
 
         init {
