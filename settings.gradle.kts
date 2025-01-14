@@ -51,6 +51,7 @@ include(":core:auth")
 include(":core:common")
 include(":core:manager")
 include(":core:testing")
+include(":core:config")
 include(":app")
 
 // build-logic

@@ -32,3 +32,4 @@ data class FreeBoardResource(
     val id: String,
     val url: String,
 )
+
