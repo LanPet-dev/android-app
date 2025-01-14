@@ -35,11 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,13 +72,17 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardDetailEvent
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
+import com.lanpet.free.viewmodel.FreeBoardLikeEvent
+import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
-import kotlinx.coroutines.launch
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,28 +124,21 @@ fun FreeBoardDetailScreen(
                         authManager.defaultUserProfile
                             .collectAsState()
                             .value
-                    val scope = rememberCoroutineScope()
-                    DisposableEffect(freeBoardDetailViewModel) {
-                        val job =
-                            scope.launch {
-                                freeBoardDetailViewModel.uiEvent.collect { event ->
-                                    when (event) {
-                                        FreeBoardDetailEvent.WriteCommentFail -> {
-                                            context.toast("댓글 작성에 실패했습니다.")
-                                        }
 
-                                        FreeBoardDetailEvent.WriteCommentSuccess -> {
-                                            context.toast("댓글이 작성되었습니다.")
-                                            // TODO("Satoshi"): update cache
-                                            freeBoardDetailViewModel.refreshComments()
-                                            input = ""
-                                        }
-                                    }
+                    LaunchedEffect(Unit) {
+                        freeBoardDetailViewModel.uiEvent.collect { event ->
+                            when (event) {
+                                FreeBoardDetailEvent.WriteCommentFail -> {
+                                    context.toast("댓글 작성에 실패했습니다.")
+                                }
+
+                                FreeBoardDetailEvent.WriteCommentSuccess -> {
+                                    context.toast("댓글이 작성되었습니다.")
+                                    // TODO("Satoshi"): update cache
+                                    freeBoardDetailViewModel.refreshComments()
+                                    input = ""
                                 }
                             }
-
-                        onDispose {
-                            job.cancel()
                         }
                     }
 
@@ -157,6 +154,13 @@ fun FreeBoardDetailScreen(
                                 comment = input,
                                 profileId = defaultProfile.id,
                             )
+                        },
+                        onLikeChange = { like ->
+                            if (like) {
+                                freeBoardDetailViewModel.likePost()
+                            } else {
+                                freeBoardDetailViewModel.dislikePost()
+                            }
                         },
                     )
                 }
@@ -196,9 +200,27 @@ fun ContentUI(
     onInputValueChange: (String) -> Unit,
     commentInput: String,
     onWriteComment: () -> Unit,
+    onLikeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
+
+    val rememberOnLikeChange = remember { onLikeChange }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        freeBoardLikesViewModel.uiEvent.collect {
+            when (it) {
+                is FreeBoardLikeEvent.Success -> {
+                    rememberOnLikeChange(it.isLike)
+                }
+
+                FreeBoardLikeEvent.Error -> {}
+            }
+        }
+    }
 
     Column(
         modifier =
@@ -307,7 +329,13 @@ fun ContentUI(
         LikeButton(
             isLiked = state.postDetail.isLike,
             likeCount = state.postDetail.likeCount,
-            onLikeClick = {},
+            onLikeClick = {
+                if (state.postDetail.isLike) {
+                    freeBoardLikesViewModel.cancelPostLike()
+                } else {
+                    freeBoardLikesViewModel.doPostLike()
+                }
+            },
         )
         // line
         Spacer(
@@ -574,18 +602,18 @@ private fun SuccessUIPreview() {
             state =
                 FreeBoardDetailState.Success(
                     postDetail =
-                        com.lanpet.domain.model.free.FreeBoardPostDetail(
+                        FreeBoardPostDetail(
                             id = "1",
                             title = "title",
                             content = "content",
                             writer = "Writer",
                             writerImage = null,
-                            petCategory = com.lanpet.domain.model.PetCategory.DOG,
+                            petCategory = PetCategory.DOG,
                             createdAt = "2021-01-01T00:00:00Z",
                             likeCount = 1,
                             commentCount = 1,
                             images = emptyList(),
-                            freeBoardCategory = com.lanpet.domain.model.free.FreeBoardCategoryType.CURIOUS,
+                            freeBoardCategory = FreeBoardCategoryType.CURIOUS,
                             isLike = true,
                         ),
                     comments = emptyList(),
@@ -593,6 +621,7 @@ private fun SuccessUIPreview() {
             onInputValueChange = {},
             commentInput = "",
             onWriteComment = {},
+            onLikeChange = {},
         )
     }
 }

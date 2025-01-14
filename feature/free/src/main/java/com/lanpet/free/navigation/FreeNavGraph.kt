@@ -31,10 +31,10 @@ fun NavGraphBuilder.freeNavGraph(
             val postId =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.arguments?.getSerializable("postId", String::class.java)
-                        ?: throw IllegalArgumentException("profileType is required")
+                        ?: throw IllegalArgumentException("postId is required")
                 } else {
-                    it.arguments?.getSerializable("profileType") as? String
-                        ?: throw IllegalArgumentException("profileType is required")
+                    it.arguments?.getSerializable("postId") as? String
+                        ?: throw IllegalArgumentException("postId is required")
                 }
 
             val profileId = authManager.defaultUserProfile.value.id

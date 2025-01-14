@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
-import com.lanpet.domain.model.free.FreeBoardPostLike
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.pagination.CursorDirection
 import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
@@ -39,10 +38,10 @@ class FreeBoardDetailViewModel
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val postId =
-            savedStateHandle.get<String?>("postId")
+            savedStateHandle.get<String>("postId")
                 ?: throw IllegalArgumentException("postId is required")
         private val profileId =
-            savedStateHandle.get<String?>("profileId")
+            savedStateHandle.get<String>("profileId")
                 ?: throw IllegalArgumentException("profileId is required")
 
         private val detailState: MutableStateFlow<DetailState> =
@@ -97,40 +96,20 @@ class FreeBoardDetailViewModel
             }
         }
 
-        fun doLikePost(
-            postId: String,
-            profileId: String,
-        ) {
-            if (_isProcess.value) return
-            _isProcess.value = true
-
-            viewModelScope.launch {
-                runCatching {
-                    doPostLikeUseCase(postId, FreeBoardPostLike(profileId)).collect {
-                        _isProcess.value = false
-                    }
-                }.onFailure {
-                    _isProcess.value = false
-                }
-            }
+        fun likePost() {
+            if (detailState.value !is DetailState.Success) return
+            detailState.value =
+                (detailState.value as DetailState.Success).copy(
+                    postDetail = (detailState.value as DetailState.Success).postDetail.like(),
+                )
         }
 
-        fun cancelLikePost(
-            postId: String,
-            profileId: String,
-        ) {
-            if (_isProcess.value) return
-            _isProcess.value = true
-
-            viewModelScope.launch {
-                runCatching {
-                    cancelPostLikeUseCase(postId, profileId).collect {
-                        _isProcess.value = false
-                    }
-                }.onFailure {
-                    _isProcess.value = false
-                }
-            }
+        fun dislikePost() {
+            if (detailState.value !is DetailState.Success) return
+            detailState.value =
+                (detailState.value as DetailState.Success).copy(
+                    postDetail = (detailState.value as DetailState.Success).postDetail.dislike(),
+                )
         }
 
         fun writeComment(

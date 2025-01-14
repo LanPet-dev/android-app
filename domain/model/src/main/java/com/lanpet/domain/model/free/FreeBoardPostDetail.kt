@@ -15,4 +15,8 @@ data class FreeBoardPostDetail(
     val commentCount: Int,
     val images: List<FreeBoardResource> = emptyList(),
     val freeBoardCategory: FreeBoardCategoryType,
-)
+) {
+    fun dislike(): FreeBoardPostDetail = this.copy(isLike = false, likeCount = likeCount - 1)
+
+    fun like(): FreeBoardPostDetail = this.copy(isLike = true, likeCount = likeCount + 1)
+}
