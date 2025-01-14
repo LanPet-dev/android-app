@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -76,10 +77,7 @@ class FreeBoardDetailViewModel
                 initialValue = FreeBoardDetailState.Loading,
             )
 
-        fun init(
-            postId: String,
-            profileId: String,
-        ) {
+        fun init() {
             viewModelScope.launch {
                 runCatching {
                     coroutineScope {
@@ -120,17 +118,18 @@ class FreeBoardDetailViewModel
             if (_isProcess.value) return
             _isProcess.value = true
 
-            viewModelScope.launch {
-                runCatching {
-                    writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
-                        _isProcess.value = false
-                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
+            val job =
+                viewModelScope.launch {
+                    runCatching {
+                        writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
+                            _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
+                        }
+                    }.onFailure {
+                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
                     }
-                }.onFailure {
-                    _isProcess.value = false
-                    _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
                 }
-            }
+
+            job.invokeOnCompletion { _isProcess.value = false }
         }
 
         fun refreshComments() {
@@ -215,7 +214,7 @@ class FreeBoardDetailViewModel
         }
 
         init {
-            init(postId, profileId)
+            init()
         }
     }
 
