@@ -1,9 +1,8 @@
 package com.lanpet.domain.usecase.freeboard
 
-import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.repository.FreeBoardRepository
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetFreeBoardPostListUseCase
@@ -11,15 +10,13 @@ class GetFreeBoardPostListUseCase
     constructor(
         private val freeBoardRepository: FreeBoardRepository,
     ) {
-        suspend operator fun invoke(
+        operator fun invoke(
             imageBaseUrl: String = "",
             getFreeBoardPostListRequest: GetFreeBoardPostListRequest,
-        ): FreeBoardPost {
-            val res = freeBoardRepository.getFreeBoardPostList(getFreeBoardPostListRequest).first()
-
-            return res.copy(
+        ) = freeBoardRepository.getFreeBoardPostList(getFreeBoardPostListRequest).map {
+            it.copy(
                 items =
-                    res.items?.map {
+                    it.items?.map {
                         it.copy(
                             resources =
                                 it.resources?.map {
