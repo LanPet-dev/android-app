@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FreeBoardCommentResponse(
     val items: List<CommentItemDto>?,
-    val totalCount: Int? = 0 ,
+    val totalCount: Int? = 0,
     val nextCursor: String?,
 ) {
     fun toDomain(): PaginationData<List<FreeBoardComment>> =

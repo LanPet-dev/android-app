@@ -57,9 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
@@ -101,9 +99,10 @@ fun FreeBoardDetailScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     DisposableEffect(lifecycle) {
-        val observer = LifecycleEventObserver { _, event ->
-            Timber.i("FreeBoardDetailScreenLifecycle: $event")
-        }
+        val observer =
+            LifecycleEventObserver { _, event ->
+                Timber.i("FreeBoardDetailScreenLifecycle: $event")
+            }
 
         lifecycle.addObserver(observer)
         onDispose {

@@ -46,7 +46,7 @@ fun MyPostsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
     initialPage: Int = 0,
-    onNavigateToFreeBoardDetail: (postId: String, profileId:String) -> Unit = { _, _ -> },
+    onNavigateToFreeBoardDetail: (postId: String, profileId: String) -> Unit = { _, _ -> },
 ) {
     var currentTabIndex by rememberSaveable {
         mutableIntStateOf(initialPage)

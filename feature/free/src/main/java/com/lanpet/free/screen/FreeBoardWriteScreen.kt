@@ -78,8 +78,8 @@ import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.WhiteColor
 import com.lanpet.core.designsystem.theme.customColorScheme
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.free.R
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.coroutines.launch
@@ -191,7 +191,8 @@ fun FreeBoardWriteScreen(
                     LazyRow(
                         modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
                     ) {
-                        val imageList: List<Uri>? = freeBoardPostCreate.freeBoardPostCreate?.imageList
+                        val imageList: List<Uri>? =
+                            freeBoardPostCreate.freeBoardPostCreate?.imageList
                         if (!imageList.isNullOrEmpty()) {
                             items(imageList.size) { index ->
                                 ImageWithDeleteIcon(

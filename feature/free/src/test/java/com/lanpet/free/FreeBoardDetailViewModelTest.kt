@@ -3,10 +3,13 @@ package com.lanpet.free
 import androidx.lifecycle.SavedStateHandle
 import com.lanpet.core.testing.rule.data.freeBoardCommentTestData
 import com.lanpet.core.testing.rule.data.freeBoardPostDetailTestData
+import com.lanpet.domain.model.PaginationData
+import com.lanpet.domain.model.PaginationInfo
 import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
+import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import io.mockk.clearAllMocks
@@ -33,6 +36,7 @@ class FreeBoardDetailViewModelTest {
     private lateinit var getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase
     private lateinit var doPostLikeUseCase: DoPostLikeUseCase
     private lateinit var cancelPostLikeUseCase: CancelPostLikeUseCase
+    private lateinit var writeCommentUseCase: WriteCommentUseCase
 
     @BeforeEach
     fun setUp() {
@@ -40,6 +44,7 @@ class FreeBoardDetailViewModelTest {
         getFreeBoardCommentListUseCase = mockk()
         doPostLikeUseCase = mockk()
         cancelPostLikeUseCase = mockk()
+        writeCommentUseCase = mockk()
     }
 
     @AfterEach
@@ -53,17 +58,25 @@ class FreeBoardDetailViewModelTest {
         runTest {
             // given
             val postId = "1"
-            coEvery { getFreeBoardDetailUseCase(postId) } returns
+            val profileId = "profileId"
+            coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                 flow {
                     emit(
                         freeBoardPostDetailTestData,
                     )
                 }
 
-            coEvery { getFreeBoardCommentListUseCase(postId) } returns
+            coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
                 flow {
                     emit(
-                        freeBoardCommentTestData,
+                        PaginationData(
+                            data = freeBoardCommentTestData,
+                            paginationInfo =
+                                PaginationInfo(
+                                    hasNext = false,
+                                    nextCursor = null,
+                                ),
+                        ),
                     )
                 }
 
@@ -75,16 +88,18 @@ class FreeBoardDetailViewModelTest {
                         SavedStateHandle(
                             mapOf(
                                 "postId" to "1",
+                                "profileId" to "profileId",
                             ),
                         ),
                     doPostLikeUseCase = doPostLikeUseCase,
                     cancelPostLikeUseCase = cancelPostLikeUseCase,
+                    writeCommentUseCase = writeCommentUseCase,
                 )
             advanceUntilIdle()
 
             coVerify(exactly = 1) {
-                getFreeBoardDetailUseCase(postId)
-                getFreeBoardCommentListUseCase(postId)
+                getFreeBoardDetailUseCase(postId, profileId)
+                getFreeBoardCommentListUseCase(postId, any(), any(), any())
             }
         }
     }
@@ -97,17 +112,25 @@ class FreeBoardDetailViewModelTest {
             runTest {
                 // given
                 val postId = "1"
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
                             freeBoardPostDetailTestData,
                         )
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
                     flow {
                         emit(
-                            freeBoardCommentTestData,
+                            PaginationData(
+                                data = freeBoardCommentTestData,
+                                paginationInfo =
+                                    PaginationInfo(
+                                        hasNext = false,
+                                        nextCursor = null,
+                                    ),
+                            ),
                         )
                     }
 
@@ -119,10 +142,12 @@ class FreeBoardDetailViewModelTest {
                             SavedStateHandle(
                                 mapOf(
                                     "postId" to "1",
+                                    "profileId" to "profileId",
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,
                         cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
 
@@ -144,15 +169,30 @@ class FreeBoardDetailViewModelTest {
             runTest {
                 // given
                 val postId = "1"
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         throw Exception("Failed to fetch detail")
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery {
+                    getFreeBoardCommentListUseCase(
+                        postId,
+                        any(),
+                        any(),
+                        any(),
+                    )
+                } returns
                     flow {
                         emit(
-                            freeBoardCommentTestData,
+                            PaginationData(
+                                data = freeBoardCommentTestData,
+                                paginationInfo =
+                                    PaginationInfo(
+                                        hasNext = false,
+                                        nextCursor = null,
+                                    ),
+                            ),
                         )
                     }
 
@@ -164,10 +204,12 @@ class FreeBoardDetailViewModelTest {
                             SavedStateHandle(
                                 mapOf(
                                     "postId" to "1",
+                                    "profileId" to "profileId",
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,
                         cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
 
@@ -190,14 +232,15 @@ class FreeBoardDetailViewModelTest {
             runTest {
                 // given
                 val postId = "1"
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
                             freeBoardPostDetailTestData,
                         )
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
                     flow {
                         throw Exception("Failed to fetch comments")
                     }
@@ -209,10 +252,12 @@ class FreeBoardDetailViewModelTest {
                             SavedStateHandle(
                                 mapOf(
                                     "postId" to "1",
+                                    "profileId" to "profileId",
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,
                         cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
 
