@@ -14,10 +14,10 @@ class S3UploadRepositoryImpl
     @Inject
     constructor(
         private val s3UploadApiService: S3UploadApiService,
-    ): S3UploadRepository {
+    ) : S3UploadRepository {
         override fun uploadImageResource(
             url: String,
-            byteArray: ByteArray
+            byteArray: ByteArray,
         ): Flow<Unit> =
             flow {
                 val requestBody = byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull())
@@ -25,4 +25,3 @@ class S3UploadRepositoryImpl
                 emit(res)
             }.flowOn(Dispatchers.IO)
     }
-

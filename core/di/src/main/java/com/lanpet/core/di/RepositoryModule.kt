@@ -49,9 +49,7 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideS3UploadRepository(
-        s3UploadApiService: S3UploadApiService,
-    ): S3UploadRepository =
+    fun provideS3UploadRepository(s3UploadApiService: S3UploadApiService): S3UploadRepository =
         S3UploadRepositoryImpl(
             s3UploadApiService,
         )

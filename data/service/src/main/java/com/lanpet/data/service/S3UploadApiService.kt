@@ -11,6 +11,6 @@ interface S3UploadApiService {
     suspend fun uploadImage(
         @Url url: String,
         @Header("Content-Type") contentType: String = "image/jpeg",
-        @Body body: RequestBody
+        @Body body: RequestBody,
     )
 }

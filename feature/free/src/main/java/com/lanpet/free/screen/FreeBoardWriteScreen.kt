@@ -110,9 +110,11 @@ fun FreeBoardWriteScreen(
         freeBoardWriteViewModel.uiEvent.collect { event ->
             when (event) {
                 is FreeBoardWriteUiEvent.Success -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopUpTo(FreeBoardWrite, inclusive = true)  // popUpTo 설정
-                        .build()
+                    val navOptions =
+                        NavOptions
+                            .Builder()
+                            .setPopUpTo(FreeBoardWrite, inclusive = true) // popUpTo 설정
+                            .build()
 
                     onNavigateToFreeBoardDetail(event.postId, profileId, navOptions)
                 }

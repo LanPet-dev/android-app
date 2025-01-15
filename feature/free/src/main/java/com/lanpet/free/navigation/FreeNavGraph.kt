@@ -89,18 +89,19 @@ fun NavController.navigateToFreeBoardDetailScreen(
     profileId: String,
     navOptions: NavOptions? = null,
 ) {
-    val defaultNavOptions = NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .apply {
-            navOptions?.let { options ->
-                setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
-            }
-        }
-        .build()
+    val defaultNavOptions =
+        NavOptions
+            .Builder()
+            .setLaunchSingleTop(true)
+            .apply {
+                navOptions?.let { options ->
+                    setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
+                }
+            }.build()
 
     navigate(
         route = FreeBoardDetail(postId = postId, profileId = profileId),
-        navOptions = defaultNavOptions
+        navOptions = defaultNavOptions,
     )
 }
 

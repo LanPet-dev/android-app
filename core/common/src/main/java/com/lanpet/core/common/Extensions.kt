@@ -109,11 +109,10 @@ fun Context.toast(
     Toast.makeText(this, message, duration).show()
 }
 
-fun List<Uri>.toByteArrayList(context: Context): List<ByteArray> {
-    return this.mapNotNull { uri ->
+fun List<Uri>.toByteArrayList(context: Context): List<ByteArray> =
+    this.mapNotNull { uri ->
         uri.toCompressedByteArray(context)
     }
-}
 
 fun Uri.toCompressedByteArray(
     context: Context,
@@ -121,8 +120,8 @@ fun Uri.toCompressedByteArray(
     targetHeight: Int = 800,
     compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
     quality: Int = 80,
-): ByteArray? {
-    return try {
+): ByteArray? =
+    try {
         context.contentResolver.openInputStream(this)?.use { inputStream ->
             val originalBitmap = BitmapFactory.decodeStream(inputStream)
 
@@ -140,12 +139,13 @@ fun Uri.toCompressedByteArray(
                 newWidth = (targetHeight * aspectRatio).toInt()
             }
 
-            val resizedBitmap = Bitmap.createScaledBitmap(
-                originalBitmap,
-                newWidth,
-                newHeight,
-                true
-            )
+            val resizedBitmap =
+                Bitmap.createScaledBitmap(
+                    originalBitmap,
+                    newWidth,
+                    newHeight,
+                    true,
+                )
 
             ByteArrayOutputStream().use { outputStream ->
                 resizedBitmap.compress(compressFormat, quality, outputStream)
@@ -156,4 +156,3 @@ fun Uri.toCompressedByteArray(
         e.printStackTrace()
         null
     }
-}

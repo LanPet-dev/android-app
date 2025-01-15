@@ -18,7 +18,8 @@ class S3UploadApiClient
         private val headerInterceptor =
             Interceptor { chain ->
                 if (authStateHolder.authState.value !is AuthState.Loading &&
-                    authStateHolder.authState.value !is AuthState.Success) {
+                    authStateHolder.authState.value !is AuthState.Success
+                ) {
                     throw SecurityException("x-access-token is required")
                 }
 

@@ -20,16 +20,16 @@ class UploadImageResourceUseCase
         operator fun invoke(
             sarangbangId: String,
             imageList: List<ByteArray>,
-        ) =
-            freeBoardRepository.getResourceUploadUrl(sarangbangId, imageList.size)
-                .flatMapConcat { urlItems ->
-                    urlItems.items.mapIndexed { index, url ->
-                        s3UploadRepository.uploadImageResource(
-                            url = url,
-                            byteArray = imageList[index]
-                        ).collect()
+        ) = freeBoardRepository
+            .getResourceUploadUrl(sarangbangId, imageList.size)
+            .flatMapConcat { urlItems ->
+                urlItems.items
+                    .mapIndexed { index, url ->
+                        s3UploadRepository
+                            .uploadImageResource(
+                                url = url,
+                                byteArray = imageList[index],
+                            ).collect()
                     }.asFlow()
-                }
-                .flowOn(Dispatchers.IO)
+            }.flowOn(Dispatchers.IO)
     }
-
