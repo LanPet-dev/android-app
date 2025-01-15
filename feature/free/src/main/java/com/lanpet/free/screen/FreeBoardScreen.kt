@@ -71,7 +71,6 @@ fun FreeBoardScreen(
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
     onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
-    // TODO: 게시글 디테일 페이지로 이동. 게시글 디테일 id 필요할듯.
 ) {
     val scrollState = rememberScrollState()
     val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()

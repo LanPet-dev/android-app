@@ -171,8 +171,8 @@ private fun PetProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         NickNameSection(
-            isActive = petProfileUiState.shouldCheckNicknameDuplicate,
-            duplicatedStatus = petProfileUiState.nicknameDuplicateCheck,
+            isActive = petProfileUiState.petProfileUpdate?.shouldCheckNicknameDuplicate == true,
+            duplicatedStatus = petProfileUiState.petProfileUpdate?.nicknameDuplicateChecked,
             nickname = petProfileUiState.petProfileUpdate?.nickName ?: "",
             onNicknameChange = {
                 managePetProfileViewModel.updateNickName(it)
