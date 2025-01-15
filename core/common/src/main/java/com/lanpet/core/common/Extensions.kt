@@ -3,10 +3,14 @@ package com.lanpet.core.common
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -103,4 +107,53 @@ fun Context.toast(
     duration: Int = Toast.LENGTH_SHORT,
 ) {
     Toast.makeText(this, message, duration).show()
+}
+
+fun List<Uri>.toByteArrayList(context: Context): List<ByteArray> {
+    return this.mapNotNull { uri ->
+        uri.toCompressedByteArray(context)
+    }
+}
+
+fun Uri.toCompressedByteArray(
+    context: Context,
+    targetWidth: Int = 800,
+    targetHeight: Int = 800,
+    compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
+    quality: Int = 80,
+): ByteArray? {
+    return try {
+        context.contentResolver.openInputStream(this)?.use { inputStream ->
+            val originalBitmap = BitmapFactory.decodeStream(inputStream)
+
+            val originalWidth = originalBitmap.width
+            val originalHeight = originalBitmap.height
+
+            val aspectRatio = originalWidth.toFloat() / originalHeight
+            val newWidth: Int
+            val newHeight: Int
+            if (aspectRatio > 1) {
+                newWidth = targetWidth
+                newHeight = (targetWidth / aspectRatio).toInt()
+            } else {
+                newHeight = targetHeight
+                newWidth = (targetHeight * aspectRatio).toInt()
+            }
+
+            val resizedBitmap = Bitmap.createScaledBitmap(
+                originalBitmap,
+                newWidth,
+                newHeight,
+                true
+            )
+
+            ByteArrayOutputStream().use { outputStream ->
+                resizedBitmap.compress(compressFormat, quality, outputStream)
+                outputStream.toByteArray()
+            }
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+        null
+    }
 }

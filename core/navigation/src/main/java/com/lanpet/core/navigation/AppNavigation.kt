@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
@@ -221,8 +222,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateToFreeBoardWriteFreeBoard = {
                             navController.navigateToFreeBoardWriteScreen()
                         },
-                        onNavigateToFreeBoardDetail = { postId, profileId ->
-                            navController.navigateToFreeBoardDetailScreen(postId, profileId)
+                        onNavigateToFreeBoardDetail = { postId, profileId, navOptions ->
+                            navController.navigateToFreeBoardDetailScreen(postId, profileId, navOptions)
                         },
                     )
                     wikiNavGraph()

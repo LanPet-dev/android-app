@@ -8,6 +8,8 @@ import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.data.service.ProfileApiClient
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
+import com.lanpet.data.service.S3UploadApiClient
+import com.lanpet.data.service.S3UploadApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,4 +61,18 @@ object ApiModule {
     fun provideFreeBoardApiUrl(
         @Named("BaseApiUrl") baseUrl: String,
     ): String = baseUrl + "sarangbangs/"
+
+    @Singleton
+    @Provides
+    fun provideS3UploadApiClient(
+        authStateHolder: AuthStateHolder,
+    ): S3UploadApiClient {
+        return S3UploadApiClient(authStateHolder)
+    }
+
+    @Singleton
+    @Provides
+    fun provideS3UploadApiService(
+        s3UploadApiClient: S3UploadApiClient
+    ): S3UploadApiService = s3UploadApiClient.getService()
 }

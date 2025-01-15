@@ -38,7 +38,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
@@ -81,6 +81,8 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.free.R
+import com.lanpet.free.navigation.FreeBoardWrite
+import com.lanpet.free.viewmodel.FreeBoardWriteUiEvent
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.coroutines.launch
 
@@ -90,28 +92,31 @@ fun FreeBoardWriteScreen(
     modifier: Modifier = Modifier,
     freeBoardWriteViewModel: FreeBoardWriteViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit = {},
+    onNavigateToFreeBoardDetail: (String, String, NavOptions) -> Unit = { _, _, _ -> },
 ) {
     val verticalScrollState = rememberScrollState()
 
-    val authManager = LocalAuthManager.current
-    val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
+    val profileId =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.id
 
     val freeBoardPostCreate by freeBoardWriteViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val currentOnNavigateUp by rememberUpdatedState(onNavigateUp)
-
     LaunchedEffect(Unit) {
-        freeBoardWriteViewModel.setProfileId(defaultUserProfile.value.id)
+        freeBoardWriteViewModel.setProfileId(profileId)
 
         freeBoardWriteViewModel.uiEvent.collect { event ->
             when (event) {
-                true -> {
-                    context.toast(context.getString(R.string.toast_post_create_success))
-                    currentOnNavigateUp()
-                }
+                is FreeBoardWriteUiEvent.Success -> {
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(FreeBoardWrite, inclusive = true)  // popUpTo 설정
+                        .build()
 
-                false -> {
+                    onNavigateToFreeBoardDetail(event.postId, profileId, navOptions)
+                }
+                else -> {
                     context.toast(context.getString(R.string.toast_post_create_fail))
                 }
             }
@@ -210,7 +215,7 @@ fun FreeBoardWriteScreen(
                     isActive = freeBoardWriteViewModel.isValidState.collectAsStateWithLifecycle().value,
                     modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.small),
                 ) {
-                    freeBoardWriteViewModel.writeFreeBoardPost()
+                    freeBoardWriteViewModel.writeFreeBoardPost(context)
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
             }

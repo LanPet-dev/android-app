@@ -3,6 +3,7 @@ package com.lanpet.free.navigation
 import android.os.Build
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.core.auth.LocalAuthManager
@@ -14,7 +15,7 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.freeNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
-    onNavigateToFreeBoardDetail: (postId: String, profileId: String) -> Unit,
+    onNavigateToFreeBoardDetail: (postId: String, profileId: String, navOptions: NavOptions?) -> Unit,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
@@ -22,7 +23,9 @@ fun NavGraphBuilder.freeNavGraph(
         composable<FreeBoard> {
             FreeBoardScreen(
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
-                onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
+                onNavigateToFreeBoardDetail = { postId, profileId ->
+                    onNavigateToFreeBoardDetail(postId, profileId, null)
+                },
             )
         }
         composable<FreeBoardDetail> {
@@ -53,6 +56,7 @@ fun NavGraphBuilder.freeNavGraph(
         composable<FreeBoardWrite> {
             FreeBoardWriteScreen(
                 onNavigateUp = onNavigateUp,
+                onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
             )
         }
     }
@@ -83,10 +87,21 @@ fun NavController.navigateToFreeBoardScreen() {
 fun NavController.navigateToFreeBoardDetailScreen(
     postId: String,
     profileId: String,
+    navOptions: NavOptions? = null,
 ) {
+    val defaultNavOptions = NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .apply {
+            navOptions?.let { options ->
+                setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
+            }
+        }
+        .build()
+
     navigate(
-        FreeBoardDetail(postId = postId, profileId = profileId),
-    ) {}
+        route = FreeBoardDetail(postId = postId, profileId = profileId),
+        navOptions = defaultNavOptions
+    )
 }
 
 fun NavController.navigateToFreeBoardWriteScreen() {
