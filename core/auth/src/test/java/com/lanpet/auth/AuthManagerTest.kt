@@ -137,6 +137,7 @@ class AuthManagerTest {
                                     SocialAuthType.GOOGLE,
                                     "accessToken",
                                     "refreshToken",
+                                    expiresIn = 3600,
                                 ),
                             )
                         }
@@ -209,6 +210,7 @@ class AuthManagerTest {
                                     SocialAuthType.GOOGLE,
                                     "accessToken",
                                     "refreshToken",
+                                    expiresIn = 3600,
                                 ),
                             )
                         }
@@ -287,6 +289,7 @@ class AuthManagerTest {
                                     SocialAuthType.GOOGLE,
                                     "accessToken",
                                     "refreshToken",
+                                    expiresIn = 3600,
                                 ),
                             )
                         }
@@ -348,6 +351,7 @@ class AuthManagerTest {
                                     SocialAuthType.GOOGLE,
                                     "accessToken",
                                     "refreshToken",
+                                    expiresIn = 3600,
                                 ),
                             )
                         }
@@ -401,6 +405,7 @@ class AuthManagerTest {
                                     SocialAuthType.GOOGLE,
                                     "accessToken",
                                     "refreshToken",
+                                    expiresIn = 3600,
                                 ),
                             )
                         }
@@ -475,6 +480,7 @@ class AuthManagerTest {
                                 SocialAuthType.GOOGLE,
                                 "accessToken",
                                 "refreshToken",
+                                expiresIn = 3600,
                             ),
                         )
                     }
@@ -562,6 +568,7 @@ class AuthManagerTest {
                                 SocialAuthType.GOOGLE,
                                 "accessToken",
                                 "refreshToken",
+                                expiresIn = 3600,
                             ),
                         )
                     }
@@ -656,6 +663,7 @@ class AuthManagerTest {
                                 SocialAuthType.GOOGLE,
                                 "accessToken",
                                 "refreshToken",
+                                expiresIn = 3600,
                             ),
                         )
                     }
@@ -779,6 +787,7 @@ class AuthManagerTest {
                         SocialAuthType.GOOGLE,
                         "accessToken",
                         "refreshToken",
+                        expiresIn = 3600,
                     ),
                 profile =
                     listOf(
