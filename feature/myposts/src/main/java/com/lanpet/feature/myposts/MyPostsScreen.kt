@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -39,8 +38,7 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
-import com.lanpet.domain.model.FreeBoardPost
-import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +46,7 @@ fun MyPostsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
     initialPage: Int = 0,
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
+    onNavigateToFreeBoardDetail: (postId: String, profileId: String) -> Unit = { _, _ -> },
 ) {
     var currentTabIndex by rememberSaveable {
         mutableIntStateOf(initialPage)
@@ -93,30 +91,13 @@ fun MyPostsScreen(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
                 ) { index ->
-                    if (index == 0) {
-                        Column {
-                            Text("Wiki")
-                        }
-                    } else if (index == 1) {
-                        MyFreeBoardPosts(
-                            freeBoardPosts =
-                                List(10) {
-                                    FreeBoardPost(
-                                        id = it,
-                                        title = "Title $it",
-                                        content = loremIpsum(),
-                                        petCategory = PetCategory.CAT,
-                                        tags = listOf("tag1", "tag2"),
-                                        images = listOf("https://picsum.photos/200/300"),
-                                        createdAt = "2021-10-10T10:00:00Z",
-                                        updatedAt = "",
-                                        likeCount = 10,
-                                        commentCount = 111,
-                                    )
-                                },
-                            onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
-                        )
-                    }
+//                    if (index == 0) {
+//                        Column {
+//                            Text("Wiki")
+//                        }
+//                    } else if (index == 1) {
+//                        )
+//                    }
                 }
             }
         }
@@ -174,8 +155,8 @@ private fun TabBarSection(
 @Composable
 fun MyFreeBoardPosts(
     modifier: Modifier = Modifier,
-    freeBoardPosts: List<FreeBoardPost> = emptyList(),
-    onNavigateToFreeBoardDetail: (postId: Int) -> Unit = {},
+    freeBoardPosts: List<FreeBoardItem> = emptyList(),
+    onNavigateToFreeBoardDetail: (postId: String) -> Unit = {},
 ) {
     val listState = rememberLazyListState()
 
@@ -188,7 +169,7 @@ fun MyFreeBoardPosts(
     ) {
         items(freeBoardPosts.size) { index ->
             key(freeBoardPosts[index].id) {
-                FreeBoardListItem(freeBoardPost = freeBoardPosts[index], onClick = {
+                FreeBoardListItem(freeBoardPostItem = freeBoardPosts[index], onClick = {
                     onNavigateToFreeBoardDetail(freeBoardPosts[index].id)
                 })
 

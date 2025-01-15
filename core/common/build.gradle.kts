@@ -15,6 +15,7 @@ android {
 
 dependencies {
     implementation(projects.core.designsystem)
+    implementation(projects.core.manager)
     implementation(projects.domain.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -61,11 +61,6 @@ open class AuthManager
          */
         val userProfiles = authStateHolder.userProfiles
 
-        /**
-         * 현재 유저의 프로필 상세 정보
-         */
-        val currentProfileDetail = authStateHolder.currentProfileDetail
-
         @OptIn(FlowPreview::class)
         fun handleAuthCode(code: String) {
             CoroutineScope(Dispatchers.IO).launch {
@@ -233,6 +228,7 @@ open class AuthManager
                 )
             }
 
+        // TODO("Satoshi"): refactor
         @OptIn(FlowPreview::class)
         suspend fun getProfiles() {
             try {
@@ -287,25 +283,25 @@ open class AuthManager
         suspend fun updateUserProfile(profileId: String) {
             try {
                 if (authState.value !is AuthState.Success) {
-                    throw AuthException.UpdateProfileFailException("AuthState is not Success")
+                    throw IllegalStateException("AuthState is not Success")
                 }
 
                 val currentAuthState = authStateHolder.authState.value as AuthState.Success
 
-                val setDefaultProfileRes =
-                    currentAuthState.account?.let {
+                currentAuthState.account?.let {
+                    val setDefaultProfileRes =
                         setDefaultProfileUseCase!!(
                             it.accountId,
                             profileId,
                         ).timeout(5.seconds).first()
-                    } ?: throw AuthException.NoAccountException("Account is null")
 
-                if (!setDefaultProfileRes) {
-                    throw AuthException.NoDefaultProfileException(
-                        accountId = currentAuthState.account!!.accountId,
-                        message = "Set default profile failed",
-                    )
-                }
+                    if (!setDefaultProfileRes) {
+                        throw AuthException.NoDefaultProfileException(
+                            accountId = currentAuthState.account!!.accountId,
+                            message = "Set default profile failed",
+                        )
+                    }
+                } ?: throw AuthException.NoAccountException("Account is null")
 
                 val res =
                     try {
@@ -342,7 +338,12 @@ open class AuthManager
                 )
             } catch (e: Exception) {
                 Timber.e(e)
-                throw AuthException.UpdateProfileFailException()
+                when (e) {
+                    is AuthException -> throw e
+                    else -> throw AuthException.UpdateProfileFailException(
+                        message = e.message,
+                    )
+                }
             }
         }
 

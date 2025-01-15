@@ -8,7 +8,6 @@ import com.lanpet.domain.usecase.profile.DeleteProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,12 +26,13 @@ class ProfileListViewModel
         @OptIn(FlowPreview::class)
         fun deleteProfile(profileId: String) {
             viewModelScope.launch {
-                try {
-                    deleteProfileUseCase(profileId).timeout(5.seconds).first()
-                    _event.emit(ProfileListEvent.DeleteProfileSuccess)
-                    authManager.getProfiles()
-                } catch (e: Exception) {
-                    Timber.e(e)
+                runCatching {
+                    deleteProfileUseCase(profileId).timeout(5.seconds).collect {
+                        _event.emit(ProfileListEvent.DeleteProfileSuccess)
+                        authManager.getProfiles()
+                    }
+                }.onFailure {
+                    Timber.e(it.stackTraceToString())
                     _event.emit(ProfileListEvent.DeleteProfileFail)
                 }
             }
@@ -41,7 +41,7 @@ class ProfileListViewModel
 
 @Stable
 sealed class ProfileListEvent {
-    object DeleteProfileSuccess : ProfileListEvent()
+    data object DeleteProfileSuccess : ProfileListEvent()
 
-    object DeleteProfileFail : ProfileListEvent()
+    data object DeleteProfileFail : ProfileListEvent()
 }

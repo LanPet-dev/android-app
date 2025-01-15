@@ -5,8 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lanpet.core.common.FormValidationStatus
-import com.lanpet.core.common.FormValidator
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.ProfileType
@@ -32,7 +31,10 @@ class ManagePetProfileViewModel
         private val modifyPetProfileUseCase: ModifyPetProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
+        private lateinit var originPetProfileUpdate: PetProfileUpdate
+
         private val _uiState =
             MutableStateFlow(
                 ManagePetProfileUiState(
@@ -41,53 +43,27 @@ class ManagePetProfileViewModel
             )
         val uiState = _uiState.asStateFlow()
 
-        private val _uiEvent = MutableSharedFlow<Boolean>()
+        private val _uiEvent = MutableSharedFlow<PetProfileUpdateEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
-
-        private val petProfileUpdateValidator =
-            PetProfileUpdateValidator(
-                profileImageUri =
-                    FormValidator {
-                        FormValidationStatus.Valid()
-                    },
-                nickName =
-                    FormValidator {
-                        if (it.isNullOrBlank()) {
-                            FormValidationStatus.Invalid("Nick name is required")
-                        } else if (it.length > 20 || it.length < 2) {
-                            FormValidationStatus.Invalid("Nick name must be between 2 and 20 characters")
-                        } else {
-                            FormValidationStatus.Valid()
-                        }
-                    },
-                bio =
-                    FormValidator {
-                        FormValidationStatus.Valid()
-                    },
-                petCategory =
-                    FormValidator {
-                        if (it == null) {
-                            FormValidationStatus.Invalid("Pet category is required")
-                        } else {
-                            FormValidationStatus.Valid()
-                        }
-                    },
-                breed =
-                    FormValidator {
-                        if (it.isNullOrBlank()) {
-                            FormValidationStatus.Invalid("Breed is required")
-                        } else {
-                            FormValidationStatus.Valid()
-                        }
-                    },
-            )
 
         fun checkNicknameDuplicated() {
             val nickname = _uiState.value.petProfileUpdate?.nickName ?: return
 
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
-                    _uiState.value = _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(nickname).collect { isDuplicated ->
+                        _uiState.value =
+                            _uiState.value.copy(
+                                petProfileUpdate =
+                                    _uiState.value.petProfileUpdate?.copy(
+                                        nicknameDuplicateChecked = isDuplicated,
+                                        shouldCheckNicknameDuplicate = checkNicknameModified(nickname),
+                                    ),
+                            )
+                    }
+                }.onFailure {
+                    Timber.e(it.stackTraceToString())
+                    _uiEvent.emit(PetProfileUpdateEvent.Error(it.message))
                 }
             }
         }
@@ -102,10 +78,6 @@ class ManagePetProfileViewModel
                                     ?.pet
                                     ?.copy(petCategory = petCategory),
                         ),
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            petCategory = petProfileUpdateValidator.petCategory.validate(petCategory),
-                        ),
                 )
         }
 
@@ -119,10 +91,6 @@ class ManagePetProfileViewModel
                                     ?.pet
                                     ?.copy(breed = breed),
                         ),
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            breed = petProfileUpdateValidator.breed.validate(breed),
-                        ),
                 )
         }
 
@@ -131,13 +99,6 @@ class ManagePetProfileViewModel
                 _uiState.value.copy(
                     petProfileUpdate =
                         _uiState.value.petProfileUpdate?.copy(profileImageUri = profileImageUri),
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            profileImageUri =
-                                petProfileUpdateValidator.profileImageUri.validate(
-                                    profileImageUri,
-                                ),
-                        ),
                 )
         }
 
@@ -145,10 +106,10 @@ class ManagePetProfileViewModel
             _uiState.value =
                 _uiState.value.copy(
                     petProfileUpdate =
-                        _uiState.value.petProfileUpdate?.copy(nickName = nickName),
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            nickName = petProfileUpdateValidator.nickName.validate(nickName),
+                        _uiState.value.petProfileUpdate?.copy(
+                            nickName = nickName,
+                            nicknameDuplicateChecked = null,
+                            shouldCheckNicknameDuplicate = checkNicknameModified(nickName),
                         ),
                 )
         }
@@ -158,32 +119,15 @@ class ManagePetProfileViewModel
                 _uiState.value.copy(
                     petProfileUpdate =
                         _uiState.value.petProfileUpdate?.copy(bio = bio),
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            bio = petProfileUpdateValidator.bio.validate(bio),
-                        ),
                 )
         }
 
-        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        private fun checkNicknameModified(nickName: String): Boolean = nickName != originPetProfileUpdate.nickName
+
+        private fun checkValidation(): Boolean = _uiState.value.petProfileUpdate?.checkValidation() == true
 
         fun modifyPetProfile() {
             val petProfileUpdate = _uiState.value.petProfileUpdate ?: return
-
-            _uiState.value =
-                _uiState.value.copy(
-                    validationStatus =
-                        _uiState.value.validationStatus.copy(
-                            nickName = petProfileUpdateValidator.nickName.validate(petProfileUpdate.nickName),
-                            bio = petProfileUpdateValidator.bio.validate(petProfileUpdate.bio),
-                            petCategory = petProfileUpdateValidator.petCategory.validate(petProfileUpdate.pet?.petCategory),
-                            breed = petProfileUpdateValidator.breed.validate(petProfileUpdate.pet?.breed),
-                            profileImageUri =
-                                petProfileUpdateValidator.profileImageUri.validate(
-                                    petProfileUpdate.profileImageUri,
-                                ),
-                        ),
-                )
 
             if (!checkValidation()) return
 
@@ -191,19 +135,29 @@ class ManagePetProfileViewModel
                 PetProfile(
                     type = petProfileUpdate.type,
                     profileImageUri = petProfileUpdate.profileImageUri,
-                    nickName = petProfileUpdate.nickName,
+                    nickName =
+                        if (_uiState.value.petProfileUpdate?.shouldCheckNicknameDuplicate ==
+                            true
+                        ) {
+                            _uiState.value.petProfileUpdate?.nickName
+                        } else {
+                            null
+                        },
                     bio = petProfileUpdate.bio,
                     pet = petProfileUpdate.pet,
                 )
 
-            if (_uiState.value.validationStatus.isValid) {
-                viewModelScope.launch {
+            viewModelScope.launch {
+                runCatching {
                     modifyPetProfileUseCase(
                         profileId = petProfileUpdate.id,
                         petProfile = petProfile,
                     ).collect {
-                        _uiEvent.emit(true)
+                        authManager.getProfiles()
+                        _uiEvent.emit(PetProfileUpdateEvent.Success(petProfile))
                     }
+                }.onFailure {
+                    _uiEvent.emit(PetProfileUpdateEvent.Fail(it.message))
                 }
             }
         }
@@ -213,17 +167,17 @@ class ManagePetProfileViewModel
                 Timber.i("profileId: $it")
 
                 viewModelScope.launch {
-                    getProfileDetailUseCase(it).collect { profileDetail ->
-                        Timber.i("profileDetail: $profileDetail")
+                    runCatching {
+                        getProfileDetailUseCase(it)
+                            .collect { profileDetail ->
+                                Timber.i("profileDetail: $profileDetail")
 
-                        _uiState.value =
-                            _uiState.value.copy(
-                                petProfileUpdate =
+                                val petProfileUpdate =
                                     PetProfileUpdate(
                                         profileImageUri =
                                             profileDetail.pictureUrl?.let {
                                                 Uri.parse(
-                                                    profileDetail.pictureUrl,
+                                                    it,
                                                 )
                                             },
                                         nickName = profileDetail.nickname,
@@ -240,8 +194,20 @@ class ManagePetProfileViewModel
                                                 weight = profileDetail.pet?.weight,
                                                 birthDate = profileDetail.pet?.birthDate,
                                             ),
-                                    ),
-                            )
+                                        shouldCheckNicknameDuplicate = null,
+                                        nicknameDuplicateChecked = null,
+                                    )
+
+                                originPetProfileUpdate = petProfileUpdate
+
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        petProfileUpdate = petProfileUpdate,
+                                    )
+                            }
+                    }.onFailure {
+                        Timber.e(it.stackTraceToString())
+                        _uiEvent.emit(PetProfileUpdateEvent.Error(it.message))
                     }
                 }
             }
@@ -251,39 +217,19 @@ class ManagePetProfileViewModel
 @Stable
 data class ManagePetProfileUiState(
     val petProfileUpdate: PetProfileUpdate?,
-    val nicknameDuplicateCheck: Boolean? = null,
-    val validationStatus: PetProfileUpdateValidationStatus =
-        PetProfileUpdateValidationStatus(
-            profileImageUri = FormValidationStatus.Initial(),
-            nickName = FormValidationStatus.Initial(),
-            bio = FormValidationStatus.Initial(),
-            petCategory = FormValidationStatus.Initial(),
-            breed = FormValidationStatus.Initial(),
-        ),
 )
 
 @Stable
-data class PetProfileUpdateValidator(
-    val profileImageUri: FormValidator<Uri?>,
-    val nickName: FormValidator<String?>,
-    val bio: FormValidator<String?>,
-    val petCategory: FormValidator<PetCategory?>,
-    val breed: FormValidator<String?>,
-)
+sealed class PetProfileUpdateEvent {
+    data class Success(
+        val petProfile: PetProfile,
+    ) : PetProfileUpdateEvent()
 
-@Stable
-data class PetProfileUpdateValidationStatus(
-    val profileImageUri: FormValidationStatus,
-    val nickName: FormValidationStatus,
-    val bio: FormValidationStatus,
-    val petCategory: FormValidationStatus,
-    val breed: FormValidationStatus,
-) {
-    val isValid: Boolean
-        get() =
-            profileImageUri is FormValidationStatus.Valid &&
-                nickName is FormValidationStatus.Valid &&
-                bio is FormValidationStatus.Valid &&
-                petCategory is FormValidationStatus.Valid &&
-                breed is FormValidationStatus.Valid
+    data class Fail(
+        val message: String?,
+    ) : PetProfileUpdateEvent()
+
+    data class Error(
+        val message: String?,
+    ) : PetProfileUpdateEvent()
 }

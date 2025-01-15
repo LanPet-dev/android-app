@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     suspend fun getAuthToken(authCode: String): Flow<SocialAuthToken>
+
+    suspend fun refreshAuthToken(refreshToken: String): Flow<SocialAuthToken>
 }

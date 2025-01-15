@@ -14,4 +14,11 @@ object ApiModuleDev {
     @Provides
     @Named("BaseApiUrl")
     fun provideBaseApiUrl(): String = "https://test.api.lanpet.co.kr/"
+
+    @Singleton
+    @Provides
+    @Named("FreeBoardApiUrl")
+    fun provideFreeBoardApiUrl(
+        @Named("BaseApiUrl") baseUrl: String,
+    ): String = baseUrl + "sarangbangs/"
 }

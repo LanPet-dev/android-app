@@ -1,33 +1,109 @@
 package com.lanpet.data.dto.serializer
 
+import com.lanpet.data.dto.ButlerDto
+import com.lanpet.data.dto.PetDto
 import com.lanpet.data.dto.UpdateProfileRequest
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.nullable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object UpdateProfileRequestSerializer : KSerializer<UpdateProfileRequest> {
-    private val json =
-        Json {
-            encodeDefaults = false
-            explicitNulls = false
+    override val descriptor: SerialDescriptor =
+        buildClassSerialDescriptor("UpdateProfileRequest") {
+            element("nickname", String.serializer().nullable.descriptor)
+            element("pictureUrl", String.serializer().nullable.descriptor)
+            element("introduction", String.serializer().nullable.descriptor)
+            element("pet", PetDto.serializer().nullable.descriptor)
+            element("butler", ButlerDto.serializer().nullable.descriptor)
         }
-
-    private val delegateSerializer = UpdateProfileRequest.serializer()
-
-    override val descriptor = delegateSerializer.descriptor
 
     override fun serialize(
         encoder: Encoder,
         value: UpdateProfileRequest,
     ) {
-        val jsonElement = json.encodeToJsonElement(delegateSerializer, value)
-        encoder.encodeSerializableValue(JsonElement.serializer(), jsonElement)
+        encoder.encodeStructure(descriptor) {
+            value.nickname?.let { encodeStringElement(descriptor, 0, it) }
+            value.pictureUrl?.let { encodeStringElement(descriptor, 1, it) }
+            value.introduction?.let { encodeStringElement(descriptor, 2, it) }
+            value.pet?.let {
+                encodeSerializableElement(descriptor, 3, PetDto.serializer(), it)
+            }
+            value.butler?.let {
+                encodeSerializableElement(descriptor, 4, ButlerDto.serializer(), it)
+            }
+        }
     }
 
-    override fun deserialize(decoder: Decoder): UpdateProfileRequest {
-        val element = decoder.decodeSerializableValue(JsonElement.serializer())
-        return json.decodeFromJsonElement(delegateSerializer, element)
-    }
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun deserialize(decoder: Decoder): UpdateProfileRequest =
+        decoder.decodeStructure(descriptor) {
+            var nickname: String? = null
+            var pictureUrl: String? = null
+            var introduction: String? = null
+            var pet: PetDto? = null
+            var butler: ButlerDto? = null
+
+            while (true) {
+                when (val index = decodeElementIndex(descriptor)) {
+                    -1 -> break
+                    0 ->
+                        nickname =
+                            decodeNullableSerializableElement(
+                                descriptor,
+                                0,
+                                String.serializer().nullable,
+                            )
+
+                    1 ->
+                        pictureUrl =
+                            decodeNullableSerializableElement(
+                                descriptor,
+                                1,
+                                String.serializer().nullable,
+                            )
+
+                    2 ->
+                        introduction =
+                            decodeNullableSerializableElement(
+                                descriptor,
+                                2,
+                                String.serializer().nullable,
+                            )
+
+                    3 ->
+                        pet =
+                            decodeNullableSerializableElement(
+                                descriptor,
+                                3,
+                                PetDto.serializer().nullable,
+                            )
+
+                    4 ->
+                        butler =
+                            decodeNullableSerializableElement(
+                                descriptor,
+                                4,
+                                ButlerDto.serializer().nullable,
+                            )
+
+                    else -> throw SerializationException("Unexpected index $index")
+                }
+            }
+
+            UpdateProfileRequest(
+                nickname = nickname,
+                pictureUrl = pictureUrl,
+                introduction = introduction,
+                pet = pet,
+                butler = butler,
+            )
+        }
 }

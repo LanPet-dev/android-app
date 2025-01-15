@@ -19,6 +19,7 @@ class AndroidJunit5ConventionPlugin : Plugin<Project> {
                 add("testImplementation", libs.findLibrary("mockk.android").get())
                 add("testImplementation", libs.findLibrary("turbine").get())
                 add("testImplementation", project(":core:testing"))
+                add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
             }
         }
     }

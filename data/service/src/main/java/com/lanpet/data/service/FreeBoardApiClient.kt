@@ -3,12 +3,16 @@ package com.lanpet.data.service
 import com.google.gson.GsonBuilder
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.dto.typeadapter.AuthorityTypeTypeAdapter
+import com.lanpet.data.dto.typeadapter.FreeBoardCategoryTypeTypeAdapter
+import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
 import com.lanpet.domain.model.AuthState
 import com.lanpet.domain.model.AuthorityType
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import javax.inject.Inject
 
 class FreeBoardApiClient
@@ -16,6 +20,7 @@ class FreeBoardApiClient
     constructor(
         private val baseUrl: String,
         private val authStateHolder: AuthStateHolder,
+        private val refreshTokenInterceptor: RefreshTokenInterceptor,
     ) {
         private val headerInterceptor =
             Interceptor { chain ->
@@ -35,6 +40,8 @@ class FreeBoardApiClient
                             "x-access-token",
                             token ?: throw SecurityException("x-access-token is required"),
                         ).build()
+                Timber.i("request: $request")
+
                 chain.proceed(request)
             }
 
@@ -43,9 +50,17 @@ class FreeBoardApiClient
                 .registerTypeAdapter(
                     AuthorityType::class.java,
                     AuthorityTypeTypeAdapter(),
+                ).registerTypeAdapter(
+                    FreeBoardCategoryType::class.java,
+                    FreeBoardCategoryTypeTypeAdapter(),
                 ).create()
 
-        private val okHttpClient = OkHttpClient.Builder().addInterceptor(headerInterceptor).build()
+        private val okHttpClient =
+            OkHttpClient
+                .Builder()
+                .addInterceptor(refreshTokenInterceptor)
+                .addInterceptor(headerInterceptor)
+                .build()
 
         private val apiService =
             Retrofit

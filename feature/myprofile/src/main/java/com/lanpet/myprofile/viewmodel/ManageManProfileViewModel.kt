@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
 import com.lanpet.domain.model.Age
@@ -33,7 +34,10 @@ class ManageManProfileViewModel
         private val modifyManProfileUseCase: ModifyManProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
+        private lateinit var originManProfileUpdate: ManProfileUpdate
+
         private val _uiState =
             MutableStateFlow(
                 ManageManProfileUiState(
@@ -50,7 +54,10 @@ class ManageManProfileViewModel
                     },
                 nickName =
                     FormValidator { nickName ->
-                        if (nickName.isEmpty()) {
+                        if (originManProfileUpdate.nickName == nickName) {
+                            return@FormValidator FormValidationStatus.Valid()
+                        }
+                        if (nickName.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("닉네임을 입력해주세요.")
                         } else if (nickName.length < 2 || nickName.length > 20) {
                             FormValidationStatus.Invalid("닉네임은 2자 이상 20자 이하로 입력해주세요.")
@@ -72,7 +79,7 @@ class ManageManProfileViewModel
                     },
             )
 
-        private val _uiEvent = MutableSharedFlow<Boolean>()
+        private val _uiEvent = MutableSharedFlow<ManageManProfileUiEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
 
         fun updateProfileImageUri(uri: Uri) {
@@ -173,6 +180,7 @@ class ManageManProfileViewModel
             _uiState.value =
                 _uiState.value.copy(
                     nicknameDuplicateCheck = null,
+                    shouldCheckNicknameDuplicate = checkNicknameModified(nickName),
                     manProfileUpdate =
                         _uiState.value.manProfileUpdate?.copy(
                             nickName = nickName,
@@ -188,16 +196,31 @@ class ManageManProfileViewModel
                 return
             }
             viewModelScope.launch {
-                checkNicknameDuplicatedUseCase(
-                    _uiState.value.manProfileUpdate?.nickName!!,
-                ).collect { isDuplicated ->
-                    _uiState.value =
-                        _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                runCatching {
+                    checkNicknameDuplicatedUseCase(
+                        _uiState.value.manProfileUpdate?.nickName!!,
+                    ).collect { isDuplicated ->
+                        _uiState.value =
+                            _uiState.value.copy(nicknameDuplicateCheck = isDuplicated)
+                    }
+                }.onFailure {
+                    Timber.e(it.stackTraceToString())
+                    _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                 }
             }
         }
 
-        private fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
+        private fun checkNicknameModified(nickName: String): Boolean = nickName != originManProfileUpdate.nickName
+
+        private fun checkValidation(): Boolean =
+            _uiState.value.validationStatus.isValid &&
+                if (_uiState.value.manProfileUpdate?.nickName ==
+                    originManProfileUpdate.nickName
+                ) {
+                    true
+                } else {
+                    _uiState.value.nicknameDuplicateCheck == true
+                }
 
         fun modifyManProfile() {
             if (_uiState.value.manProfileUpdate == null) {
@@ -237,7 +260,7 @@ class ManageManProfileViewModel
             val manProfile =
                 ManProfile(
                     profileImageUri = _uiState.value.manProfileUpdate?.profileImageUri,
-                    nickName = _uiState.value.manProfileUpdate?.nickName,
+                    nickName = if (_uiState.value.shouldCheckNicknameDuplicate) _uiState.value.manProfileUpdate?.nickName else null,
                     bio = _uiState.value.manProfileUpdate?.bio,
                     butler = _uiState.value.manProfileUpdate?.butler,
                     type = ProfileType.BUTLER,
@@ -246,11 +269,19 @@ class ManageManProfileViewModel
             Timber.d("manProfileUpdate: $manProfile")
 
             viewModelScope.launch {
-                modifyManProfileUseCase(
-                    _uiState.value.manProfileUpdate!!.id,
-                    manProfile,
-                ).collect {
-                    _uiEvent.emit(it)
+                runCatching {
+                    modifyManProfileUseCase(
+                        _uiState.value.manProfileUpdate!!.id,
+                        manProfile,
+                    ).collect {
+                        _uiEvent.emit(
+                            ManageManProfileUiEvent.Success,
+                        )
+                        // 성공 시, 프로필 목록을 다시 가져옵니다
+                        authManager.getProfiles()
+                    }
+                }.onFailure {
+                    _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                 }
             }
         }
@@ -260,32 +291,41 @@ class ManageManProfileViewModel
                 Timber.i("profileId: $it")
 
                 viewModelScope.launch {
-                    getProfileDetailUseCase(it).collect { profileDetail ->
-                        Timber.i("profileDetail: $profileDetail")
+                    runCatching {
+                        getProfileDetailUseCase(it).collect { profileDetail ->
+                            Timber.i("profileDetail: $profileDetail")
 
-                        _uiState.value =
-                            _uiState.value.copy(
-                                manProfileUpdate =
-                                    ManProfileUpdate(
-                                        profileImageUri =
-                                            profileDetail.pictureUrl?.let {
-                                                Uri.parse(
-                                                    profileDetail.pictureUrl,
-                                                )
-                                            },
-                                        nickName = profileDetail.nickname,
-                                        bio = profileDetail.introduction,
-                                        id = profileDetail.id,
-                                        type = ProfileType.BUTLER,
-                                        butler =
-                                            Butler(
-                                                age = profileDetail.butler!!.age,
-                                                preferredPet =
-                                                    profileDetail.butler?.preferredPet
-                                                        ?: emptyList(),
-                                            ),
-                                    ),
-                            )
+                            val manProfileUpdate =
+                                ManProfileUpdate(
+                                    profileImageUri =
+                                        profileDetail.pictureUrl?.let {
+                                            Uri.parse(
+                                                it,
+                                            )
+                                        },
+                                    nickName = profileDetail.nickname,
+                                    bio = profileDetail.introduction,
+                                    id = profileDetail.id,
+                                    type = ProfileType.BUTLER,
+                                    butler =
+                                        Butler(
+                                            age = profileDetail.butler!!.age,
+                                            preferredPet =
+                                                profileDetail.butler?.preferredPet
+                                                    ?: emptyList(),
+                                        ),
+                                )
+
+                            _uiState.value =
+                                _uiState.value.copy(
+                                    manProfileUpdate = manProfileUpdate,
+                                )
+
+                            originManProfileUpdate = manProfileUpdate
+                        }
+                    }.onFailure {
+                        Timber.e(it.stackTraceToString())
+                        _uiEvent.emit(ManageManProfileUiEvent.Fail(it.message))
                     }
                 }
             }
@@ -296,6 +336,7 @@ class ManageManProfileViewModel
 data class ManageManProfileUiState(
     val manProfileUpdate: ManProfileUpdate?,
     val nicknameDuplicateCheck: Boolean? = null,
+    val shouldCheckNicknameDuplicate: Boolean = false,
     val validationStatus: ManProfileUpdateValidationStatus =
         ManProfileUpdateValidationStatus(
             profileImageUri = FormValidationStatus.Initial(),
@@ -308,7 +349,7 @@ data class ManageManProfileUiState(
 @Stable
 data class ManProfileUpdateValidator(
     val profileImageUri: FormValidator<Uri?>,
-    val nickName: FormValidator<String>,
+    val nickName: FormValidator<String?>,
     val bio: FormValidator<String?>,
     val butler: FormValidator<Butler?>,
 )
@@ -326,4 +367,17 @@ data class ManProfileUpdateValidationStatus(
                 nickName is FormValidationStatus.Valid &&
                 bio is FormValidationStatus.Valid &&
                 butler is FormValidationStatus.Valid
+}
+
+@Stable
+sealed class ManageManProfileUiEvent {
+    data object Success : ManageManProfileUiEvent()
+
+    data class Error(
+        val message: String?,
+    ) : ManageManProfileUiEvent()
+
+    data class Fail(
+        val message: String?,
+    ) : ManageManProfileUiEvent()
 }

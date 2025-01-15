@@ -2,4 +2,6 @@
     <string name="next_button_string">다음</string>
     <string name="prev_button_string">뒤로</string>
     <string name="start_button_string">시작하기</string>
+    <string name="title_appbar_freeboard">사랑방</string>
+    <string name="title_no_freeboard_post">아직 게시된 글이 없어요\n첫 번째로 작성해 보시면 어떨까요?</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -22,11 +23,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.myiconpack.ArrowLeft
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonAppBarTitle
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.common.widget.CommonIconButtonBox
@@ -52,8 +56,11 @@ import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.myprofile.R
 import com.lanpet.myprofile.navigation.MyProfileManageProfile
+import com.lanpet.myprofile.viewmodel.ManageManProfileUiEvent
 import com.lanpet.myprofile.viewmodel.ManageManProfileViewModel
 import com.lanpet.myprofile.viewmodel.ManagePetProfileViewModel
+import com.lanpet.myprofile.viewmodel.PetProfileUpdateEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +75,7 @@ fun MyProfileManageProfileScreen(
     val verticalScrollState = rememberScrollState()
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             LanPetTopAppBar(
                 navigationIcon = {
@@ -109,7 +117,9 @@ fun MyProfileManageProfileScreen(
             ) {
                 when (args!!.profileType) {
                     ProfileType.PET -> {
-                        PetProfileAddView()
+                        PetProfileAddView(
+                            onNavigateUp = onNavigateUp,
+                        )
                     }
 
                     ProfileType.BUTLER -> {
@@ -125,8 +135,31 @@ fun MyProfileManageProfileScreen(
 private fun PetProfileAddView(
     modifier: Modifier = Modifier,
     managePetProfileViewModel: ManagePetProfileViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit = { },
 ) {
     val petProfileUiState by managePetProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp() }
+
+    LaunchedEffect(Unit) {
+        managePetProfileViewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is PetProfileUpdateEvent.Error -> {
+                    context.toast(event.message ?: "Error")
+                    rememberOnNavigateUp()
+                }
+
+                is PetProfileUpdateEvent.Fail -> {
+                    context.toast(event.message ?: "Fail")
+                }
+
+                is PetProfileUpdateEvent.Success -> {
+                    rememberOnNavigateUp()
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(
@@ -138,7 +171,8 @@ private fun PetProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
         NickNameSection(
-            duplicatedStatus = petProfileUiState.nicknameDuplicateCheck,
+            isActive = petProfileUiState.petProfileUpdate?.shouldCheckNicknameDuplicate == true,
+            duplicatedStatus = petProfileUiState.petProfileUpdate?.nicknameDuplicateChecked,
             nickname = petProfileUiState.petProfileUpdate?.nickName ?: "",
             onNicknameChange = {
                 managePetProfileViewModel.updateNickName(it)
@@ -182,10 +216,30 @@ private fun PetProfileAddView(
 private fun ManProfileAddView(
     modifier: Modifier = Modifier,
     manageManProfileViewModel: ManageManProfileViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit = { },
 ) {
     val manageProfileUiState by manageManProfileViewModel.uiState.collectAsStateWithLifecycle()
+    val rememberOnNavigateUp by rememberUpdatedState { onNavigateUp() }
+    val context = LocalContext.current
 
-    val nickname = remember { manageProfileUiState.manProfileUpdate?.nickName ?: "" }
+    LaunchedEffect(Unit) {
+        manageManProfileViewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is ManageManProfileUiEvent.Error -> {
+                    context.toast(event.message ?: "Error")
+                    rememberOnNavigateUp()
+                }
+
+                is ManageManProfileUiEvent.Fail -> {
+                    context.toast(event.message ?: "Fail")
+                }
+
+                ManageManProfileUiEvent.Success -> {
+                    rememberOnNavigateUp()
+                }
+            }
+        }
+    }
 
     Column {
         ProfileImagePicker(
@@ -197,6 +251,7 @@ private fun ManProfileAddView(
         )
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.large))
         NickNameSection(
+            isActive = manageProfileUiState.shouldCheckNicknameDuplicate,
             duplicatedStatus = manageProfileUiState.nicknameDuplicateCheck,
             nickname = manageProfileUiState.manProfileUpdate?.nickName ?: "",
             onNicknameChange = {
@@ -521,6 +576,7 @@ private fun SelectAgeSection(
 private fun NickNameSection(
     nickname: String,
     duplicatedStatus: Boolean?,
+    isActive: Boolean,
     modifier: Modifier = Modifier,
     onNicknameChange: (String) -> Unit = {},
     onCheckDuplicatedNickname: () -> Unit = {},
@@ -541,6 +597,7 @@ private fun NickNameSection(
             )
             Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.xxSmall))
             CommonButton(
+                isActive = isActive,
                 modifier = Modifier.width(100.dp),
                 title = stringResource(R.string.check_duplicated_nickname_button_string),
                 onClick = {

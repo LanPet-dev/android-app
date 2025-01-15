@@ -1,13 +1,20 @@
 package com.lanpet.free
 
+import androidx.lifecycle.SavedStateHandle
 import com.lanpet.core.testing.rule.data.freeBoardCommentTestData
 import com.lanpet.core.testing.rule.data.freeBoardPostDetailTestData
+import com.lanpet.domain.model.PaginationData
+import com.lanpet.domain.model.PaginationInfo
+import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
+import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
+import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,17 +34,17 @@ class FreeBoardDetailViewModelTest {
     private lateinit var viewModel: FreeBoardDetailViewModel
     private lateinit var getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase
     private lateinit var getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase
+    private lateinit var doPostLikeUseCase: DoPostLikeUseCase
+    private lateinit var cancelPostLikeUseCase: CancelPostLikeUseCase
+    private lateinit var writeCommentUseCase: WriteCommentUseCase
 
     @BeforeEach
     fun setUp() {
         getFreeBoardDetailUseCase = mockk()
         getFreeBoardCommentListUseCase = mockk()
-
-        viewModel =
-            FreeBoardDetailViewModel(
-                getFreeBoardDetailUseCase,
-                getFreeBoardCommentListUseCase,
-            )
+        doPostLikeUseCase = mockk()
+        cancelPostLikeUseCase = mockk()
+        writeCommentUseCase = mockk()
     }
 
     @AfterEach
@@ -45,10 +52,56 @@ class FreeBoardDetailViewModelTest {
         clearAllMocks()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Smoke test`() {
-        // check initial uiState
-        assert(viewModel.uiState.value == FreeBoardDetailState.Loading)
+        runTest {
+            // given
+            val postId = "1"
+            val profileId = "profileId"
+            coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
+                flow {
+                    emit(
+                        freeBoardPostDetailTestData,
+                    )
+                }
+
+            coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
+                flow {
+                    emit(
+                        PaginationData(
+                            data = freeBoardCommentTestData,
+                            paginationInfo =
+                                PaginationInfo(
+                                    hasNext = false,
+                                    nextCursor = null,
+                                ),
+                        ),
+                    )
+                }
+
+            viewModel =
+                FreeBoardDetailViewModel(
+                    getFreeBoardDetailUseCase,
+                    getFreeBoardCommentListUseCase,
+                    savedStateHandle =
+                        SavedStateHandle(
+                            mapOf(
+                                "postId" to "1",
+                                "profileId" to "profileId",
+                            ),
+                        ),
+                    doPostLikeUseCase = doPostLikeUseCase,
+                    cancelPostLikeUseCase = cancelPostLikeUseCase,
+                    writeCommentUseCase = writeCommentUseCase,
+                )
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) {
+                getFreeBoardDetailUseCase(postId, profileId)
+                getFreeBoardCommentListUseCase(postId, any(), any(), any())
+            }
+        }
     }
 
     @Nested
@@ -58,20 +111,45 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 성공,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Success 를 반환한다`() =
             runTest {
                 // given
-                val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val postId = "1"
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
                             freeBoardPostDetailTestData,
                         )
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
                     flow {
                         emit(
-                            freeBoardCommentTestData,
+                            PaginationData(
+                                data = freeBoardCommentTestData,
+                                paginationInfo =
+                                    PaginationInfo(
+                                        hasNext = false,
+                                        nextCursor = null,
+                                    ),
+                            ),
                         )
                     }
+
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                    "profileId" to "profileId",
+                                ),
+                            ),
+                        doPostLikeUseCase = doPostLikeUseCase,
+                        cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
+                    )
+                advanceUntilIdle()
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
@@ -79,10 +157,6 @@ class FreeBoardDetailViewModelTest {
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Success)
@@ -94,18 +168,50 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 성공,PostDetailData fetch 실패 시, uiState 은 FreeBoardDetailState_Error 을 반환한다`() =
             runTest {
                 // given
-                val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val postId = "1"
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         throw Exception("Failed to fetch detail")
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery {
+                    getFreeBoardCommentListUseCase(
+                        postId,
+                        any(),
+                        any(),
+                        any(),
+                    )
+                } returns
                     flow {
                         emit(
-                            freeBoardCommentTestData,
+                            PaginationData(
+                                data = freeBoardCommentTestData,
+                                paginationInfo =
+                                    PaginationInfo(
+                                        hasNext = false,
+                                        nextCursor = null,
+                                    ),
+                            ),
                         )
                     }
+
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                    "profileId" to "profileId",
+                                ),
+                            ),
+                        doPostLikeUseCase = doPostLikeUseCase,
+                        cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
+                    )
+                advanceUntilIdle()
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
@@ -113,10 +219,6 @@ class FreeBoardDetailViewModelTest {
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)
@@ -129,18 +231,35 @@ class FreeBoardDetailViewModelTest {
         fun `CommentData fetch 실패,PostDetailData fetch 성공 시, uiState 은 FreeBoardDetailState_Error 을 반환한다`() =
             runTest {
                 // given
-                val postId = 1
-                coEvery { getFreeBoardDetailUseCase(postId) } returns
+                val postId = "1"
+                val profileId = "profileId"
+                coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
                             freeBoardPostDetailTestData,
                         )
                     }
 
-                coEvery { getFreeBoardCommentListUseCase(postId) } returns
+                coEvery { getFreeBoardCommentListUseCase(postId, any(), any(), any()) } returns
                     flow {
                         throw Exception("Failed to fetch comments")
                     }
+                viewModel =
+                    FreeBoardDetailViewModel(
+                        getFreeBoardDetailUseCase,
+                        getFreeBoardCommentListUseCase,
+                        savedStateHandle =
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                    "profileId" to "profileId",
+                                ),
+                            ),
+                        doPostLikeUseCase = doPostLikeUseCase,
+                        cancelPostLikeUseCase = cancelPostLikeUseCase,
+                        writeCommentUseCase = writeCommentUseCase,
+                    )
+                advanceUntilIdle()
 
                 // 상태 변화를 관찰하기 위한 collector
                 val states = mutableListOf<FreeBoardDetailState>()
@@ -148,10 +267,6 @@ class FreeBoardDetailViewModelTest {
                     launch(UnconfinedTestDispatcher()) {
                         viewModel.uiState.collect { states.add(it) }
                     }
-
-                // when
-                viewModel.init(postId)
-                advanceUntilIdle()
 
                 // then
                 assert(states.last() is FreeBoardDetailState.Error)

@@ -1,21 +1,22 @@
 package com.lanpet.free.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
+import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.usecase.freeboard.CreateFreeBoardPostUseCase
-import com.lanpet.free.model.WriteFreeBoardResult
+import com.lanpet.domain.usecase.freeboard.GetResourceUploadUrlUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -26,29 +27,64 @@ class FreeBoardWriteViewModel
     @Inject
     constructor(
         private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
+        private val getResourceUploadUrlUseCase: GetResourceUploadUrlUseCase,
     ) : ViewModel() {
-        private val _freeBoardPostCreate =
+        private val _uiState =
             MutableStateFlow(
-                FreeBoardPostCreate(
-                    boardCategory = "",
-                    petCategory = "",
-                    title = "",
-                    body = "",
-                    imageList = emptyList(),
+                CreateFreeBoardPostUiState(
+                    freeBoardPostCreate =
+                        FreeBoardPostCreate(
+                            profileId = null,
+                            boardCategory = null,
+                            petCategory = null,
+                            title = "",
+                            body = "",
+                            imageList = emptyList(),
+                        ),
                 ),
             )
-        val freeBoardPostCreate: StateFlow<FreeBoardPostCreate> = _freeBoardPostCreate.asStateFlow()
+        val uiState = _uiState.asStateFlow()
 
-        private val _writeFreeBoardResult =
-            MutableSharedFlow<WriteFreeBoardResult>()
-        val writeFreeBoardResult: SharedFlow<WriteFreeBoardResult> =
-            _writeFreeBoardResult.asSharedFlow()
+        val isValidState =
+            _uiState
+                .map { state ->
+                    val boardCategoryValidation =
+                        freeBoardWriteValidator.boardCategory.validate(
+                            state.freeBoardPostCreate?.boardCategory,
+                        )
+                    val petCategoryValidation =
+                        freeBoardWriteValidator.petCategory.validate(state.freeBoardPostCreate?.petCategory)
+                    val titleValidation =
+                        freeBoardWriteValidator.title.validate(state.freeBoardPostCreate?.title)
+                    val bodyValidation =
+                        freeBoardWriteValidator.body.validate(state.freeBoardPostCreate?.body)
+                    val imageListValidation =
+                        freeBoardWriteValidator.imageList.validate(state.freeBoardPostCreate?.imageList)
+
+                    boardCategoryValidation is FormValidationStatus.Valid &&
+                        petCategoryValidation is FormValidationStatus.Valid &&
+                        titleValidation is FormValidationStatus.Valid &&
+                        bodyValidation is FormValidationStatus.Valid &&
+                        imageListValidation is FormValidationStatus.Valid
+                }.stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = false,
+                )
 
         private val freeBoardWriteValidator =
             FreeBoardWriteValidator(
+                profileId =
+                    FormValidator { id ->
+                        if (id.isNullOrBlank()) {
+                            FormValidationStatus.Invalid("프로필 정보를 불러올 수 없습니다.")
+                        } else {
+                            FormValidationStatus.Valid()
+                        }
+                    },
                 boardCategory =
                     FormValidator { category ->
-                        if (category.isEmpty()) {
+                        if (category?.value.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("게시글 카테고리를 선택해주세요.")
                         } else {
                             FormValidationStatus.Valid()
@@ -56,7 +92,7 @@ class FreeBoardWriteViewModel
                     },
                 petCategory =
                     FormValidator { category ->
-                        if (category.isEmpty()) {
+                        if (category?.value.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("반려동물 카테고리를 선택해주세요.")
                         } else {
                             FormValidationStatus.Valid()
@@ -64,7 +100,7 @@ class FreeBoardWriteViewModel
                     },
                 title =
                     FormValidator { title ->
-                        if (title.isEmpty()) {
+                        if (title.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("제목을 입력해주세요.")
                         } else {
                             FormValidationStatus.Valid()
@@ -72,7 +108,7 @@ class FreeBoardWriteViewModel
                     },
                 body =
                     FormValidator { body ->
-                        if (body.isEmpty()) {
+                        if (body.isNullOrEmpty()) {
                             FormValidationStatus.Invalid("내용을 입력해주세요.")
                         } else {
                             FormValidationStatus.Valid()
@@ -83,130 +119,209 @@ class FreeBoardWriteViewModel
                         FormValidationStatus.Valid()
                     },
             )
-        private val _freeBoardWriteValidationResult =
-            MutableStateFlow(
-                FreeBoardWriteValidationResult(
-                    boardCategory = FormValidationStatus.Initial(),
-                    petCategory = FormValidationStatus.Initial(),
-                    title = FormValidationStatus.Initial(),
-                    body = FormValidationStatus.Initial(),
-                    imageList = FormValidationStatus.Valid(),
-                ),
-            )
-        val freeBoardWriteValidationResult: StateFlow<FreeBoardWriteValidationResult> =
-            _freeBoardWriteValidationResult.asStateFlow()
 
-        val completeEnable: StateFlow<Boolean> =
-            freeBoardWriteValidationResult
-                .map { validationResult ->
-                    validationResult.boardCategory is FormValidationStatus.Valid &&
-                        validationResult.petCategory is FormValidationStatus.Valid &&
-                        validationResult.title is FormValidationStatus.Valid &&
-                        validationResult.body is FormValidationStatus.Valid &&
-                        validationResult.imageList is FormValidationStatus.Valid
-                }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+        private val _uiEvent = MutableSharedFlow<Boolean>()
+        val uiEvent = _uiEvent.asSharedFlow()
 
-        fun setBoardCategory(category: String) {
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    boardCategory = freeBoardWriteValidator.boardCategory.validate(category),
+        fun setProfileId(id: String) {
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            profileId = id,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            profileId = freeBoardWriteValidator.profileId.validate(id),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(boardCategory = category)
         }
 
-        fun setPetCategory(category: String) {
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    petCategory = freeBoardWriteValidator.petCategory.validate(category),
+        fun setBoardCategory(category: FreeBoardCategoryType) {
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            boardCategory = category,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            boardCategory = freeBoardWriteValidator.boardCategory.validate(category),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(petCategory = category)
+        }
+
+        fun setPetCategory(category: PetCategory) {
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            petCategory = category,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            petCategory = freeBoardWriteValidator.petCategory.validate(category),
+                        ),
+                )
         }
 
         fun setTitle(title: String) {
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    title = freeBoardWriteValidator.title.validate(title),
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            title = title,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            title = freeBoardWriteValidator.title.validate(title),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(title = title)
         }
 
         fun setBody(body: String) {
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    body = freeBoardWriteValidator.body.validate(body),
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            body = body,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            body = freeBoardWriteValidator.body.validate(body),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(body = body)
         }
 
         fun addImage(uri: Uri) {
-            val currentImages = _freeBoardPostCreate.value.imageList?.toMutableList() ?: mutableListOf()
+            val currentImages =
+                _uiState.value.freeBoardPostCreate
+                    ?.imageList
+                    ?.toMutableList() ?: mutableListOf()
             if (currentImages.contains(uri)) {
                 return
             } else {
                 currentImages.add(uri)
             }
-
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            imageList = currentImages,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = currentImages)
         }
 
         fun removeImage(uri: Uri) {
-            val currentImages = _freeBoardPostCreate.value.imageList?.toMutableList() ?: mutableListOf()
+            val currentImages =
+                _uiState.value.freeBoardPostCreate
+                    ?.imageList
+                    ?.toMutableList() ?: mutableListOf()
             currentImages.remove(uri)
 
-            _freeBoardWriteValidationResult.value =
-                _freeBoardWriteValidationResult.value.copy(
-                    imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+            _uiState.value =
+                _uiState.value.copy(
+                    freeBoardPostCreate =
+                        _uiState.value.freeBoardPostCreate?.copy(
+                            imageList = currentImages,
+                        ),
+                    validationStatus =
+                        _uiState.value.validationStatus.copy(
+                            imageList = freeBoardWriteValidator.imageList.validate(currentImages),
+                        ),
                 )
-            _freeBoardPostCreate.value = _freeBoardPostCreate.value.copy(imageList = currentImages)
         }
 
         fun writeFreeBoardPost() {
-            viewModelScope.launch {
-                _writeFreeBoardResult.emit(WriteFreeBoardResult.Loading)
+            val freeBoardPostCreate = _uiState.value.freeBoardPostCreate ?: return
 
-                postFreeBoardUseCase(freeBoardPostCreate.value.toDomain())
-                    .catch {
-                        _writeFreeBoardResult.emit(WriteFreeBoardResult.Error("Unknown error"))
-                    }.collect {
-                        _writeFreeBoardResult.emit(WriteFreeBoardResult.Success)
+            if (!isValidState.value) {
+                return
+            }
+
+            viewModelScope.launch {
+                runCatching {
+                    postFreeBoardUseCase(
+                        freeBoardPostCreate = freeBoardPostCreate,
+                    ).collect {
+                        if ((freeBoardPostCreate.imageList?.size ?: 0) > 0) {
+                            getResourceUploadUrl(
+                                sarangbangId = it,
+                                size = freeBoardPostCreate.imageList?.size!!,
+                            )
+                        } else {
+                            _uiEvent.emit(true)
+                        }
                     }
+                }.onFailure {
+                    _uiEvent.emit(false)
+                }
+            }
+        }
+
+        private fun getResourceUploadUrl(
+            sarangbangId: String,
+            size: Int,
+        ) {
+            viewModelScope.launch {
+                runCatching {
+                    getResourceUploadUrlUseCase(
+                        sarangbangId = sarangbangId,
+                        size = size,
+                    ).collect {
+                        _uiEvent.emit(true)
+                    }
+                }.onFailure {
+                    _uiEvent.emit(false)
+                }
             }
         }
     }
 
-data class FreeBoardWriteValidator(
-    val boardCategory: FormValidator<String>,
-    val petCategory: FormValidator<String>,
-    val title: FormValidator<String>,
-    val body: FormValidator<String>,
-    val imageList: FormValidator<List<Uri>>,
+@Stable
+data class CreateFreeBoardPostUiState(
+    val freeBoardPostCreate: FreeBoardPostCreate?,
+    val nicknameDuplicateCheck: Boolean? = null,
+    val validationStatus: FreeBoardWriteValidationStatus =
+        FreeBoardWriteValidationStatus(
+            profileId = FormValidationStatus.Initial(),
+            boardCategory = FormValidationStatus.Initial(),
+            petCategory = FormValidationStatus.Initial(),
+            title = FormValidationStatus.Initial(),
+            body = FormValidationStatus.Initial(),
+            imageList = FormValidationStatus.Initial(),
+        ),
 )
 
-data class FreeBoardWriteValidationResult(
+@Stable
+data class FreeBoardWriteValidator(
+    val profileId: FormValidator<String?>,
+    val boardCategory: FormValidator<FreeBoardCategoryType?>,
+    val petCategory: FormValidator<PetCategory?>,
+    val title: FormValidator<String?>,
+    val body: FormValidator<String?>,
+    val imageList: FormValidator<List<Uri>?>,
+)
+
+@Stable
+data class FreeBoardWriteValidationStatus(
+    val profileId: FormValidationStatus,
     val boardCategory: FormValidationStatus,
     val petCategory: FormValidationStatus,
     val title: FormValidationStatus,
     val body: FormValidationStatus,
     val imageList: FormValidationStatus,
-)
-
-data class FreeBoardPostCreate(
-    val boardCategory: String,
-    val petCategory: String,
-    val title: String,
-    val body: String,
-    val imageList: List<Uri>?,
-)
-
-fun FreeBoardPostCreate.toDomain() =
-    com.lanpet.domain.model.FreeBoardPostCreate(
-        boardCategory = boardCategory,
-        petCategory = petCategory,
-        title = title,
-        body = body,
-        imageList = imageList,
-    )
+) {
+    val isValid: Boolean
+        get() =
+            profileId is FormValidationStatus.Valid &&
+                boardCategory is FormValidationStatus.Valid &&
+                petCategory is FormValidationStatus.Valid &&
+                title is FormValidationStatus.Valid &&
+                body is FormValidationStatus.Valid &&
+                imageList is FormValidationStatus.Valid
+}
