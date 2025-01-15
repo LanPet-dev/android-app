@@ -78,9 +78,10 @@ fun FreeBoardScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     DisposableEffect(lifecycle) {
-        val observer = LifecycleEventObserver { _, event ->
-            Timber.i("FreeBoardScreenLifecycle : $event")
-        }
+        val observer =
+            LifecycleEventObserver { _, event ->
+                Timber.i("FreeBoardScreenLifecycle : $event")
+            }
 
         lifecycle.addObserver(observer)
         onDispose {
@@ -177,7 +178,10 @@ fun FreeBoardScreen(
                                             Modifier.verticalScroll(
                                                 state = scrollState,
                                             ),
-                                        isLoading = freeBoardListViewModel.isProcess.collectAsStateWithLifecycle().value.isLocked,
+                                        isLoading =
+                                            freeBoardListViewModel.isProcess
+                                                .collectAsStateWithLifecycle()
+                                                .value.isLocked,
                                         freeBoardItemList = (uiState as FreeBoardListState.Success).data,
                                         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                                         onLoadMore = {

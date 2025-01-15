@@ -192,8 +192,8 @@ class FreeBoardDetailViewModelTest {
                                         hasNext = false,
                                         nextCursor = null,
                                     ),
-                                ),
-                            )
+                            ),
+                        )
                     }
 
                 viewModel =
@@ -201,12 +201,12 @@ class FreeBoardDetailViewModelTest {
                         getFreeBoardDetailUseCase,
                         getFreeBoardCommentListUseCase,
                         savedStateHandle =
-                        SavedStateHandle(
-                            mapOf(
-                                "postId" to "1",
-                                "profileId" to "profileId",
+                            SavedStateHandle(
+                                mapOf(
+                                    "postId" to "1",
+                                    "profileId" to "profileId",
+                                ),
                             ),
-                        ),
                         doPostLikeUseCase = doPostLikeUseCase,
                         cancelPostLikeUseCase = cancelPostLikeUseCase,
                         writeCommentUseCase = writeCommentUseCase,

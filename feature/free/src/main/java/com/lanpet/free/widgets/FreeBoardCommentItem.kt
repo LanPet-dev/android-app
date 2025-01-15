@@ -17,15 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.lanpet.core.common.MyIconPack
-import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.designsystem.R
-import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
@@ -158,17 +154,17 @@ fun FreeBoardCommentItem(
 private fun FreeBoardCommentItemPreview() {
     LanPetAppTheme {
         Column {
-           FreeBoardCommentItem(
-               FreeBoardComment(
-                   id = "1",
-                   profile =
-                   Profile(
-                       nickname = "닉네임",
-                       profileImage = null,
-                   ),
-                   comment = "This is comment",
-               )
-           )
+            FreeBoardCommentItem(
+                FreeBoardComment(
+                    id = "1",
+                    profile =
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
+                    comment = "This is comment",
+                ),
+            )
         }
     }
 }
