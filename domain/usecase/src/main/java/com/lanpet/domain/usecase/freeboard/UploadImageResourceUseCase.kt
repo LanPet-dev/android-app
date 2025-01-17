@@ -4,9 +4,13 @@ import com.lanpet.domain.repository.FreeBoardRepository
 import com.lanpet.domain.repository.S3UploadRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
@@ -23,13 +27,22 @@ class UploadImageResourceUseCase
         ) = freeBoardRepository
             .getResourceUploadUrl(sarangbangId, imageList.size)
             .flatMapConcat { urlItems ->
-                urlItems.items
-                    .mapIndexed { index, url ->
-                        s3UploadRepository
-                            .uploadImageResource(
-                                url = url,
-                                byteArray = imageList[index],
-                            ).collect()
-                    }.asFlow()
-            }.flowOn(Dispatchers.IO)
+                flow {
+                    coroutineScope {
+                        val results = urlItems.items.mapIndexed { index, url ->
+                            async {
+                                s3UploadRepository
+                                    .uploadImageResource(
+                                        url = url,
+                                        byteArray = imageList[index]
+                                    )
+                                    .first()
+                            }
+                        }
+                        delay(2000)
+                        emit(results.awaitAll())
+                    }
+                }
+            }
+            .flowOn(Dispatchers.IO)
     }
