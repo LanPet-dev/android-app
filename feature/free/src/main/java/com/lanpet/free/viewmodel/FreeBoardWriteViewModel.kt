@@ -31,6 +31,9 @@ class FreeBoardWriteViewModel
         private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
         private val uploadImageResourceUseCase: UploadImageResourceUseCase,
     ) : ViewModel() {
+        private val _loadingState = MutableStateFlow(false)
+        val loadingState = _loadingState.asStateFlow()
+
         private val _uiState =
             MutableStateFlow(
                 CreateFreeBoardPostUiState(
@@ -246,6 +249,7 @@ class FreeBoardWriteViewModel
             }
 
             viewModelScope.launch {
+                _loadingState.value = true
                 runCatching {
                     postFreeBoardUseCase(
                         freeBoardPostCreate = freeBoardPostCreate,
@@ -257,10 +261,12 @@ class FreeBoardWriteViewModel
                                 context = context,
                             )
                         } else {
+                            _loadingState.value = false
                             _uiEvent.emit(FreeBoardWriteUiEvent.Success(it))
                         }
                     }
                 }.onFailure {
+                    _loadingState.value = false
                     _uiEvent.emit(FreeBoardWriteUiEvent.Fail(it.message.toString()))
                 }
             }
@@ -283,6 +289,8 @@ class FreeBoardWriteViewModel
                     }
                 }.onFailure {
                     _uiEvent.emit(FreeBoardWriteUiEvent.Fail(it.message.toString()))
+                }.also {
+                    _loadingState.value = false
                 }
             }
         }
