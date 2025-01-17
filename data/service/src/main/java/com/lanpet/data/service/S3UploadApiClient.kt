@@ -9,6 +9,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
+/**
+ * S3UploadApiClient는 S3 업로드를 위한 API 클라이언트입니다.
+ * 현재 페이지에서 사용하는 `baseUrl`은 S3UploadApiClient 빌드에만 사용되며,
+ * 실제 API 통신에는 사용되지 않습니다.
+ */
 class S3UploadApiClient
     @Inject
     constructor(
