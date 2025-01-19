@@ -155,19 +155,19 @@ class FreeBoardDetailViewModel
                 when (commentsState.value) {
                     is CommentsState.Error ->
                         CursorPagingState(
-                            size = 1,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
                     CommentsState.Initial ->
                         CursorPagingState(
-                            size = 1,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
                     CommentsState.Loading ->
                         CursorPagingState(
-                            size = 1,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
@@ -194,7 +194,7 @@ class FreeBoardDetailViewModel
                                         CursorPagingState(
                                             hasNext = it.paginationInfo.hasNext,
                                             cursor = it.paginationInfo.nextCursor,
-                                            size = 1,
+                                            size = 10,
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
@@ -208,7 +208,7 @@ class FreeBoardDetailViewModel
                                         CursorPagingState(
                                             hasNext = it.paginationInfo.hasNext,
                                             cursor = it.paginationInfo.nextCursor,
-                                            size = 1,
+                                            size = 10,
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
@@ -245,7 +245,7 @@ private sealed class CommentsState {
         val comments: List<FreeBoardComment>,
         val cursorPagingState: CursorPagingState =
             CursorPagingState(
-                size = 1,
+                size = 20,
                 direction = CursorDirection.NEXT,
             ),
         val isLoadingMore: Boolean = false,
