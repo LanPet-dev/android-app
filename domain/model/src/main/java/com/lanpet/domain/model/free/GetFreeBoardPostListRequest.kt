@@ -9,4 +9,5 @@ data class GetFreeBoardPostListRequest(
     // When FreeBoardCategoryType is null, it means that all categories are included.
     val freeBoardCategoryType: FreeBoardCategoryType?,
     val direction: CursorDirection = CursorDirection.NEXT,
+    val profileId: String? = null,
 )

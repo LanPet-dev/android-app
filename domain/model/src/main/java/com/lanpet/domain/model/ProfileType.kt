@@ -1,8 +1,5 @@
 package com.lanpet.domain.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 enum class ProfileType(
     val value: String,
 ) {

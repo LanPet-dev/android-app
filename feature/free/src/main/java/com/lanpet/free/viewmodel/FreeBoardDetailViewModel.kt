@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -66,6 +65,7 @@ class FreeBoardDetailViewModel
                         FreeBoardDetailState.Success(
                             postDetail = detailState.postDetail,
                             comments = commentsState.comments,
+                            canLoadMoreComments = commentsState.cursorPagingState.hasNext,
                         )
                     }
 
@@ -133,82 +133,86 @@ class FreeBoardDetailViewModel
         }
 
         fun refreshComments() {
+            commentsState.value = CommentsState.Initial
+            fetchComments()
+        }
+
+        private fun fetchDetail() {
+            detailState.value = DetailState.Loading
+
             viewModelScope.launch {
-                fetchComments()
+                getFreeBoardDetailUseCase(postId, profileId)
+                    .catch {
+                        detailState.value = DetailState.Error("Failed to fetch detail")
+                    }.collect {
+                        detailState.value = DetailState.Success(it)
+                    }
             }
         }
 
-        private suspend fun fetchDetail() {
-            detailState.value = DetailState.Loading
-
-            getFreeBoardDetailUseCase(postId, profileId)
-                .catch {
-                    detailState.value = DetailState.Error("Failed to fetch detail")
-                }.collect {
-                    detailState.value = DetailState.Success(it)
-                }
-        }
-
-        private suspend fun fetchComments() {
+        fun fetchComments() {
             val pagingState =
                 when (commentsState.value) {
                     is CommentsState.Error ->
                         CursorPagingState(
-                            size = 20,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
                     CommentsState.Initial ->
                         CursorPagingState(
-                            size = 20,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
                     CommentsState.Loading ->
                         CursorPagingState(
-                            size = 20,
+                            size = 10,
                             direction = CursorDirection.NEXT,
                         )
 
                     is CommentsState.Success -> (commentsState.value as CommentsState.Success).cursorPagingState
                 }
 
-            getFreeBoardCommentListUseCase(
-                postId,
-                cursor = pagingState.cursor,
-                size = pagingState.size,
-                direction = pagingState.direction,
-            ).catch {
-                commentsState.value = CommentsState.Error("Failed to fetch comments")
-            }.collect {
-                when (commentsState.value) {
-                    is CommentsState.Success -> {
-                        commentsState.value =
-                            CommentsState.Success(
-//                                comments = (commentsState.value as CommentsState.Success).comments + it.data,
-                                comments = it.data,
-                                cursorPagingState =
-                                    CursorPagingState(
-                                        hasNext = it.paginationInfo.hasNext,
-                                        cursor = it.paginationInfo.nextCursor,
-                                        size = 20,
-                                        direction = CursorDirection.NEXT,
-                                    ),
-                            )
-                    }
+            if (!pagingState.hasNext) return
 
-                    else ->
-                        commentsState.value =
-                            CommentsState.Success(
-                                comments = it.data,
-                                cursorPagingState =
-                                    CursorPagingState(
-                                        hasNext = it.paginationInfo.hasNext,
-                                        cursor = it.paginationInfo.nextCursor,
-                                        size = 20,
-                                        direction = CursorDirection.NEXT,
-                                    ),
-                            )
+            viewModelScope.launch {
+                getFreeBoardCommentListUseCase(
+                    postId,
+                    cursor = pagingState.cursor,
+                    size = pagingState.size,
+                    direction = pagingState.direction,
+                ).catch {
+                    commentsState.value = CommentsState.Error("Failed to fetch comments")
+                }.collect {
+                    when (commentsState.value) {
+                        is CommentsState.Success -> {
+                            commentsState.value =
+                                CommentsState.Success(
+                                    comments = (commentsState.value as CommentsState.Success).comments + it.data,
+                                    cursorPagingState =
+                                        CursorPagingState(
+                                            hasNext = it.paginationInfo.hasNext,
+                                            cursor = it.paginationInfo.nextCursor,
+                                            size = 10,
+                                            direction = CursorDirection.NEXT,
+                                        ),
+                                )
+                        }
+
+                        else ->
+                            commentsState.value =
+                                CommentsState.Success(
+                                    comments = it.data,
+                                    cursorPagingState =
+                                        CursorPagingState(
+                                            hasNext = it.paginationInfo.hasNext,
+                                            cursor = it.paginationInfo.nextCursor,
+                                            size = 10,
+                                            direction = CursorDirection.NEXT,
+                                        ),
+                                )
+                    }
                 }
             }
         }
@@ -239,7 +243,11 @@ private sealed class CommentsState {
 
     data class Success(
         val comments: List<FreeBoardComment>,
-        val cursorPagingState: CursorPagingState = CursorPagingState(),
+        val cursorPagingState: CursorPagingState =
+            CursorPagingState(
+                size = 20,
+                direction = CursorDirection.NEXT,
+            ),
         val isLoadingMore: Boolean = false,
     ) : CommentsState()
 
@@ -257,6 +265,7 @@ sealed class FreeBoardDetailState {
     data class Success(
         val postDetail: FreeBoardPostDetail,
         val comments: List<FreeBoardComment> = emptyList(),
+        val canLoadMoreComments: Boolean = true,
     ) : FreeBoardDetailState()
 
     data class Error(
