@@ -1,6 +1,11 @@
 # LanPet android app
 
+<img src="https://github.com/user-attachments/assets/9549bded-4270-4c95-8fd0-bd662b24d616" width="200" alt="온보딩-2">
+<img src="https://github.com/user-attachments/assets/79f6296b-4d13-476c-b3fb-988583acb051" width="200" alt="온보딩-1">
+<img src="https://github.com/user-attachments/assets/99c4b41c-7cfa-422e-b32e-db03ec852c24" width="200" alt="온보딩">
+
 # Tech Stack
+
 
 1. Architecture
     - Multi module (https://developer.android.com/topic/modularization?hl=ko)

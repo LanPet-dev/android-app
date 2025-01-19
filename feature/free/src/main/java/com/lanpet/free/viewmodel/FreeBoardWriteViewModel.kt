@@ -1,16 +1,18 @@
 package com.lanpet.free.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.core.common.toByteArrayList
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.usecase.freeboard.CreateFreeBoardPostUseCase
-import com.lanpet.domain.usecase.freeboard.GetResourceUploadUrlUseCase
+import com.lanpet.domain.usecase.freeboard.UploadImageResourceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +29,11 @@ class FreeBoardWriteViewModel
     @Inject
     constructor(
         private val postFreeBoardUseCase: CreateFreeBoardPostUseCase,
-        private val getResourceUploadUrlUseCase: GetResourceUploadUrlUseCase,
+        private val uploadImageResourceUseCase: UploadImageResourceUseCase,
     ) : ViewModel() {
+        private val _loadingState = MutableStateFlow(false)
+        val loadingState = _loadingState.asStateFlow()
+
         private val _uiState =
             MutableStateFlow(
                 CreateFreeBoardPostUiState(
@@ -120,7 +125,7 @@ class FreeBoardWriteViewModel
                     },
             )
 
-        private val _uiEvent = MutableSharedFlow<Boolean>()
+        private val _uiEvent = MutableSharedFlow<FreeBoardWriteUiEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
 
         fun setProfileId(id: String) {
@@ -236,7 +241,7 @@ class FreeBoardWriteViewModel
                 )
         }
 
-        fun writeFreeBoardPost() {
+        fun writeFreeBoardPost(context: Context) {
             val freeBoardPostCreate = _uiState.value.freeBoardPostCreate ?: return
 
             if (!isValidState.value) {
@@ -244,39 +249,48 @@ class FreeBoardWriteViewModel
             }
 
             viewModelScope.launch {
+                _loadingState.value = true
                 runCatching {
                     postFreeBoardUseCase(
                         freeBoardPostCreate = freeBoardPostCreate,
                     ).collect {
                         if ((freeBoardPostCreate.imageList?.size ?: 0) > 0) {
-                            getResourceUploadUrl(
+                            uploadImageResource(
                                 sarangbangId = it,
-                                size = freeBoardPostCreate.imageList?.size!!,
+                                imageList = freeBoardPostCreate.imageList!!,
+                                context = context,
                             )
                         } else {
-                            _uiEvent.emit(true)
+                            _loadingState.value = false
+                            _uiEvent.emit(FreeBoardWriteUiEvent.Success(it))
                         }
                     }
                 }.onFailure {
-                    _uiEvent.emit(false)
+                    _loadingState.value = false
+                    _uiEvent.emit(FreeBoardWriteUiEvent.Fail(it.message.toString()))
                 }
             }
         }
 
-        private fun getResourceUploadUrl(
+        private fun uploadImageResource(
             sarangbangId: String,
-            size: Int,
+            imageList: List<Uri>,
+            context: Context,
         ) {
             viewModelScope.launch {
                 runCatching {
-                    getResourceUploadUrlUseCase(
+                    val byteArrayList = imageList.toByteArrayList(context)
+
+                    uploadImageResourceUseCase(
                         sarangbangId = sarangbangId,
-                        size = size,
+                        imageList = byteArrayList,
                     ).collect {
-                        _uiEvent.emit(true)
+                        _uiEvent.emit(FreeBoardWriteUiEvent.Success(sarangbangId))
                     }
                 }.onFailure {
-                    _uiEvent.emit(false)
+                    _uiEvent.emit(FreeBoardWriteUiEvent.Fail(it.message.toString()))
+                }.also {
+                    _loadingState.value = false
                 }
             }
         }
@@ -324,4 +338,19 @@ data class FreeBoardWriteValidationStatus(
                 title is FormValidationStatus.Valid &&
                 body is FormValidationStatus.Valid &&
                 imageList is FormValidationStatus.Valid
+}
+
+@Stable
+sealed class FreeBoardWriteUiEvent {
+    data class Success(
+        val postId: String,
+    ) : FreeBoardWriteUiEvent()
+
+    data class Error(
+        val message: String?,
+    ) : FreeBoardWriteUiEvent()
+
+    data class Fail(
+        val message: String?,
+    ) : FreeBoardWriteUiEvent()
 }
