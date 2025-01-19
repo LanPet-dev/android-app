@@ -174,6 +174,9 @@ fun FreeBoardDetailScreen(
                                 profileId = defaultProfile.id,
                             )
                         },
+                        onFetchComment = {
+                            freeBoardDetailViewModel.fetchComments()
+                        },
                         onLikeChange = { like ->
                             if (like) {
                                 freeBoardDetailViewModel.likePost()
@@ -220,6 +223,7 @@ fun ContentUI(
     commentInput: String,
     onWriteComment: () -> Unit,
     onLikeChange: (Boolean) -> Unit,
+    onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
@@ -367,6 +371,10 @@ fun ContentUI(
         )
         FreeBoardCommentSection(
             comments = state.comments,
+            canLoadMore = state.canLoadMoreComments,
+            onLoadMore = {
+                onFetchComment()
+            },
         )
         // line
         Spacer(
@@ -387,11 +395,12 @@ fun ContentUI(
     }
 }
 
-// TODO: Comment section UI
 @Composable
 fun FreeBoardCommentSection(
+    canLoadMore: Boolean,
     modifier: Modifier = Modifier,
     comments: List<FreeBoardComment> = emptyList(),
+    onLoadMore: () -> Unit = {},
 ) {
     Column {
         Text(
@@ -418,6 +427,21 @@ fun FreeBoardCommentSection(
             Column {
                 comments.forEach { comment ->
                     FreeBoardCommentItem(freeBoardComment = comment)
+                }
+                if (canLoadMore) {
+                    Text(
+                        "댓글 더보기",
+                        modifier =
+                            Modifier
+                                .padding(
+                                    horizontal = LanPetDimensions.Margin.medium,
+                                    vertical = LanPetDimensions.Margin.small,
+                                ).clickable(
+                                    interactionSource = null,
+                                    indication = null,
+                                ) { onLoadMore() },
+                        style = MaterialTheme.customTypography().body2RegularSingle.copy(color = GrayColor.Gray400),
+                    )
                 }
             }
         }
@@ -600,7 +624,11 @@ private fun FreeBoardDetailPreview() {
 private fun FreeBoardCommentSection_Empty_Preview() {
     BasePreviewWrapper {
         Column {
-            FreeBoardCommentSection()
+            FreeBoardCommentSection(
+                comments = emptyList(),
+                canLoadMore = false,
+                onLoadMore = {},
+            )
         }
     }
 }
@@ -609,7 +637,10 @@ private fun FreeBoardCommentSection_Empty_Preview() {
 @PreviewLightDark
 private fun FreeBoardCommentSection_Filled_Preview() {
     BasePreviewWrapper {
-        FreeBoardCommentSection()
+        FreeBoardCommentSection(
+            onLoadMore = {},
+            canLoadMore = true,
+        )
     }
 }
 
@@ -641,6 +672,8 @@ private fun SuccessUIPreview() {
             commentInput = "",
             onWriteComment = {},
             onLikeChange = {},
+            onFetchComment = {},
+            modifier = Modifier,
         )
     }
 }
