@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.convention.ui.compose)
     alias(libs.plugins.convention.lib.build)
     alias(libs.plugins.convention.lib.coil)
+    alias(libs.plugins.convention.lib.junit5)
 }
 
 android {
