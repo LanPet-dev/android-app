@@ -9,6 +9,7 @@ data class GetFreeBoardListRequestDto(
     val size: Int = 10,
     val category: String?,
     val direction: String,
+    val profileId: String? = null,
 ) {
     fun toQueryMap(): Map<String, String> =
         buildMap {
@@ -16,6 +17,7 @@ data class GetFreeBoardListRequestDto(
             put("size", this@GetFreeBoardListRequestDto.size.toString())
             if (category != null) put("category", category) else put("category", "null")
             put("direction", direction)
+            put("profileId", profileId ?: "null")
         }
 
     companion object {
