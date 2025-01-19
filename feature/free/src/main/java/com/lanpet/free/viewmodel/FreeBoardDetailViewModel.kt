@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardWriteComment
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// TODO("Satoshi"): refactor: Separate detail post and comments by using different viewmodel
 @HiltViewModel
 class FreeBoardDetailViewModel
     @Inject
@@ -113,6 +115,7 @@ class FreeBoardDetailViewModel
         fun writeComment(
             postId: String,
             profileId: String,
+            profile: Profile,
             comment: String,
         ) {
             if (_isProcess.value) return
@@ -126,6 +129,14 @@ class FreeBoardDetailViewModel
                         }
                     }.onFailure {
                         _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
+                    }.onSuccess {
+                        updateCommentCache(
+                            FreeBoardComment(
+                                "temp",
+                                profile,
+                                comment,
+                            ),
+                        )
                     }
                 }
 
@@ -215,6 +226,21 @@ class FreeBoardDetailViewModel
                     }
                 }
             }
+        }
+
+        fun updateCommentCache(comment: FreeBoardComment) {
+            if (commentsState.value !is CommentsState.Success) return
+
+            if ((commentsState.value as CommentsState.Success).cursorPagingState.hasNext) return
+
+            commentsState.value =
+                CommentsState.Success(
+                    comments =
+                        commentsState.value.let {
+                            (it as CommentsState.Success).comments + comment
+                        },
+                    cursorPagingState = (commentsState.value as CommentsState.Success).cursorPagingState,
+                )
         }
 
         init {

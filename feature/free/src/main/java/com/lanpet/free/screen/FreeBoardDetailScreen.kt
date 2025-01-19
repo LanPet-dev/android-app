@@ -76,6 +76,7 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
@@ -154,7 +155,7 @@ fun FreeBoardDetailScreen(
                                 FreeBoardDetailEvent.WriteCommentSuccess -> {
                                     context.toast("댓글이 작성되었습니다.")
                                     // TODO("Satoshi"): update cache
-                                    freeBoardDetailViewModel.refreshComments()
+//                                    freeBoardDetailViewModel.refreshComments()
                                     input = ""
                                 }
                             }
@@ -172,6 +173,11 @@ fun FreeBoardDetailScreen(
                                 postId = (state.value as FreeBoardDetailState.Success).postDetail.id,
                                 comment = input,
                                 profileId = defaultProfile.id,
+                                profile =
+                                    Profile(
+                                        nickname = defaultProfile.nickname,
+                                        profileImage = defaultProfile.profileImageUri,
+                                    ),
                             )
                         },
                         onFetchComment = {
