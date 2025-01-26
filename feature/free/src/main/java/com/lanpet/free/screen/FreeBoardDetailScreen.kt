@@ -25,7 +25,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,6 +84,7 @@ import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
+import com.lanpet.free.widgets.LoadingUI
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,19 +155,20 @@ fun FreeBoardDetailScreen(
                                 onNavigateUp()
                             }
                         },
-                        actions = if(isOwner) {
-                            {
-                                IconButton(onClick = {
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.MoreVert,
-                                        contentDescription = "ic_MoreVert",
-                                    )
+                        actions =
+                            if (isOwner) {
+                                {
+                                    IconButton(onClick = {
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.MoreVert,
+                                            contentDescription = "ic_MoreVert",
+                                        )
+                                    }
                                 }
-                            }
-                        } else {
-                            {}
-                        }
+                            } else {
+                                {}
+                            },
                     )
                 },
             ) {
@@ -240,20 +241,6 @@ fun FreeBoardDetailScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun LoadingUI(modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator(
-            modifier =
-                Modifier
-                    .size(36.dp),
-        )
     }
 }
 
