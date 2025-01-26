@@ -47,6 +47,9 @@ class FreeBoardDetailViewModel
         private val profileId =
             savedStateHandle.get<String>("profileId")
                 ?: throw IllegalArgumentException("profileId is required")
+        private val nickname =
+            savedStateHandle.get<String>("nickname")
+                ?: throw IllegalArgumentException("nickname is required for owner check")
 
         private val detailState: MutableStateFlow<DetailState> =
             MutableStateFlow<DetailState>(DetailState.Initial)
@@ -70,6 +73,7 @@ class FreeBoardDetailViewModel
                             postDetail = detailState.postDetail,
                             comments = commentsState.comments,
                             canLoadMoreComments = commentsState.cursorPagingState.hasNext,
+                            isOwner = detailState.postDetail.writer == nickname,
                         )
                     }
 
@@ -295,6 +299,7 @@ sealed class FreeBoardDetailState {
         val postDetail: FreeBoardPostDetail,
         val comments: List<FreeBoardComment> = emptyList(),
         val canLoadMoreComments: Boolean = true,
+        val isOwner: Boolean = false,
     ) : FreeBoardDetailState()
 
     data class Error(

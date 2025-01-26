@@ -70,7 +70,7 @@ fun FreeBoardScreen(
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
-    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
+    onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
     val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
@@ -254,7 +254,7 @@ fun FreeBoardPostList(
     freeBoardItemList: List<FreeBoardItem>,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
+    onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
     onLoadMore: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
@@ -263,6 +263,10 @@ fun FreeBoardPostList(
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.id
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
 
     LaunchedEffect(state) {
         snapshotFlow {
@@ -288,7 +292,11 @@ fun FreeBoardPostList(
                 FreeBoardListItem(
                     freeBoardPostItem = freeBoardItemList[index],
                     onClick = {
-                        onNavigateToFreeBoardDetail(freeBoardItemList[index].id, profileId)
+                        onNavigateToFreeBoardDetail(
+                            freeBoardItemList[index].id,
+                            profileId,
+                            nickname,
+                        )
                     },
                 )
             }
@@ -365,7 +373,7 @@ private fun FreeBoardPostListPreview() {
                     ),
                 ),
             isLoading = true,
-            onNavigateToFreeBoardDetail = { _, _ -> },
+            onNavigateToFreeBoardDetail = { _, _, _ -> },
             onLoadMore = {},
         )
     }

@@ -97,7 +97,7 @@ fun FreeBoardDetailScreen(
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    when (state.value) {
+    when (val currentState = state.value) {
         is FreeBoardDetailState.Loading -> {
             Scaffold(
                 topBar = {
@@ -129,9 +129,6 @@ fun FreeBoardDetailScreen(
                     .collectAsState()
                     .value
 
-            val isOwner =
-                (state.value as FreeBoardDetailState.Success).postDetail.writer == defaultProfile.nickname
-
             LaunchedEffect(Unit) {
                 freeBoardDetailViewModel.uiEvent.collect { event ->
                     when (event) {
@@ -156,7 +153,7 @@ fun FreeBoardDetailScreen(
                             }
                         },
                         actions =
-                            if (isOwner) {
+                            if (currentState.isOwner) {
                                 {
                                     IconButton(onClick = {
                                     }) {
@@ -179,8 +176,8 @@ fun FreeBoardDetailScreen(
                             .padding(it),
                 ) {
                     ContentUI(
-                        state.value as FreeBoardDetailState.Success,
-                        isOwner = isOwner,
+                        currentState,
+                        isOwner = currentState.isOwner,
                         commentInput = input,
                         onInputValueChange = { value ->
                             input = value
@@ -259,8 +256,6 @@ fun ContentUI(
     val verticalScrollState = rememberScrollState()
 
     val rememberOnLikeChange = remember { onLikeChange }
-
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         freeBoardLikesViewModel.uiEvent.collect {
