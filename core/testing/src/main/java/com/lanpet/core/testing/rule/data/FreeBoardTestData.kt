@@ -18,6 +18,7 @@ val freeBoardCommentTestData =
                     profileImage = "https://dummyimage.com/600x400/000/fff",
                 ),
             comment = "댓글1",
+            createdAt = "2021-08-01T12:34:56+00:00",
         ),
         FreeBoardComment(
             id = "2",
@@ -27,6 +28,7 @@ val freeBoardCommentTestData =
                     profileImage = "https://dummyimage.com/600x400/000/fff",
                 ),
             comment = "댓글2",
+            createdAt = "2021-08-01T12:34:56+00:00",
         ),
     )
 

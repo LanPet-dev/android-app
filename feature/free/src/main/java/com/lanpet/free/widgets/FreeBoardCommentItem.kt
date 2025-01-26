@@ -21,7 +21,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.designsystem.R
+import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
@@ -74,11 +76,11 @@ fun FreeBoardCommentItem(
                         style = MaterialTheme.customTypography().body3RegularSingle,
                     )
                     Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xxxSmall))
-//                    Text(
-//                        createdAtPostString(freeBoardComment.createdAt),
-//                        style = MaterialTheme.customTypography().sub1MediumSingle.copy(color = GrayColor.Gray300),
-//                    )
-//                    Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xxSmall))
+                    Text(
+                        createdAtPostString(freeBoardComment.createdAt),
+                        style = MaterialTheme.customTypography().sub1MediumSingle.copy(color = GrayColor.Gray300),
+                    )
+                    Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xxSmall))
                     Text(
                         freeBoardComment.comment.toString(),
                         style = MaterialTheme.customTypography().body2RegularMulti,
@@ -163,6 +165,8 @@ private fun FreeBoardCommentItemPreview() {
                             profileImage = null,
                         ),
                     comment = "This is comment",
+//                    createdAt = "2016-10-27T17:13:40+00:00",
+                    createdAt = "2025-01-19T06:27:18.022+00:00",
                 ),
             )
         }

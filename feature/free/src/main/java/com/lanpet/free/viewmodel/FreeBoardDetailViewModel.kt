@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.common.toUtcDateString
 import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 // TODO("Satoshi"): refactor: Separate detail post and comments by using different viewmodel
@@ -135,6 +137,7 @@ class FreeBoardDetailViewModel
                                 "temp",
                                 profile,
                                 comment,
+                                Date().toUtcDateString(),
                             ),
                         )
                     }
