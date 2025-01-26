@@ -9,7 +9,7 @@ import java.util.TimeZone
 
 class ExtensionsTest {
     private val timeZone: TimeZone = TimeZone.getDefault()
-    private val createdAt = "2016-10-27T17:13:40+00:00"
+    private val createdAt = "2016-10-27T17:13:40.000+00:00"
     private val currentTime = createdAt.toLocalDate()
     private val calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat(" yyyy-MM-dd HH:mm:ss")
