@@ -6,4 +6,5 @@ data class FreeBoardComment(
     val id: String,
     val profile: Profile,
     val comment: String?,
+    val createdAt: String,
 )

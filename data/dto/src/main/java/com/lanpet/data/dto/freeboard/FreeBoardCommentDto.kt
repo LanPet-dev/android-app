@@ -14,10 +14,10 @@ data class FreeBoardCommentResponse(
     fun toDomain(): PaginationData<List<FreeBoardComment>> =
         PaginationData(
             paginationInfo =
-                PaginationInfo(
-                    hasNext = nextCursor != null,
-                    nextCursor = nextCursor,
-                ),
+            PaginationInfo(
+                hasNext = nextCursor != null,
+                nextCursor = nextCursor,
+            ),
             data = items?.map { it.toDomain() } ?: emptyList(),
         )
 }
@@ -27,11 +27,13 @@ data class CommentItemDto(
     val id: String,
     val profile: ProfileDto,
     val comment: String,
+    val created: String,
 ) {
     fun toDomain(): FreeBoardComment =
         FreeBoardComment(
             id = id,
             profile = profile.toDomain(),
             comment = comment,
+            createdAt = created,
         )
 }
