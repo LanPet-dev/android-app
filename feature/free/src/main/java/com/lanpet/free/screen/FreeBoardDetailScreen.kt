@@ -376,6 +376,7 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
+            commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
             onLoadMore = {
@@ -405,12 +406,13 @@ fun ContentUI(
 fun FreeBoardCommentSection(
     canLoadMore: Boolean,
     modifier: Modifier = Modifier,
+    commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
 ) {
     Column {
         Text(
-            "댓글 ${comments.size}",
+            "댓글 $commentCount",
             style = MaterialTheme.customTypography().body2RegularMulti,
             modifier =
                 Modifier.padding(
@@ -671,6 +673,7 @@ private fun SuccessUIPreview() {
                             images = emptyList(),
                             freeBoardCategory = FreeBoardCategoryType.CURIOUS,
                             isLike = true,
+                            subCommentCount = 0,
                         ),
                     comments = emptyList(),
                 ),

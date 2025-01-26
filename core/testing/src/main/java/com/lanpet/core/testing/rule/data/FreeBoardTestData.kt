@@ -52,4 +52,5 @@ val freeBoardPostDetailTestData =
         freeBoardCategory = FreeBoardCategoryType.CURIOUS,
         petCategory = PetCategory.DOG,
         isLike = true,
+        subCommentCount = 0
     )
