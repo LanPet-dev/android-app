@@ -18,19 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.common.myiconpack.Message
-import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
@@ -91,26 +87,11 @@ fun FreeBoardListItem(
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (freeBoardPostItem.resources?.isNotEmpty() == true) {
-                    AsyncImage(
-                        model = freeBoardPostItem.resources!!.first().url,
-                        contentDescription = "post_image",
-                        contentScale = ContentScale.Crop,
-                        imageLoader = imageLoader,
-                        modifier =
-                            Modifier
-                                .clip(
-                                    shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall),
-                                ).size(66.dp),
-                        error = painterResource(id = R.drawable.img_animals),
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.img_animals),
-                        contentDescription = "ic_animals",
-                        modifier = Modifier.size(66.dp),
-                    )
-                }
+                NetworkImage(
+                    freeBoardPostItem.resources?.getOrNull(0)?.url,
+                    modifier = Modifier.size(66.dp).clip(RoundedCornerShape(8.dp)),
+                    imageLoader = imageLoader,
+                )
             }
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Row(
