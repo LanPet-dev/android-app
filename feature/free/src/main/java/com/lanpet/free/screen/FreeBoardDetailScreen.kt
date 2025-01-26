@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,8 +57,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
@@ -87,7 +85,6 @@ import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
-import timber.log.Timber
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,73 +94,92 @@ fun FreeBoardDetailScreen(
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    DisposableEffect(lifecycle) {
-        val observer =
-            LifecycleEventObserver { _, event ->
-                Timber.i("FreeBoardDetailScreenLifecycle: $event")
-            }
-
-        lifecycle.addObserver(observer)
-        onDispose {
-            Timber.i("FreeBoardDetailScreenLifecycle: onDispose")
-            lifecycle.removeObserver(observer)
-        }
-    }
-
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            LanPetTopAppBar(
-                navigationIcon = {
-                    CommonNavigateUpButton {
-                        onNavigateUp()
-                    }
+    when (state.value) {
+        is FreeBoardDetailState.Loading -> {
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                    )
                 },
-            )
-        },
-    ) {
-        Surface(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it),
-        ) {
-            when (state.value) {
-                is FreeBoardDetailState.Loading -> {
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     LoadingUI()
                 }
+            }
+        }
 
-                is FreeBoardDetailState.Success -> {
-                    var input by rememberSaveable { mutableStateOf("") }
-                    val authManager = LocalAuthManager.current
-                    val defaultProfile =
-                        authManager.defaultUserProfile
-                            .collectAsState()
-                            .value
+        is FreeBoardDetailState.Success -> {
+            var input by rememberSaveable { mutableStateOf("") }
+            val authManager = LocalAuthManager.current
+            val defaultProfile =
+                authManager.defaultUserProfile
+                    .collectAsState()
+                    .value
 
-                    LaunchedEffect(Unit) {
-                        freeBoardDetailViewModel.uiEvent.collect { event ->
-                            when (event) {
-                                FreeBoardDetailEvent.WriteCommentFail -> {
-                                    context.toast("댓글 작성에 실패했습니다.")
-                                }
+            val isOwner =
+                (state.value as FreeBoardDetailState.Success).postDetail.writer == defaultProfile.nickname
 
-                                FreeBoardDetailEvent.WriteCommentSuccess -> {
-                                    context.toast("댓글이 작성되었습니다.")
-                                    // TODO("Satoshi"): update cache
-//                                    freeBoardDetailViewModel.refreshComments()
-                                    input = ""
-                                }
-                            }
+            LaunchedEffect(Unit) {
+                freeBoardDetailViewModel.uiEvent.collect { event ->
+                    when (event) {
+                        FreeBoardDetailEvent.WriteCommentFail -> {
+                            context.toast("댓글 작성에 실패했습니다.")
+                        }
+
+                        FreeBoardDetailEvent.WriteCommentSuccess -> {
+                            context.toast("댓글이 작성되었습니다.")
+                            input = ""
                         }
                     }
+                }
+            }
 
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                        actions = if(isOwner) {
+                            {
+                                IconButton(onClick = {
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = "ic_MoreVert",
+                                    )
+                                }
+                            }
+                        } else {
+                            {}
+                        }
+                    )
+                },
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     ContentUI(
                         state.value as FreeBoardDetailState.Success,
+                        isOwner = isOwner,
                         commentInput = input,
                         onInputValueChange = { value ->
                             input = value
@@ -192,8 +208,27 @@ fun FreeBoardDetailScreen(
                         },
                     )
                 }
+            }
+        }
 
-                is FreeBoardDetailState.Error -> {
+        is FreeBoardDetailState.Error -> {
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                    )
+                },
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
@@ -231,6 +266,7 @@ fun ContentUI(
     onLikeChange: (Boolean) -> Unit,
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
