@@ -13,11 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -33,8 +35,13 @@ import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.core.manager.CoilManager
 import com.lanpet.core.manager.LocalCoilManager
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardStat
+import com.lanpet.domain.model.free.FreeBoardText
 
 @Composable
 fun FreeBoardListItem(
@@ -148,8 +155,32 @@ fun FreeBoardListItem(
 @PreviewLightDark
 @Composable
 private fun FreeBoardListItemPreview() {
-    LanPetAppTheme {
-        Column {
+    val context = LocalContext.current
+
+    CompositionLocalProvider(LocalCoilManager provides CoilManager(context)) {
+        LanPetAppTheme {
+            Column {
+                FreeBoardListItem(
+                    freeBoardPostItem =
+                        FreeBoardItem(
+                            id = "1",
+                            category = FreeBoardCategoryType.CURIOUS,
+                            petType = PetCategory.PARROT,
+                            text =
+                                FreeBoardText(
+                                    title = "title",
+                                    content = "content",
+                                ),
+                            stat =
+                                FreeBoardStat(
+                                    likeCount = 1,
+                                    commentCount = 1,
+                                ),
+                            resources = emptyList(),
+                            created = "2021-10-27T17:13:40.000+00:00",
+                        ),
+                )
+            }
         }
     }
 }
