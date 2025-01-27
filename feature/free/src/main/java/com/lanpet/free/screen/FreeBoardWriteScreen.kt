@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +40,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.MyIconPack
@@ -81,6 +83,8 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.free.R
+import com.lanpet.free.navigation.FreeBoardWrite
+import com.lanpet.free.viewmodel.FreeBoardWriteUiEvent
 import com.lanpet.free.viewmodel.FreeBoardWriteViewModel
 import kotlinx.coroutines.launch
 
@@ -90,28 +94,41 @@ fun FreeBoardWriteScreen(
     modifier: Modifier = Modifier,
     freeBoardWriteViewModel: FreeBoardWriteViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit = {},
+    onNavigateToFreeBoardDetail: (String, String, String, NavOptions) -> Unit = { _, _, _, _ -> },
 ) {
     val verticalScrollState = rememberScrollState()
 
-    val authManager = LocalAuthManager.current
-    val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
+    val profileId =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.id
+
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
 
     val freeBoardPostCreate by freeBoardWriteViewModel.uiState.collectAsStateWithLifecycle()
+    val loadingState by freeBoardWriteViewModel.loadingState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
 
-    val currentOnNavigateUp by rememberUpdatedState(onNavigateUp)
-
     LaunchedEffect(Unit) {
-        freeBoardWriteViewModel.setProfileId(defaultUserProfile.value.id)
+        freeBoardWriteViewModel.setProfileId(profileId)
 
         freeBoardWriteViewModel.uiEvent.collect { event ->
             when (event) {
-                true -> {
-                    context.toast(context.getString(R.string.toast_post_create_success))
-                    currentOnNavigateUp()
+                is FreeBoardWriteUiEvent.Success -> {
+                    val navOptions =
+                        NavOptions
+                            .Builder()
+                            .setPopUpTo(FreeBoardWrite, inclusive = true)
+                            .build()
+
+                    onNavigateToFreeBoardDetail(event.postId, profileId, nickname, navOptions)
                 }
 
-                false -> {
+                else -> {
                     context.toast(context.getString(R.string.toast_post_create_fail))
                 }
             }
@@ -155,64 +172,81 @@ fun FreeBoardWriteScreen(
                             verticalScrollState,
                         ),
             ) {
-                SelectBoardSection(
-                    selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.boardCategory,
-                ) { category ->
-                    freeBoardWriteViewModel.setBoardCategory(category)
-                }
-                LineWithSpacer()
-                SelectPetSection(
-                    selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.petCategory,
-                ) { category ->
-                    freeBoardWriteViewModel.setPetCategory(category)
-                }
-                LineWithSpacer()
-                TitleInputSection { title ->
-                    freeBoardWriteViewModel.setTitle(title)
-                }
-                ContentInputSection { body ->
-                    freeBoardWriteViewModel.setBody(body)
-                }
-                ImagePickSection(
-                    isEnable = (freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) <= 5,
-                ) { uri ->
-                    freeBoardWriteViewModel.addImage(uri)
-                }
-                if ((freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) > 0) {
-                    Text(
-                        stringResource(R.string.attach_photo_desc),
-                        style =
-                            MaterialTheme.customTypography().body3RegularSingle.copy(
-                                color = GrayColor.Gray400,
-                            ),
-                        modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
-                    )
-                    Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Margin.small))
-                    LazyRow(
-                        modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
+                if (loadingState) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .weight(1f),
                     ) {
-                        val imageList: List<Uri>? =
-                            freeBoardPostCreate.freeBoardPostCreate?.imageList
-                        if (!imageList.isNullOrEmpty()) {
-                            items(imageList.size) { index ->
-                                ImageWithDeleteIcon(
-                                    uri = imageList[index],
-                                ) {
-                                    freeBoardWriteViewModel.removeImage(imageList[index])
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    SelectBoardSection(
+                        selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.boardCategory,
+                    ) { category ->
+                        freeBoardWriteViewModel.setBoardCategory(category)
+                    }
+                    LineWithSpacer()
+                    SelectPetSection(
+                        selectedCategory = freeBoardPostCreate.freeBoardPostCreate?.petCategory,
+                    ) { category ->
+                        freeBoardWriteViewModel.setPetCategory(category)
+                    }
+                    LineWithSpacer()
+                    TitleInputSection { title ->
+                        freeBoardWriteViewModel.setTitle(title)
+                    }
+                    ContentInputSection { body ->
+                        freeBoardWriteViewModel.setBody(body)
+                    }
+                    ImagePickSection(
+                        isEnable =
+                            (
+                                freeBoardPostCreate.freeBoardPostCreate?.imageList?.size
+                                    ?: 0
+                            ) <= 5,
+                    ) { uri ->
+                        freeBoardWriteViewModel.addImage(uri)
+                    }
+                    if ((freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) > 0) {
+                        Text(
+                            stringResource(R.string.attach_photo_desc),
+                            style =
+                                MaterialTheme.customTypography().body3RegularSingle.copy(
+                                    color = GrayColor.Gray400,
+                                ),
+                            modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
+                        )
+                        Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Margin.small))
+                        LazyRow(
+                            modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
+                        ) {
+                            val imageList: List<Uri>? =
+                                freeBoardPostCreate.freeBoardPostCreate?.imageList
+                            if (!imageList.isNullOrEmpty()) {
+                                items(imageList.size) { index ->
+                                    ImageWithDeleteIcon(
+                                        uri = imageList[index],
+                                    ) {
+                                        freeBoardWriteViewModel.removeImage(imageList[index])
+                                    }
                                 }
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
+                    CommonButton(
+                        title = stringResource(R.string.complete_action_freeboard_write),
+                        isActive = freeBoardWriteViewModel.isValidState.collectAsStateWithLifecycle().value,
+                        modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.small),
+                    ) {
+                        freeBoardWriteViewModel.writeFreeBoardPost(context)
+                    }
+                    Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
                 }
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
-                CommonButton(
-                    title = stringResource(R.string.complete_action_freeboard_write),
-                    isActive = freeBoardWriteViewModel.isValidState.collectAsStateWithLifecycle().value,
-                    modifier = Modifier.padding(horizontal = LanPetDimensions.Margin.small),
-                ) {
-                    freeBoardWriteViewModel.writeFreeBoardPost()
-                }
-                Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
             }
         }
     }

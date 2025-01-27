@@ -86,6 +86,14 @@ private fun PreviewProfileImage() {
             ProfileImage(
                 profileType = ProfileType.BUTLER,
             )
+            ProfileImage(
+                profileType = ProfileType.PET,
+                size = 180.dp,
+            )
+            ProfileImage(
+                profileType = ProfileType.BUTLER,
+                size = 180.dp,
+            )
         }
     }
 }

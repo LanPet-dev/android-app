@@ -33,4 +33,5 @@ fun FreeBoardDetailItemDto.toDomain(): FreeBoardPostDetail =
         images = resources?.map { it.toDomain() } ?: emptyList(),
         freeBoardCategory = FreeBoardCategoryType.valueOf(category),
         isLike = isLike,
+        subCommentCount = stat?.subCommentCount ?: 0,
     )

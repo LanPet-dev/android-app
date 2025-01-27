@@ -28,6 +28,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -70,10 +71,10 @@ fun FreeBoardScreen(
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
-    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
+    onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
-    val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by freeBoardListViewModel.uiState.collectAsState()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     DisposableEffect(lifecycle) {
@@ -177,10 +178,7 @@ fun FreeBoardScreen(
                                             Modifier.verticalScroll(
                                                 state = scrollState,
                                             ),
-                                        isLoading =
-                                            freeBoardListViewModel.isProcess
-                                                .collectAsStateWithLifecycle()
-                                                .value.isLocked,
+                                        isLoading = (uiState as FreeBoardListState.Success).isLoading,
                                         freeBoardItemList = (uiState as FreeBoardListState.Success).data,
                                         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                                         onLoadMore = {
@@ -254,7 +252,7 @@ fun FreeBoardPostList(
     freeBoardItemList: List<FreeBoardItem>,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onNavigateToFreeBoardDetail: (String, String) -> Unit = { _, _ -> },
+    onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
     onLoadMore: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
@@ -263,6 +261,10 @@ fun FreeBoardPostList(
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.id
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
 
     LaunchedEffect(state) {
         snapshotFlow {
@@ -288,7 +290,11 @@ fun FreeBoardPostList(
                 FreeBoardListItem(
                     freeBoardPostItem = freeBoardItemList[index],
                     onClick = {
-                        onNavigateToFreeBoardDetail(freeBoardItemList[index].id, profileId)
+                        onNavigateToFreeBoardDetail(
+                            freeBoardItemList[index].id,
+                            profileId,
+                            nickname,
+                        )
                     },
                 )
             }
@@ -365,7 +371,7 @@ private fun FreeBoardPostListPreview() {
                     ),
                 ),
             isLoading = true,
-            onNavigateToFreeBoardDetail = { _, _ -> },
+            onNavigateToFreeBoardDetail = { _, _, _ -> },
             onLoadMore = {},
         )
     }
