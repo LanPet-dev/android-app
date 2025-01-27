@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class GetFreeBoardCommentListUseCase
@@ -30,14 +30,18 @@ class GetFreeBoardCommentListUseCase
                     size = size,
                     direction = direction,
                 ).flatMapLatest {
+                    if (it.data.isEmpty()) {
+                        return@flatMapLatest flowOf(it)
+                    }
+
                     val subCommentFlows =
                         it.data.map { comment ->
                             freeBoardRepository.getFreeBoardSubCommentList(
                                 postId,
                                 comment.id,
-                                size = size,
-                                cursor = cursor,
-                                direction = direction,
+                                size = 10,
+                                cursor = null,
+                                direction = CursorDirection.NEXT,
                             )
                         }
 

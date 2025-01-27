@@ -36,8 +36,6 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
-        private val doPostLikeUseCase: DoPostLikeUseCase,
-        private val cancelPostLikeUseCase: CancelPostLikeUseCase,
         private val writeCommentUseCase: WriteCommentUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
