@@ -24,7 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,8 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
@@ -76,6 +74,7 @@ import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PrimaryColor
 import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
@@ -86,7 +85,7 @@ import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
 import com.lanpet.free.widgets.FreeBoardCommentItem
-import timber.log.Timber
+import com.lanpet.free.widgets.LoadingUI
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,73 +95,90 @@ fun FreeBoardDetailScreen(
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    DisposableEffect(lifecycle) {
-        val observer =
-            LifecycleEventObserver { _, event ->
-                Timber.i("FreeBoardDetailScreenLifecycle: $event")
-            }
-
-        lifecycle.addObserver(observer)
-        onDispose {
-            Timber.i("FreeBoardDetailScreenLifecycle: onDispose")
-            lifecycle.removeObserver(observer)
-        }
-    }
-
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            LanPetTopAppBar(
-                navigationIcon = {
-                    CommonNavigateUpButton {
-                        onNavigateUp()
-                    }
+    when (val currentState = state.value) {
+        is FreeBoardDetailState.Loading -> {
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                    )
                 },
-            )
-        },
-    ) {
-        Surface(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it),
-        ) {
-            when (state.value) {
-                is FreeBoardDetailState.Loading -> {
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     LoadingUI()
                 }
+            }
+        }
 
-                is FreeBoardDetailState.Success -> {
-                    var input by rememberSaveable { mutableStateOf("") }
-                    val authManager = LocalAuthManager.current
-                    val defaultProfile =
-                        authManager.defaultUserProfile
-                            .collectAsState()
-                            .value
+        is FreeBoardDetailState.Success -> {
+            var input by rememberSaveable { mutableStateOf("") }
+            val authManager = LocalAuthManager.current
+            val defaultProfile =
+                authManager.defaultUserProfile
+                    .collectAsState()
+                    .value
 
-                    LaunchedEffect(Unit) {
-                        freeBoardDetailViewModel.uiEvent.collect { event ->
-                            when (event) {
-                                FreeBoardDetailEvent.WriteCommentFail -> {
-                                    context.toast("댓글 작성에 실패했습니다.")
-                                }
+            LaunchedEffect(Unit) {
+                freeBoardDetailViewModel.uiEvent.collect { event ->
+                    when (event) {
+                        FreeBoardDetailEvent.WriteCommentFail -> {
+                            context.toast("댓글 작성에 실패했습니다.")
+                        }
 
-                                FreeBoardDetailEvent.WriteCommentSuccess -> {
-                                    context.toast("댓글이 작성되었습니다.")
-                                    // TODO("Satoshi"): update cache
-                                    freeBoardDetailViewModel.refreshComments()
-                                    input = ""
-                                }
-                            }
+                        FreeBoardDetailEvent.WriteCommentSuccess -> {
+                            context.toast("댓글이 작성되었습니다.")
+                            input = ""
                         }
                     }
+                }
+            }
 
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                        actions =
+                            if (currentState.isOwner) {
+                                {
+                                    IconButton(onClick = {
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.MoreVert,
+                                            contentDescription = "ic_MoreVert",
+                                        )
+                                    }
+                                }
+                            } else {
+                                {}
+                            },
+                    )
+                },
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     ContentUI(
-                        state.value as FreeBoardDetailState.Success,
+                        currentState,
+                        isOwner = currentState.isOwner,
                         commentInput = input,
                         onInputValueChange = { value ->
                             input = value
@@ -172,6 +188,11 @@ fun FreeBoardDetailScreen(
                                 postId = (state.value as FreeBoardDetailState.Success).postDetail.id,
                                 comment = input,
                                 profileId = defaultProfile.id,
+                                profile =
+                                    Profile(
+                                        nickname = defaultProfile.nickname,
+                                        profileImage = defaultProfile.profileImageUri,
+                                    ),
                             )
                         },
                         onFetchComment = {
@@ -186,8 +207,27 @@ fun FreeBoardDetailScreen(
                         },
                     )
                 }
+            }
+        }
 
-                is FreeBoardDetailState.Error -> {
+        is FreeBoardDetailState.Error -> {
+            Scaffold(
+                topBar = {
+                    LanPetTopAppBar(
+                        navigationIcon = {
+                            CommonNavigateUpButton {
+                                onNavigateUp()
+                            }
+                        },
+                    )
+                },
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
@@ -203,20 +243,6 @@ fun FreeBoardDetailScreen(
 }
 
 @Composable
-fun LoadingUI(modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator(
-            modifier =
-                Modifier
-                    .size(36.dp),
-        )
-    }
-}
-
-@Composable
 fun ContentUI(
     state: FreeBoardDetailState.Success,
     onInputValueChange: (String) -> Unit,
@@ -225,13 +251,12 @@ fun ContentUI(
     onLikeChange: (Boolean) -> Unit,
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
 
     val rememberOnLikeChange = remember { onLikeChange }
-
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         freeBoardLikesViewModel.uiEvent.collect {
@@ -370,6 +395,7 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
+            commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
             onLoadMore = {
@@ -399,12 +425,18 @@ fun ContentUI(
 fun FreeBoardCommentSection(
     canLoadMore: Boolean,
     modifier: Modifier = Modifier,
+    commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
 ) {
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
+
     Column {
         Text(
-            "댓글 ${comments.size}",
+            "댓글 $commentCount",
             style = MaterialTheme.customTypography().body2RegularMulti,
             modifier =
                 Modifier.padding(
@@ -426,7 +458,10 @@ fun FreeBoardCommentSection(
         } else {
             Column {
                 comments.forEach { comment ->
-                    FreeBoardCommentItem(freeBoardComment = comment)
+                    FreeBoardCommentItem(
+                        freeBoardComment = comment,
+                        isOwner = comment.profile.nickname == nickname,
+                    )
                 }
                 if (canLoadMore) {
                     Text(
@@ -665,6 +700,7 @@ private fun SuccessUIPreview() {
                             images = emptyList(),
                             freeBoardCategory = FreeBoardCategoryType.CURIOUS,
                             isLike = true,
+                            subCommentCount = 0,
                         ),
                     comments = emptyList(),
                 ),

@@ -6,11 +6,14 @@ import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.PaginationData
+import com.lanpet.domain.model.PaginationInfo
+import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
@@ -66,6 +69,59 @@ class FreeBoardRepositoryImpl
                     throw e
                 }
             }.flowOn(Dispatchers.IO)
+
+        override fun getFreeBoardSubCommentList(
+            postId: String,
+            commentId: String,
+            size: Int?,
+            cursor: String?,
+            direction: CursorDirection?,
+        ): Flow<PaginationData<List<FreeBoardSubComment>>> =
+            flow {
+                try {
+                    val queries = mutableMapOf<String, String>()
+                    cursor?.let { queries["cursor"] = it }
+                    size?.let { queries["size"] = it.toString() }
+                    direction?.let { queries["direction"] = it.name }
+
+                    emit(
+                        freeBoardApiService
+                            .getFreeBoardSubCommentList(postId, commentId, queries)
+                            .toSubCommentDomain(),
+                    )
+//                    emit(
+//                        PaginationData<List<FreeBoardSubComment>>(
+//                            data = listOf(
+//                                FreeBoardSubComment(
+//                                    id = "1",
+//                                    createdAt = "2021-09-01T00:00:00Z",
+//                                    profile = Profile(
+//                                        nickname = "nickname",
+//                                        profileImage = null,
+//                                    ),
+//                                    comment = "This is subcommet",
+//                                ),
+//                                FreeBoardSubComment(
+//                                    id = "1",
+//                                    createdAt = "2021-09-01T00:00:00Z",
+//                                    profile = Profile(
+//                                        nickname = "nickname",
+//                                        profileImage = null,
+//                                    ),
+//                                    comment = "This is subcommet",
+//                                )
+//                            ),
+//                            paginationInfo = PaginationInfo(
+//                                hasNext = true,
+//                                nextCursor = null,
+//                            )
+//                        )
+//                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    throw e
+                }
+            }
 
         override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =
             flow {

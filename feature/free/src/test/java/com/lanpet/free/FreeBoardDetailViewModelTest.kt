@@ -59,6 +59,7 @@ class FreeBoardDetailViewModelTest {
             // given
             val postId = "1"
             val profileId = "profileId"
+            val nickname = "nickname"
             coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                 flow {
                     emit(
@@ -87,8 +88,9 @@ class FreeBoardDetailViewModelTest {
                     savedStateHandle =
                         SavedStateHandle(
                             mapOf(
-                                "postId" to "1",
-                                "profileId" to "profileId",
+                                "postId" to postId,
+                                "profileId" to profileId,
+                                "nickname" to nickname,
                             ),
                         ),
                     doPostLikeUseCase = doPostLikeUseCase,
@@ -113,6 +115,7 @@ class FreeBoardDetailViewModelTest {
                 // given
                 val postId = "1"
                 val profileId = "profileId"
+                val nickname = "nickname"
                 coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
@@ -141,8 +144,9 @@ class FreeBoardDetailViewModelTest {
                         savedStateHandle =
                             SavedStateHandle(
                                 mapOf(
-                                    "postId" to "1",
-                                    "profileId" to "profileId",
+                                    "postId" to postId,
+                                    "profileId" to profileId,
+                                    "nickname" to nickname,
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,
@@ -170,6 +174,7 @@ class FreeBoardDetailViewModelTest {
                 // given
                 val postId = "1"
                 val profileId = "profileId"
+                val nickname = "nickname"
                 coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         throw Exception("Failed to fetch detail")
@@ -203,8 +208,9 @@ class FreeBoardDetailViewModelTest {
                         savedStateHandle =
                             SavedStateHandle(
                                 mapOf(
-                                    "postId" to "1",
-                                    "profileId" to "profileId",
+                                    "postId" to postId,
+                                    "profileId" to profileId,
+                                    "nickname" to nickname,
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,
@@ -233,6 +239,8 @@ class FreeBoardDetailViewModelTest {
                 // given
                 val postId = "1"
                 val profileId = "profileId"
+                val nickname = "nickname"
+
                 coEvery { getFreeBoardDetailUseCase(postId, profileId) } returns
                     flow {
                         emit(
@@ -251,8 +259,9 @@ class FreeBoardDetailViewModelTest {
                         savedStateHandle =
                             SavedStateHandle(
                                 mapOf(
-                                    "postId" to "1",
-                                    "profileId" to "profileId",
+                                    "postId" to postId,
+                                    "profileId" to profileId,
+                                    "nickname" to nickname,
                                 ),
                             ),
                         doPostLikeUseCase = doPostLikeUseCase,

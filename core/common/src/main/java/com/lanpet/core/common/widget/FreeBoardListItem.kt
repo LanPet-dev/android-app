@@ -13,28 +13,31 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.myiconpack.Like
 import com.lanpet.core.common.myiconpack.Message
-import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.core.manager.CoilManager
 import com.lanpet.core.manager.LocalCoilManager
+import com.lanpet.domain.model.PetCategory
+import com.lanpet.domain.model.free.FreeBoardCategoryType
 import com.lanpet.domain.model.free.FreeBoardItem
+import com.lanpet.domain.model.free.FreeBoardStat
+import com.lanpet.domain.model.free.FreeBoardText
 
 @Composable
 fun FreeBoardListItem(
@@ -84,26 +87,11 @@ fun FreeBoardListItem(
                     )
                 }
                 Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
-                if (freeBoardPostItem.resources?.isNotEmpty() == true) {
-                    AsyncImage(
-                        model = freeBoardPostItem.resources!!.first().url,
-                        contentDescription = "post_image",
-                        contentScale = ContentScale.Crop,
-                        imageLoader = imageLoader,
-                        modifier =
-                            Modifier
-                                .clip(
-                                    shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall),
-                                ).size(66.dp),
-                        error = painterResource(id = R.drawable.img_animals),
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.img_animals),
-                        contentDescription = "ic_animals",
-                        modifier = Modifier.size(66.dp),
-                    )
-                }
+                NetworkImage(
+                    freeBoardPostItem.resources?.getOrNull(0)?.url,
+                    modifier = Modifier.size(66.dp).clip(RoundedCornerShape(8.dp)),
+                    imageLoader = imageLoader,
+                )
             }
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xxSmall))
             Row(
@@ -148,8 +136,32 @@ fun FreeBoardListItem(
 @PreviewLightDark
 @Composable
 private fun FreeBoardListItemPreview() {
-    LanPetAppTheme {
-        Column {
+    val context = LocalContext.current
+
+    CompositionLocalProvider(LocalCoilManager provides CoilManager(context)) {
+        LanPetAppTheme {
+            Column {
+                FreeBoardListItem(
+                    freeBoardPostItem =
+                        FreeBoardItem(
+                            id = "1",
+                            category = FreeBoardCategoryType.CURIOUS,
+                            petType = PetCategory.PARROT,
+                            text =
+                                FreeBoardText(
+                                    title = "title",
+                                    content = "content",
+                                ),
+                            stat =
+                                FreeBoardStat(
+                                    likeCount = 1,
+                                    commentCount = 1,
+                                ),
+                            resources = emptyList(),
+                            created = "2021-10-27T17:13:40.000+00:00",
+                        ),
+                )
+            }
         }
     }
 }

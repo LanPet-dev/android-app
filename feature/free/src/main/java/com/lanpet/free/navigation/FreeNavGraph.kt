@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.freeNavGraph(
     onNavigateUp: () -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
-    onNavigateToFreeBoardDetail: (postId: String, profileId: String, navOptions: NavOptions?) -> Unit,
+    onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String, navOptions: NavOptions?) -> Unit,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
@@ -23,8 +23,8 @@ fun NavGraphBuilder.freeNavGraph(
         composable<FreeBoard> {
             FreeBoardScreen(
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
-                onNavigateToFreeBoardDetail = { postId, profileId ->
-                    onNavigateToFreeBoardDetail(postId, profileId, null)
+                onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
+                    onNavigateToFreeBoardDetail(postId, profileId, nickname, null)
                 },
             )
         }
@@ -41,11 +41,13 @@ fun NavGraphBuilder.freeNavGraph(
                 }
 
             val profileId = authManager.defaultUserProfile.value.id
+            val nickname = authManager.defaultUserProfile.value.nickname
 
             argument("args") {
                 FreeBoardDetail(
                     postId = postId,
                     profileId = profileId,
+                    nickname = nickname,
                 )
             }
 
@@ -87,6 +89,7 @@ fun NavController.navigateToFreeBoardScreen() {
 fun NavController.navigateToFreeBoardDetailScreen(
     postId: String,
     profileId: String,
+    nickname: String,
     navOptions: NavOptions? = null,
 ) {
     val defaultNavOptions =
@@ -100,7 +103,7 @@ fun NavController.navigateToFreeBoardDetailScreen(
             }.build()
 
     navigate(
-        route = FreeBoardDetail(postId = postId, profileId = profileId),
+        route = FreeBoardDetail(postId = postId, profileId = profileId, nickname = nickname),
         navOptions = defaultNavOptions,
     )
 }
@@ -118,6 +121,7 @@ object FreeBoardBaseRoute
 data class FreeBoardDetail(
     val postId: String,
     val profileId: String,
+    val nickname: String,
 )
 
 @Serializable

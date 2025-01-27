@@ -13,6 +13,7 @@ data class FreeBoardPostDetail(
     val likeCount: Int,
     val isLike: Boolean,
     val commentCount: Int,
+    val subCommentCount: Int,
     val images: List<FreeBoardResource> = emptyList(),
     val freeBoardCategory: FreeBoardCategoryType,
 ) {

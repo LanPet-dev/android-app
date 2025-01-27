@@ -6,6 +6,7 @@ import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
@@ -26,6 +27,14 @@ interface FreeBoardRepository {
         size: Int?,
         direction: CursorDirection?,
     ): Flow<PaginationData<List<FreeBoardComment>>>
+
+    fun getFreeBoardSubCommentList(
+        postId: String,
+        commentId: String,
+        size: Int?,
+        cursor: String?,
+        direction: CursorDirection?,
+    ): Flow<PaginationData<List<FreeBoardSubComment>>>
 
     fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String>
 

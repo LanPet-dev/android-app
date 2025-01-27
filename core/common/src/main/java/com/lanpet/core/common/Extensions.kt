@@ -67,16 +67,17 @@ fun createdAtPostString(
 }
 
 fun String.toLocalDate(
-    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssXXX",
+    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
     timeZone: TimeZone = TimeZone.getTimeZone("UTC"),
 ): Date {
     val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
     parser.timeZone = timeZone
+    parser.isLenient = false
     return parser.parse(this) ?: throw IllegalArgumentException("Invalid date format")
 }
 
 fun Date.toUtcDateString(
-    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssXXX",
+    dateFormat: String = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
     timeZone: TimeZone = TimeZone.getTimeZone("UTC"),
 ): String {
     val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())

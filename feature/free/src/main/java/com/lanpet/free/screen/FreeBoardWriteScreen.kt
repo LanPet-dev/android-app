@@ -94,7 +94,7 @@ fun FreeBoardWriteScreen(
     modifier: Modifier = Modifier,
     freeBoardWriteViewModel: FreeBoardWriteViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit = {},
-    onNavigateToFreeBoardDetail: (String, String, NavOptions) -> Unit = { _, _, _ -> },
+    onNavigateToFreeBoardDetail: (String, String, String, NavOptions) -> Unit = { _, _, _, _ -> },
 ) {
     val verticalScrollState = rememberScrollState()
 
@@ -102,6 +102,11 @@ fun FreeBoardWriteScreen(
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.id
+
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
 
     val freeBoardPostCreate by freeBoardWriteViewModel.uiState.collectAsStateWithLifecycle()
     val loadingState by freeBoardWriteViewModel.loadingState.collectAsStateWithLifecycle()
@@ -120,8 +125,9 @@ fun FreeBoardWriteScreen(
                             .setPopUpTo(FreeBoardWrite, inclusive = true)
                             .build()
 
-                    onNavigateToFreeBoardDetail(event.postId, profileId, navOptions)
+                    onNavigateToFreeBoardDetail(event.postId, profileId, nickname, navOptions)
                 }
+
                 else -> {
                     context.toast(context.getString(R.string.toast_post_create_fail))
                 }
@@ -171,9 +177,9 @@ fun FreeBoardWriteScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .weight(1f),
+                            Modifier
+                                .fillMaxSize()
+                                .weight(1f),
                     ) {
                         CircularProgressIndicator()
                     }
@@ -197,7 +203,11 @@ fun FreeBoardWriteScreen(
                         freeBoardWriteViewModel.setBody(body)
                     }
                     ImagePickSection(
-                        isEnable = (freeBoardPostCreate.freeBoardPostCreate?.imageList?.size ?: 0) <= 5,
+                        isEnable =
+                            (
+                                freeBoardPostCreate.freeBoardPostCreate?.imageList?.size
+                                    ?: 0
+                            ) <= 5,
                     ) { uri ->
                         freeBoardWriteViewModel.addImage(uri)
                     }
@@ -205,9 +215,9 @@ fun FreeBoardWriteScreen(
                         Text(
                             stringResource(R.string.attach_photo_desc),
                             style =
-                            MaterialTheme.customTypography().body3RegularSingle.copy(
-                                color = GrayColor.Gray400,
-                            ),
+                                MaterialTheme.customTypography().body3RegularSingle.copy(
+                                    color = GrayColor.Gray400,
+                                ),
                             modifier = Modifier.padding(start = LanPetDimensions.Margin.small),
                         )
                         Spacer(modifier = Modifier.padding(bottom = LanPetDimensions.Margin.small))

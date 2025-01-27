@@ -9,7 +9,6 @@ import com.lanpet.data.service.ProfileApiClient
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.S3UploadApiClient
 import com.lanpet.data.service.S3UploadApiService
-import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,34 +21,11 @@ import javax.inject.Singleton
 object ApiModule {
     @Singleton
     @Provides
-    fun provideAuthApiClient(
-        @Named("BaseApiUrl") baseApiUrl: String,
-        authStateHolder: AuthStateHolder,
-        refreshTokenInterceptor: RefreshTokenInterceptor,
-    ): ProfileApiClient = ProfileApiClient(baseApiUrl, authStateHolder, refreshTokenInterceptor)
-
-    @Singleton
-    @Provides
     fun provideAuthApiService(authApiClient: ProfileApiClient): ProfileApiService = authApiClient.getService()
 
     @Singleton
     @Provides
-    fun provideAccountApiClient(
-        @Named("BaseApiUrl") baseApiUrl: String,
-        authStateHolder: AuthStateHolder,
-    ): AccountApiClient = AccountApiClient(baseApiUrl, authStateHolder)
-
-    @Singleton
-    @Provides
     fun provideAccountApiService(accountApiClient: AccountApiClient): AccountApiService = accountApiClient.getService()
-
-    @Singleton
-    @Provides
-    fun provideFreeBoardApiClient(
-        @Named("BaseApiUrl") baseApiUrl: String,
-        authStateHolder: AuthStateHolder,
-        refreshTokenInterceptor: RefreshTokenInterceptor,
-    ): FreeBoardApiClient = FreeBoardApiClient(baseApiUrl, authStateHolder, refreshTokenInterceptor)
 
     @Singleton
     @Provides

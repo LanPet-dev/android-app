@@ -36,6 +36,15 @@ interface FreeBoardApiService {
         @QueryMap queries: Map<String, String>?,
     ): FreeBoardCommentResponse
 
+    @GET("$PATH/{postId}/comments/{commentId}/sub-comments")
+    suspend fun getFreeBoardSubCommentList(
+        @Path("postId")
+        postId: String,
+        @Path("commentId")
+        commentId: String,
+        @QueryMap queries: Map<String, String>?,
+    ): FreeBoardCommentResponse
+
     @POST(PATH)
     suspend fun createFreeBoardPost(
         @Body

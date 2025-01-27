@@ -221,8 +221,13 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         onNavigateToFreeBoardWriteFreeBoard = {
                             navController.navigateToFreeBoardWriteScreen()
                         },
-                        onNavigateToFreeBoardDetail = { postId, profileId, navOptions ->
-                            navController.navigateToFreeBoardDetailScreen(postId, profileId, navOptions)
+                        onNavigateToFreeBoardDetail = { postId, profileId, nickname, navOptions ->
+                            navController.navigateToFreeBoardDetailScreen(
+                                postId,
+                                profileId,
+                                nickname,
+                                navOptions,
+                            )
                         },
                     )
                     wikiNavGraph()
@@ -251,8 +256,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     onNavigateUp = {
                         navController.navigateUp()
                     },
-                    onNavigateToFreeBoardDetail = { postId, profileId ->
-                        navController.navigateToFreeBoardDetailScreen(postId, profileId)
+                    onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
+                        navController.navigateToFreeBoardDetailScreen(postId, profileId, nickname)
                     },
                 )
             }

@@ -15,9 +15,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,9 +37,6 @@ class FreeBoardListViewModel
         private val _selectedCategory =
             MutableStateFlow<FreeBoardCategoryType>(FreeBoardCategoryType.ALL)
         val selectedCategoryFlow = _selectedCategory.asStateFlow()
-
-        private val _isProcess = MutableStateFlow(Mutex(false))
-        val isProcess = _isProcess.asStateFlow()
 
         private var getPostListJob: Job? = null
 
@@ -120,7 +118,27 @@ class FreeBoardListViewModel
 
                             getFreeBoardPostListUseCase(
                                 getFreeBoardPostListRequest,
-                            ).collect { data ->
+                            ).onStart {
+                                _uiState.update { currentState ->
+                                    when (currentState) {
+                                        is FreeBoardListState.Success -> {
+                                            currentState.copy(isLoading = true)
+                                        }
+
+                                        else -> currentState
+                                    }
+                                }
+                            }.onCompletion {
+                                _uiState.update { currentState ->
+                                    when (currentState) {
+                                        is FreeBoardListState.Success -> {
+                                            currentState.copy(isLoading = false)
+                                        }
+
+                                        else -> currentState
+                                    }
+                                }
+                            }.collect { data ->
                                 _uiState.update { currentState ->
                                     handleGetFreeBoardPostList(currentState, data)
                                 }
@@ -148,6 +166,7 @@ sealed class FreeBoardListState {
     @Stable
     data class Success(
         val data: List<FreeBoardItem> = emptyList(),
+        val isLoading: Boolean = false,
     ) : FreeBoardListState()
 
     @Stable
