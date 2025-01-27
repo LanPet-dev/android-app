@@ -22,13 +22,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -40,7 +36,6 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
-        private val getFreeBoardSubCommentListUseCase: GetFreeBoardSubCommentListUseCase,
         private val doPostLikeUseCase: DoPostLikeUseCase,
         private val cancelPostLikeUseCase: CancelPostLikeUseCase,
         private val writeCommentUseCase: WriteCommentUseCase,
@@ -63,9 +58,6 @@ class FreeBoardDetailViewModel
 
         private val _uiEvent = MutableSharedFlow<FreeBoardDetailEvent>()
         val uiEvent = _uiEvent.asSharedFlow()
-
-        private val _isProcess = MutableStateFlow(false)
-        val isProcess = _isProcess.asStateFlow()
 
         // UI에서 observe할 combined state
         val uiState =
@@ -90,7 +82,7 @@ class FreeBoardDetailViewModel
                 initialValue = FreeBoardDetailState.Loading,
             )
 
-        fun init() {
+        private fun init() {
             viewModelScope.launch {
                 runCatching {
                     coroutineScope {
@@ -129,30 +121,24 @@ class FreeBoardDetailViewModel
             profile: Profile,
             comment: String,
         ) {
-            if (_isProcess.value) return
-            _isProcess.value = true
-
-            val job =
-                viewModelScope.launch {
-                    runCatching {
-                        writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
-                            _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
-                        }
-                    }.onFailure {
-                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
-                    }.onSuccess {
-                        updateCommentCache(
-                            FreeBoardComment(
-                                "temp",
-                                profile,
-                                comment,
-                                Date().toUtcDateString(),
-                            ),
-                        )
+            viewModelScope.launch {
+                runCatching {
+                    writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
+                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
                     }
+                }.onFailure {
+                    _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
+                }.onSuccess {
+                    updateCommentCache(
+                        FreeBoardComment(
+                            "temp",
+                            profile,
+                            comment,
+                            Date().toUtcDateString(),
+                        ),
+                    )
                 }
-
-            job.invokeOnCompletion { _isProcess.value = false }
+            }
         }
 
         fun refreshComments() {
@@ -221,28 +207,6 @@ class FreeBoardDetailViewModel
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
-
-                            res.data
-                                .map { comment ->
-                                    getFreeBoardSubCommentListUseCase(
-                                        postId,
-                                        comment.id,
-                                        size = 10,
-                                        cursor = null,
-                                        direction = CursorDirection.NEXT,
-                                    ).map { subComments ->
-                                        comment.copy(subComments = subComments.data)
-                                    }
-                                }.let { subCommentFlows ->
-                                    combine(subCommentFlows) { updatedComments ->
-                                        commentsState.update { currentState ->
-                                            (currentState as? CommentsState.Success)?.copy(
-                                                comments =
-                                                    (currentState as? CommentsState.Success)?.comments.orEmpty() + updatedComments.toList(),
-                                            ) ?: currentState
-                                        }
-                                    }
-                                }.first()
                         }
 
                         else -> {
@@ -257,28 +221,6 @@ class FreeBoardDetailViewModel
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
-
-                            res.data
-                                .map { comment ->
-                                    getFreeBoardSubCommentListUseCase(
-                                        postId,
-                                        comment.id,
-                                        size = 10,
-                                        cursor = null,
-                                        direction = CursorDirection.NEXT,
-                                    ).map { subComments ->
-                                        comment.copy(subComments = subComments.data)
-                                    }
-                                }.let { subCommentFlows ->
-                                    combine(subCommentFlows) { updatedComments ->
-                                        commentsState.update { currentState ->
-                                            (currentState as? CommentsState.Success)?.copy(
-                                                comments =
-                                                (currentState as? CommentsState.Success)?.comments.orEmpty() + updatedComments.toList(),
-                                            ) ?: currentState
-                                        }
-                                    }
-                                }.first()
                         }
                     }
                 }

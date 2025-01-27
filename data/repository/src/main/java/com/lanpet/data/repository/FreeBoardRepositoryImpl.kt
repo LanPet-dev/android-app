@@ -6,6 +6,8 @@ import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.PaginationData
+import com.lanpet.domain.model.PaginationInfo
+import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
@@ -87,6 +89,34 @@ class FreeBoardRepositoryImpl
                             .getFreeBoardSubCommentList(postId, commentId, queries)
                             .toSubCommentDomain(),
                     )
+//                    emit(
+//                        PaginationData<List<FreeBoardSubComment>>(
+//                            data = listOf(
+//                                FreeBoardSubComment(
+//                                    id = "1",
+//                                    createdAt = "2021-09-01T00:00:00Z",
+//                                    profile = Profile(
+//                                        nickname = "nickname",
+//                                        profileImage = null,
+//                                    ),
+//                                    comment = "This is subcommet",
+//                                ),
+//                                FreeBoardSubComment(
+//                                    id = "1",
+//                                    createdAt = "2021-09-01T00:00:00Z",
+//                                    profile = Profile(
+//                                        nickname = "nickname",
+//                                        profileImage = null,
+//                                    ),
+//                                    comment = "This is subcommet",
+//                                )
+//                            ),
+//                            paginationInfo = PaginationInfo(
+//                                hasNext = true,
+//                                nextCursor = null,
+//                            )
+//                        )
+//                    )
                 } catch (e: Exception) {
                     Timber.e(e)
                     throw e
