@@ -40,6 +40,7 @@ import com.lanpet.feature.settings.navigation.settingsNavGraph
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
+import com.lanpet.free.navigation.navigateToFreeBoardCommentDetailScreen
 import com.lanpet.free.navigation.navigateToFreeBoardDetailScreen
 import com.lanpet.free.navigation.navigateToFreeBoardWriteScreen
 import com.lanpet.myprofile.navigation.MyProfile
@@ -227,6 +228,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                                 profileId,
                                 nickname,
                                 navOptions,
+                            )
+                        },
+                        onNavigateToFreeBoardCommentDetail = { postId, freeBoardComment ->
+                            navController.navigateToFreeBoardCommentDetailScreen(
+                                postId = postId,
+                                freeBoardComment = freeBoardComment,
                             )
                         },
                     )

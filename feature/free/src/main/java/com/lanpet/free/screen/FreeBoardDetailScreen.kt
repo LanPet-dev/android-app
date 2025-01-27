@@ -94,6 +94,7 @@ fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -205,6 +206,7 @@ fun FreeBoardDetailScreen(
                                 freeBoardDetailViewModel.dislikePost()
                             }
                         },
+                        onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
                     )
                 }
             }
@@ -252,6 +254,7 @@ fun ContentUI(
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
     isOwner: Boolean = false,
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
@@ -395,12 +398,14 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
+            postId = state.postDetail.id,
             commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
             onLoadMore = {
                 onFetchComment()
             },
+            onMoreSubCommentClick = onNavigateToFreeBoardCommentDetail,
         )
         // line
         Spacer(
@@ -423,11 +428,13 @@ fun ContentUI(
 
 @Composable
 fun FreeBoardCommentSection(
+    postId: String,
     canLoadMore: Boolean,
     modifier: Modifier = Modifier,
     commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
+    onMoreSubCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val nickname =
         LocalAuthManager.current.defaultUserProfile
@@ -461,6 +468,12 @@ fun FreeBoardCommentSection(
                     FreeBoardCommentItem(
                         freeBoardComment = comment,
                         isOwner = comment.profile.nickname == nickname,
+                        onMoreSubCommentClick = {
+                            onMoreSubCommentClick(
+                                postId,
+                                comment,
+                            )
+                        },
                     )
                 }
                 if (canLoadMore) {
@@ -545,7 +558,7 @@ fun CommentInputSection(
                 Image(
                     imageVector = MyIconPack.Send,
                     contentDescription = "ic_send",
-                    colorFilter = ColorFilter.tint(color = GrayColor.Gray400),
+                    colorFilter = ColorFilter.tint(color = if (input.isEmpty()) GrayColor.Gray400 else PrimaryColor.PRIMARY),
                 )
             }
         }
@@ -650,6 +663,7 @@ private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }
@@ -663,6 +677,7 @@ private fun FreeBoardCommentSection_Empty_Preview() {
                 comments = emptyList(),
                 canLoadMore = false,
                 onLoadMore = {},
+                postId = "1",
             )
         }
     }
@@ -675,6 +690,7 @@ private fun FreeBoardCommentSection_Filled_Preview() {
         FreeBoardCommentSection(
             onLoadMore = {},
             canLoadMore = true,
+            postId = "1",
         )
     }
 }
@@ -710,6 +726,8 @@ private fun SuccessUIPreview() {
             onLikeChange = {},
             onFetchComment = {},
             modifier = Modifier,
+            isOwner = true,
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }

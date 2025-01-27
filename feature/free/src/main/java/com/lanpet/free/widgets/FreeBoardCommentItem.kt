@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ fun FreeBoardCommentItem(
     isOwner: Boolean = false,
     onLikeClick: () -> Unit = {},
     onCommentClick: () -> Unit = {},
+    onMoreSubCommentClick: () -> Unit = { },
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -58,18 +60,18 @@ fun FreeBoardCommentItem(
                         freeBoardComment.profile.profileImage,
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.img_dummy),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 }
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
@@ -161,6 +163,19 @@ fun FreeBoardCommentItem(
                     )
                 }
             }
+
+            TextButton(
+                onClick = onMoreSubCommentClick,
+                modifier = Modifier.padding(LanPetDimensions.Spacing.small),
+            ) {
+                Text(
+                    "답글 더보기",
+                    style =
+                    MaterialTheme.customTypography().body3RegularSingle.copy(
+                        color = GrayColor.Gray400,
+                    ),
+                )
+            }
         }
     }
 }
@@ -186,18 +201,18 @@ fun FreeBoardSubCommentItem(
                         freeBoardSubComment.profile.profileImage,
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.img_dummy),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 }
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
@@ -284,7 +299,6 @@ fun FreeBoardSubCommentItem(
     }
 }
 
-
 @PreviewLightDark
 @Composable
 private fun FreeBoardCommentItemPreview() {
@@ -294,10 +308,10 @@ private fun FreeBoardCommentItemPreview() {
                 FreeBoardComment(
                     id = "1",
                     profile =
-                    Profile(
-                        nickname = "닉네임",
-                        profileImage = null,
-                    ),
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
                     comment = "This is comment",
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                 ),
@@ -307,25 +321,25 @@ private fun FreeBoardCommentItemPreview() {
                 FreeBoardComment(
                     id = "1",
                     profile =
-                    Profile(
-                        nickname = "닉네임",
-                        profileImage = null,
-                    ),
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
                     comment = "This is comment",
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                     subComments =
-                    listOf(
-                        FreeBoardSubComment(
-                            id = "1",
-                            profile =
-                            Profile(
-                                nickname = "닉네임",
-                                profileImage = null,
+                        listOf(
+                            FreeBoardSubComment(
+                                id = "1",
+                                profile =
+                                    Profile(
+                                        nickname = "닉네임",
+                                        profileImage = null,
+                                    ),
+                                comment = "This is sub comment",
+                                createdAt = "2025-01-19T06:27:18.022+00:00",
                             ),
-                            comment = "This is sub comment",
-                            createdAt = "2025-01-19T06:27:18.022+00:00",
                         ),
-                    ),
                 ),
             )
         }
