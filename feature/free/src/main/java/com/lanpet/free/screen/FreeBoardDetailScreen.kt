@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
@@ -428,6 +429,11 @@ fun FreeBoardCommentSection(
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
 ) {
+    val nickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
+
     Column {
         Text(
             "댓글 $commentCount",
@@ -452,7 +458,10 @@ fun FreeBoardCommentSection(
         } else {
             Column {
                 comments.forEach { comment ->
-                    FreeBoardCommentItem(freeBoardComment = comment)
+                    FreeBoardCommentItem(
+                        freeBoardComment = comment,
+                        isOwner = comment.profile.nickname == nickname,
+                    )
                 }
                 if (canLoadMore) {
                     Text(

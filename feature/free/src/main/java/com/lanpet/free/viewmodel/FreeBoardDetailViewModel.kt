@@ -14,6 +14,7 @@ import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
+import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -24,7 +25,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -36,6 +40,7 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
+        private val getFreeBoardSubCommentListUseCase: GetFreeBoardSubCommentListUseCase,
         private val doPostLikeUseCase: DoPostLikeUseCase,
         private val cancelPostLikeUseCase: CancelPostLikeUseCase,
         private val writeCommentUseCase: WriteCommentUseCase,
@@ -202,34 +207,79 @@ class FreeBoardDetailViewModel
                     direction = pagingState.direction,
                 ).catch {
                     commentsState.value = CommentsState.Error("Failed to fetch comments")
-                }.collect {
+                }.collect { res ->
                     when (commentsState.value) {
                         is CommentsState.Success -> {
                             commentsState.value =
                                 CommentsState.Success(
-                                    comments = (commentsState.value as CommentsState.Success).comments + it.data,
+                                    comments = (commentsState.value as CommentsState.Success).comments + res.data,
                                     cursorPagingState =
                                         CursorPagingState(
-                                            hasNext = it.paginationInfo.hasNext,
-                                            cursor = it.paginationInfo.nextCursor,
+                                            hasNext = res.paginationInfo.hasNext,
+                                            cursor = res.paginationInfo.nextCursor,
                                             size = 10,
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
+
+                            res.data
+                                .map { comment ->
+                                    getFreeBoardSubCommentListUseCase(
+                                        postId,
+                                        comment.id,
+                                        size = 10,
+                                        cursor = null,
+                                        direction = CursorDirection.NEXT,
+                                    ).map { subComments ->
+                                        comment.copy(subComments = subComments.data)
+                                    }
+                                }.let { subCommentFlows ->
+                                    combine(subCommentFlows) { updatedComments ->
+                                        commentsState.update { currentState ->
+                                            (currentState as? CommentsState.Success)?.copy(
+                                                comments =
+                                                    (currentState as? CommentsState.Success)?.comments.orEmpty() + updatedComments.toList(),
+                                            ) ?: currentState
+                                        }
+                                    }
+                                }.first()
                         }
 
-                        else ->
+                        else -> {
                             commentsState.value =
                                 CommentsState.Success(
-                                    comments = it.data,
+                                    comments = res.data,
                                     cursorPagingState =
                                         CursorPagingState(
-                                            hasNext = it.paginationInfo.hasNext,
-                                            cursor = it.paginationInfo.nextCursor,
+                                            hasNext = res.paginationInfo.hasNext,
+                                            cursor = res.paginationInfo.nextCursor,
                                             size = 10,
                                             direction = CursorDirection.NEXT,
                                         ),
                                 )
+
+                            res.data
+                                .map { comment ->
+                                    getFreeBoardSubCommentListUseCase(
+                                        postId,
+                                        comment.id,
+                                        size = 10,
+                                        cursor = null,
+                                        direction = CursorDirection.NEXT,
+                                    ).map { subComments ->
+                                        comment.copy(subComments = subComments.data)
+                                    }
+                                }.let { subCommentFlows ->
+                                    combine(subCommentFlows) { updatedComments ->
+                                        commentsState.update { currentState ->
+                                            (currentState as? CommentsState.Success)?.copy(
+                                                comments =
+                                                (currentState as? CommentsState.Success)?.comments.orEmpty() + updatedComments.toList(),
+                                            ) ?: currentState
+                                        }
+                                    }
+                                }.first()
+                        }
                     }
                 }
             }

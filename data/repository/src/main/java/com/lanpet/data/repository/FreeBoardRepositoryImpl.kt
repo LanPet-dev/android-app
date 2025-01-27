@@ -11,6 +11,7 @@ import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardPostLike
+import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
 import com.lanpet.domain.model.free.ResourceUploadUrl
@@ -66,6 +67,31 @@ class FreeBoardRepositoryImpl
                     throw e
                 }
             }.flowOn(Dispatchers.IO)
+
+        override fun getFreeBoardSubCommentList(
+            postId: String,
+            commentId: String,
+            size: Int?,
+            cursor: String?,
+            direction: CursorDirection?,
+        ): Flow<PaginationData<List<FreeBoardSubComment>>> =
+            flow {
+                try {
+                    val queries = mutableMapOf<String, String>()
+                    cursor?.let { queries["cursor"] = it }
+                    size?.let { queries["size"] = it.toString() }
+                    direction?.let { queries["direction"] = it.name }
+
+                    emit(
+                        freeBoardApiService
+                            .getFreeBoardSubCommentList(postId, commentId, queries)
+                            .toSubCommentDomain(),
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    throw e
+                }
+            }
 
         override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =
             flow {

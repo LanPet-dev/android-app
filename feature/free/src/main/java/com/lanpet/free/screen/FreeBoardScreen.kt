@@ -28,6 +28,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -73,7 +74,7 @@ fun FreeBoardScreen(
     onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
-    val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by freeBoardListViewModel.uiState.collectAsState()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     DisposableEffect(lifecycle) {
@@ -177,10 +178,7 @@ fun FreeBoardScreen(
                                             Modifier.verticalScroll(
                                                 state = scrollState,
                                             ),
-                                        isLoading =
-                                            freeBoardListViewModel.isProcess
-                                                .collectAsStateWithLifecycle()
-                                                .value.isLocked,
+                                        isLoading = (uiState as FreeBoardListState.Success).isLoading,
                                         freeBoardItemList = (uiState as FreeBoardListState.Success).data,
                                         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
                                         onLoadMore = {
