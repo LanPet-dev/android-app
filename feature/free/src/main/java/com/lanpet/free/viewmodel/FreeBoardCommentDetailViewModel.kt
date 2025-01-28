@@ -3,11 +3,16 @@ package com.lanpet.free.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardSubComment
+import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
+import com.lanpet.domain.usecase.freeboard.WriteSubCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -19,6 +24,8 @@ class FreeBoardCommentDetailViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         private val getFreeBoardSubCommentListUseCase: GetFreeBoardSubCommentListUseCase,
+        private val writeSubCommentUseCase: WriteSubCommentUseCase,
+        private val authManager: AuthManager,
     ) : ViewModel() {
         private val postId: String =
             savedStateHandle.get<String>("postId") ?: throw IllegalArgumentException("postId is null")
@@ -45,10 +52,24 @@ class FreeBoardCommentDetailViewModel
             if (comment.isEmpty()) return
 
             viewModelScope.launch {
+                runCatching {
+                    writeSubCommentUseCase(
+                        postId = postId,
+                        commentId = freeBoardComment.id,
+                        writeComment =
+                            FreeBoardWriteComment(
+                                profileId = authManager.defaultUserProfile.value.id,
+                                comment = commentInput.value,
+                            ),
+                    ).first()
+
+                    commentInput.value = ""
+                }.onFailure {
+                }
             }
         }
 
-        private fun getSubComment() {
+        fun getSubComment() {
             if (!subCommentPagingState.hasNext) return
 
             viewModelScope.launch {

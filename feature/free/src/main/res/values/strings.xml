@@ -16,4 +16,5 @@
     <string name="toast_post_create_success">게시글이 등록되었어요</string>
     <string name="toast_post_create_fail">게시글 등록에 실패했어요</string>
     <string name="title_error_freeboard_detail">에러가 발생했어요</string>
+    <string name="freeboard_detail_button_more_comment">댓글 더보기</string>
 </resources>

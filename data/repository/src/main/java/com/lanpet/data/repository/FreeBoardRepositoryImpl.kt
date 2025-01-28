@@ -2,12 +2,11 @@ package com.lanpet.data.repository
 
 import com.lanpet.data.dto.CreateFreeBoardPostRequest
 import com.lanpet.data.dto.DoPostLikeRequest
+import com.lanpet.data.dto.freeboard.FreeBoardWriteCommentRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.PaginationData
-import com.lanpet.domain.model.PaginationInfo
-import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardPostCreate
@@ -175,6 +174,25 @@ class FreeBoardRepositoryImpl
             flow {
                 try {
                     freeBoardApiService.writeComment(sarangbangId, writeComment)
+                    emit(true)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emit(false)
+                }
+            }
+
+        override fun writeSubComment(
+            postId: String,
+            commentId: String,
+            writeComment: FreeBoardWriteComment,
+        ): Flow<Boolean> =
+            flow {
+                try {
+                    freeBoardApiService.writeSubComment(
+                        postId,
+                        commentId,
+                        FreeBoardWriteCommentRequest.fromDomain(freeBoardWriteComment = writeComment),
+                    )
                     emit(true)
                 } catch (e: Exception) {
                     Timber.e(e)
