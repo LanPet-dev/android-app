@@ -19,10 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
@@ -89,55 +92,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     var navItem by rememberSaveable {
         mutableStateOf(BottomNavItem.Wiki)
-    }
-
-    LaunchedEffect(navBackStackEntry?.destination?.route) {
-        // 현재 화면이 BottomNav를 표시해야 하는지 확인
-        shouldShowBottomBar =
-            when (navBackStackEntry?.destination?.route) {
-                Wiki.toString() -> {
-                    navItem = BottomNavItem.Wiki
-                    true
-                }
-
-                FreeBoard.toString() -> {
-                    navItem = BottomNavItem.Free
-                    true
-                }
-
-                MyProfile.toString() -> {
-                    navItem = BottomNavItem.MyPage
-                    true
-                }
-
-                toString(),
-                -> true
-
-                else -> false
-            }
-    }
-
-    // BottomNav의 item이 변경되면 해당 item에 맞는 화면으로 이동
-    LaunchedEffect(Unit) {
-        snapshotFlow { navItem }
-            .distinctUntilChanged()
-            .drop(1) // 초기 값은 스킵
-            .collect { newValue ->
-                // value가 변경될 때만 실행되는 로직
-                when (newValue) {
-                    BottomNavItem.Wiki -> {
-                        navController.navigateToWikiBaseRoute()
-                    }
-
-                    BottomNavItem.Free -> {
-                        navController.navigateToFreeBoardBaseRoute()
-                    }
-
-                    BottomNavItem.MyPage -> {
-                        navController.navigateToMyProfileBaseRoute()
-                    }
-                }
-            }
     }
 
     Box {
@@ -304,5 +258,64 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 },
             )
         }
+    }
+
+    LaunchedEffect(navBackStackEntry?.destination?.route) {
+        // 현재 화면이 BottomNav를 표시해야 하는지 확인
+        shouldShowBottomBar =
+            when (navBackStackEntry?.destination?.route) {
+                Wiki.toString() -> {
+                    navItem = BottomNavItem.Wiki
+                    true
+                }
+
+                FreeBoard.toString() -> {
+                    navItem = BottomNavItem.Free
+                    true
+                }
+
+                MyProfile.toString() -> {
+                    navItem = BottomNavItem.MyPage
+                    true
+                }
+
+                toString(),
+                -> true
+
+                else -> false
+            }
+    }
+
+    val topLevelDestinationNavOptions =
+        navOptions {
+            popUpTo(MainNavigationRoute(BottomNavItem.Wiki)) {
+                saveState = true
+            }
+
+            launchSingleTop = true
+            restoreState = true
+        }
+
+    // BottomNav의 item이 변경되면 해당 item에 맞는 화면으로 이동
+    LaunchedEffect(Unit) {
+        snapshotFlow { navItem }
+            .distinctUntilChanged()
+            .drop(1) // 초기 값은 스킵
+            .collect { newValue ->
+                // value가 변경될 때만 실행되는 로직
+                when (newValue) {
+                    BottomNavItem.Wiki -> {
+                        navController.navigateToWikiBaseRoute(topLevelDestinationNavOptions)
+                    }
+
+                    BottomNavItem.Free -> {
+                        navController.navigateToFreeBoardBaseRoute(topLevelDestinationNavOptions)
+                    }
+
+                    BottomNavItem.MyPage -> {
+                        navController.navigateToMyProfileBaseRoute(topLevelDestinationNavOptions)
+                    }
+                }
+            }
     }
 }
