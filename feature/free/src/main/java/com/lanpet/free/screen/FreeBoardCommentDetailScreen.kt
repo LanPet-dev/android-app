@@ -11,11 +11,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lanpet.core.auth.LocalAuthManager
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.LanPetCenterAlignedTopAppBar
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -23,11 +26,15 @@ import com.lanpet.core.designsystem.theme.customTypography
 import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardSubComment
+import com.lanpet.free.R
+import com.lanpet.free.viewmodel.CommentDetailEvent
 import com.lanpet.free.viewmodel.FreeBoardCommentDetailViewModel
 import com.lanpet.free.viewmodel.SingleCommentUiState
 import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun FreeBoardCommentDetailScreen(
@@ -39,6 +46,32 @@ fun FreeBoardCommentDetailScreen(
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.nickname
+
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        freeBoardCommentDetailViewModel.event.collect {
+            when (it) {
+                CommentDetailEvent.WriteSubCommentFail() -> {
+                    it.let { message ->
+                        withContext(Dispatchers.Main) {
+                            context.toast(context.getString(R.string.freeboard_comment_detail_write_sub_comment_fail))
+                        }
+                    }
+                }
+
+                CommentDetailEvent.WriteSubCommentSuccess() -> {
+                    it.let { message ->
+                        withContext(Dispatchers.Main) {
+                            context.toast(context.getString(R.string.freeboard_comment_detail_write_sub_comment_success))
+                        }
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
 
     FreeBoardCommentDetailScreen(
         singleCommentUiState = freeBoardCommentDetailViewModel.singleCommentUiState.collectAsStateWithLifecycle().value,
@@ -95,14 +128,16 @@ fun FreeBoardCommentDetailScreen(
                 ) {
                     Column {
                         Column(
-                            modifier = Modifier.verticalScroll(
-                                state = rememberScrollState(),
-                            ).weight(1f)
+                            modifier =
+                                Modifier
+                                    .verticalScroll(
+                                        state = rememberScrollState(),
+                                    ).weight(1f),
                         ) {
                             FreeBoardCommentItem(
                                 freeBoardComment = singleCommentUiState.comment,
                                 profileNickname = profileNickname,
-                                onMoreSubCommentClick = onMoreSubComment
+                                onMoreSubCommentClick = onMoreSubComment,
                             )
                         }
                         CommentInput(

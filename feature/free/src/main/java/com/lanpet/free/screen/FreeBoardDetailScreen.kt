@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,17 +44,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.createdAtPostString
@@ -352,23 +360,27 @@ fun ContentUI(
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
 
         state.postDetail.images.map {
-            AsyncImage(
-                model = it.url,
+//            AsyncImage(
+//                model = it.url,
+//                contentDescription = "post_image",
+//                contentScale = ContentScale.Crop,
+//                modifier =
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .padding(
+//                            horizontal = LanPetDimensions.Spacing.small,
+//                            vertical = LanPetDimensions.Spacing.small,
+//                        ).clip(
+//                            shape =
+//                                RoundedCornerShape(
+//                                    LanPetDimensions.Corner.medium,
+//                                ),
+//                        ),
+//                error = painterResource(id = DS_R.drawable.img_preparing),
+//            )
+            ImageWithFullscreenViewer(
+                imageUrl = it.url,
                 contentDescription = "post_image",
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = LanPetDimensions.Spacing.small,
-                            vertical = LanPetDimensions.Spacing.small,
-                        ).clip(
-                            shape =
-                                RoundedCornerShape(
-                                    LanPetDimensions.Corner.medium,
-                                ),
-                        ),
-                error = painterResource(id = DS_R.drawable.img_preparing),
             )
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
@@ -682,6 +694,133 @@ private fun LikeButtonPreview() {
                 likeCount = 10,
                 onLikeClick = {},
             )
+        }
+    }
+}
+
+@Composable
+fun ImageWithFullscreenViewer(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+) {
+    var showFullscreen by remember { mutableStateOf(false) }
+
+    // 썸네일 이미지
+    AsyncImage(
+        model =
+            ImageRequest
+                .Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+        contentDescription = contentDescription,
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = LanPetDimensions.Spacing.small,
+                    vertical = LanPetDimensions.Spacing.small,
+                ).clip(RoundedCornerShape(8.dp))
+                .then(
+                    Modifier.clickable {
+                        showFullscreen = true
+                    },
+                ),
+        contentScale = ContentScale.Crop,
+    )
+
+    // 전체화면 다이얼로그
+    if (showFullscreen) {
+        Dialog(
+            onDismissRequest = { showFullscreen = false },
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    usePlatformDefaultWidth = false,
+                ),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+            ) {
+                var scale by remember { mutableFloatStateOf(1f) }
+                var offset by remember { mutableStateOf(Offset.Zero) }
+
+                // 이미지와 화면 크기를 저장할 변수들
+                var imageSize by remember { mutableStateOf(IntSize.Zero) }
+                var boxSize by remember { mutableStateOf(IntSize.Zero) }
+
+                // 오프셋 제한 함수
+                fun limitOffset(offset: Offset): Offset {
+                    // 이미지의 실제 표시 크기 계산
+                    val scaledWidth = imageSize.width * scale
+                    val scaledHeight = imageSize.height * scale
+
+                    // 이미지가 화면보다 작으면 중앙에 고정
+                    if (scaledWidth <= boxSize.width) {
+                        return Offset(0f, offset.y)
+                    }
+                    if (scaledHeight <= boxSize.height) {
+                        return Offset(offset.x, 0f)
+                    }
+
+                    // 최대 이동 가능 거리 계산
+                    val maxX = (scaledWidth - boxSize.width) / 2
+                    val maxY = (scaledHeight - boxSize.height) / 2
+
+                    return Offset(
+                        x = offset.x.coerceIn(-maxX, maxX),
+                        y = offset.y.coerceIn(-maxY, maxY),
+                    )
+                }
+
+                AsyncImage(
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .build(),
+                    contentDescription = contentDescription,
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .onSizeChanged { boxSize = it },
+                    contentScale = ContentScale.Fit,
+                    onSuccess = { state ->
+                        imageSize =
+                            IntSize(
+                                state.painter.intrinsicSize.width
+                                    .toInt(),
+                                state.painter.intrinsicSize.height
+                                    .toInt(),
+                            )
+                    },
+                )
+
+                // 닫기 버튼
+                IconButton(
+                    onClick = {
+                        scale = 1f
+                        offset = Offset.Zero
+                        showFullscreen = false
+                    },
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color.White,
+                    )
+                }
+            }
         }
     }
 }

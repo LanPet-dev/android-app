@@ -3,6 +3,7 @@ package com.lanpet.myprofile.navigation
 import android.os.Build
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.domain.model.ProfileType
@@ -124,15 +125,11 @@ fun NavGraphBuilder.myProfileNavGraph(
     }
 }
 
-fun NavController.navigateToMyProfileBaseRoute() {
+fun NavController.navigateToMyProfileBaseRoute(navOptions: NavOptions) {
     navigate(
         MyProfileBaseRoute,
-    ) {
-        launchSingleTop = true
-        popUpTo(0) {
-            inclusive = true
-        }
-    }
+        navOptions,
+    )
 }
 
 fun NavController.navigateToMyProfileAddProfile(profileType: ProfileType) {

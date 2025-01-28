@@ -93,8 +93,6 @@ class FreeBoardDetailViewModelTest {
                                 "nickname" to nickname,
                             ),
                         ),
-                    doPostLikeUseCase = doPostLikeUseCase,
-                    cancelPostLikeUseCase = cancelPostLikeUseCase,
                     writeCommentUseCase = writeCommentUseCase,
                 )
             advanceUntilIdle()
@@ -149,8 +147,6 @@ class FreeBoardDetailViewModelTest {
                                     "nickname" to nickname,
                                 ),
                             ),
-                        doPostLikeUseCase = doPostLikeUseCase,
-                        cancelPostLikeUseCase = cancelPostLikeUseCase,
                         writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
@@ -213,8 +209,6 @@ class FreeBoardDetailViewModelTest {
                                     "nickname" to nickname,
                                 ),
                             ),
-                        doPostLikeUseCase = doPostLikeUseCase,
-                        cancelPostLikeUseCase = cancelPostLikeUseCase,
                         writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
@@ -264,8 +258,6 @@ class FreeBoardDetailViewModelTest {
                                     "nickname" to nickname,
                                 ),
                             ),
-                        doPostLikeUseCase = doPostLikeUseCase,
-                        cancelPostLikeUseCase = cancelPostLikeUseCase,
                         writeCommentUseCase = writeCommentUseCase,
                     )
                 advanceUntilIdle()
