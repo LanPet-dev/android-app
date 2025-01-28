@@ -10,11 +10,8 @@ import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.pagination.CursorDirection
-import com.lanpet.domain.usecase.freeboard.CancelPostLikeUseCase
-import com.lanpet.domain.usecase.freeboard.DoPostLikeUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
-import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -36,8 +33,6 @@ class FreeBoardDetailViewModel
     constructor(
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
-        private val doPostLikeUseCase: DoPostLikeUseCase,
-        private val cancelPostLikeUseCase: CancelPostLikeUseCase,
         private val writeCommentUseCase: WriteCommentUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {

@@ -32,8 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,8 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,9 +56,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
-import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
-import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
@@ -84,6 +78,7 @@ import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
+import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
 import com.lanpet.core.designsystem.R as DS_R
@@ -94,6 +89,7 @@ fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -205,6 +201,7 @@ fun FreeBoardDetailScreen(
                                 freeBoardDetailViewModel.dislikePost()
                             }
                         },
+                        onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
                     )
                 }
             }
@@ -252,6 +249,7 @@ fun ContentUI(
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
     isOwner: Boolean = false,
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
@@ -395,12 +393,15 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
+            postId = state.postDetail.id,
             commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
             onLoadMore = {
                 onFetchComment()
             },
+            onMoreSubCommentClick = onNavigateToFreeBoardCommentDetail,
+            onCommentClick = onNavigateToFreeBoardCommentDetail,
         )
         // line
         Spacer(
@@ -412,7 +413,7 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         Spacer(modifier = Modifier.weight(1f))
-        CommentInputSection(
+        CommentInput(
             onWriteComment = onWriteComment,
             input = commentInput,
             onInputValueChange = onInputValueChange,
@@ -423,11 +424,14 @@ fun ContentUI(
 
 @Composable
 fun FreeBoardCommentSection(
+    postId: String,
     canLoadMore: Boolean,
     modifier: Modifier = Modifier,
     commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
+    onMoreSubCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
+    onCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val nickname =
         LocalAuthManager.current.defaultUserProfile
@@ -461,11 +465,24 @@ fun FreeBoardCommentSection(
                     FreeBoardCommentItem(
                         freeBoardComment = comment,
                         isOwner = comment.profile.nickname == nickname,
+                        onMoreSubCommentClick = {
+                            onMoreSubCommentClick(
+                                postId,
+                                comment,
+                            )
+                        },
+                        onCommentClick = {
+                            onCommentClick(
+                                postId,
+                                comment,
+                            )
+                        },
+                        profileNickname = nickname,
                     )
                 }
                 if (canLoadMore) {
                     Text(
-                        "댓글 더보기",
+                        stringResource(R.string.freeboard_detail_button_more_comment),
                         modifier =
                             Modifier
                                 .padding(
@@ -478,75 +495,6 @@ fun FreeBoardCommentSection(
                         style = MaterialTheme.customTypography().body2RegularSingle.copy(color = GrayColor.Gray400),
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun CommentInputSection(
-    modifier: Modifier = Modifier,
-    input: String = "",
-    onInputValueChange: (String) -> Unit = {},
-    onWriteComment: () -> Unit = {},
-) {
-    Column {
-        Spacer(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .size(1.dp)
-                    .background(GrayColor.Gray50),
-        )
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(LanPetDimensions.Spacing.small),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextField(
-                value = input,
-                maxLines = 4,
-                onValueChange = {
-                    onInputValueChange(it)
-                },
-                placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(horizontal = LanPetDimensions.Spacing.small)
-                        .clip(
-                            shape =
-                                RoundedCornerShape(
-                                    LanPetDimensions.Corner.medium,
-                                ),
-                        ),
-                textStyle =
-                    MaterialTheme.customTypography().body2RegularSingle.copy(
-                        color = GrayColor.Gray400,
-                    ),
-                colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = GrayColor.Gray100,
-                        unfocusedContainerColor = GrayColor.Gray100,
-                        unfocusedPlaceholderColor = GrayColor.Gray400,
-                        focusedPlaceholderColor = GrayColor.Gray400,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = GrayColor.Gray400,
-                    ),
-            )
-            IconButton(
-                onClick = {
-                    onWriteComment()
-                },
-            ) {
-                Image(
-                    imageVector = MyIconPack.Send,
-                    contentDescription = "ic_send",
-                    colorFilter = ColorFilter.tint(color = GrayColor.Gray400),
-                )
             }
         }
     }
@@ -639,7 +587,7 @@ private fun EmojiPicker(
 @Composable
 private fun PreviewCommentInputSection() {
     LanPetAppTheme {
-        CommentInputSection()
+        CommentInput()
     }
 }
 
@@ -650,6 +598,7 @@ private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }
@@ -663,6 +612,7 @@ private fun FreeBoardCommentSection_Empty_Preview() {
                 comments = emptyList(),
                 canLoadMore = false,
                 onLoadMore = {},
+                postId = "1",
             )
         }
     }
@@ -675,6 +625,7 @@ private fun FreeBoardCommentSection_Filled_Preview() {
         FreeBoardCommentSection(
             onLoadMore = {},
             canLoadMore = true,
+            postId = "1",
         )
     }
 }
@@ -710,6 +661,8 @@ private fun SuccessUIPreview() {
             onLikeChange = {},
             onFetchComment = {},
             modifier = Modifier,
+            isOwner = true,
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }
