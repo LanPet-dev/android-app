@@ -19,12 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
@@ -154,7 +152,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                             navController.navigateToSettings()
                         },
                         onNavigateToMyPosts = {
-                            navController.navigateToMyPosts()
+                            navController.navigateToMyPosts(
+                                profileId = it,
+                            )
                         },
                         onNavigateToMyProfileModifyProfile = {
                             navController.navigateToMyProfileModifyProfile()

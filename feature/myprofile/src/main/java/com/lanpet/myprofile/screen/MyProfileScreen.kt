@@ -58,7 +58,7 @@ fun MyProfileScreen(
     onNavigateToProfileCreate: () -> Unit = { },
     onNavigateToProfileManage: (String, ProfileType) -> Unit = { profileId: String, profileType: ProfileType -> },
     onNavigateToSettings: () -> Unit = { },
-    onNavigateToMyPosts: () -> Unit = { },
+    onNavigateToMyPosts: (String) -> Unit = { },
 ) {
     val authManager = LocalAuthManager.current
     val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
@@ -169,7 +169,9 @@ fun MyProfileScreen(
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_my_post),
                         onclick = {
-                            onNavigateToMyPosts()
+                            onNavigateToMyPosts(
+                                defaultUserProfile.value.id,
+                            )
                         },
                     )
                     ActivityListItem(

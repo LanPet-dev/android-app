@@ -22,7 +22,7 @@ fun NavGraphBuilder.myProfileNavGraph(
     onNavigateToMyProfileAddProfile: (ProfileType) -> Unit,
     onNavigateToMyProfileAddProfileEntry: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToMyPosts: () -> Unit,
+    onNavigateToMyPosts: (String) -> Unit,
     onNavigateToMyProfileManageProfile: (String, ProfileType) -> Unit,
 ) {
     navigation<MyProfileBaseRoute>(
