@@ -25,6 +25,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -91,13 +92,15 @@ fun MyPostsScreen(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
                 ) { index ->
-//                    if (index == 0) {
-//                        Column {
-//                            Text("Wiki")
-//                        }
-//                    } else if (index == 1) {
-//                        )
-//                    }
+                    if (index == 0) {
+                        Column {
+                            Text("Wiki")
+                        }
+                    } else if (index == 1) {
+                        MyPostsFreeBoardScreen(
+                            onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
+                        )
+                    }
                 }
             }
         }

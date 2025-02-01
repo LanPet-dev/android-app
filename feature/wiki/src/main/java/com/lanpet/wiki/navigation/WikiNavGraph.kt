@@ -2,6 +2,7 @@ package com.lanpet.wiki.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.lanpet.wiki.WikiScreen
@@ -17,15 +18,11 @@ fun NavGraphBuilder.wikiNavGraph() {
     }
 }
 
-fun NavController.navigateToWikiBaseRoute() {
+fun NavController.navigateToWikiBaseRoute(navOptions: NavOptions) {
     navigate(
         WikiBaseRoute,
-    ) {
-        launchSingleTop = true
-        popUpTo(0) {
-            inclusive = true
-        }
-    }
+        navOptions = navOptions,
+    )
 }
 
 fun NavController.navigateToWikiScreen() {

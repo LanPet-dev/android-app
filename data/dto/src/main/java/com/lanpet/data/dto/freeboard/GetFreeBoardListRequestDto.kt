@@ -27,6 +27,7 @@ data class GetFreeBoardListRequestDto(
                 size = getFreeBoardPostListRequest.size,
                 category = getFreeBoardPostListRequest.freeBoardCategoryType?.value,
                 direction = getFreeBoardPostListRequest.direction.name,
+                profileId = getFreeBoardPostListRequest.profileId,
             )
     }
 }

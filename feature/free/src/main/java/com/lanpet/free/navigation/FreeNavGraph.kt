@@ -59,15 +59,14 @@ fun NavGraphBuilder.freeNavGraph(
                 ),
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { 1000 },
-                    animationSpec = tween(700),
-                ) + fadeIn(animationSpec = tween(700))
+                    animationSpec = tween(500),
+                ) + fadeIn(animationSpec = tween(500))
             },
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = { 1000 },
-                    animationSpec = tween(700),
-                ) + fadeOut(animationSpec = tween(700))
+                    animationSpec = tween(500),
+                ) + fadeOut(
+                    animationSpec = tween(500))
             },
         ) {
             FreeBoardCommentDetailScreen(
@@ -118,15 +117,13 @@ fun NavController.navigateToFreeBoardCommentDetailScreen(
     }
 }
 
-fun NavController.navigateToFreeBoardBaseRoute() {
+fun NavController.navigateToFreeBoardBaseRoute(
+    navOptions: NavOptions
+) {
     navigate(
         FreeBoardBaseRoute,
-    ) {
-        launchSingleTop = true
-        popUpTo(0) {
-            inclusive = true
-        }
-    }
+        navOptions
+    )
 }
 
 fun NavController.navigateToFreeBoardScreen() {

@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.domain.model.free.FreeBoardComment
-import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteSubCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -36,6 +37,9 @@ class FreeBoardCommentDetailViewModel
                 ?: throw IllegalArgumentException("freeBoardComment is null")
 
         private var subCommentPagingState = CursorPagingState()
+
+        private val _event = MutableSharedFlow<CommentDetailEvent?>()
+        val event = _event.asSharedFlow()
 
         private val _singleCommentUiState =
             MutableStateFlow<SingleCommentUiState>(SingleCommentUiState.Loading)
@@ -64,7 +68,9 @@ class FreeBoardCommentDetailViewModel
                     ).first()
 
                     commentInput.value = ""
+                    _event.emit(CommentDetailEvent.WriteSubCommentSuccess())
                 }.onFailure {
+                    _event.emit(CommentDetailEvent.WriteSubCommentFail())
                 }
             }
         }
@@ -73,38 +79,41 @@ class FreeBoardCommentDetailViewModel
             if (!subCommentPagingState.hasNext) return
 
             viewModelScope.launch {
-                getFreeBoardSubCommentListUseCase(
-                    postId = postId,
-                    commentId = freeBoardComment.id,
-                    cursor = subCommentPagingState.cursor,
-                    size = subCommentPagingState.size,
-                    direction = subCommentPagingState.direction,
-                ).collect {
-                    _singleCommentUiState.update { state ->
-                        when (state) {
-                            is SingleCommentUiState.Success -> {
-                                SingleCommentUiState.Success(
-                                    comment =
-                                        state.comment.copy(
-                                            subComments =
-                                                state.comment.subComments + it.data,
-                                        ),
-                                )
-                            }
+                runCatching {
+                    getFreeBoardSubCommentListUseCase(
+                        postId = postId,
+                        commentId = freeBoardComment.id,
+                        cursor = subCommentPagingState.cursor,
+                        size = subCommentPagingState.size,
+                        direction = subCommentPagingState.direction,
+                    ).collect {
+                        _singleCommentUiState.update { state ->
+                            when (state) {
+                                is SingleCommentUiState.Success -> {
+                                    SingleCommentUiState.Success(
+                                        comment =
+                                            state.comment.copy(
+                                                subComments =
+                                                    state.comment.subComments + it.data,
+                                            ),
+                                    )
+                                }
 
-                            else -> {
-                                SingleCommentUiState.Success(
-                                    comment = freeBoardComment.copy(subComments = it.data),
-                                )
+                                else -> {
+                                    SingleCommentUiState.Success(
+                                        comment = freeBoardComment.copy(subComments = it.data),
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    subCommentPagingState =
-                        subCommentPagingState.copy(
-                            cursor = it.paginationInfo.nextCursor,
-                            hasNext = it.paginationInfo.hasNext,
-                        )
+                        subCommentPagingState =
+                            subCommentPagingState.copy(
+                                cursor = it.paginationInfo.nextCursor,
+                                hasNext = it.paginationInfo.hasNext,
+                            )
+                    }
+                }.onFailure { e ->
                 }
             }
         }
@@ -124,4 +133,14 @@ sealed interface SingleCommentUiState {
     ) : SingleCommentUiState
 
     data object Loading : SingleCommentUiState
+}
+
+sealed interface CommentDetailEvent {
+    data class WriteSubCommentSuccess(
+        val message: String? = null,
+    ) : CommentDetailEvent
+
+    data class WriteSubCommentFail(
+        val message: String? = null,
+    ) : CommentDetailEvent
 }

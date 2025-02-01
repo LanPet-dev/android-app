@@ -2,6 +2,7 @@ package com.lanpet.data.repository
 
 import com.lanpet.data.dto.RegisterManProfileRequest
 import com.lanpet.data.dto.RegisterPetProfileRequest
+import com.lanpet.data.dto.mapper.MapperRegistry
 import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.localdb.AuthDatabase
@@ -24,6 +25,7 @@ class ProfileRepositoryImpl
     constructor(
         private val profileApiService: ProfileApiService,
         private val authDatabase: AuthDatabase,
+        private val mapperRegistry: MapperRegistry,
     ) : ProfileRepository {
         override suspend fun registerPetProfile(petProfileCreate: PetProfileCreate): Flow<String> =
             flow {

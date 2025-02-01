@@ -1,5 +1,6 @@
 package com.lanpet.core.di
 
+import com.lanpet.data.dto.mapper.MapperRegistry
 import com.lanpet.data.repository.AccountRepositoryImpl
 import com.lanpet.data.repository.FreeBoardRepositoryImpl
 import com.lanpet.data.repository.ProfileRepositoryImpl
@@ -41,10 +42,12 @@ class RepositoryModule {
     fun provideProfileRepository(
         profileService: ProfileApiService,
         authDatabase: AuthDatabase,
+        mapperRegistry: MapperRegistry,
     ): ProfileRepository =
         ProfileRepositoryImpl(
             profileService,
             authDatabase,
+            mapperRegistry,
         )
 
     @Singleton
