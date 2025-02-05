@@ -15,7 +15,7 @@ import com.lanpet.domain.model.profile.Pet
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import com.lanpet.domain.usecase.profile.ModifyPetProfileUseCase
-import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
+import com.lanpet.domain.usecase.profile.ManageProfileImageResourceUseCase
 import com.lanpet.myprofile.model.PetProfileUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,7 +35,7 @@ class ManagePetProfileViewModel
         private val modifyPetProfileUseCase: ModifyPetProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
-        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
+        private val manageProfileImageResourceUseCase: ManageProfileImageResourceUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
         private lateinit var originPetProfileUpdate: PetProfileUpdate
@@ -161,7 +161,7 @@ class ManagePetProfileViewModel
                         petProfileUpdate.profileImageUri?.let { uri ->
                             if(uri.toString().startsWith("content://")) {
                                 uri.toCompressedByteArray(context)?.let {
-                                    uploadProfileImageResourceUseCase(
+                                    manageProfileImageResourceUseCase(
                                         profileId = petProfileUpdate.id,
                                         profileImage = it,
                                     ).first()

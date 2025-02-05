@@ -1,5 +1,6 @@
 package com.lanpet.myprofile.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
@@ -8,18 +9,21 @@ import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.core.common.toCompressedByteArray
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Pet
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.RegisterPetProfileUseCase
+import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,6 +36,7 @@ class AddPetProfileViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         private val registerPetProfileUseCase: RegisterPetProfileUseCase,
+        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
@@ -218,7 +223,7 @@ class AddPetProfileViewModel
 
         fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
-        fun addPetProfile() {
+        fun addPetProfile(context: Context) {
             val petProfileCreate = _uiState.value.petProfileCreate ?: return
 
             if (!isValidState.value) {
@@ -227,7 +232,20 @@ class AddPetProfileViewModel
 
             viewModelScope.launch {
                 runCatching {
-                    registerPetProfileUseCase(petProfileCreate).collect {
+                    registerPetProfileUseCase(
+                        petProfileCreate = petProfileCreate
+                    ).collect { profileId ->
+                        val uri = petProfileCreate.profileImageUri
+                        // 업로드 할 profile image 존재 시
+                        if (uri != null) {
+                            uri.toCompressedByteArray(context)?.let { byteArray ->
+                                uploadProfileImageResourceUseCase(
+                                    profileId = profileId,
+                                    profileImage = byteArray
+                                ).first()
+                            }
+                        }
+
                         _uiEvent.emit(true)
                         authManager.getProfiles()
                     }

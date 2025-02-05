@@ -18,7 +18,7 @@ import com.lanpet.domain.model.profile.Butler
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import com.lanpet.domain.usecase.profile.ModifyManProfileUseCase
-import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
+import com.lanpet.domain.usecase.profile.ManageProfileImageResourceUseCase
 import com.lanpet.myprofile.model.ManProfileUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,7 +38,7 @@ class ManageManProfileViewModel
         private val modifyManProfileUseCase: ModifyManProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
-        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
+        private val manageProfileImageResourceUseCase: ManageProfileImageResourceUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
         private lateinit var originManProfileUpdate: ManProfileUpdate
@@ -282,7 +282,7 @@ class ManageManProfileViewModel
                         _uiState.value.manProfileUpdate?.profileImageUri?.let { uri ->
                             if(uri.toString().startsWith("content://")) {
                                 uri.toCompressedByteArray(context)?.let {
-                                    uploadProfileImageResourceUseCase(
+                                    manageProfileImageResourceUseCase(
                                         profileId = _uiState.value.manProfileUpdate!!.id,
                                         profileImage = it,
                                     ).first()
