@@ -1,5 +1,6 @@
 package com.lanpet.myprofile.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.core.common.toCompressedByteArray
 import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.ManProfile
 import com.lanpet.domain.model.PetCategory
@@ -16,12 +18,14 @@ import com.lanpet.domain.model.profile.Butler
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import com.lanpet.domain.usecase.profile.ModifyManProfileUseCase
+import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
 import com.lanpet.myprofile.model.ManProfileUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,6 +38,7 @@ class ManageManProfileViewModel
         private val modifyManProfileUseCase: ModifyManProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
         private lateinit var originManProfileUpdate: ManProfileUpdate
@@ -222,7 +227,7 @@ class ManageManProfileViewModel
                     _uiState.value.nicknameDuplicateCheck == true
                 }
 
-        fun modifyManProfile() {
+        fun modifyManProfile(context: Context) {
             if (_uiState.value.manProfileUpdate == null) {
                 return
             }
@@ -274,6 +279,16 @@ class ManageManProfileViewModel
                         _uiState.value.manProfileUpdate!!.id,
                         manProfile,
                     ).collect {
+                        _uiState.value.manProfileUpdate?.profileImageUri?.let { uri ->
+                            if(uri.toString().startsWith("content://")) {
+                                uri.toCompressedByteArray(context)?.let {
+                                    uploadProfileImageResourceUseCase(
+                                        profileId = _uiState.value.manProfileUpdate!!.id,
+                                        profileImage = it,
+                                    ).first()
+                                }
+                            }
+                        }
                         _uiEvent.emit(
                             ManageManProfileUiEvent.Success,
                         )

@@ -206,7 +206,7 @@ private fun PetProfileAddView(
         CommonButton(
             title = stringResource(R.string.title_register_button),
         ) {
-            managePetProfileViewModel.modifyPetProfile()
+            managePetProfileViewModel.modifyPetProfile(context)
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }
@@ -288,7 +288,7 @@ private fun ManProfileAddView(
         CommonButton(
             title = stringResource(R.string.title_register_button),
         ) {
-            manageManProfileViewModel.modifyManProfile()
+            manageManProfileViewModel.modifyManProfile(context)
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Margin.medium))
     }

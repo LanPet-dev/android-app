@@ -6,6 +6,7 @@ import com.lanpet.data.dto.FindProfileResponse
 import com.lanpet.data.dto.RegisterManProfileRequest
 import com.lanpet.data.dto.RegisterPetProfileRequest
 import com.lanpet.data.dto.RegisterProfileResponse
+import com.lanpet.data.dto.ResourceUploadUrlResponse
 import com.lanpet.data.dto.UpdateProfileRequest
 import com.lanpet.data.dto.UpdateProfileResponse
 import retrofit2.http.Body
@@ -56,4 +57,13 @@ interface ProfileApiService {
     suspend fun checkNicknameDuplicated(
         @Query("nickname") nickname: String,
     ): CheckNicknameDuplicatedResponse
+
+    @POST("/profiles/{profileId}/resources")
+    suspend fun getProfileResourceUploadUrl(
+        @Path("profileId")
+        profileId: String,
+    ): ResourceUploadUrlResponse
+
+    @DELETE("/profiles/{profileId}/resources")
+    suspend fun deleteProfileResource(): Unit
 }

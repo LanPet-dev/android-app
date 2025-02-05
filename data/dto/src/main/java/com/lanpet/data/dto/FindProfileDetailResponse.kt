@@ -8,7 +8,7 @@ data class FindProfileDetailResponse(
     val id: String,
     val type: ProfileType,
     val nickname: String,
-    val pictureUrl: String? = null,
+    val resources: List<ProfileResourceDto>? = null,
     val introduction: String? = null,
     val pet: PetDto? = null,
     val butler: ButlerDto? = null,
@@ -18,9 +18,15 @@ data class FindProfileDetailResponse(
             id = id,
             type = type,
             nickname = nickname,
-            pictureUrl = pictureUrl,
+            pictureUrl = resources?.first()?.url,
             introduction = introduction,
             pet = pet?.toDomain(),
             butler = butler?.toDomain(),
         )
 }
+
+@Serializable
+data class ProfileResourceDto(
+    val id: String,
+    val url: String,
+)

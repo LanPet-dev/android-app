@@ -1,11 +1,13 @@
 package com.lanpet.myprofile.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
+import com.lanpet.core.common.toCompressedByteArray
 import com.lanpet.domain.model.PetCategory
 import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.ProfileType
@@ -13,12 +15,14 @@ import com.lanpet.domain.model.profile.Pet
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
 import com.lanpet.domain.usecase.profile.ModifyPetProfileUseCase
+import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
 import com.lanpet.myprofile.model.PetProfileUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,6 +35,7 @@ class ManagePetProfileViewModel
         private val modifyPetProfileUseCase: ModifyPetProfileUseCase,
         private val getProfileDetailUseCase: GetProfileDetailUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
         private lateinit var originPetProfileUpdate: PetProfileUpdate
@@ -126,7 +131,7 @@ class ManagePetProfileViewModel
 
         private fun checkValidation(): Boolean = _uiState.value.petProfileUpdate?.checkValidation() == true
 
-        fun modifyPetProfile() {
+        fun modifyPetProfile(context: Context) {
             val petProfileUpdate = _uiState.value.petProfileUpdate ?: return
 
             if (!checkValidation()) return
@@ -153,6 +158,16 @@ class ManagePetProfileViewModel
                         profileId = petProfileUpdate.id,
                         petProfile = petProfile,
                     ).collect {
+                        petProfileUpdate.profileImageUri?.let { uri ->
+                            if(uri.toString().startsWith("content://")) {
+                                uri.toCompressedByteArray(context)?.let {
+                                    uploadProfileImageResourceUseCase(
+                                        profileId = petProfileUpdate.id,
+                                        profileImage = it,
+                                    ).first()
+                                }
+                            }
+                        }
                         authManager.getProfiles()
                         _uiEvent.emit(PetProfileUpdateEvent.Success(petProfile))
                     }
