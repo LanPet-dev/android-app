@@ -17,7 +17,7 @@ fun FindProfileResponse.toDomain() =
             type = it.type,
             introduction = it.introduction,
             nickname = it.nickname,
-            profileImageUri = it.pictureUrl,
+            profileImageUri = it.resources?.first()?.url,
         )
     }
 
@@ -26,6 +26,6 @@ data class FindProfileData(
     val id: String,
     val type: ProfileType,
     val nickname: String,
-    val pictureUrl: String? = null,
+    val resources: List<ImageResourceDto>? = null,
     val introduction: String? = null,
 )
