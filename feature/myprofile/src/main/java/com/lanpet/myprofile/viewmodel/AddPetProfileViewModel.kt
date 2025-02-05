@@ -233,7 +233,7 @@ class AddPetProfileViewModel
             viewModelScope.launch {
                 runCatching {
                     registerPetProfileUseCase(
-                        petProfileCreate = petProfileCreate
+                        petProfileCreate = petProfileCreate,
                     ).collect { profileId ->
                         val uri = petProfileCreate.profileImageUri
                         // 업로드 할 profile image 존재 시
@@ -241,7 +241,7 @@ class AddPetProfileViewModel
                             uri.toCompressedByteArray(context)?.let { byteArray ->
                                 uploadProfileImageResourceUseCase(
                                     profileId = profileId,
-                                    profileImage = byteArray
+                                    profileImage = byteArray,
                                 ).first()
                             }
                         }

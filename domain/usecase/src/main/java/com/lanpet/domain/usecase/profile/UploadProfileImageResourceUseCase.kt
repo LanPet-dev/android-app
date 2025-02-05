@@ -9,21 +9,21 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class UploadProfileImageResourceUseCase
-@Inject
-constructor(
-    private val profileRepository: ProfileRepository,
-    private val s3UploadRepository: S3UploadRepository,
-) {
-    @OptIn(FlowPreview::class)
-    suspend operator fun invoke(
-        profileId: String,
-        profileImage: ByteArray,
-    ) = profileRepository
-        .getProfileResourceUploadUrl(profileId)
-        .flatMapConcat { urlItems ->
-            s3UploadRepository.uploadImageResource(
-                url = urlItems.items.first(),
-                byteArray = profileImage,
-            )
-        }.onEach { delay(2000) }
-}
+    @Inject
+    constructor(
+        private val profileRepository: ProfileRepository,
+        private val s3UploadRepository: S3UploadRepository,
+    ) {
+        @OptIn(FlowPreview::class)
+        suspend operator fun invoke(
+            profileId: String,
+            profileImage: ByteArray,
+        ) = profileRepository
+            .getProfileResourceUploadUrl(profileId)
+            .flatMapConcat { urlItems ->
+                s3UploadRepository.uploadImageResource(
+                    url = urlItems.items.first(),
+                    byteArray = profileImage,
+                )
+            }.onEach { delay(2000) }
+    }

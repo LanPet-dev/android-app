@@ -14,8 +14,8 @@ import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Pet
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.GetProfileDetailUseCase
-import com.lanpet.domain.usecase.profile.ModifyPetProfileUseCase
 import com.lanpet.domain.usecase.profile.ManageProfileImageResourceUseCase
+import com.lanpet.domain.usecase.profile.ModifyPetProfileUseCase
 import com.lanpet.myprofile.model.PetProfileUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -159,7 +159,7 @@ class ManagePetProfileViewModel
                         petProfile = petProfile,
                     ).collect {
                         petProfileUpdate.profileImageUri?.let { uri ->
-                            if(uri.toString().startsWith("content://")) {
+                            if (uri.toString().startsWith("content://")) {
                                 uri.toCompressedByteArray(context)?.let {
                                     manageProfileImageResourceUseCase(
                                         profileId = petProfileUpdate.id,

@@ -276,7 +276,7 @@ class AddManProfileViewModel
                             uri.toCompressedByteArray(context)?.let { byteArray ->
                                 uploadProfileImageResourceUseCase(
                                     profileId = profileId,
-                                    profileImage = byteArray
+                                    profileImage = byteArray,
                                 ).first()
                             }
                         }
