@@ -1,5 +1,6 @@
 package com.lanpet.myprofile.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.FormValidationStatus
 import com.lanpet.core.common.FormValidator
+import com.lanpet.core.common.toCompressedByteArray
 import com.lanpet.domain.model.Age
 import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetCategory
@@ -15,12 +17,14 @@ import com.lanpet.domain.model.ProfileType
 import com.lanpet.domain.model.profile.Butler
 import com.lanpet.domain.usecase.profile.CheckNicknameDuplicatedUseCase
 import com.lanpet.domain.usecase.profile.RegisterManProfileUseCase
+import com.lanpet.domain.usecase.profile.UploadProfileImageResourceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -33,6 +37,7 @@ class AddManProfileViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         private val registerManProfileUseCase: RegisterManProfileUseCase,
+        private val uploadProfileImageResourceUseCase: UploadProfileImageResourceUseCase,
         private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
         private val authManager: AuthManager,
     ) : ViewModel() {
@@ -253,7 +258,7 @@ class AddManProfileViewModel
 
         fun checkValidation(): Boolean = _uiState.value.validationStatus.isValid && _uiState.value.nicknameDuplicateCheck == true
 
-        fun addManProfile() {
+        fun addManProfile(context: Context) {
             val manProfileCreate = _uiState.value.manProfileCreate ?: return
 
             if (!isValidState.value) {
@@ -264,7 +269,17 @@ class AddManProfileViewModel
                 runCatching {
                     registerManProfileUseCase(
                         manProfileCreate = manProfileCreate,
-                    ).collect {
+                    ).collect { profileId ->
+                        val uri = manProfileCreate.profileImageUri
+                        // 업로드 할 profile image 존재 시
+                        if (uri != null) {
+                            uri.toCompressedByteArray(context)?.let { byteArray ->
+                                uploadProfileImageResourceUseCase(
+                                    profileId = profileId,
+                                    profileImage = byteArray,
+                                ).first()
+                            }
+                        }
                         _uiEvent.emit(true)
                         authManager.getProfiles()
                     }
