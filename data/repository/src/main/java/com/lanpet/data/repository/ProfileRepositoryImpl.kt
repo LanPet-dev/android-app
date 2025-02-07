@@ -11,6 +11,7 @@ import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
+import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
 import kotlinx.coroutines.Dispatchers
@@ -128,5 +129,17 @@ class ProfileRepositoryImpl
                 } catch (e: Exception) {
                     emit(false)
                 }
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun getProfileResourceUploadUrl(profileId: String): Flow<ResourceUploadUrl> =
+            flow {
+                val res = profileApiService.getProfileResourceUploadUrl(profileId)
+                emit(res.toDomain())
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun deleteProfileResource(profileId: String): Flow<Unit> =
+            flow {
+                val res = profileApiService.deleteProfileResource()
+                emit(res)
             }.flowOn(Dispatchers.IO)
     }

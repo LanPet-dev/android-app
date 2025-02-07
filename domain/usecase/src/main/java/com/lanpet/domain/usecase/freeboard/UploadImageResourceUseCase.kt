@@ -29,20 +29,19 @@ class UploadImageResourceUseCase
             .flatMapConcat { urlItems ->
                 flow {
                     coroutineScope {
-                        val results = urlItems.items.mapIndexed { index, url ->
-                            async {
-                                s3UploadRepository
-                                    .uploadImageResource(
-                                        url = url,
-                                        byteArray = imageList[index]
-                                    )
-                                    .first()
+                        val results =
+                            urlItems.items.mapIndexed { index, url ->
+                                async {
+                                    s3UploadRepository
+                                        .uploadImageResource(
+                                            url = url,
+                                            byteArray = imageList[index],
+                                        ).first()
+                                }
                             }
-                        }
                         delay(2000)
                         emit(results.awaitAll())
                     }
                 }
-            }
-            .flowOn(Dispatchers.IO)
+            }.flowOn(Dispatchers.IO)
     }
