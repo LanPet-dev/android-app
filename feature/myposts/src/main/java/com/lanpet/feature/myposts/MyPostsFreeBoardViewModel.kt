@@ -30,16 +30,16 @@ class MyPostsFreeBoardViewModel
         val uiState = _uiState.asStateFlow()
 
         fun getFreeBoardPostList() {
+            if (_uiState.value is MyPostsFreeBoardUiState.Success && !(uiState.value as MyPostsFreeBoardUiState.Success).hasNext) {
+                return
+            }
+
+            val getFreeBoardPostListRequest = getGetFreeBoardPostListRequest(_uiState.value)
+
             viewModelScope.launch {
                 runCatching {
                     getFreeBoardPostListUseCase(
-                        GetFreeBoardPostListRequest(
-                            cursor = null,
-                            size = 10,
-                            freeBoardCategoryType = null,
-                            direction = CursorDirection.NEXT,
-                            profileId = profileId,
-                        ),
+                        getFreeBoardPostListRequest,
                     ).collect { freeBoardPostList ->
                         handleGetFreeBoardPostListResult(_uiState.value, freeBoardPostList)
                     }
@@ -48,6 +48,19 @@ class MyPostsFreeBoardViewModel
                 }
             }
         }
+
+        private fun getGetFreeBoardPostListRequest(currentUiState: MyPostsFreeBoardUiState): GetFreeBoardPostListRequest =
+            when (currentUiState) {
+                is MyPostsFreeBoardUiState.Success -> currentUiState.getFreeBoardPostListRequest
+                else ->
+                    GetFreeBoardPostListRequest(
+                        cursor = null,
+                        size = 10,
+                        freeBoardCategoryType = null,
+                        direction = CursorDirection.NEXT,
+                        profileId = profileId,
+                    )
+            }
 
         private fun handleGetFreeBoardPostListResult(
             currentUiState: MyPostsFreeBoardUiState,
@@ -58,6 +71,7 @@ class MyPostsFreeBoardViewModel
                     _uiState.value =
                         MyPostsFreeBoardUiState.Success(
                             postList = freeBoardPost.items ?: emptyList(),
+                            hasNext = freeBoardPost.items?.isNotEmpty() == true,
                             getFreeBoardPostListRequest =
                                 GetFreeBoardPostListRequest(
                                     cursor = freeBoardPost.nextCursor,
@@ -73,6 +87,7 @@ class MyPostsFreeBoardViewModel
                     _uiState.value =
                         MyPostsFreeBoardUiState.Success(
                             postList = freeBoardPost.items ?: emptyList(),
+                            hasNext = freeBoardPost.items?.isNotEmpty() == true,
                             getFreeBoardPostListRequest =
                                 GetFreeBoardPostListRequest(
                                     cursor = freeBoardPost.nextCursor,
@@ -86,8 +101,9 @@ class MyPostsFreeBoardViewModel
 
                 is MyPostsFreeBoardUiState.Success -> {
                     _uiState.value =
-                        MyPostsFreeBoardUiState.Success(
+                        currentUiState.copy(
                             postList = currentUiState.postList + (freeBoardPost.items ?: emptyList()),
+                            hasNext = freeBoardPost.nextCursor != null,
                             getFreeBoardPostListRequest =
                                 GetFreeBoardPostListRequest(
                                     cursor = freeBoardPost.nextCursor,
@@ -111,6 +127,7 @@ sealed class MyPostsFreeBoardUiState {
 
     data class Success(
         val postList: List<FreeBoardItem>,
+        val hasNext: Boolean = true,
         val getFreeBoardPostListRequest: GetFreeBoardPostListRequest =
             GetFreeBoardPostListRequest(
                 cursor = null,
