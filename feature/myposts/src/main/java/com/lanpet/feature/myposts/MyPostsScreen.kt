@@ -25,7 +25,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
@@ -93,9 +93,7 @@ fun MyPostsScreen(
                     state = pagerState,
                 ) { index ->
                     if (index == 0) {
-                        Column {
-                            Text("Wiki")
-                        }
+                        PreparingScreen(titleResId = R.string.my_posts_wiki_preparing)
                     } else if (index == 1) {
                         MyPostsFreeBoardScreen(
                             onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
