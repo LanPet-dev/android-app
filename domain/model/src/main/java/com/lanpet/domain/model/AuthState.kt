@@ -14,7 +14,7 @@ sealed class AuthState {
     data class Success(
         val socialAuthToken: SocialAuthToken?,
         val account: Account?,
-        val profile: List<UserProfile> = emptyList(),
+        val profile: Set<UserProfile> = emptySet(),
         val profileDetail: UserProfileDetail? = null,
         val defaultProfile: UserProfile? = null,
         override val navigationHandleFlag: Boolean = true,
