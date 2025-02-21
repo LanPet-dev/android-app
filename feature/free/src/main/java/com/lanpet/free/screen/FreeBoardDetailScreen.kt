@@ -26,12 +26,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,8 +70,10 @@ import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.toast
+import com.lanpet.core.common.widget.ActionButton
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
+import com.lanpet.core.common.widget.IOSActionSheet
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -89,6 +95,7 @@ import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
 import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
+import kotlinx.coroutines.launch
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,6 +108,9 @@ fun FreeBoardDetailScreen(
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val contentActionState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     when (val currentState = state.value) {
         is FreeBoardDetailState.Loading -> {
@@ -149,6 +159,35 @@ fun FreeBoardDetailScreen(
                 }
             }
 
+            if (contentActionState.isVisible) {
+                ModalBottomSheet(
+                    onDismissRequest = {},
+                    sheetState = contentActionState,
+                    containerColor = Color.Transparent,
+                ) {
+                    IOSActionSheet(
+                        cancelButton = {
+                            ActionButton(
+                                text = "닫기",
+                                onClick = {
+                                    scope.launch {
+                                        contentActionState.hide()
+                                    }
+                                },
+                            )
+                        },
+                        content = {
+                            Column {
+                                ActionButton(text = "수정", onClick = { /* */ })
+                                HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+                                ActionButton(text = "삭제", onClick = { /* */ })
+                            }
+                        },
+                        modifier = Modifier,
+                    )
+                }
+            }
+
             Scaffold(
                 topBar = {
                     LanPetTopAppBar(
@@ -161,6 +200,9 @@ fun FreeBoardDetailScreen(
                             if (currentState.isOwner) {
                                 {
                                     IconButton(onClick = {
+                                        scope.launch {
+                                            contentActionState.show()
+                                        }
                                     }) {
                                         Icon(
                                             imageVector = Icons.Default.MoreVert,
@@ -434,6 +476,7 @@ fun ContentUI(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardCommentSection(
     postId: String,
@@ -449,6 +492,39 @@ fun FreeBoardCommentSection(
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.nickname
+
+    val scope = rememberCoroutineScope()
+
+    val commentActionState = rememberModalBottomSheetState()
+
+    if (commentActionState.isVisible) {
+        ModalBottomSheet(
+            sheetState = commentActionState,
+            onDismissRequest = {},
+            containerColor = Color.Transparent,
+        ) {
+            IOSActionSheet(
+                cancelButton = {
+                    ActionButton(
+                        text = "닫기",
+                        onClick = {
+                            scope.launch {
+                                commentActionState.hide()
+                            }
+                        },
+                    )
+                },
+                content = {
+                    Column {
+                        ActionButton(text = "수정", onClick = { /* */ })
+                        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+                        ActionButton(text = "삭제", onClick = { /* */ })
+                    }
+                },
+                modifier = Modifier,
+            )
+        }
+    }
 
     Column {
         Text(
@@ -477,6 +553,11 @@ fun FreeBoardCommentSection(
                     FreeBoardCommentItem(
                         freeBoardComment = comment,
                         isOwner = comment.profile.nickname == nickname,
+                        onOwnerActionClick = {
+                            scope.launch {
+                                commentActionState.show()
+                            }
+                        },
                         onMoreSubCommentClick = {
                             onMoreSubCommentClick(
                                 postId,

@@ -565,7 +565,6 @@ fun ImagePickSection(
                         ActionButton(
                             text = stringResource(R.string.title_button_camera),
                             onClick = {
-                                // TODO open camera
                                 scope.launch {
                                     sheetState.hide()
                                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
