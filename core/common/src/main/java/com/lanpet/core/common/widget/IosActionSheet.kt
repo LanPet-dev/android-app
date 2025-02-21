@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,8 +62,15 @@ fun IOSActionSheet(
 @Composable
 fun ActionButton(
     text: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    buttonColors: ButtonColors =
+        ButtonColors(
+            contentColor = GrayColor.Gray950,
+            containerColor = WhiteColor.White,
+            disabledContainerColor = GrayColor.Gray950,
+            disabledContentColor = WhiteColor.White,
+        ),
+    onClick: () -> Unit = {},
 ) {
     Surface {
         TextButton(
@@ -74,13 +80,7 @@ fun ActionButton(
                 Modifier
                     .fillMaxWidth()
                     .height(64.dp),
-            colors =
-                ButtonColors(
-                    contentColor = GrayColor.Gray950,
-                    containerColor = WhiteColor.White,
-                    disabledContainerColor = GrayColor.Gray950,
-                    disabledContentColor = WhiteColor.White,
-                ),
+            colors = buttonColors,
         ) {
             Text(text, fontSize = 20.sp)
         }
@@ -97,6 +97,14 @@ private fun IOSActionSheetPreview() {
                     ActionButton(text = "사진 촬영", onClick = { /* */ })
                     HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
                     ActionButton(text = "사진 앨범", onClick = { /* */ })
+                    HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+                    ActionButton(text = "버튼", buttonColors = 
+                        ButtonColors(
+                            contentColor = Color.Red,
+                            containerColor = WhiteColor.White,
+                            disabledContainerColor = GrayColor.Gray950,
+                            disabledContentColor = WhiteColor.White,
+                        ),onClick = { /* */ })
                 }
             },
             cancelButton = {
