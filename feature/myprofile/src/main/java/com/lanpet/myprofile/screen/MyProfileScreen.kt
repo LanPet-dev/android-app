@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -41,6 +42,7 @@ import com.lanpet.core.common.myiconpack.Bookmark
 import com.lanpet.core.common.myiconpack.File
 import com.lanpet.core.common.myiconpack.Message
 import com.lanpet.core.common.myiconpack.Setting
+import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.ProfileImage
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -60,6 +62,7 @@ fun MyProfileScreen(
     onNavigateToSettings: () -> Unit = { },
     onNavigateToMyPosts: (String) -> Unit = { },
 ) {
+    val context = LocalContext.current
     val authManager = LocalAuthManager.current
     val defaultUserProfile = authManager.defaultUserProfile.collectAsStateWithLifecycle()
 
@@ -187,7 +190,9 @@ fun MyProfileScreen(
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_my_comment),
-                        onclick = { },
+                        onclick = {
+                            context.toast("준비중 입니다")
+                        },
                     )
                     ActivityListItem(
                         leadingContent = {
@@ -202,7 +207,9 @@ fun MyProfileScreen(
                             )
                         },
                         headlineContentText = stringResource(R.string.my_profile_label_bookmark),
-                        onclick = { },
+                        onclick = {
+                            context.toast("준비중 입니다")
+                        },
                     )
                 }
             }
