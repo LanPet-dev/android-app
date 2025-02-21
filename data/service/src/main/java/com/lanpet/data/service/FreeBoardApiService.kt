@@ -32,14 +32,29 @@ interface FreeBoardApiService {
         @Query("reader") profileId: String,
     ): FreeBoardDetailItemDto
 
+    /**
+     * 사랑방 답글을 삭제합니다.
+     *
+     * @param sarangbangId
+     * @param commentId
+     * @return
+     */
     @DELETE("$PATH/{sarangbangId}/comments/{commentId}")
-    suspend fun deleteFreeBoardPost(
+    suspend fun deleteFreeBoardComment(
         @Path("sarangbangId") sarangbangId: String,
         @Path("commentId") commentId: String,
     ): Boolean
 
+    /**
+     * 사랑방 답글을 수정합니다.
+     *
+     * @param sarangbangId
+     * @param commentId
+     * @param content
+     * @return
+     */
     @PATCH("$PATH/{sarangbangId}/comments/{commentId}")
-    suspend fun updateFreeBoardPost(
+    suspend fun updateFreeBoardComment(
         @Path("sarangbangId") sarangbangId: String,
         @Path("commentId") commentId: String,
         @Body
