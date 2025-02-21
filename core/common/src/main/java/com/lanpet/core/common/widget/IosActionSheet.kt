@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -94,7 +95,7 @@ private fun IOSActionSheetPreview() {
             content = {
                 Column {
                     ActionButton(text = "사진 촬영", onClick = { /* */ })
-                    Divider(color = Color.LightGray, thickness = 0.5.dp)
+                    HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
                     ActionButton(text = "사진 앨범", onClick = { /* */ })
                 }
             },
