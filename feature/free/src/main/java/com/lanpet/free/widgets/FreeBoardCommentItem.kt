@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.createdAtPostString
+import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -44,6 +45,7 @@ fun FreeBoardCommentItem(
     modifier: Modifier = Modifier,
     isSubComment: Boolean = false,
     isOwner: Boolean = false,
+    onOwnerActionClick: () -> Unit = {},
     onLikeClick: () -> Unit = {},
     onCommentClick: () -> Unit = {},
     onMoreSubCommentClick: () -> Unit = { },
@@ -81,6 +83,7 @@ fun FreeBoardCommentItem(
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
                 Column(
                     verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         freeBoardComment.profile.nickname,
@@ -145,10 +148,11 @@ fun FreeBoardCommentItem(
 //                        }
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
                 if (isOwner) {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            onOwnerActionClick()
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -320,6 +324,20 @@ private fun FreeBoardCommentItemPreview() {
                             profileImage = null,
                         ),
                     comment = "This is comment",
+                    createdAt = "2025-01-19T06:27:18.022+00:00",
+                ),
+                isOwner = true,
+                profileNickname = "1",
+            )
+            FreeBoardCommentItem(
+                FreeBoardComment(
+                    id = "1",
+                    profile =
+                    Profile(
+                        nickname = "닉네임",
+                        profileImage = null,
+                    ),
+                    comment = loremIpsum(),
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                 ),
                 isOwner = true,
