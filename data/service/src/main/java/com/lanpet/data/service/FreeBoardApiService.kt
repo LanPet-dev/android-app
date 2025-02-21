@@ -7,7 +7,6 @@ import com.lanpet.data.dto.ResourceUploadUrlResponse
 import com.lanpet.data.dto.freeboard.FreeBoardCommentResponse
 import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
 import com.lanpet.data.dto.freeboard.FreeBoardWriteCommentRequest
-import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import okhttp3.ResponseBody
@@ -15,6 +14,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -31,6 +31,20 @@ interface FreeBoardApiService {
         @Path("id") id: String,
         @Query("reader") profileId: String,
     ): FreeBoardDetailItemDto
+
+    @DELETE("$PATH/{sarangbangId}/comments/{commentId}")
+    suspend fun deleteFreeBoardPost(
+        @Path("sarangbangId") sarangbangId: String,
+        @Path("commentId") commentId: String,
+    ): Boolean
+
+    @PATCH("$PATH/{sarangbangId}/comments/{commentId}")
+    suspend fun updateFreeBoardPost(
+        @Path("sarangbangId") sarangbangId: String,
+        @Path("commentId") commentId: String,
+        @Body
+        content: String,
+    ): Boolean
 
     @GET("$PATH/{id}/comments")
     suspend fun getFreeBoardPostCommentList(
@@ -71,6 +85,18 @@ interface FreeBoardApiService {
         @Query("size")
         size: Int,
     ): ResourceUploadUrlResponse
+
+    /**
+     * 사랑방 모든 리소스 삭제
+     *
+     * @param [sarangbangId]
+     * @return [Boolean]
+     */
+    @DELETE("$PATH/{sarangbangId}/resources")
+    suspend fun deleteResource(
+        @Path("sarangbangId")
+        sarangbangId: String,
+    ): Boolean
 
     @POST("$PATH/{sarangbangId}/likes")
     suspend fun doPostLike(
