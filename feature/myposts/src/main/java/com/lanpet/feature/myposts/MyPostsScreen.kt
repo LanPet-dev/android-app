@@ -46,7 +46,7 @@ import com.lanpet.domain.model.free.FreeBoardItem
 fun MyPostsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
-    initialPage: Int = 0,
+    initialPage: Int = 1,
     onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String) -> Unit = { _, _, _ -> },
 ) {
     var currentTabIndex by rememberSaveable {
