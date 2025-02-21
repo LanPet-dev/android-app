@@ -119,19 +119,18 @@ class FreeBoardDetailViewModel
             viewModelScope.launch {
                 runCatching {
                     writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
+                        updateCommentCache(
+                            FreeBoardComment(
+                                it,
+                                profile,
+                                comment,
+                                Date().toUtcDateString(),
+                            ),
+                        )
                         _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
                     }
                 }.onFailure {
                     _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
-                }.onSuccess {
-                    updateCommentCache(
-                        FreeBoardComment(
-                            "temp",
-                            profile,
-                            comment,
-                            Date().toUtcDateString(),
-                        ),
-                    )
                 }
             }
         }

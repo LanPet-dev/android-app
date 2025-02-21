@@ -56,7 +56,7 @@ interface FreeBoardRepository {
     fun writeComment(
         sarangbangId: String,
         writeComment: FreeBoardWriteComment,
-    ): Flow<Boolean>
+    ): Flow<String>
 
     fun writeSubComment(
         postId: String,

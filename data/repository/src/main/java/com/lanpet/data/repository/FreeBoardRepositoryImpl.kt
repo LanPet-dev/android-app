@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -170,14 +171,17 @@ class FreeBoardRepositoryImpl
         override fun writeComment(
             sarangbangId: String,
             writeComment: FreeBoardWriteComment,
-        ): Flow<Boolean> =
+        ): Flow<String> =
             flow {
                 try {
-                    freeBoardApiService.writeComment(sarangbangId, writeComment)
-                    emit(true)
+                    val res = freeBoardApiService.writeComment(sarangbangId, writeComment)
+                    res.body()?.string()?.let { responseBody ->
+                        val jsonObject = JSONObject(responseBody)
+                        emit(jsonObject.getString("id"))
+                    } ?: throw Exception("Post comment response is invalid")
                 } catch (e: Exception) {
                     Timber.e(e)
-                    emit(false)
+                    throw e
                 }
             }
 

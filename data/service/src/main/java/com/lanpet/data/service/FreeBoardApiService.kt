@@ -10,6 +10,8 @@ import com.lanpet.data.dto.freeboard.FreeBoardWriteCommentRequest
 import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardWriteComment
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -92,7 +94,7 @@ interface FreeBoardApiService {
         sarangbangId: String,
         @Body
         writeComment: FreeBoardWriteComment,
-    ): Unit
+    ): Response<ResponseBody>
 
     companion object {
         const val PATH = "/sarangbangs"
