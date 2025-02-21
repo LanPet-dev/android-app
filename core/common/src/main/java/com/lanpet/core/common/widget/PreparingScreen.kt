@@ -71,7 +71,7 @@ fun PreparingScreen(
     )
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         Box(
             modifier =

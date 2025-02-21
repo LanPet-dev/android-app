@@ -1,6 +1,7 @@
 package com.lanpet.feature.auth.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
@@ -22,6 +23,7 @@ fun NavController.navigateToLoginScreen() {
                 inclusive = true // true: 시작 destination 도 제거, false: 시작 destination 유지
             }
             launchSingleTop = true // 중복 destination 방지
+            restoreState = false
         },
     )
 }

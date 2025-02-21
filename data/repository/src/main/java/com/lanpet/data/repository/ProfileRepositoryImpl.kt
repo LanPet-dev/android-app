@@ -2,6 +2,7 @@ package com.lanpet.data.repository
 
 import com.lanpet.data.dto.RegisterManProfileRequest
 import com.lanpet.data.dto.RegisterPetProfileRequest
+import com.lanpet.data.dto.mapper.MapperRegistry
 import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.ProfileApiService
 import com.lanpet.data.service.localdb.AuthDatabase
@@ -10,6 +11,7 @@ import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
+import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.model.profile.UserProfileDetail
 import com.lanpet.domain.repository.ProfileRepository
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,7 @@ class ProfileRepositoryImpl
     constructor(
         private val profileApiService: ProfileApiService,
         private val authDatabase: AuthDatabase,
+        private val mapperRegistry: MapperRegistry,
     ) : ProfileRepository {
         override suspend fun registerPetProfile(petProfileCreate: PetProfileCreate): Flow<String> =
             flow {
@@ -126,5 +129,17 @@ class ProfileRepositoryImpl
                 } catch (e: Exception) {
                     emit(false)
                 }
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun getProfileResourceUploadUrl(profileId: String): Flow<ResourceUploadUrl> =
+            flow {
+                val res = profileApiService.getProfileResourceUploadUrl(profileId)
+                emit(res.toDomain())
+            }.flowOn(Dispatchers.IO)
+
+        override suspend fun deleteProfileResource(profileId: String): Flow<Unit> =
+            flow {
+                val res = profileApiService.deleteProfileResource()
+                emit(res)
             }.flowOn(Dispatchers.IO)
     }

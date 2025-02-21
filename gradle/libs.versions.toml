@@ -57,6 +57,7 @@ junitJupiterVersion = "5.10.2"
 roomRuntime = "2.6.1"
 timberVersion = "5.0.1"
 turbine = "1.0.0"
+junitJunitJupiter = "5.8.1"
 
 [libraries]
 android-junit5 = { module = "de.mannodermaus.gradle.plugins:android-junit5", version.ref = "androidJunit5Version" }
@@ -124,6 +125,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJunitJupiter" }
 
 
 [plugins]

@@ -1,6 +1,7 @@
 package com.lanpet.free.widgets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -16,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.lanpet.core.common.createdAtPostString
+import com.lanpet.core.common.loremIpsum
 import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -37,44 +41,49 @@ import com.lanpet.domain.model.free.FreeBoardSubComment
 @Composable
 fun FreeBoardCommentItem(
     freeBoardComment: FreeBoardComment,
+    profileNickname: String,
     modifier: Modifier = Modifier,
     isSubComment: Boolean = false,
     isOwner: Boolean = false,
+    onOwnerActionClick: () -> Unit = {},
     onLikeClick: () -> Unit = {},
     onCommentClick: () -> Unit = {},
+    onMoreSubCommentClick: () -> Unit = { },
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column {
             Row(
-                modifier = Modifier.padding(LanPetDimensions.Spacing.small),
+                modifier =
+                    Modifier
+                        .clip(shape = RoundedCornerShape(LanPetDimensions.Corner.xxSmall))
+                        .clickable { onCommentClick() }
+                        .padding(LanPetDimensions.Spacing.small),
             ) {
-                if (isSubComment) {
-                    Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xLarge))
-                }
                 if (freeBoardComment.profile.profileImage != null) {
                     AsyncImage(
                         freeBoardComment.profile.profileImage,
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.img_dummy),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 }
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
                 Column(
                     verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         freeBoardComment.profile.nickname,
@@ -139,10 +148,11 @@ fun FreeBoardCommentItem(
 //                        }
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
                 if (isOwner) {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            onOwnerActionClick()
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -158,7 +168,23 @@ fun FreeBoardCommentItem(
                     FreeBoardSubCommentItem(
                         freeBoardSubComment = subComment,
                         modifier = Modifier.padding(LanPetDimensions.Spacing.small),
+                        isOwner = subComment.profile.nickname == profileNickname,
                     )
+                }
+
+                if (freeBoardComment.subComments.size > 9) {
+                    TextButton(
+                        onClick = onMoreSubCommentClick,
+                        modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
+                    ) {
+                        Text(
+                            "답글 더보기",
+                            style =
+                                MaterialTheme.customTypography().body3RegularSingle.copy(
+                                    color = GrayColor.Gray400,
+                                ),
+                        )
+                    }
                 }
             }
         }
@@ -186,18 +212,18 @@ fun FreeBoardSubCommentItem(
                         freeBoardSubComment.profile.profileImage,
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.img_dummy),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .size(24.dp)
-                            .clip(shape = CircleShape),
+                            Modifier
+                                .size(24.dp)
+                                .clip(shape = CircleShape),
                     )
                 }
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
@@ -284,7 +310,6 @@ fun FreeBoardSubCommentItem(
     }
 }
 
-
 @PreviewLightDark
 @Composable
 private fun FreeBoardCommentItemPreview() {
@@ -294,14 +319,15 @@ private fun FreeBoardCommentItemPreview() {
                 FreeBoardComment(
                     id = "1",
                     profile =
-                    Profile(
-                        nickname = "닉네임",
-                        profileImage = null,
-                    ),
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
                     comment = "This is comment",
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                 ),
                 isOwner = true,
+                profileNickname = "1",
             )
             FreeBoardCommentItem(
                 FreeBoardComment(
@@ -311,22 +337,37 @@ private fun FreeBoardCommentItemPreview() {
                         nickname = "닉네임",
                         profileImage = null,
                     ),
+                    comment = loremIpsum(),
+                    createdAt = "2025-01-19T06:27:18.022+00:00",
+                ),
+                isOwner = true,
+                profileNickname = "1",
+            )
+            FreeBoardCommentItem(
+                FreeBoardComment(
+                    id = "1",
+                    profile =
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
                     comment = "This is comment",
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                     subComments =
-                    listOf(
-                        FreeBoardSubComment(
-                            id = "1",
-                            profile =
-                            Profile(
-                                nickname = "닉네임",
-                                profileImage = null,
+                        listOf(
+                            FreeBoardSubComment(
+                                id = "1",
+                                profile =
+                                    Profile(
+                                        nickname = "닉네임",
+                                        profileImage = null,
+                                    ),
+                                comment = "This is sub comment",
+                                createdAt = "2025-01-19T06:27:18.022+00:00",
                             ),
-                            comment = "This is sub comment",
-                            createdAt = "2025-01-19T06:27:18.022+00:00",
                         ),
-                    ),
                 ),
+                profileNickname = "1",
             )
         }
     }

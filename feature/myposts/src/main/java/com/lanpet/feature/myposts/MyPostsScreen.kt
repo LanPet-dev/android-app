@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
+import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.designsystem.theme.GrayColor
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
@@ -45,7 +46,7 @@ import com.lanpet.domain.model.free.FreeBoardItem
 fun MyPostsScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: (() -> Unit)? = null,
-    initialPage: Int = 0,
+    initialPage: Int = 1,
     onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String) -> Unit = { _, _, _ -> },
 ) {
     var currentTabIndex by rememberSaveable {
@@ -91,13 +92,13 @@ fun MyPostsScreen(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
                 ) { index ->
-//                    if (index == 0) {
-//                        Column {
-//                            Text("Wiki")
-//                        }
-//                    } else if (index == 1) {
-//                        )
-//                    }
+                    if (index == 0) {
+                        PreparingScreen(titleResId = R.string.my_posts_wiki_preparing)
+                    } else if (index == 1) {
+                        MyPostsFreeBoardScreen(
+                            onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
+                        )
+                    }
                 }
             }
         }

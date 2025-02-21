@@ -25,47 +25,56 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.lanpet.core.auth.BasePreviewWrapper
 import com.lanpet.core.auth.LocalAuthManager
-import com.lanpet.core.common.MyIconPack
 import com.lanpet.core.common.createdAtPostString
-import com.lanpet.core.common.myiconpack.Send
 import com.lanpet.core.common.toast
+import com.lanpet.core.common.widget.ActionButton
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
+import com.lanpet.core.common.widget.IOSActionSheet
 import com.lanpet.core.common.widget.LanPetTopAppBar
 import com.lanpet.core.common.widget.PreparingScreen
 import com.lanpet.core.designsystem.theme.GrayColor
@@ -84,8 +93,10 @@ import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
+import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
+import kotlinx.coroutines.launch
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,9 +105,13 @@ fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val contentActionState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     when (val currentState = state.value) {
         is FreeBoardDetailState.Loading -> {
@@ -145,6 +160,45 @@ fun FreeBoardDetailScreen(
                 }
             }
 
+            if (contentActionState.isVisible) {
+                ModalBottomSheet(
+                    onDismissRequest = {},
+                    sheetState = contentActionState,
+                    containerColor = Color.Transparent,
+                ) {
+                    IOSActionSheet(
+                        cancelButton = {
+                            ActionButton(
+                                text = "닫기",
+                                onClick = {
+                                    scope.launch {
+                                        contentActionState.hide()
+                                    }
+                                },
+                            )
+                        },
+                        content = {
+                            Column {
+                                ActionButton(text = "수정", onClick = { /* */ })
+                                HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+                                ActionButton(
+                                    text = "삭제",
+                                    buttonColors =
+                                        ButtonColors(
+                                            contentColor = Color.Red,
+                                            containerColor = Color.White,
+                                            disabledContainerColor = GrayColor.Gray950,
+                                            disabledContentColor = Color.White,
+                                        ),
+                                    onClick = { /* */ },
+                                )
+                            }
+                        },
+                        modifier = Modifier,
+                    )
+                }
+            }
+
             Scaffold(
                 topBar = {
                     LanPetTopAppBar(
@@ -157,6 +211,9 @@ fun FreeBoardDetailScreen(
                             if (currentState.isOwner) {
                                 {
                                     IconButton(onClick = {
+                                        scope.launch {
+                                            contentActionState.show()
+                                        }
                                     }) {
                                         Icon(
                                             imageVector = Icons.Default.MoreVert,
@@ -205,6 +262,7 @@ fun FreeBoardDetailScreen(
                                 freeBoardDetailViewModel.dislikePost()
                             }
                         },
+                        onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
                     )
                 }
             }
@@ -252,6 +310,7 @@ fun ContentUI(
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
     isOwner: Boolean = false,
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
 ) {
     val verticalScrollState = rememberScrollState()
@@ -354,23 +413,27 @@ fun ContentUI(
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.xSmall))
 
         state.postDetail.images.map {
-            AsyncImage(
-                model = it.url,
+//            AsyncImage(
+//                model = it.url,
+//                contentDescription = "post_image",
+//                contentScale = ContentScale.Crop,
+//                modifier =
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .padding(
+//                            horizontal = LanPetDimensions.Spacing.small,
+//                            vertical = LanPetDimensions.Spacing.small,
+//                        ).clip(
+//                            shape =
+//                                RoundedCornerShape(
+//                                    LanPetDimensions.Corner.medium,
+//                                ),
+//                        ),
+//                error = painterResource(id = DS_R.drawable.img_preparing),
+//            )
+            ImageWithFullscreenViewer(
+                imageUrl = it.url,
                 contentDescription = "post_image",
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = LanPetDimensions.Spacing.small,
-                            vertical = LanPetDimensions.Spacing.small,
-                        ).clip(
-                            shape =
-                                RoundedCornerShape(
-                                    LanPetDimensions.Corner.medium,
-                                ),
-                        ),
-                error = painterResource(id = DS_R.drawable.img_preparing),
             )
         }
         Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
@@ -395,12 +458,15 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         FreeBoardCommentSection(
+            postId = state.postDetail.id,
             commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
             onLoadMore = {
                 onFetchComment()
             },
+            onMoreSubCommentClick = onNavigateToFreeBoardCommentDetail,
+            onCommentClick = onNavigateToFreeBoardCommentDetail,
         )
         // line
         Spacer(
@@ -412,7 +478,7 @@ fun ContentUI(
                     .background(GrayColor.Gray50),
         )
         Spacer(modifier = Modifier.weight(1f))
-        CommentInputSection(
+        CommentInput(
             onWriteComment = onWriteComment,
             input = commentInput,
             onInputValueChange = onInputValueChange,
@@ -421,18 +487,65 @@ fun ContentUI(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardCommentSection(
+    postId: String,
     canLoadMore: Boolean,
     modifier: Modifier = Modifier,
     commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
     onLoadMore: () -> Unit = {},
+    onMoreSubCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
+    onCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val nickname =
         LocalAuthManager.current.defaultUserProfile
             .collectAsStateWithLifecycle()
             .value.nickname
+
+    val scope = rememberCoroutineScope()
+
+    val commentActionState = rememberModalBottomSheetState()
+
+    if (commentActionState.isVisible) {
+        ModalBottomSheet(
+            sheetState = commentActionState,
+            onDismissRequest = {},
+            containerColor = Color.Transparent,
+        ) {
+            IOSActionSheet(
+                cancelButton = {
+                    ActionButton(
+                        text = "닫기",
+                        onClick = {
+                            scope.launch {
+                                commentActionState.hide()
+                            }
+                        },
+                    )
+                },
+                content = {
+                    Column {
+                        ActionButton(text = "수정", onClick = { /* */ })
+                        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+                        ActionButton(
+                            text = "삭제",
+                            buttonColors =
+                                ButtonColors(
+                                    contentColor = Color.Red,
+                                    containerColor = Color.White,
+                                    disabledContainerColor = GrayColor.Gray950,
+                                    disabledContentColor = Color.White,
+                                ),
+                            onClick = { /* */ },
+                        )
+                    }
+                },
+                modifier = Modifier,
+            )
+        }
+    }
 
     Column {
         Text(
@@ -461,11 +574,29 @@ fun FreeBoardCommentSection(
                     FreeBoardCommentItem(
                         freeBoardComment = comment,
                         isOwner = comment.profile.nickname == nickname,
+                        onOwnerActionClick = {
+                            scope.launch {
+                                commentActionState.show()
+                            }
+                        },
+                        onMoreSubCommentClick = {
+                            onMoreSubCommentClick(
+                                postId,
+                                comment,
+                            )
+                        },
+                        onCommentClick = {
+                            onCommentClick(
+                                postId,
+                                comment,
+                            )
+                        },
+                        profileNickname = nickname,
                     )
                 }
                 if (canLoadMore) {
                     Text(
-                        "댓글 더보기",
+                        stringResource(R.string.freeboard_detail_button_more_comment),
                         modifier =
                             Modifier
                                 .padding(
@@ -478,75 +609,6 @@ fun FreeBoardCommentSection(
                         style = MaterialTheme.customTypography().body2RegularSingle.copy(color = GrayColor.Gray400),
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun CommentInputSection(
-    modifier: Modifier = Modifier,
-    input: String = "",
-    onInputValueChange: (String) -> Unit = {},
-    onWriteComment: () -> Unit = {},
-) {
-    Column {
-        Spacer(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .size(1.dp)
-                    .background(GrayColor.Gray50),
-        )
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(LanPetDimensions.Spacing.small),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextField(
-                value = input,
-                maxLines = 4,
-                onValueChange = {
-                    onInputValueChange(it)
-                },
-                placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(horizontal = LanPetDimensions.Spacing.small)
-                        .clip(
-                            shape =
-                                RoundedCornerShape(
-                                    LanPetDimensions.Corner.medium,
-                                ),
-                        ),
-                textStyle =
-                    MaterialTheme.customTypography().body2RegularSingle.copy(
-                        color = GrayColor.Gray400,
-                    ),
-                colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = GrayColor.Gray100,
-                        unfocusedContainerColor = GrayColor.Gray100,
-                        unfocusedPlaceholderColor = GrayColor.Gray400,
-                        focusedPlaceholderColor = GrayColor.Gray400,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = GrayColor.Gray400,
-                    ),
-            )
-            IconButton(
-                onClick = {
-                    onWriteComment()
-                },
-            ) {
-                Image(
-                    imageVector = MyIconPack.Send,
-                    contentDescription = "ic_send",
-                    colorFilter = ColorFilter.tint(color = GrayColor.Gray400),
-                )
             }
         }
     }
@@ -639,7 +701,7 @@ private fun EmojiPicker(
 @Composable
 private fun PreviewCommentInputSection() {
     LanPetAppTheme {
-        CommentInputSection()
+        CommentInput()
     }
 }
 
@@ -650,6 +712,7 @@ private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }
@@ -663,6 +726,7 @@ private fun FreeBoardCommentSection_Empty_Preview() {
                 comments = emptyList(),
                 canLoadMore = false,
                 onLoadMore = {},
+                postId = "1",
             )
         }
     }
@@ -675,6 +739,7 @@ private fun FreeBoardCommentSection_Filled_Preview() {
         FreeBoardCommentSection(
             onLoadMore = {},
             canLoadMore = true,
+            postId = "1",
         )
     }
 }
@@ -710,6 +775,8 @@ private fun SuccessUIPreview() {
             onLikeChange = {},
             onFetchComment = {},
             modifier = Modifier,
+            isOwner = true,
+            onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }
 }
@@ -729,6 +796,133 @@ private fun LikeButtonPreview() {
                 likeCount = 10,
                 onLikeClick = {},
             )
+        }
+    }
+}
+
+@Composable
+fun ImageWithFullscreenViewer(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+) {
+    var showFullscreen by remember { mutableStateOf(false) }
+
+    // 썸네일 이미지
+    AsyncImage(
+        model =
+            ImageRequest
+                .Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+        contentDescription = contentDescription,
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = LanPetDimensions.Spacing.small,
+                    vertical = LanPetDimensions.Spacing.small,
+                ).clip(RoundedCornerShape(8.dp))
+                .then(
+                    Modifier.clickable {
+                        showFullscreen = true
+                    },
+                ),
+        contentScale = ContentScale.Crop,
+    )
+
+    // 전체화면 다이얼로그
+    if (showFullscreen) {
+        Dialog(
+            onDismissRequest = { showFullscreen = false },
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    usePlatformDefaultWidth = false,
+                ),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+            ) {
+                var scale by remember { mutableFloatStateOf(1f) }
+                var offset by remember { mutableStateOf(Offset.Zero) }
+
+                // 이미지와 화면 크기를 저장할 변수들
+                var imageSize by remember { mutableStateOf(IntSize.Zero) }
+                var boxSize by remember { mutableStateOf(IntSize.Zero) }
+
+                // 오프셋 제한 함수
+                fun limitOffset(offset: Offset): Offset {
+                    // 이미지의 실제 표시 크기 계산
+                    val scaledWidth = imageSize.width * scale
+                    val scaledHeight = imageSize.height * scale
+
+                    // 이미지가 화면보다 작으면 중앙에 고정
+                    if (scaledWidth <= boxSize.width) {
+                        return Offset(0f, offset.y)
+                    }
+                    if (scaledHeight <= boxSize.height) {
+                        return Offset(offset.x, 0f)
+                    }
+
+                    // 최대 이동 가능 거리 계산
+                    val maxX = (scaledWidth - boxSize.width) / 2
+                    val maxY = (scaledHeight - boxSize.height) / 2
+
+                    return Offset(
+                        x = offset.x.coerceIn(-maxX, maxX),
+                        y = offset.y.coerceIn(-maxY, maxY),
+                    )
+                }
+
+                AsyncImage(
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .build(),
+                    contentDescription = contentDescription,
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .onSizeChanged { boxSize = it },
+                    contentScale = ContentScale.Fit,
+                    onSuccess = { state ->
+                        imageSize =
+                            IntSize(
+                                state.painter.intrinsicSize.width
+                                    .toInt(),
+                                state.painter.intrinsicSize.height
+                                    .toInt(),
+                            )
+                    },
+                )
+
+                // 닫기 버튼
+                IconButton(
+                    onClick = {
+                        scale = 1f
+                        offset = Offset.Zero
+                        showFullscreen = false
+                    },
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color.White,
+                    )
+                }
+            }
         }
     }
 }

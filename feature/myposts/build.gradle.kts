@@ -11,20 +11,20 @@ plugins {
 
 android {
     namespace = "com.lanpet.feature.myposts"
-
-    defaultConfig {
-        minSdk = 24
-    }
 }
 
 dependencies {
     implementation(projects.core.common)
     implementation(projects.core.auth)
     implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
     implementation(libs.androidx.lifecycle.viewmodel.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    testImplementation(libs.jupiter.junit.jupiter)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.hilt.testing)
     androidTestImplementation(libs.androidx.espresso.core)
 }

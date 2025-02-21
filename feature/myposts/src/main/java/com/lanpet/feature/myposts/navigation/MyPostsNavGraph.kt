@@ -18,9 +18,11 @@ fun NavGraphBuilder.myPostsNavGraph(
     }
 }
 
-fun NavController.navigateToMyPosts() {
-    this.navigate(MyPosts)
+fun NavController.navigateToMyPosts(profileId: String) {
+    this.navigate(MyPosts(profileId))
 }
 
 @Serializable
-object MyPosts
+data class MyPosts(
+    val profileId: String,
+)

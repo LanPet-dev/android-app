@@ -6,12 +6,15 @@ import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.ResourceUploadUrlResponse
 import com.lanpet.data.dto.freeboard.FreeBoardCommentResponse
 import com.lanpet.data.dto.freeboard.FreeBoardDetailItemDto
-import com.lanpet.data.service.FreeBoardApiService.Companion.PATH
+import com.lanpet.data.dto.freeboard.FreeBoardWriteCommentRequest
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.FreeBoardWriteComment
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,6 +32,35 @@ interface FreeBoardApiService {
         @Query("reader") profileId: String,
     ): FreeBoardDetailItemDto
 
+    /**
+     * 사랑방 답글을 삭제합니다.
+     *
+     * @param sarangbangId
+     * @param commentId
+     * @return
+     */
+    @DELETE("$PATH/{sarangbangId}/comments/{commentId}")
+    suspend fun deleteFreeBoardComment(
+        @Path("sarangbangId") sarangbangId: String,
+        @Path("commentId") commentId: String,
+    ): Boolean
+
+    /**
+     * 사랑방 답글을 수정합니다.
+     *
+     * @param sarangbangId
+     * @param commentId
+     * @param content
+     * @return
+     */
+    @PATCH("$PATH/{sarangbangId}/comments/{commentId}")
+    suspend fun updateFreeBoardComment(
+        @Path("sarangbangId") sarangbangId: String,
+        @Path("commentId") commentId: String,
+        @Body
+        content: String,
+    ): Boolean
+
     @GET("$PATH/{id}/comments")
     suspend fun getFreeBoardPostCommentList(
         @Path("id")
@@ -45,6 +77,16 @@ interface FreeBoardApiService {
         @QueryMap queries: Map<String, String>?,
     ): FreeBoardCommentResponse
 
+    @POST("$PATH/{postId}/comments/{commentId}/sub-comments")
+    suspend fun writeSubComment(
+        @Path("postId")
+        postId: String,
+        @Path("commentId")
+        commentId: String,
+        @Body
+        freeBoardWriteCommentRequest: FreeBoardWriteCommentRequest,
+    ): Boolean
+
     @POST(PATH)
     suspend fun createFreeBoardPost(
         @Body
@@ -58,6 +100,18 @@ interface FreeBoardApiService {
         @Query("size")
         size: Int,
     ): ResourceUploadUrlResponse
+
+    /**
+     * 사랑방 모든 리소스 삭제
+     *
+     * @param [sarangbangId]
+     * @return [Boolean]
+     */
+    @DELETE("$PATH/{sarangbangId}/resources")
+    suspend fun deleteResource(
+        @Path("sarangbangId")
+        sarangbangId: String,
+    ): Boolean
 
     @POST("$PATH/{sarangbangId}/likes")
     suspend fun doPostLike(
@@ -81,7 +135,7 @@ interface FreeBoardApiService {
         sarangbangId: String,
         @Body
         writeComment: FreeBoardWriteComment,
-    ): Unit
+    ): Response<ResponseBody>
 
     companion object {
         const val PATH = "/sarangbangs"

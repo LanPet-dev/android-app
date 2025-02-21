@@ -1,19 +1,31 @@
 package com.lanpet.free.navigation
 
-import android.os.Build
+import android.os.Bundle
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.lanpet.core.auth.LocalAuthManager
+import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.free.screen.FreeBoardCommentDetailScreen
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.freeNavGraph(
     onNavigateUp: () -> Unit,
+    onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
     onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String, navOptions: NavOptions?) -> Unit,
 ) {
@@ -29,30 +41,9 @@ fun NavGraphBuilder.freeNavGraph(
             )
         }
         composable<FreeBoardDetail> {
-            val authManager = LocalAuthManager.current
-
-            val postId =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.arguments?.getSerializable("postId", String::class.java)
-                        ?: throw IllegalArgumentException("postId is required")
-                } else {
-                    it.arguments?.getSerializable("postId") as? String
-                        ?: throw IllegalArgumentException("postId is required")
-                }
-
-            val profileId = authManager.defaultUserProfile.value.id
-            val nickname = authManager.defaultUserProfile.value.nickname
-
-            argument("args") {
-                FreeBoardDetail(
-                    postId = postId,
-                    profileId = profileId,
-                    nickname = nickname,
-                )
-            }
-
             FreeBoardDetailScreen(
                 onNavigateUp = onNavigateUp,
+                onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
             )
         }
         composable<FreeBoardWrite> {
@@ -61,18 +52,78 @@ fun NavGraphBuilder.freeNavGraph(
                 onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
             )
         }
+        composable<FreeBoardCommentDetail>(
+            typeMap =
+                mapOf(
+                    typeOf<FreeBoardComment>() to freeBoardCommentType,
+                ),
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(500),
+                ) + fadeIn(animationSpec = tween(500))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(500),
+                ) + fadeOut(
+                    animationSpec = tween(500))
+            },
+        ) {
+            FreeBoardCommentDetailScreen(
+                onNavigateUp = onNavigateUp,
+            )
+        }
     }
 }
 
-fun NavController.navigateToFreeBoardBaseRoute() {
-    navigate(
-        FreeBoardBaseRoute,
+val freeBoardCommentType =
+    object : NavType<FreeBoardComment>(
+        isNullableAllowed = false,
     ) {
-        launchSingleTop = true
-        popUpTo(0) {
-            inclusive = true
+        override fun get(
+            bundle: Bundle,
+            key: String,
+        ): FreeBoardComment? =
+            bundle.getString(key)?.let {
+                Json.decodeFromString(it)
+            }
+
+        override fun parseValue(value: String): FreeBoardComment = Json.decodeFromString(value)
+
+        override fun put(
+            bundle: Bundle,
+            key: String,
+            value: FreeBoardComment,
+        ) {
+            bundle.putString(key, Json.encodeToString(FreeBoardComment.serializer(), value))
+        }
+
+        override fun serializeAsValue(value: FreeBoardComment): String {
+            return Json.encodeToString(FreeBoardComment.serializer(), value)
         }
     }
+
+fun NavController.navigateToFreeBoardCommentDetailScreen(
+    postId: String,
+    freeBoardComment: FreeBoardComment,
+) {
+    navigate(
+        FreeBoardCommentDetail(
+            postId = postId,
+            freeBoardComment = freeBoardComment,
+        ),
+    ) {
+        launchSingleTop = true
+    }
+}
+
+fun NavController.navigateToFreeBoardBaseRoute(
+    navOptions: NavOptions
+) {
+    navigate(
+        FreeBoardBaseRoute,
+        navOptions
+    )
 }
 
 fun NavController.navigateToFreeBoardScreen() {
@@ -122,6 +173,12 @@ data class FreeBoardDetail(
     val postId: String,
     val profileId: String,
     val nickname: String,
+)
+
+@Serializable
+data class FreeBoardCommentDetail(
+    val postId: String,
+    val freeBoardComment: FreeBoardComment,
 )
 
 @Serializable

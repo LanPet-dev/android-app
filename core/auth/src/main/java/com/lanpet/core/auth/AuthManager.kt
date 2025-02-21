@@ -92,7 +92,7 @@ open class AuthManager
                     AuthState.Success(
                         socialAuthToken = socialAuthToken,
                         account = account,
-                        profile = profiles,
+                        profile = profiles.toHashSet(),
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
                         navigationHandleFlag = true,
@@ -139,7 +139,7 @@ open class AuthManager
                     socialAuthToken = socialAuthToken,
                     account = account,
                     navigationHandleFlag = true,
-                    profile = emptyList(),
+                    profile = emptySet(),
                 ),
             )
         }
@@ -158,7 +158,7 @@ open class AuthManager
                     AuthState.Success(
                         socialAuthToken = socialAuthToken,
                         account = account,
-                        profile = profile,
+                        profile = profile.toHashSet(),
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
                         navigationHandleFlag = true,
@@ -267,7 +267,7 @@ open class AuthManager
                     AuthState.Success(
                         socialAuthToken = socialAuthToken,
                         account = account,
-                        profile = profile,
+                        profile = profile.toHashSet(),
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
                         navigationHandleFlag = false,
@@ -330,7 +330,7 @@ open class AuthManager
                     AuthState.Success(
                         socialAuthToken = currentAuthState.socialAuthToken,
                         account = currentAuthState.account,
-                        profile = res,
+                        profile = res.toHashSet(),
                         defaultProfile = defaultProfile,
                         profileDetail = detail,
                         navigationHandleFlag = false,

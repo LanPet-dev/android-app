@@ -5,6 +5,7 @@ import com.lanpet.domain.model.ManProfileCreate
 import com.lanpet.domain.model.PetProfile
 import com.lanpet.domain.model.PetProfileCreate
 import com.lanpet.domain.model.UserProfile
+import com.lanpet.domain.model.free.ResourceUploadUrl
 import com.lanpet.domain.model.profile.UserProfileDetail
 import kotlinx.coroutines.flow.Flow
 
@@ -67,4 +68,14 @@ interface ProfileRepository {
         accountId: String,
         profileId: String,
     ): Flow<Boolean>
+
+    /**
+     * 현재 프로필의 이미지를 올릴 url을 가져옵니다.
+     */
+    suspend fun getProfileResourceUploadUrl(profileId: String): Flow<ResourceUploadUrl>
+
+    /**
+     * 현재 프로필의 이미지를 모두 삭제합니다.
+     */
+    suspend fun deleteProfileResource(profileId: String): Flow<Unit>
 }
