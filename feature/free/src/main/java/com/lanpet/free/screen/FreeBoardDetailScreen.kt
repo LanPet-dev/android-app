@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -180,7 +181,17 @@ fun FreeBoardDetailScreen(
                             Column {
                                 ActionButton(text = "수정", onClick = { /* */ })
                                 HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
-                                ActionButton(text = "삭제", onClick = { /* */ })
+                                ActionButton(
+                                    text = "삭제",
+                                    buttonColors =
+                                        ButtonColors(
+                                            contentColor = Color.Red,
+                                            containerColor = Color.White,
+                                            disabledContainerColor = GrayColor.Gray950,
+                                            disabledContentColor = Color.White,
+                                        ),
+                                    onClick = { /* */ },
+                                )
                             }
                         },
                         modifier = Modifier,
@@ -518,7 +529,17 @@ fun FreeBoardCommentSection(
                     Column {
                         ActionButton(text = "수정", onClick = { /* */ })
                         HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
-                        ActionButton(text = "삭제", onClick = { /* */ })
+                        ActionButton(
+                            text = "삭제",
+                            buttonColors =
+                                ButtonColors(
+                                    contentColor = Color.Red,
+                                    containerColor = Color.White,
+                                    disabledContainerColor = GrayColor.Gray950,
+                                    disabledContentColor = Color.White,
+                                ),
+                            onClick = { /* */ },
+                        )
                     }
                 },
                 modifier = Modifier,
