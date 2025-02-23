@@ -71,7 +71,7 @@ class MyPostsFreeBoardViewModel
                     _uiState.value =
                         MyPostsFreeBoardUiState.Success(
                             postList = freeBoardPost.items ?: emptyList(),
-                            hasNext = freeBoardPost.items?.isNotEmpty() == true,
+                            hasNext = freeBoardPost.nextCursor != null,
                             getFreeBoardPostListRequest =
                                 GetFreeBoardPostListRequest(
                                     cursor = freeBoardPost.nextCursor,
@@ -87,7 +87,7 @@ class MyPostsFreeBoardViewModel
                     _uiState.value =
                         MyPostsFreeBoardUiState.Success(
                             postList = freeBoardPost.items ?: emptyList(),
-                            hasNext = freeBoardPost.items?.isNotEmpty() == true,
+                            hasNext = freeBoardPost.nextCursor != null,
                             getFreeBoardPostListRequest =
                                 GetFreeBoardPostListRequest(
                                     cursor = freeBoardPost.nextCursor,
