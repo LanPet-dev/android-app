@@ -9,6 +9,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -157,3 +161,26 @@ fun Uri.toCompressedByteArray(
         e.printStackTrace()
         null
     }
+
+fun <T> Flow<T>.safeScopedCall(
+    block: suspend (T) -> Unit,
+    scope: CoroutineScope,
+    onFailure: suspend (Throwable) -> Unit = {},
+    onSuccess: suspend () -> Unit = {},
+    onComplete: suspend () -> Unit = {},
+) {
+    scope.launch {
+        runCatching {
+            this@safeScopedCall
+                .onCompletion {
+                    onComplete()
+                }.collect {
+                    block(it)
+                }
+        }.onFailure {
+            onFailure(it)
+        }.onSuccess {
+            onSuccess()
+        }
+    }
+}
