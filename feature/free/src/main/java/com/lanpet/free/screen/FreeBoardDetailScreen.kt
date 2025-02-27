@@ -592,6 +592,7 @@ fun FreeBoardCommentSection(
                             )
                         },
                         profileNickname = nickname,
+                        hasMoreSubComment = comment.subComments.size > 9,
                     )
                 }
                 if (canLoadMore) {

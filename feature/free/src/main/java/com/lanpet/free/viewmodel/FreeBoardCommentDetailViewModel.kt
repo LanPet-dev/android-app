@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.common.safeScopedCall
 import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteSubCommentUseCase
@@ -67,11 +68,20 @@ class FreeBoardCommentDetailViewModel
                 block = {
                     commentInput.value = ""
                     _event.emit(CommentDetailEvent.WriteSubCommentSuccess())
+                    refreshSubComment()
                 },
                 onFailure = {
                     _event.emit(CommentDetailEvent.WriteSubCommentFail())
                 },
             )
+        }
+
+        private fun refreshSubComment() {
+            _singleCommentUiState.update {
+                SingleCommentUiState.Loading
+            }
+            subCommentPagingState = CursorPagingState()
+            getSubComment()
         }
 
         fun getSubComment() {
@@ -95,12 +105,14 @@ class FreeBoardCommentDetailViewModel
                                             subComments =
                                                 state.comment.subComments + subCommentList.data,
                                         ),
+                                    hasMoreSubComment = subCommentList.paginationInfo.hasNext,
                                 )
                             }
 
                             else -> {
                                 SingleCommentUiState.Success(
                                     comment = freeBoardComment.copy(subComments = subCommentList.data),
+                                    hasMoreSubComment = subCommentList.paginationInfo.hasNext,
                                 )
                             }
                         }
@@ -115,6 +127,28 @@ class FreeBoardCommentDetailViewModel
             )
         }
 
+        private fun updateSubCommentCache(cache: FreeBoardSubComment) {
+            if (subCommentPagingState.hasNext) return
+
+            _singleCommentUiState.update {
+                when (it) {
+                    is SingleCommentUiState.Success -> {
+                        SingleCommentUiState.Success(
+                            comment =
+                                it.comment.copy(
+                                    subComments = it.comment.subComments + cache,
+                                ),
+                        )
+                    }
+
+                    else ->
+                        SingleCommentUiState.Success(
+                            comment = freeBoardComment.copy(subComments = listOf(cache)),
+                        )
+                }
+            }
+        }
+
         init {
             getSubComment()
         }
@@ -123,6 +157,7 @@ class FreeBoardCommentDetailViewModel
 sealed interface SingleCommentUiState {
     data class Success(
         val comment: FreeBoardComment,
+        val hasMoreSubComment: Boolean = false,
     ) : SingleCommentUiState
 
     data class Error(
