@@ -3,6 +3,7 @@ package com.lanpet.feature.myposts
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.common.safeScopedCall
 import com.lanpet.domain.model.free.FreeBoardItem
 import com.lanpet.domain.model.free.FreeBoardPost
 import com.lanpet.domain.model.free.GetFreeBoardPostListRequest
@@ -11,7 +12,6 @@ import com.lanpet.domain.usecase.freeboard.GetFreeBoardPostListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,17 +36,15 @@ class MyPostsFreeBoardViewModel
 
             val getFreeBoardPostListRequest = getGetFreeBoardPostListRequest(_uiState.value)
 
-            viewModelScope.launch {
-                runCatching {
-                    getFreeBoardPostListUseCase(
-                        getFreeBoardPostListRequest,
-                    ).collect { freeBoardPostList ->
-                        handleGetFreeBoardPostListResult(_uiState.value, freeBoardPostList)
-                    }
-                }.onFailure {
+            getFreeBoardPostListUseCase(getFreeBoardPostListRequest).safeScopedCall(
+                scope = viewModelScope,
+                block = { freeBoardPostList ->
+                    handleGetFreeBoardPostListResult(_uiState.value, freeBoardPostList)
+                },
+                onFailure = {
                     _uiState.value = MyPostsFreeBoardUiState.Error(it.message ?: "Unknown error")
-                }
-            }
+                },
+            )
         }
 
         private fun getGetFreeBoardPostListRequest(currentUiState: MyPostsFreeBoardUiState): GetFreeBoardPostListRequest =
