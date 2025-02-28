@@ -7,7 +7,7 @@ data class SocialAuthToken(
     val accessToken: String?,
     val refreshToken: String?,
     val expiresIn: Int?,
-    private val expireDateTime: Date = Date(System.currentTimeMillis() + (expiresIn ?: 0) * 1000L),
+    val expireDateTime: Date = Date(System.currentTimeMillis() + (expiresIn ?: 0) * 1000L),
 ) {
     override fun toString(): String =
         "SocialAuthToken(socialAuthType=$socialAuthType, accessToken=$accessToken, refreshToken=$refreshToken, expiresIn=$expiresIn, expireDateTime=$expireDateTime)"

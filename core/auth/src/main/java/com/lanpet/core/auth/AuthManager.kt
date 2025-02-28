@@ -1,9 +1,6 @@
 package com.lanpet.core.auth
 
 import androidx.annotation.VisibleForTesting
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lanpet.core.common.exception.AuthException
 import com.lanpet.core.manager.AuthStateHolder
@@ -12,6 +9,7 @@ import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.account.Account
 import com.lanpet.domain.model.profile.UserProfileDetail
+import com.lanpet.domain.repository.AuthRepository
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
@@ -29,7 +27,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,7 +51,7 @@ open class AuthManager
         private val getDefaultProfileUseCase: GetDefaultProfileUseCase? = null,
         private val setDefaultProfileUseCase: SetDefaultProfileUseCase? = null,
         private val authStateHolder: AuthStateHolder,
-        @Named("AuthDataStore") private val authDataStore: DataStore<Preferences>? = null,
+        private val authRepository: AuthRepository? = null,
     ) {
         val authState = authStateHolder.authState
 
@@ -85,7 +82,6 @@ open class AuthManager
             }
         }
 
-        @VisibleForTesting
         suspend fun handleAuthentication(socialAuthToken: SocialAuthToken) {
             try {
                 authStateHolder.updateState(
@@ -109,19 +105,13 @@ open class AuthManager
                 )
 
                 if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
-                    authDataStore!!.edit { preferences ->
-                        preferences[accessTokenKey] = socialAuthToken.accessToken!!
-                        preferences[refreshTokenKey] = socialAuthToken.refreshToken!!
-                    }
+                    authRepository?.saveAuthToken(socialAuthToken)
                 }
             } catch (e: AuthException.NoAccountException) {
                 handleNoAccount(socialAuthToken)
             } catch (e: AuthException.NoProfileException) {
                 if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
-                    authDataStore!!.edit { preferences ->
-                        preferences[accessTokenKey] = socialAuthToken.accessToken!!
-                        preferences[refreshTokenKey] = socialAuthToken.refreshToken!!
-                    }
+                    authRepository?.saveAuthToken(socialAuthToken)
                 }
                 handleNoProfile(socialAuthToken, e.account)
             } catch (e: AuthException.NoDefaultProfileException) {
@@ -371,10 +361,7 @@ open class AuthManager
 
         fun logout() {
             runBlocking {
-                authDataStore!!.edit { preferences ->
-                    preferences.remove(accessTokenKey)
-                    preferences.remove(refreshTokenKey)
-                }
+                authRepository?.deleteAuthToken()
             }
 
             authStateHolder.updateState(
@@ -383,7 +370,7 @@ open class AuthManager
         }
 
         companion object {
-            private val accessTokenKey = stringPreferencesKey("accessToken")
-            private val refreshTokenKey = stringPreferencesKey("refreshToken")
+            val accessTokenKey = stringPreferencesKey("accessToken")
+            val refreshTokenKey = stringPreferencesKey("refreshToken")
         }
     }

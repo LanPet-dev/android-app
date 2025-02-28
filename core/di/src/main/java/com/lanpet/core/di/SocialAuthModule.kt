@@ -1,5 +1,7 @@
 package com.lanpet.core.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.data.repository.AuthRepositoryImpl
 import com.lanpet.data.service.AuthService
@@ -30,7 +32,10 @@ object SocialAuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(authService: AuthService): AuthRepository = AuthRepositoryImpl(authService)
+    fun provideAuthRepository(
+        authService: AuthService,
+        @Named("AuthDataStore") authDataStore: DataStore<Preferences>,
+    ): AuthRepository = AuthRepositoryImpl(authService, authDataStore)
 
     @Provides
     @Singleton
