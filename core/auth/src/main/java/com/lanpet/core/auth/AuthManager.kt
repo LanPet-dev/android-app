@@ -1,6 +1,10 @@
 package com.lanpet.core.auth
 
 import androidx.annotation.VisibleForTesting
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lanpet.core.common.exception.AuthException
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
@@ -22,8 +26,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -48,6 +54,7 @@ open class AuthManager
         private val getDefaultProfileUseCase: GetDefaultProfileUseCase? = null,
         private val setDefaultProfileUseCase: SetDefaultProfileUseCase? = null,
         private val authStateHolder: AuthStateHolder,
+        @Named("AuthDataStore") private val authDataStore: DataStore<Preferences>? = null,
     ) {
         val authState = authStateHolder.authState
 
@@ -67,9 +74,7 @@ open class AuthManager
                 runCatching {
                     val socialAuthToken =
                         getCognitoSocialAuthTokenUseCase!!(code).timeout(5.seconds).first()
-                    authStateHolder.updateState(
-                        AuthState.Loading(socialAuthToken = socialAuthToken),
-                    )
+
                     handleAuthentication(socialAuthToken)
                 }.onFailure {
                     Timber.e(it)
@@ -83,6 +88,10 @@ open class AuthManager
         @VisibleForTesting
         suspend fun handleAuthentication(socialAuthToken: SocialAuthToken) {
             try {
+                authStateHolder.updateState(
+                    AuthState.Loading(socialAuthToken = socialAuthToken),
+                )
+
                 val account = getAccount()
                 val profiles = getProfiles(account)
                 val defaultProfile = getDefaultProfile(account.accountId, profiles)
@@ -98,9 +107,22 @@ open class AuthManager
                         navigationHandleFlag = true,
                     ),
                 )
+
+                if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
+                    authDataStore!!.edit { preferences ->
+                        preferences[accessTokenKey] = socialAuthToken.accessToken!!
+                        preferences[refreshTokenKey] = socialAuthToken.refreshToken!!
+                    }
+                }
             } catch (e: AuthException.NoAccountException) {
                 handleNoAccount(socialAuthToken)
             } catch (e: AuthException.NoProfileException) {
+                if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
+                    authDataStore!!.edit { preferences ->
+                        preferences[accessTokenKey] = socialAuthToken.accessToken!!
+                        preferences[refreshTokenKey] = socialAuthToken.refreshToken!!
+                    }
+                }
                 handleNoProfile(socialAuthToken, e.account)
             } catch (e: AuthException.NoDefaultProfileException) {
                 handleNoProfileDetailException()
@@ -348,8 +370,20 @@ open class AuthManager
         }
 
         fun logout() {
+            runBlocking {
+                authDataStore!!.edit { preferences ->
+                    preferences.remove(accessTokenKey)
+                    preferences.remove(refreshTokenKey)
+                }
+            }
+
             authStateHolder.updateState(
                 AuthState.Logout(),
             )
+        }
+
+        companion object {
+            private val accessTokenKey = stringPreferencesKey("accessToken")
+            private val refreshTokenKey = stringPreferencesKey("refreshToken")
         }
     }

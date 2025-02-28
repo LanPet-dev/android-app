@@ -22,6 +22,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -63,5 +64,7 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideLandRepository(dataStore: DataStore<Preferences>): LandingRepository = LandingRepositoryImpl(dataStore)
+    fun provideLandRepository(
+        @Named("LandingDataStore") dataStore: DataStore<Preferences>,
+    ): LandingRepository = LandingRepositoryImpl(dataStore)
 }

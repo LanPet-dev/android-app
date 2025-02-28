@@ -38,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -66,7 +65,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -97,11 +95,11 @@ import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
+import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,6 +108,7 @@ fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
+    freeBoardSharedViewModel: FreeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(),
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsStateWithLifecycle()
@@ -183,6 +182,9 @@ fun FreeBoardDetailScreen(
                             TextButton(
                                 onClick = {
                                     deleteContentState = false
+                                    // TODO
+                                    freeBoardSharedViewModel.deletedPostId.tryEmit("testId")
+                                    onNavigateUp()
                                 },
                             ) {
                                 Text(
@@ -237,6 +239,7 @@ fun FreeBoardDetailScreen(
                                         ),
                                     onClick = {
                                         scope.launch {
+                                            deleteContentState = true
                                             contentActionState.hide()
                                         }
                                     },

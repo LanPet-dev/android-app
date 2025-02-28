@@ -193,6 +193,7 @@ fun AppNavigation(
                                 freeBoardComment = freeBoardComment,
                             )
                         },
+                        navController = navController,
                     )
                     wikiNavGraph()
                 }

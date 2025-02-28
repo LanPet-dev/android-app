@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -18,6 +20,7 @@ import com.lanpet.free.screen.FreeBoardCommentDetailScreen
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
+import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,12 +31,16 @@ fun NavGraphBuilder.freeNavGraph(
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
     onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String, navOptions: NavOptions?) -> Unit,
+    navController: NavController,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
     ) {
         composable<FreeBoard> {
+            val parentEntry = remember { navController.getBackStackEntry(FreeBoardBaseRoute) }
+            val freeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(parentEntry)
             FreeBoardScreen(
+                freeBoardSharedViewModel = freeBoardSharedViewModel,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
                 onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
                     onNavigateToFreeBoardDetail(postId, profileId, nickname, null)
@@ -41,7 +48,10 @@ fun NavGraphBuilder.freeNavGraph(
             )
         }
         composable<FreeBoardDetail> {
+            val parentEntry = remember { navController.getBackStackEntry(FreeBoardBaseRoute) }
+            val freeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(parentEntry)
             FreeBoardDetailScreen(
+                freeBoardSharedViewModel = freeBoardSharedViewModel,
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
             )
@@ -65,8 +75,10 @@ fun NavGraphBuilder.freeNavGraph(
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(500),
-                ) + fadeOut(
-                    animationSpec = tween(500))
+                ) +
+                    fadeOut(
+                        animationSpec = tween(500),
+                    )
             },
         ) {
             FreeBoardCommentDetailScreen(
@@ -98,9 +110,7 @@ val freeBoardCommentType =
             bundle.putString(key, Json.encodeToString(FreeBoardComment.serializer(), value))
         }
 
-        override fun serializeAsValue(value: FreeBoardComment): String {
-            return Json.encodeToString(FreeBoardComment.serializer(), value)
-        }
+        override fun serializeAsValue(value: FreeBoardComment): String = Json.encodeToString(FreeBoardComment.serializer(), value)
     }
 
 fun NavController.navigateToFreeBoardCommentDetailScreen(
@@ -117,12 +127,10 @@ fun NavController.navigateToFreeBoardCommentDetailScreen(
     }
 }
 
-fun NavController.navigateToFreeBoardBaseRoute(
-    navOptions: NavOptions
-) {
+fun NavController.navigateToFreeBoardBaseRoute(navOptions: NavOptions) {
     navigate(
         FreeBoardBaseRoute,
-        navOptions
+        navOptions,
     )
 }
 

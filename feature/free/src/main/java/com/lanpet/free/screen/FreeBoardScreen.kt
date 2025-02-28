@@ -59,6 +59,7 @@ import com.lanpet.domain.model.free.FreeBoardStat
 import com.lanpet.domain.model.free.FreeBoardText
 import com.lanpet.free.viewmodel.FreeBoardListState
 import com.lanpet.free.viewmodel.FreeBoardListViewModel
+import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
 
@@ -67,11 +68,18 @@ import timber.log.Timber
 fun FreeBoardScreen(
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
+    freeBoardSharedViewModel: FreeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
     onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
     val uiState by freeBoardListViewModel.uiState.collectAsState()
+    val deletedPostId = freeBoardSharedViewModel.deletedPostId.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        Timber.i("deletedPostId: ${deletedPostId.value}")
+        freeBoardSharedViewModel.deletedPostId.tryEmit(null)
+    }
 
     Scaffold(
         floatingActionButton = {

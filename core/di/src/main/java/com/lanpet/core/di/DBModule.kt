@@ -11,6 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import java.util.prefs.Preferences
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -18,6 +19,10 @@ import javax.inject.Singleton
 object DBModule {
     private val Context.datastore by preferencesDataStore(
         name = "landing_datastore",
+    )
+
+    private val Context.authDatastore by preferencesDataStore(
+        name = "auth_datastore",
     )
 
     @Singleton
@@ -32,7 +37,15 @@ object DBModule {
 
     @Singleton
     @Provides
+    @Named("LandingDataStore")
     fun provideLandingDataStore(
         @ApplicationContext context: Context,
     ): DataStore<androidx.datastore.preferences.core.Preferences> = context.datastore
+
+    @Singleton
+    @Provides
+    @Named("AuthDataStore")
+    fun provideAuthDataStore(
+        @ApplicationContext context: Context,
+    ): DataStore<androidx.datastore.preferences.core.Preferences> = context.authDatastore
 }

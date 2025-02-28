@@ -1,10 +1,8 @@
 package com.lanpet.core.navigation
 
-import androidx.collection.forEach
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.domain.model.AuthState
