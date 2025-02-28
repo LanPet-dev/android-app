@@ -35,8 +35,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -72,6 +75,7 @@ import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ActionButton
+import com.lanpet.core.common.widget.BaseDialog
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.IOSActionSheet
@@ -97,20 +101,23 @@ import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import com.lanpet.core.designsystem.R as DS_R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
+    savedStateHandle: SavedStateHandle,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
-    val state = freeBoardDetailViewModel.uiState.collectAsState()
+    val state = freeBoardDetailViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     val contentActionState = rememberModalBottomSheetState()
+    var deleteContentState by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     when (val currentState = state.value) {
@@ -160,6 +167,45 @@ fun FreeBoardDetailScreen(
                 }
             }
 
+            if (deleteContentState) {
+                Dialog(
+                    onDismissRequest = {
+                        deleteContentState = false
+                    },
+                ) {
+                    BaseDialog(
+                        content = {
+                            Text(
+                                text = "게시글을 삭제할까요?",
+                                style = MaterialTheme.customTypography().body1SemiBoldSingle,
+                            )
+                        },
+                        confirm = {
+                            TextButton(
+                                onClick = {
+                                    deleteContentState = false
+                                },
+                            ) {
+                                Text(
+                                    text = "삭제",
+                                )
+                            }
+                        },
+                        dismiss = {
+                            TextButton(
+                                onClick = {
+                                    deleteContentState = false
+                                },
+                            ) {
+                                Text(
+                                    text = "취소할게요",
+                                )
+                            }
+                        },
+                    )
+                }
+            }
+
             if (contentActionState.isVisible) {
                 ModalBottomSheet(
                     onDismissRequest = {},
@@ -190,7 +236,11 @@ fun FreeBoardDetailScreen(
                                             disabledContainerColor = GrayColor.Gray950,
                                             disabledContentColor = Color.White,
                                         ),
-                                    onClick = { /* */ },
+                                    onClick = {
+                                        scope.launch {
+                                            contentActionState.hide()
+                                        }
+                                    },
                                 )
                             }
                         },
@@ -204,6 +254,8 @@ fun FreeBoardDetailScreen(
                     LanPetTopAppBar(
                         navigationIcon = {
                             CommonNavigateUpButton {
+                                Timber.d(freeBoardDetailViewModel.savedStateHandle.toString())
+                                freeBoardDetailViewModel.savedStateHandle.set("test", "test")
                                 onNavigateUp()
                             }
                         },
@@ -538,7 +590,11 @@ fun FreeBoardCommentSection(
                                     disabledContainerColor = GrayColor.Gray950,
                                     disabledContentColor = Color.White,
                                 ),
-                            onClick = { /* */ },
+                            onClick = {
+                                scope.launch {
+                                    commentActionState.hide()
+                                }
+                            },
                         )
                     }
                 },
@@ -712,6 +768,7 @@ private fun PreviewCommentInputSection() {
 private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
+            savedStateHandle = SavedStateHandle(),
             onNavigateUp = {},
             onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
