@@ -43,7 +43,7 @@ fun MyPostsFreeBoardScreen(
     MyPostsFreeBoardScreen(
         onNavigateToFreeBoardDetail = onNavigateToFreeBoardDetail,
         defaultProfile = defaultProfile,
-        getFreeBoardPosts = { myPostsFreeBoardViewModel.getFreeBoardPostList() },
+        getFreeBoardPosts = myPostsFreeBoardViewModel::getFreeBoardPostList,
         uiState = uiState,
     )
 }
@@ -78,7 +78,7 @@ fun MyPostsFreeBoardScreen(
                 LazyColumn(
                     state = scrollState,
                 ) {
-                    items(postList, ) { post ->
+                    items(postList) { post ->
                         FreeBoardListItem(
                             freeBoardPostItem = post,
                             onClick = {

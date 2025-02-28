@@ -150,7 +150,7 @@ class FreeBoardRepositoryImpl
                     emit(true)
                 } catch (e: Exception) {
                     Timber.e(e)
-                    emit(false)
+                    throw e
                 }
             }.flowOn(Dispatchers.IO)
 
@@ -164,7 +164,7 @@ class FreeBoardRepositoryImpl
                     emit(true)
                 } catch (e: Exception) {
                     Timber.e(e)
-                    emit(false)
+                    throw e
                 }
             }.flowOn(Dispatchers.IO)
 

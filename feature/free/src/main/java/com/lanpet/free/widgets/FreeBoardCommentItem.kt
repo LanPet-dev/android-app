@@ -41,6 +41,7 @@ import com.lanpet.domain.model.free.FreeBoardSubComment
 @Composable
 fun FreeBoardCommentItem(
     freeBoardComment: FreeBoardComment,
+    hasMoreSubComment: Boolean,
     profileNickname: String,
     modifier: Modifier = Modifier,
     isSubComment: Boolean = false,
@@ -172,7 +173,7 @@ fun FreeBoardCommentItem(
                     )
                 }
 
-                if (freeBoardComment.subComments.size > 9) {
+                if (hasMoreSubComment) {
                     TextButton(
                         onClick = onMoreSubCommentClick,
                         modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.small),
@@ -328,6 +329,7 @@ private fun FreeBoardCommentItemPreview() {
                 ),
                 isOwner = true,
                 profileNickname = "1",
+                hasMoreSubComment = true
             )
             FreeBoardCommentItem(
                 FreeBoardComment(
@@ -342,6 +344,7 @@ private fun FreeBoardCommentItemPreview() {
                 ),
                 isOwner = true,
                 profileNickname = "1",
+                hasMoreSubComment = true
             )
             FreeBoardCommentItem(
                 FreeBoardComment(
@@ -368,6 +371,7 @@ private fun FreeBoardCommentItemPreview() {
                         ),
                 ),
                 profileNickname = "1",
+                hasMoreSubComment = true
             )
         }
     }

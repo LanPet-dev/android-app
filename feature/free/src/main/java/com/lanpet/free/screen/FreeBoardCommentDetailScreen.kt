@@ -138,6 +138,7 @@ fun FreeBoardCommentDetailScreen(
                                 freeBoardComment = singleCommentUiState.comment,
                                 profileNickname = profileNickname,
                                 onMoreSubCommentClick = onMoreSubComment,
+                                hasMoreSubComment = singleCommentUiState.hasMoreSubComment,
                             )
                         }
                         CommentInput(

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lanpet.core.common.safeScopedCall
 import com.lanpet.core.common.toUtcDateString
 import com.lanpet.domain.model.Profile
 import com.lanpet.domain.model.free.FreeBoardComment
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -116,23 +116,23 @@ class FreeBoardDetailViewModel
             profile: Profile,
             comment: String,
         ) {
-            viewModelScope.launch {
-                runCatching {
-                    writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).collect {
-                        updateCommentCache(
-                            FreeBoardComment(
-                                it,
-                                profile,
-                                comment,
-                                Date().toUtcDateString(),
-                            ),
-                        )
-                        _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
-                    }
-                }.onFailure {
+            writeCommentUseCase(postId, FreeBoardWriteComment(profileId, comment)).safeScopedCall(
+                scope = viewModelScope,
+                block = {
+                    updateCommentCache(
+                        FreeBoardComment(
+                            it,
+                            profile,
+                            comment,
+                            Date().toUtcDateString(),
+                        ),
+                    )
+                    _uiEvent.emit(FreeBoardDetailEvent.WriteCommentSuccess)
+                },
+                onFailure = {
                     _uiEvent.emit(FreeBoardDetailEvent.WriteCommentFail)
-                }
-            }
+                },
+            )
         }
 
         fun refreshComments() {
@@ -143,14 +143,15 @@ class FreeBoardDetailViewModel
         private fun fetchDetail() {
             detailState.value = DetailState.Loading
 
-            viewModelScope.launch {
-                getFreeBoardDetailUseCase(postId, profileId)
-                    .catch {
-                        detailState.value = DetailState.Error("Failed to fetch detail")
-                    }.collect {
-                        detailState.value = DetailState.Success(it)
-                    }
-            }
+            getFreeBoardDetailUseCase(postId, profileId).safeScopedCall(
+                scope = viewModelScope,
+                block = { postDetail ->
+                    detailState.value = DetailState.Success(postDetail)
+                },
+                onFailure = {
+                    detailState.value = DetailState.Error("Failed to fetch detail")
+                },
+            )
         }
 
         fun fetchComments() {
@@ -179,15 +180,14 @@ class FreeBoardDetailViewModel
 
             if (!pagingState.hasNext) return
 
-            viewModelScope.launch {
-                getFreeBoardCommentListUseCase(
-                    postId,
-                    cursor = pagingState.cursor,
-                    size = pagingState.size,
-                    direction = pagingState.direction,
-                ).catch {
-                    commentsState.value = CommentsState.Error("Failed to fetch comments")
-                }.collect { res ->
+            getFreeBoardCommentListUseCase(
+                postId,
+                cursor = pagingState.cursor,
+                size = pagingState.size,
+                direction = pagingState.direction,
+            ).safeScopedCall(
+                scope = viewModelScope,
+                block = { res ->
                     when (commentsState.value) {
                         is CommentsState.Success -> {
                             commentsState.value =
@@ -217,11 +217,14 @@ class FreeBoardDetailViewModel
                                 )
                         }
                     }
-                }
-            }
+                },
+                onFailure = {
+                    commentsState.value = CommentsState.Error("Failed to fetch comments")
+                },
+            )
         }
 
-        fun updateCommentCache(comment: FreeBoardComment) {
+        private fun updateCommentCache(comment: FreeBoardComment) {
             if (commentsState.value !is CommentsState.Success) return
 
             if ((commentsState.value as CommentsState.Success).cursorPagingState.hasNext) return

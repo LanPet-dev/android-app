@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lanpet.core.auth.AuthManager
+import com.lanpet.core.common.safeScopedCall
 import com.lanpet.domain.model.free.FreeBoardComment
+import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteSubCommentUseCase
@@ -13,9 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
@@ -55,65 +55,96 @@ class FreeBoardCommentDetailViewModel
             val comment = commentInput.value
             if (comment.isEmpty()) return
 
-            viewModelScope.launch {
-                runCatching {
-                    writeSubCommentUseCase(
-                        postId = postId,
-                        commentId = freeBoardComment.id,
-                        writeComment =
-                            FreeBoardWriteComment(
-                                profileId = authManager.defaultUserProfile.value.id,
-                                comment = commentInput.value,
-                            ),
-                    ).first()
-
+            writeSubCommentUseCase(
+                postId = postId,
+                commentId = freeBoardComment.id,
+                writeComment =
+                    FreeBoardWriteComment(
+                        profileId = authManager.defaultUserProfile.value.id,
+                        comment = comment,
+                    ),
+            ).safeScopedCall(
+                scope = viewModelScope,
+                block = {
                     commentInput.value = ""
                     _event.emit(CommentDetailEvent.WriteSubCommentSuccess())
-                }.onFailure {
+                    refreshSubComment()
+                },
+                onFailure = {
                     _event.emit(CommentDetailEvent.WriteSubCommentFail())
-                }
+                },
+            )
+        }
+
+        private fun refreshSubComment() {
+            _singleCommentUiState.update {
+                SingleCommentUiState.Loading
             }
+            subCommentPagingState = CursorPagingState()
+            getSubComment()
         }
 
         fun getSubComment() {
             if (!subCommentPagingState.hasNext) return
 
-            viewModelScope.launch {
-                runCatching {
-                    getFreeBoardSubCommentListUseCase(
-                        postId = postId,
-                        commentId = freeBoardComment.id,
-                        cursor = subCommentPagingState.cursor,
-                        size = subCommentPagingState.size,
-                        direction = subCommentPagingState.direction,
-                    ).collect {
-                        _singleCommentUiState.update { state ->
-                            when (state) {
-                                is SingleCommentUiState.Success -> {
-                                    SingleCommentUiState.Success(
-                                        comment =
-                                            state.comment.copy(
-                                                subComments =
-                                                    state.comment.subComments + it.data,
-                                            ),
-                                    )
-                                }
+            getFreeBoardSubCommentListUseCase(
+                postId = postId,
+                commentId = freeBoardComment.id,
+                cursor = subCommentPagingState.cursor,
+                size = subCommentPagingState.size,
+                direction = subCommentPagingState.direction,
+            ).safeScopedCall(
+                scope = viewModelScope,
+                block = { subCommentList ->
+                    _singleCommentUiState.update { state ->
+                        when (state) {
+                            is SingleCommentUiState.Success -> {
+                                SingleCommentUiState.Success(
+                                    comment =
+                                        state.comment.copy(
+                                            subComments =
+                                                state.comment.subComments + subCommentList.data,
+                                        ),
+                                    hasMoreSubComment = subCommentList.paginationInfo.hasNext,
+                                )
+                            }
 
-                                else -> {
-                                    SingleCommentUiState.Success(
-                                        comment = freeBoardComment.copy(subComments = it.data),
-                                    )
-                                }
+                            else -> {
+                                SingleCommentUiState.Success(
+                                    comment = freeBoardComment.copy(subComments = subCommentList.data),
+                                    hasMoreSubComment = subCommentList.paginationInfo.hasNext,
+                                )
                             }
                         }
-
-                        subCommentPagingState =
-                            subCommentPagingState.copy(
-                                cursor = it.paginationInfo.nextCursor,
-                                hasNext = it.paginationInfo.hasNext,
-                            )
                     }
-                }.onFailure { e ->
+
+                    subCommentPagingState =
+                        subCommentPagingState.copy(
+                            cursor = subCommentList.paginationInfo.nextCursor,
+                            hasNext = subCommentList.paginationInfo.hasNext,
+                        )
+                },
+            )
+        }
+
+        private fun updateSubCommentCache(cache: FreeBoardSubComment) {
+            if (subCommentPagingState.hasNext) return
+
+            _singleCommentUiState.update {
+                when (it) {
+                    is SingleCommentUiState.Success -> {
+                        SingleCommentUiState.Success(
+                            comment =
+                                it.comment.copy(
+                                    subComments = it.comment.subComments + cache,
+                                ),
+                        )
+                    }
+
+                    else ->
+                        SingleCommentUiState.Success(
+                            comment = freeBoardComment.copy(subComments = listOf(cache)),
+                        )
                 }
             }
         }
@@ -126,6 +157,7 @@ class FreeBoardCommentDetailViewModel
 sealed interface SingleCommentUiState {
     data class Success(
         val comment: FreeBoardComment,
+        val hasMoreSubComment: Boolean = false,
     ) : SingleCommentUiState
 
     data class Error(
