@@ -11,7 +11,11 @@ import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.manager.CoilManager
 import com.lanpet.core.manager.LocalCoilManager
 import com.lanpet.core.navigation.AppNavigation
+import com.lanpet.domain.repository.LandingRepository
+import com.lanpet.feature.auth.navigation.Login
+import com.lanpet.feature.landing.navigation.Landing
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,15 +26,29 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var coilManager: CoilManager
 
+    @Inject
+    lateinit var landingRepository: LandingRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
         setContent {
+            val startDestination =
+                runBlocking {
+                    return@runBlocking if (landingRepository.getShouldShowLanding()) {
+                        Landing
+                    } else {
+                        Login
+                    }
+                }
+
             CompositionLocalProvider(LocalAuthManager provides authManager) {
                 CompositionLocalProvider(LocalCoilManager provides coilManager) {
                     LanPetAppTheme {
-                        AppNavigation()
+                        AppNavigation(
+                            startDestination = startDestination,
+                        )
                     }
                 }
             }

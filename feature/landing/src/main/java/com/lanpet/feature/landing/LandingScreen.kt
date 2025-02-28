@@ -29,15 +29,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lanpet.core.common.widget.CommonButton
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.LanPetDimensions
 import com.lanpet.core.designsystem.theme.PurpleColor
 import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.feature.landing.viewmodel.LandingViewModel
 
 @Composable
 fun LandingScreen(
     modifier: Modifier = Modifier,
+    landingViewModel: LandingViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit = {},
 ) {
     Surface {
@@ -54,7 +57,12 @@ fun LandingScreen(
                 listOf(
                     { LandingPage1() },
                     { LandingPage2() },
-                    { LandingPage3(navigateToLogin = onNavigateToLogin) },
+                    {
+                        LandingPage3(
+                            navigateToLogin = onNavigateToLogin,
+                            saveShouldShowLanding = landingViewModel::saveShouldShowLanding,
+                        )
+                    },
                 ),
             )
         }
@@ -156,6 +164,7 @@ fun LandingPage2(modifier: Modifier = Modifier) {
 fun LandingPage3(
     modifier: Modifier = Modifier,
     navigateToLogin: () -> Unit = {},
+    saveShouldShowLanding: (Boolean) -> Unit = {},
 ) {
     Column(
         modifier =
@@ -180,7 +189,10 @@ fun LandingPage3(
         CommonButton(
             title = stringResource(R.string.button_start_landing),
             modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-            onClick = navigateToLogin,
+            onClick = {
+                saveShouldShowLanding(false)
+                navigateToLogin()
+            },
         )
         Spacer(Modifier.height(24.dp))
     }

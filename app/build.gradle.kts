@@ -57,6 +57,7 @@ dependencies {
     implementation(projects.domain.model)
 
     implementation(libs.hilt.android)
+    implementation(project(":domain:repository"))
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)

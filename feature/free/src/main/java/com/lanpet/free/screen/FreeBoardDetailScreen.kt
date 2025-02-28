@@ -108,7 +108,6 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
-    savedStateHandle: SavedStateHandle,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
@@ -254,8 +253,6 @@ fun FreeBoardDetailScreen(
                     LanPetTopAppBar(
                         navigationIcon = {
                             CommonNavigateUpButton {
-                                Timber.d(freeBoardDetailViewModel.savedStateHandle.toString())
-                                freeBoardDetailViewModel.savedStateHandle.set("test", "test")
                                 onNavigateUp()
                             }
                         },
@@ -768,7 +765,6 @@ private fun PreviewCommentInputSection() {
 private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
-            savedStateHandle = SavedStateHandle(),
             onNavigateUp = {},
             onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
