@@ -3,6 +3,7 @@ package com.lanpet.data.service
 import com.google.gson.GsonBuilder
 import com.lanpet.data.dto.typeadapter.AuthorityTypeTypeAdapter
 import com.lanpet.data.service.interceptors.AccessTokenHeaderInterceptor
+import com.lanpet.data.service.interceptors.RefreshTokenInterceptor
 import com.lanpet.domain.model.AuthorityType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -17,6 +18,7 @@ class AccountApiClient
     constructor(
         @Named("BaseApiUrl") private val baseUrl: String,
         private val accessTokenHeaderInterceptor: AccessTokenHeaderInterceptor,
+        private val refreshTokenInterceptor: RefreshTokenInterceptor,
     ) {
         private val gson =
             GsonBuilder()
@@ -28,6 +30,7 @@ class AccountApiClient
         private val okHttpClient =
             OkHttpClient
                 .Builder()
+                .addInterceptor(refreshTokenInterceptor)
                 .addInterceptor(accessTokenHeaderInterceptor)
                 .build()
 

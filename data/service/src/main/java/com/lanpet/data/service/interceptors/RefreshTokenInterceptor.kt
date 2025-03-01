@@ -24,16 +24,28 @@ class RefreshTokenInterceptor
     ) : Interceptor {
         @OptIn(FlowPreview::class)
         override fun intercept(chain: Interceptor.Chain): Response {
-            if (authStateHolder.authState.value !is AuthState.Success) {
+            Timber.d(
+                "RefreshTokenInterceptor\n" +
+                    "authState: ${authStateHolder.authState.value}\n",
+            )
+
+            if (authStateHolder.authState.value !is AuthState.Success && authStateHolder.authState.value !is AuthState.Loading) {
                 return chain.proceed(chain.request())
             }
 
             val socialAuthToken =
-                (authStateHolder.authState.value as AuthState.Success).socialAuthToken
-                    ?: throw SecurityException("socialAuthToken is required")
+                when (authStateHolder.authState.value) {
+                    is AuthState.Loading -> (authStateHolder.authState.value as AuthState.Loading).socialAuthToken
+                    is AuthState.Success -> (authStateHolder.authState.value as AuthState.Success).socialAuthToken
+                    else -> throw SecurityException("socialAuthToken is required")
+                }
+
+            Timber.d("socialAuthToken: $socialAuthToken")
+
+            assert(socialAuthToken?.accessToken != null) { "accessToken is required" }
 
             // 만료시간이 3분 이내로 남았을 경우 refreshToken을 사용하여 accessToken을 갱신한다.
-            if (socialAuthToken.shouldRefresh()) {
+            if (socialAuthToken!!.shouldRefresh()) {
                 if (socialAuthToken.refreshToken == null) {
                     throw SecurityException("refreshToken is required")
                 }
@@ -45,12 +57,25 @@ class RefreshTokenInterceptor
                             .retryWhen { cause, attempt ->
                                 cause is Exception && attempt < 3
                             }.collect {
-                                authStateHolder.updateState(
-                                    (authStateHolder.authState.value as AuthState.Success).copy(
-                                        socialAuthToken = it,
-                                        navigationHandleFlag = false,
-                                    ),
-                                )
+                                when (authStateHolder.authState.value) {
+                                    is AuthState.Loading ->
+                                        authStateHolder.updateState(
+                                            (authStateHolder.authState.value as AuthState.Loading).copy(
+                                                socialAuthToken = it,
+                                                navigationHandleFlag = false,
+                                            ),
+                                        )
+
+                                    is AuthState.Success ->
+                                        authStateHolder.updateState(
+                                            (authStateHolder.authState.value as AuthState.Success).copy(
+                                                socialAuthToken = it,
+                                                navigationHandleFlag = false,
+                                            ),
+                                        )
+
+                                    else -> Unit
+                                }
                             }
                     }.onFailure {
                         authStateHolder.updateState(AuthState.Fail())

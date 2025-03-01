@@ -65,10 +65,10 @@ class FreeBoardCommentDetailViewModel
                     ),
             ).safeScopedCall(
                 scope = viewModelScope,
-                block = {
+                block = { subComment ->
                     commentInput.value = ""
                     _event.emit(CommentDetailEvent.WriteSubCommentSuccess())
-                    refreshSubComment()
+                    updateSubCommentCache(subComment)
                 },
                 onFailure = {
                     _event.emit(CommentDetailEvent.WriteSubCommentFail())

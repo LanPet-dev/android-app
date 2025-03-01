@@ -27,10 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +40,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -65,13 +67,25 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
     onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
-    val uiState by freeBoardListViewModel.uiState.collectAsState()
+    val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
+    val savedStateHandle =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+
+    RememberOnDeletePost(
+        postId = savedStateHandle?.get<String>("deletedPostId"),
+        block = {
+            freeBoardListViewModel.removePostCache(savedStateHandle?.get<String>("deletedPostId")!!)
+            savedStateHandle.remove<String>("deletedPostId")
+        },
+    )
 
     Scaffold(
         floatingActionButton = {
@@ -180,6 +194,26 @@ fun FreeBoardScreen(
     }
 }
 
+/**
+ * 삭제된 게시글이 있을 경우 삭제된 게시글을 캐시에서 제거합니다.
+ *
+ * @param postId
+ * @param block
+ */
+@Composable
+private fun RememberOnDeletePost(
+    postId: String? = null,
+    block: () -> Unit = {},
+) {
+    val rememberBlock = rememberUpdatedState(block)
+
+    LaunchedEffect(Unit) {
+        if (postId != null) {
+            rememberBlock.value()
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FreeBoardCategorySection(
@@ -268,25 +302,18 @@ fun FreeBoardPostList(
     LazyColumn(
         state = state,
     ) {
-        items(freeBoardItemList.size) { index ->
-            key(freeBoardItemList[index].id) {
-                FreeBoardListItem(
-                    freeBoardPostItem = freeBoardItemList[index],
-                    onClick = {
-                        onNavigateToFreeBoardDetail(
-                            freeBoardItemList[index].id,
-                            profileId,
-                            nickname,
-                        )
-                    },
-                )
-            }
-        }
-
-        if (isLoading) {
-            item {
-                Text("Loading...", modifier = Modifier.padding(16.dp))
-            }
+        items(freeBoardItemList.size, key = { freeBoardItemList[it].id }) { index ->
+            FreeBoardListItem(
+                modifier = Modifier.animateItem(),
+                freeBoardPostItem = freeBoardItemList[index],
+                onClick = {
+                    onNavigateToFreeBoardDetail(
+                        freeBoardItemList[index].id,
+                        profileId,
+                        nickname,
+                    )
+                },
+            )
         }
     }
 }
@@ -295,7 +322,9 @@ fun FreeBoardPostList(
 @Composable
 private fun FreeBoardScreenPreview() {
     LanPetAppTheme {
-        FreeBoardScreen()
+        FreeBoardScreen(
+            navController = rememberNavController(),
+        )
     }
 }
 

@@ -1,6 +1,7 @@
 package com.lanpet.core.auth
 
 import androidx.annotation.VisibleForTesting
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lanpet.core.common.exception.AuthException
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.domain.model.AuthState
@@ -8,6 +9,7 @@ import com.lanpet.domain.model.SocialAuthToken
 import com.lanpet.domain.model.UserProfile
 import com.lanpet.domain.model.account.Account
 import com.lanpet.domain.model.profile.UserProfileDetail
+import com.lanpet.domain.repository.AuthRepository
 import com.lanpet.domain.usecase.account.GetAccountInformationUseCase
 import com.lanpet.domain.usecase.account.RegisterAccountUseCase
 import com.lanpet.domain.usecase.cognitoauth.GetCognitoSocialAuthTokenUseCase
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +51,7 @@ open class AuthManager
         private val getDefaultProfileUseCase: GetDefaultProfileUseCase? = null,
         private val setDefaultProfileUseCase: SetDefaultProfileUseCase? = null,
         private val authStateHolder: AuthStateHolder,
+        private val authRepository: AuthRepository? = null,
     ) {
         val authState = authStateHolder.authState
 
@@ -67,9 +71,7 @@ open class AuthManager
                 runCatching {
                     val socialAuthToken =
                         getCognitoSocialAuthTokenUseCase!!(code).timeout(5.seconds).first()
-                    authStateHolder.updateState(
-                        AuthState.Loading(socialAuthToken = socialAuthToken),
-                    )
+
                     handleAuthentication(socialAuthToken)
                 }.onFailure {
                     Timber.e(it)
@@ -80,9 +82,12 @@ open class AuthManager
             }
         }
 
-        @VisibleForTesting
         suspend fun handleAuthentication(socialAuthToken: SocialAuthToken) {
             try {
+                authStateHolder.updateState(
+                    AuthState.Loading(socialAuthToken = socialAuthToken),
+                )
+
                 val account = getAccount()
                 val profiles = getProfiles(account)
                 val defaultProfile = getDefaultProfile(account.accountId, profiles)
@@ -98,9 +103,16 @@ open class AuthManager
                         navigationHandleFlag = true,
                     ),
                 )
+
+                if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
+                    authRepository?.saveAuthToken(socialAuthToken)
+                }
             } catch (e: AuthException.NoAccountException) {
                 handleNoAccount(socialAuthToken)
             } catch (e: AuthException.NoProfileException) {
+                if (!socialAuthToken.accessToken.isNullOrEmpty() && !socialAuthToken.refreshToken.isNullOrEmpty()) {
+                    authRepository?.saveAuthToken(socialAuthToken)
+                }
                 handleNoProfile(socialAuthToken, e.account)
             } catch (e: AuthException.NoDefaultProfileException) {
                 handleNoProfileDetailException()
@@ -348,8 +360,17 @@ open class AuthManager
         }
 
         fun logout() {
+            runBlocking {
+                authRepository?.deleteAuthToken()
+            }
+
             authStateHolder.updateState(
                 AuthState.Logout(),
             )
+        }
+
+        companion object {
+            val accessTokenKey = stringPreferencesKey("accessToken")
+            val refreshTokenKey = stringPreferencesKey("refreshToken")
         }
     }

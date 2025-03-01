@@ -36,6 +36,12 @@ interface FreeBoardRepository {
         direction: CursorDirection?,
     ): Flow<PaginationData<List<FreeBoardSubComment>>>
 
+    fun getFreeBoardSubCommentDetail(
+        postId: String,
+        commentId: String,
+        subCommentId: String,
+    ): Flow<FreeBoardSubComment>
+
     fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String>
 
     fun getResourceUploadUrl(
@@ -62,5 +68,5 @@ interface FreeBoardRepository {
         postId: String,
         commentId: String,
         writeComment: FreeBoardWriteComment,
-    ): Flow<Boolean>
+    ): Flow<String>
 }

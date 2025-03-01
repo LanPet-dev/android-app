@@ -84,6 +84,8 @@ internal fun Project.configureDependencies() {
         "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
         // Timber logger
         "implementation"(libs.findLibrary("jakewharton.timber").get())
+        // DataStore
+        "implementation"(libs.findLibrary("androidx.datastore.preferences").get())
         // TODO("Satoshi"): Add common dependencies
     }
 }

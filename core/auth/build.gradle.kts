@@ -44,6 +44,7 @@ dependencies {
     implementation(projects.domain.usecase)
     implementation(projects.core.manager)
     implementation(projects.domain.model)
+    implementation(projects.domain.repository)
 
     implementation(libs.turbine)
 

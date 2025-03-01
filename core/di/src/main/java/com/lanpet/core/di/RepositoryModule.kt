@@ -1,8 +1,11 @@
 package com.lanpet.core.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.lanpet.data.dto.mapper.MapperRegistry
 import com.lanpet.data.repository.AccountRepositoryImpl
 import com.lanpet.data.repository.FreeBoardRepositoryImpl
+import com.lanpet.data.repository.LandingRepositoryImpl
 import com.lanpet.data.repository.ProfileRepositoryImpl
 import com.lanpet.data.repository.S3UploadRepositoryImpl
 import com.lanpet.data.service.AccountApiService
@@ -12,12 +15,14 @@ import com.lanpet.data.service.S3UploadApiService
 import com.lanpet.data.service.localdb.AuthDatabase
 import com.lanpet.domain.repository.AccountRepository
 import com.lanpet.domain.repository.FreeBoardRepository
+import com.lanpet.domain.repository.LandingRepository
 import com.lanpet.domain.repository.ProfileRepository
 import com.lanpet.domain.repository.S3UploadRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -56,4 +61,10 @@ class RepositoryModule {
         S3UploadRepositoryImpl(
             s3UploadApiService,
         )
+
+    @Singleton
+    @Provides
+    fun provideLandRepository(
+        @Named("LandingDataStore") dataStore: DataStore<Preferences>,
+    ): LandingRepository = LandingRepositoryImpl(dataStore)
 }

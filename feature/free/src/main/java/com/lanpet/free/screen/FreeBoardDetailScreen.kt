@@ -35,6 +35,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,6 +66,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lanpet.core.auth.BasePreviewWrapper
@@ -72,6 +75,7 @@ import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.createdAtPostString
 import com.lanpet.core.common.toast
 import com.lanpet.core.common.widget.ActionButton
+import com.lanpet.core.common.widget.BaseDialog
 import com.lanpet.core.common.widget.CommonChip
 import com.lanpet.core.common.widget.CommonNavigateUpButton
 import com.lanpet.core.common.widget.IOSActionSheet
@@ -103,14 +107,16 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
-    val state = freeBoardDetailViewModel.uiState.collectAsState()
+    val state = freeBoardDetailViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     val contentActionState = rememberModalBottomSheetState()
+    var deleteContentState by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     when (val currentState = state.value) {
@@ -160,6 +166,51 @@ fun FreeBoardDetailScreen(
                 }
             }
 
+            if (deleteContentState) {
+                Dialog(
+                    onDismissRequest = {
+                        deleteContentState = false
+                    },
+                ) {
+                    BaseDialog(
+                        content = {
+                            Text(
+                                text = "게시글을 삭제할까요?",
+                                style = MaterialTheme.customTypography().body1SemiBoldSingle,
+                            )
+                        },
+                        confirm = {
+                            TextButton(
+                                onClick = {
+                                    deleteContentState = false
+                                    // TODO
+                                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                                        "deletedPostId",
+                                        currentState.postDetail.id,
+                                    )
+                                    onNavigateUp()
+                                },
+                            ) {
+                                Text(
+                                    text = "삭제",
+                                )
+                            }
+                        },
+                        dismiss = {
+                            TextButton(
+                                onClick = {
+                                    deleteContentState = false
+                                },
+                            ) {
+                                Text(
+                                    text = "취소할게요",
+                                )
+                            }
+                        },
+                    )
+                }
+            }
+
             if (contentActionState.isVisible) {
                 ModalBottomSheet(
                     onDismissRequest = {},
@@ -190,7 +241,12 @@ fun FreeBoardDetailScreen(
                                             disabledContainerColor = GrayColor.Gray950,
                                             disabledContentColor = Color.White,
                                         ),
-                                    onClick = { /* */ },
+                                    onClick = {
+                                        scope.launch {
+                                            deleteContentState = true
+                                            contentActionState.hide()
+                                        }
+                                    },
                                 )
                             }
                         },
@@ -538,7 +594,11 @@ fun FreeBoardCommentSection(
                                     disabledContainerColor = GrayColor.Gray950,
                                     disabledContentColor = Color.White,
                                 ),
-                            onClick = { /* */ },
+                            onClick = {
+                                scope.launch {
+                                    commentActionState.hide()
+                                }
+                            },
                         )
                     }
                 },
@@ -713,6 +773,7 @@ private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
+            navController = rememberNavController(),
             onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }

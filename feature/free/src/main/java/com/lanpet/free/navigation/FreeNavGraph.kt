@@ -28,12 +28,14 @@ fun NavGraphBuilder.freeNavGraph(
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit,
     onNavigateToFreeBoardWriteFreeBoard: () -> Unit,
     onNavigateToFreeBoardDetail: (postId: String, profileId: String, nickname: String, navOptions: NavOptions?) -> Unit,
+    navController: NavController,
 ) {
     navigation<FreeBoardBaseRoute>(
         startDestination = FreeBoard,
     ) {
         composable<FreeBoard> {
             FreeBoardScreen(
+                navController = navController,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
                 onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
                     onNavigateToFreeBoardDetail(postId, profileId, nickname, null)
@@ -42,6 +44,7 @@ fun NavGraphBuilder.freeNavGraph(
         }
         composable<FreeBoardDetail> {
             FreeBoardDetailScreen(
+                navController = navController,
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
             )
@@ -65,8 +68,10 @@ fun NavGraphBuilder.freeNavGraph(
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(500),
-                ) + fadeOut(
-                    animationSpec = tween(500))
+                ) +
+                    fadeOut(
+                        animationSpec = tween(500),
+                    )
             },
         ) {
             FreeBoardCommentDetailScreen(
@@ -98,9 +103,7 @@ val freeBoardCommentType =
             bundle.putString(key, Json.encodeToString(FreeBoardComment.serializer(), value))
         }
 
-        override fun serializeAsValue(value: FreeBoardComment): String {
-            return Json.encodeToString(FreeBoardComment.serializer(), value)
-        }
+        override fun serializeAsValue(value: FreeBoardComment): String = Json.encodeToString(FreeBoardComment.serializer(), value)
     }
 
 fun NavController.navigateToFreeBoardCommentDetailScreen(
@@ -117,12 +120,10 @@ fun NavController.navigateToFreeBoardCommentDetailScreen(
     }
 }
 
-fun NavController.navigateToFreeBoardBaseRoute(
-    navOptions: NavOptions
-) {
+fun NavController.navigateToFreeBoardBaseRoute(navOptions: NavOptions) {
     navigate(
         FreeBoardBaseRoute,
-        navOptions
+        navOptions,
     )
 }
 

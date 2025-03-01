@@ -73,7 +73,10 @@ import kotlinx.coroutines.flow.drop
 import timber.log.Timber
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(
+    modifier: Modifier = Modifier,
+    startDestination: Any = Landing,
+) {
     val navController = rememberNavController()
     val authManager = LocalAuthManager.current
 
@@ -100,7 +103,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = Landing,
+                startDestination = startDestination,
                 modifier = Modifier.weight(1f),
             ) {
                 landingNavGraph {
@@ -190,6 +193,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                                 freeBoardComment = freeBoardComment,
                             )
                         },
+                        navController = navController,
                     )
                     wikiNavGraph()
                 }
