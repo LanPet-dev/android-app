@@ -1,10 +1,16 @@
 package com.lanpet.app
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
@@ -22,7 +28,11 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var coilManager: CoilManager
 
+    @SuppressLint("ObjectAnimatorBinding")
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 사용자가 설정한 SplashScreen 스타일을 기본으로 사용
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
