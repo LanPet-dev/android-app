@@ -294,12 +294,6 @@ fun FreeBoardPostList(
                 },
             )
         }
-
-        if (isLoading) {
-            item {
-                Text("Loading...", modifier = Modifier.padding(16.dp))
-            }
-        }
     }
 }
 
