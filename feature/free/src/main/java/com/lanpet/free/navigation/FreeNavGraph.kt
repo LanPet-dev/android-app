@@ -35,7 +35,6 @@ fun NavGraphBuilder.freeNavGraph(
     ) {
         composable<FreeBoard> {
             FreeBoardScreen(
-//                freeBoardSharedViewModel = freeBoardSharedViewModel,
                 navController = navController,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
                 onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
@@ -45,7 +44,6 @@ fun NavGraphBuilder.freeNavGraph(
         }
         composable<FreeBoardDetail> {
             FreeBoardDetailScreen(
-//                freeBoardSharedViewModel = freeBoardSharedViewModel,
                 navController = navController,
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
