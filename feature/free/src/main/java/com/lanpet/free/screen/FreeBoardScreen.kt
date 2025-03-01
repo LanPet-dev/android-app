@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,13 +79,13 @@ fun FreeBoardScreen(
         navController.currentBackStackEntry
             ?.savedStateHandle
 
-    LaunchedEffect(Unit) {
-        if (savedStateHandle?.contains("deletedPostId") == true) {
-            Timber.i("deletedPostId: ${savedStateHandle.get<String>("deletedPostId")}")
-            freeBoardListViewModel.removePostCache(savedStateHandle.get<String>("deletedPostId")!!)
+    RememberOnDeletePost(
+        postId = savedStateHandle?.get<String>("deletedPostId"),
+        block = {
+            freeBoardListViewModel.removePostCache(savedStateHandle?.get<String>("deletedPostId")!!)
             savedStateHandle.remove<String>("deletedPostId")
-        }
-    }
+        },
+    )
 
     Scaffold(
         floatingActionButton = {
@@ -189,6 +190,26 @@ fun FreeBoardScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * 삭제된 게시글이 있을 경우 삭제된 게시글을 캐시에서 제거합니다.
+ *
+ * @param postId
+ * @param block
+ */
+@Composable
+private fun RememberOnDeletePost(
+    postId: String? = null,
+    block: () -> Unit = {},
+) {
+    val rememberBlock = rememberUpdatedState(block)
+
+    LaunchedEffect(Unit) {
+        if (postId != null) {
+            rememberBlock.value()
         }
     }
 }
