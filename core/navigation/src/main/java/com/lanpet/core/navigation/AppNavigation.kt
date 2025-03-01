@@ -5,9 +5,13 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,14 +23,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.lanpet.core.auth.AuthManager
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
+import com.lanpet.core.designsystem.theme.VioletColor
+import com.lanpet.core.designsystem.theme.WhiteColor
+import com.lanpet.core.designsystem.theme.customTypography
+import com.lanpet.domain.model.SocialAuthToken
+import com.lanpet.domain.repository.AuthRepository
+import com.lanpet.domain.repository.LandingRepository
+import com.lanpet.feature.auth.navigation.Login
 import com.lanpet.feature.auth.navigation.authNavGraph
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
 import com.lanpet.feature.landing.navigation.Landing
@@ -68,15 +86,18 @@ import com.lanpet.profile.navigation.profileNavGraph
 import com.lanpet.wiki.navigation.Wiki
 import com.lanpet.wiki.navigation.navigateToWikiBaseRoute
 import com.lanpet.wiki.navigation.wikiNavGraph
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import timber.log.Timber
+import javax.inject.Inject
 
 @Composable
-fun AppNavigation(
-    modifier: Modifier = Modifier,
-    startDestination: Any = Landing,
-) {
+fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val authManager = LocalAuthManager.current
 
@@ -103,9 +124,13 @@ fun AppNavigation(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination,
+                startDestination = Splash,
                 modifier = Modifier.weight(1f),
             ) {
+                composable<Splash> {
+                    SplashScreen(navController = navController)
+                }
+
                 landingNavGraph {
                     navController.navigateToLoginScreen()
                 }
@@ -323,3 +348,83 @@ fun AppNavigation(
             }
     }
 }
+
+@Serializable
+data object Splash
+
+@Composable
+fun SplashScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    splashViewModel: SplashViewModel = hiltViewModel(),
+) {
+    val startDestination by splashViewModel.startDestination.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        if (startDestination != null) {
+            startDestination?.let {
+                Timber.d("startDestination: $it")
+                navController.navigate(it)
+            }
+        }
+    }
+
+    Column(
+        modifier =
+            modifier.then(Modifier).fillMaxSize().background(
+                color = VioletColor.Violet500,
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            "랜펫",
+            style =
+                MaterialTheme.customTypography().title2SemiBoldMulti.copy(
+                    color = WhiteColor.White,
+                    fontSize = 64.sp,
+                ),
+        )
+    }
+}
+
+@HiltViewModel
+class SplashViewModel
+    @Inject
+    constructor(
+        private val landingRepository: LandingRepository,
+        private val authRepository: AuthRepository,
+        private val authManager: AuthManager,
+    ) : ViewModel() {
+        val startDestination: MutableStateFlow<Any?> = MutableStateFlow(null)
+
+        init {
+            runBlocking {
+                delay(3_000L)
+
+                if (landingRepository.getShouldShowLanding()) {
+                    startDestination.value = Landing
+                    return@runBlocking
+                }
+
+                val token = authRepository.getAuthTokenFromDataStore()
+
+                Timber.i("token: $token")
+
+                if (token != null) {
+                    authManager.handleAuthentication(
+                        SocialAuthToken(
+                            socialAuthType = token.socialAuthType,
+                            accessToken = token.accessToken,
+                            refreshToken = token.refreshToken,
+                            expiresIn = token.expiresIn,
+                            expireDateTime = token.expireDateTime,
+                        ),
+                    )
+                    return@runBlocking
+                }
+
+                startDestination.value = Login
+            }
+        }
+    }

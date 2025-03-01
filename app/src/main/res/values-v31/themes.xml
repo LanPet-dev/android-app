@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.LanPetApp" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Splash 화면의 백그라운드 컬러 지정 -->
+        <item name="android:windowSplashScreenBackground">@color/violet_600</item>
+        <!-- Splash 화면의 중앙에 위치할 아이콘 Drawable 지정 -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo_foreground</item>
+        <!-- Splash 화면 중앙의 아이콘 주변 Background Color 지정 -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/violet_600</item>
+<!--        &lt;!&ndash; Splash 화면이 나타나는 시간 지정 &ndash;&gt;-->
+<!--        <item name="android:windowSplashScreenAnimationDuration">100</item>-->
+<!--         Splash 화면 하단에 나타낼 브랜딩이미지 지정 (비권장) -->
+<!--        <item name="android:windowSplashScreenBrandingImage">@drawable/branding_image</item>-->
+    </style>
+</resources>

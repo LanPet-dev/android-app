@@ -32,6 +32,8 @@ dependencies {
     implementation(projects.data.dto)
 
     implementation(libs.hilt.android)
+    implementation(project(":domain:repository"))
+    implementation(project(":domain:repository"))
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.navigation.compose)
