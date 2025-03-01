@@ -46,15 +46,16 @@ fun FreeBoardListItem(
     imageLoader: ImageLoader = LocalCoilManager.current.memoryCacheImageLoader,
     onClick: () -> Unit = {},
 ) {
-    Surface {
-        Column(
-            modifier =
-                Modifier
-                    .clickable {
-                        onClick()
-                    }.fillMaxWidth()
-                    .padding(vertical = LanPetDimensions.Spacing.small),
-        ) {
+    Surface(
+        modifier =
+            modifier
+                .then(Modifier)
+                .clickable {
+                    onClick()
+                }.fillMaxWidth()
+                .padding(vertical = LanPetDimensions.Spacing.small),
+    ) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = LanPetDimensions.Spacing.xSmall),

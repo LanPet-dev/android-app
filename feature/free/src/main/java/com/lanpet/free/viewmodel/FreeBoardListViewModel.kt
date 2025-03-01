@@ -153,6 +153,18 @@ class FreeBoardListViewModel
                     }
         }
 
+        fun removePostCache(postId: String) {
+            _uiState.value =
+                when (val currentState = _uiState.value) {
+                    is FreeBoardListState.Success -> {
+                        val newData = currentState.data.filter { it.id != postId }
+                        currentState.copy(data = newData)
+                    }
+
+                    else -> currentState
+                }
+        }
+
         init {
             getFreeBoardPostList()
         }

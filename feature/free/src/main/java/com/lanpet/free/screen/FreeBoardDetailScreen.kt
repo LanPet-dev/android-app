@@ -66,6 +66,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lanpet.core.auth.BasePreviewWrapper
@@ -95,7 +97,6 @@ import com.lanpet.free.viewmodel.FreeBoardDetailState
 import com.lanpet.free.viewmodel.FreeBoardDetailViewModel
 import com.lanpet.free.viewmodel.FreeBoardLikeEvent
 import com.lanpet.free.viewmodel.FreeBoardLikesViewModel
-import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import com.lanpet.free.widgets.CommentInput
 import com.lanpet.free.widgets.FreeBoardCommentItem
 import com.lanpet.free.widgets.LoadingUI
@@ -106,9 +107,9 @@ import com.lanpet.core.designsystem.R as DS_R
 @Composable
 fun FreeBoardDetailScreen(
     onNavigateUp: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier,
     freeBoardDetailViewModel: FreeBoardDetailViewModel = hiltViewModel<FreeBoardDetailViewModel>(),
-    freeBoardSharedViewModel: FreeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(),
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
 ) {
     val state = freeBoardDetailViewModel.uiState.collectAsStateWithLifecycle()
@@ -183,7 +184,10 @@ fun FreeBoardDetailScreen(
                                 onClick = {
                                     deleteContentState = false
                                     // TODO
-                                    freeBoardSharedViewModel.deletedPostId.tryEmit("testId")
+                                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                                        "deletedPostId",
+                                        currentState.postDetail.id,
+                                    )
                                     onNavigateUp()
                                 },
                             ) {
@@ -769,6 +773,7 @@ private fun FreeBoardDetailPreview() {
     LanPetAppTheme {
         FreeBoardDetailScreen(
             onNavigateUp = {},
+            navController = rememberNavController(),
             onNavigateToFreeBoardCommentDetail = { _, _ -> },
         )
     }

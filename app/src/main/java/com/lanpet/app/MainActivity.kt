@@ -18,6 +18,7 @@ import com.lanpet.feature.auth.navigation.Login
 import com.lanpet.feature.landing.navigation.Landing
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,6 +53,8 @@ class MainActivity : ComponentActivity() {
             // Auto login
             runBlocking {
                 val token = authRepository.getAuthTokenFromDataStore()
+
+                Timber.i("token: $token")
 
                 if (token != null) {
                     authManager.handleAuthentication(

@@ -6,8 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -20,7 +18,6 @@ import com.lanpet.free.screen.FreeBoardCommentDetailScreen
 import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
-import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,10 +34,9 @@ fun NavGraphBuilder.freeNavGraph(
         startDestination = FreeBoard,
     ) {
         composable<FreeBoard> {
-            val parentEntry = remember { navController.getBackStackEntry(FreeBoardBaseRoute) }
-            val freeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(parentEntry)
             FreeBoardScreen(
-                freeBoardSharedViewModel = freeBoardSharedViewModel,
+//                freeBoardSharedViewModel = freeBoardSharedViewModel,
+                navController = navController,
                 onNavigateToFreeBoardWrite = onNavigateToFreeBoardWriteFreeBoard,
                 onNavigateToFreeBoardDetail = { postId, profileId, nickname ->
                     onNavigateToFreeBoardDetail(postId, profileId, nickname, null)
@@ -48,10 +44,9 @@ fun NavGraphBuilder.freeNavGraph(
             )
         }
         composable<FreeBoardDetail> {
-            val parentEntry = remember { navController.getBackStackEntry(FreeBoardBaseRoute) }
-            val freeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(parentEntry)
             FreeBoardDetailScreen(
-                freeBoardSharedViewModel = freeBoardSharedViewModel,
+//                freeBoardSharedViewModel = freeBoardSharedViewModel,
+                navController = navController,
                 onNavigateUp = onNavigateUp,
                 onNavigateToFreeBoardCommentDetail = onNavigateToFreeBoardCommentDetail,
             )

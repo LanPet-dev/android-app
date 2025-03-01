@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -40,6 +39,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.FreeBoardListItem
 import com.lanpet.core.common.widget.LanPetTopAppBar
@@ -59,26 +60,30 @@ import com.lanpet.domain.model.free.FreeBoardStat
 import com.lanpet.domain.model.free.FreeBoardText
 import com.lanpet.free.viewmodel.FreeBoardListState
 import com.lanpet.free.viewmodel.FreeBoardListViewModel
-import com.lanpet.free.viewmodel.FreeBoardSharedViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeBoardScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     freeBoardListViewModel: FreeBoardListViewModel = hiltViewModel<FreeBoardListViewModel>(),
-    freeBoardSharedViewModel: FreeBoardSharedViewModel = hiltViewModel<FreeBoardSharedViewModel>(),
     onNavigateToFreeBoardWrite: () -> Unit = {},
     onNavigateToFreeBoardDetail: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
     val scrollState = rememberScrollState()
-    val uiState by freeBoardListViewModel.uiState.collectAsState()
-    val deletedPostId = freeBoardSharedViewModel.deletedPostId.collectAsStateWithLifecycle()
+    val uiState by freeBoardListViewModel.uiState.collectAsStateWithLifecycle()
+    val savedStateHandle =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
 
     LaunchedEffect(Unit) {
-        Timber.i("deletedPostId: ${deletedPostId.value}")
-        freeBoardSharedViewModel.deletedPostId.tryEmit(null)
+        if (savedStateHandle?.contains("deletedPostId") == true) {
+            Timber.i("deletedPostId: ${savedStateHandle.get<String>("deletedPostId")}")
+            freeBoardListViewModel.removePostCache(savedStateHandle.get<String>("deletedPostId")!!)
+            savedStateHandle.remove<String>("deletedPostId")
+        }
     }
 
     Scaffold(
@@ -276,19 +281,18 @@ fun FreeBoardPostList(
     LazyColumn(
         state = state,
     ) {
-        items(freeBoardItemList.size) { index ->
-            key(freeBoardItemList[index].id) {
-                FreeBoardListItem(
-                    freeBoardPostItem = freeBoardItemList[index],
-                    onClick = {
-                        onNavigateToFreeBoardDetail(
-                            freeBoardItemList[index].id,
-                            profileId,
-                            nickname,
-                        )
-                    },
-                )
-            }
+        items(freeBoardItemList.size, key = { freeBoardItemList[it].id }) { index ->
+            FreeBoardListItem(
+                modifier = Modifier.animateItem(),
+                freeBoardPostItem = freeBoardItemList[index],
+                onClick = {
+                    onNavigateToFreeBoardDetail(
+                        freeBoardItemList[index].id,
+                        profileId,
+                        nickname,
+                    )
+                },
+            )
         }
 
         if (isLoading) {
@@ -303,7 +307,9 @@ fun FreeBoardPostList(
 @Composable
 private fun FreeBoardScreenPreview() {
     LanPetAppTheme {
-        FreeBoardScreen()
+        FreeBoardScreen(
+            navController = rememberNavController(),
+        )
     }
 }
 
