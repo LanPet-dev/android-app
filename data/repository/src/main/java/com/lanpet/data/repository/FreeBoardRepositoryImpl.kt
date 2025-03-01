@@ -5,6 +5,7 @@ import com.lanpet.data.dto.DoPostLikeRequest
 import com.lanpet.data.dto.freeboard.FreeBoardWriteCommentRequest
 import com.lanpet.data.dto.freeboard.GetFreeBoardListRequestDto
 import com.lanpet.data.dto.freeboard.toDomain
+import com.lanpet.data.dto.toDomain
 import com.lanpet.data.service.FreeBoardApiService
 import com.lanpet.domain.model.PaginationData
 import com.lanpet.domain.model.free.FreeBoardComment
@@ -95,6 +96,17 @@ class FreeBoardRepositoryImpl
                 }
             }
 
+        override fun getFreeBoardSubCommentDetail(
+            postId: String,
+            commentId: String,
+            subCommentId: String,
+        ): Flow<FreeBoardSubComment> =
+            flow<FreeBoardSubComment> {
+                val subCommentDetail =
+                    freeBoardApiService.getSubCommentDetail(postId, commentId, subCommentId)
+                emit(subCommentDetail.toDomain())
+            }.flowOn(Dispatchers.IO)
+
         override fun createFreeBoardPost(freeBoardPostCreate: FreeBoardPostCreate): Flow<String> =
             flow {
                 val request = CreateFreeBoardPostRequest.fromDomainToCreateRequest(freeBoardPostCreate)
@@ -161,18 +173,19 @@ class FreeBoardRepositoryImpl
             postId: String,
             commentId: String,
             writeComment: FreeBoardWriteComment,
-        ): Flow<Boolean> =
+        ): Flow<String> =
             flow {
                 try {
-                    freeBoardApiService.writeSubComment(
-                        postId,
-                        commentId,
-                        FreeBoardWriteCommentRequest.fromDomain(freeBoardWriteComment = writeComment),
-                    )
-                    emit(true)
+                    val subCommentId =
+                        freeBoardApiService.writeSubComment(
+                            postId,
+                            commentId,
+                            FreeBoardWriteCommentRequest.fromDomain(freeBoardWriteComment = writeComment),
+                        )
+                    emit(subCommentId.id)
                 } catch (e: Exception) {
                     Timber.e(e)
-                    emit(false)
+                    throw e
                 }
             }
     }
