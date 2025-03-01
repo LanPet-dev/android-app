@@ -8,16 +8,13 @@ import com.lanpet.core.common.safeScopedCall
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardSubComment
 import com.lanpet.domain.model.free.FreeBoardWriteComment
-import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentDetail
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardSubCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.WriteSubCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -29,7 +26,6 @@ class FreeBoardCommentDetailViewModel
         savedStateHandle: SavedStateHandle,
         private val getFreeBoardSubCommentListUseCase: GetFreeBoardSubCommentListUseCase,
         private val writeSubCommentUseCase: WriteSubCommentUseCase,
-        private val getFreeBoardSubCommentDetail: GetFreeBoardSubCommentDetail,
         private val authManager: AuthManager,
     ) : ViewModel() {
         private val postId: String =
@@ -55,7 +51,6 @@ class FreeBoardCommentDetailViewModel
             commentInput.value = comment
         }
 
-        @OptIn(ExperimentalCoroutinesApi::class)
         fun writeSubComment() {
             val comment = commentInput.value
             if (comment.isEmpty()) return
@@ -68,13 +63,7 @@ class FreeBoardCommentDetailViewModel
                         profileId = authManager.defaultUserProfile.value.id,
                         comment = comment,
                     ),
-            ).flatMapMerge {
-                getFreeBoardSubCommentDetail(
-                    postId = postId,
-                    commentId = freeBoardComment.id,
-                    subCommentId = it,
-                )
-            }.safeScopedCall(
+            ).safeScopedCall(
                 scope = viewModelScope,
                 block = { subComment ->
                     commentInput.value = ""
