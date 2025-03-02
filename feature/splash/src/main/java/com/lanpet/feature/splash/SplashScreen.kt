@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.VioletColor
-import timber.log.Timber
 
 @Composable
 fun SplashScreen(
@@ -31,10 +30,8 @@ fun SplashScreen(
     val startDestination by splashViewModel.startDestination.collectAsStateWithLifecycle()
 
     LaunchedEffect(startDestination) {
-        Timber.d("startDestination: $startDestination")
         if (startDestination != null) {
             startDestination?.let {
-                Timber.d("startDestination: $it")
                 navController.navigate(it) {
                     popUpTo(0) {
                         inclusive = true

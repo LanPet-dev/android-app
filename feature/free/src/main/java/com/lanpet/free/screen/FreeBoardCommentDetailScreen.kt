@@ -40,22 +40,24 @@ import kotlinx.coroutines.withContext
 fun FreeBoardCommentDetailScreen(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit = {},
-                                    freeBoardCommentDetailViewModel: FreeBoardCommentDetailViewModel = hiltViewModel(),
-                            ) {
-                                val profileNickname =
-                                    LocalAuthManager.current.defaultUserProfile
-                                        .collectAsStateWithLifecycle()
-                                        .value.nickname
+    freeBoardCommentDetailViewModel: FreeBoardCommentDetailViewModel = hiltViewModel(),
+) {
+    val profileNickname =
+        LocalAuthManager.current.defaultUserProfile
+            .collectAsStateWithLifecycle()
+            .value.nickname
 
-                                val context = LocalContext.current
+    val context = LocalContext.current
 
-                                LaunchedEffect(Unit) {
-                                    freeBoardCommentDetailViewModel.event.collect {
-                                        when (it) {
-                                            CommentDetailEvent.WriteSubCommentFail() -> {
-                                                it.let { message ->
-                                                    withContext(Dispatchers.Main) {
-                                                        context.toast(context.getString(R.string.freeboard_comment_detail_write_sub_comment_fail))
+    LaunchedEffect(Unit) {
+        freeBoardCommentDetailViewModel.event.collect {
+            when (it) {
+                CommentDetailEvent.WriteSubCommentFail() -> {
+                    it.let { message ->
+                        withContext(Dispatchers.Main) {
+                            context.toast(
+                                context.getString(R.string.freeboard_comment_detail_write_sub_comment_fail),
+                            )
                         }
                     }
                 }

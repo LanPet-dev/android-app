@@ -35,25 +35,25 @@ class GetFreeBoardCommentListUseCase
                         return@flatMapLatest flowOf(commentData)
                     }
 
-
                     flow {
-                        val updatedComments = commentData.data.map { comment ->
-                            val res =
-                                freeBoardRepository
-                                    .getFreeBoardSubCommentList(
-                                        postId,
-                                        comment.id,
-                                        size = 10,
-                                        cursor = null,
-                                        direction = CursorDirection.NEXT,
-                                    ).flatMapLatest {
-                                        flowOf(
-                                            comment.copy(subComments = it.data),
-                                        )
-                                    }.first()
+                        val updatedComments =
+                            commentData.data.map { comment ->
+                                val res =
+                                    freeBoardRepository
+                                        .getFreeBoardSubCommentList(
+                                            postId,
+                                            comment.id,
+                                            size = 10,
+                                            cursor = null,
+                                            direction = CursorDirection.NEXT,
+                                        ).flatMapLatest {
+                                            flowOf(
+                                                comment.copy(subComments = it.data),
+                                            )
+                                        }.first()
 
-                            comment.copy(subComments = res.subComments)
-                        }
+                                comment.copy(subComments = res.subComments)
+                            }
 
                         emit(commentData.copy(data = updatedComments))
                     }

@@ -40,16 +40,16 @@ fun CommentInput(
     Column {
         Spacer(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .size(1.dp)
-                .background(GrayColor.Gray50),
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(GrayColor.Gray50),
         )
         Row(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(LanPetDimensions.Spacing.small),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(LanPetDimensions.Spacing.small),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
@@ -60,29 +60,29 @@ fun CommentInput(
                 },
                 placeholder = { Text(stringResource(R.string.placeholder_textfield_enter_reply_freeboard_detail)) },
                 modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = LanPetDimensions.Spacing.small)
-                    .clip(
-                        shape =
-                        RoundedCornerShape(
-                            LanPetDimensions.Corner.medium,
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = LanPetDimensions.Spacing.small)
+                        .clip(
+                            shape =
+                                RoundedCornerShape(
+                                    LanPetDimensions.Corner.medium,
+                                ),
                         ),
-                    ),
                 textStyle =
-                MaterialTheme.customTypography().body2RegularSingle.copy(
-                    color = GrayColor.Gray400,
-                ),
+                    MaterialTheme.customTypography().body2RegularSingle.copy(
+                        color = GrayColor.Gray400,
+                    ),
                 colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = GrayColor.Gray100,
-                    unfocusedContainerColor = GrayColor.Gray100,
-                    unfocusedPlaceholderColor = GrayColor.Gray400,
-                    focusedPlaceholderColor = GrayColor.Gray400,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = GrayColor.Gray400,
-                ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = GrayColor.Gray100,
+                        unfocusedContainerColor = GrayColor.Gray100,
+                        unfocusedPlaceholderColor = GrayColor.Gray400,
+                        focusedPlaceholderColor = GrayColor.Gray400,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = GrayColor.Gray400,
+                    ),
             )
             IconButton(
                 onClick = {

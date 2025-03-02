@@ -34,6 +34,13 @@ internal fun Project.configureAndroidCommon(commonExtension: CommonExtension<*, 
                 keyAlias = keyStoreProperties.get("debug.keyAlias") as String
                 keyPassword = keyStoreProperties.get("debug.keyPassword") as String
             }
+
+            create("release.key") {
+                storeFile = file(keyStoreProperties.get("debug.keystore") as String)
+                storePassword = keyStoreProperties.get("debug.storePassword") as String
+                keyAlias = keyStoreProperties.get("debug.keyAlias") as String
+                keyPassword = keyStoreProperties.get("debug.keyPassword") as String
+            }
         }
 
         compileOptions {

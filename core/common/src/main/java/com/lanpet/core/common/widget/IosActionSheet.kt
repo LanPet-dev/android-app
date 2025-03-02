@@ -98,13 +98,17 @@ private fun IOSActionSheetPreview() {
                     HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
                     ActionButton(text = "사진 앨범", onClick = { /* */ })
                     HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
-                    ActionButton(text = "버튼", buttonColors = 
-                        ButtonColors(
-                            contentColor = Color.Red,
-                            containerColor = WhiteColor.White,
-                            disabledContainerColor = GrayColor.Gray950,
-                            disabledContentColor = WhiteColor.White,
-                        ),onClick = { /* */ })
+                    ActionButton(
+                        text = "버튼",
+                        buttonColors =
+                            ButtonColors(
+                                contentColor = Color.Red,
+                                containerColor = WhiteColor.White,
+                                disabledContainerColor = GrayColor.Gray950,
+                                disabledContentColor = WhiteColor.White,
+                            ),
+                        onClick = { /* */ },
+                    )
                 }
             },
             cancelButton = {
