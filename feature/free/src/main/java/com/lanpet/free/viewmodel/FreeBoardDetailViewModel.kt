@@ -11,8 +11,10 @@ import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.domain.model.free.FreeBoardPostDetail
 import com.lanpet.domain.model.free.FreeBoardWriteComment
 import com.lanpet.domain.model.pagination.CursorDirection
+import com.lanpet.domain.usecase.freeboard.DeleteFreeBoardCommentUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardCommentListUseCase
 import com.lanpet.domain.usecase.freeboard.GetFreeBoardDetailUseCase
+import com.lanpet.domain.usecase.freeboard.ModifyFreeBoardCommentUseCase
 import com.lanpet.domain.usecase.freeboard.WriteCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -34,6 +37,8 @@ class FreeBoardDetailViewModel
         private val getFreeBoardDetailUseCase: GetFreeBoardDetailUseCase,
         private val getFreeBoardCommentListUseCase: GetFreeBoardCommentListUseCase,
         private val writeCommentUseCase: WriteCommentUseCase,
+        private val deleteFreeBoardCommentUseCase: DeleteFreeBoardCommentUseCase,
+        private val modifyFreeBoardCommentUseCase: ModifyFreeBoardCommentUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val postId =
@@ -221,6 +226,60 @@ class FreeBoardDetailViewModel
                 onFailure = {
                     commentsState.value = CommentsState.Error("Failed to fetch comments")
                 },
+            )
+        }
+
+        fun deleteComment(
+            postId: String,
+            commentId: String,
+        ) {
+            deleteFreeBoardCommentUseCase(postId, commentId).safeScopedCall(
+                scope = viewModelScope,
+                block = {
+                    when (val state = commentsState.value) {
+                        is CommentsState.Success -> {
+                            commentsState.update {
+                                state.copy(
+                                    comments = state.comments.filter { it.id != commentId },
+                                )
+                            }
+                        }
+
+                        else -> Unit
+                    }
+                },
+                onFailure = {},
+            )
+        }
+
+        fun modifyComment(
+            postId: String,
+            commentId: String,
+            content: String,
+        ) {
+            modifyFreeBoardCommentUseCase(postId, commentId, content).safeScopedCall(
+                scope = viewModelScope,
+                block = {
+                    when (val state = commentsState.value) {
+                        is CommentsState.Success -> {
+                            commentsState.update {
+                                state.copy(
+                                    comments =
+                                        state.comments.map {
+                                            if (it.id == commentId) {
+                                                it.copy(comment = content)
+                                            } else {
+                                                it
+                                            }
+                                        },
+                                )
+                            }
+                        }
+
+                        else -> Unit
+                    }
+                },
+                onFailure = {},
             )
         }
 

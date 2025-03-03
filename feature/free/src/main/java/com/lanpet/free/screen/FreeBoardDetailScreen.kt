@@ -1,6 +1,9 @@
 package com.lanpet.free.screen
 
 import android.content.res.Configuration
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -296,6 +299,9 @@ fun FreeBoardDetailScreen(
                         onInputValueChange = { value ->
                             input = value
                         },
+                        onDeleteComment = { postId, commentId ->
+                            freeBoardDetailViewModel.deleteComment(postId, commentId)
+                        },
                         onWriteComment = {
                             freeBoardDetailViewModel.writeComment(
                                 postId = (state.value as FreeBoardDetailState.Success).postDetail.id,
@@ -365,6 +371,7 @@ fun ContentUI(
     onLikeChange: (Boolean) -> Unit,
     onFetchComment: () -> Unit,
     modifier: Modifier = Modifier,
+    onDeleteComment: (String, String) -> Unit = { _, _ -> },
     isOwner: Boolean = false,
     onNavigateToFreeBoardCommentDetail: (postId: String, freeBoardComment: FreeBoardComment) -> Unit = { _, _ -> },
     freeBoardLikesViewModel: FreeBoardLikesViewModel = hiltViewModel(),
@@ -518,6 +525,9 @@ fun ContentUI(
             commentCount = state.postDetail.commentCount,
             comments = state.comments,
             canLoadMore = state.canLoadMoreComments,
+            onDeleteComment = { postId, commentId ->
+                onDeleteComment(postId, commentId)
+            },
             onLoadMore = {
                 onFetchComment()
             },
@@ -543,7 +553,7 @@ fun ContentUI(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FreeBoardCommentSection(
     postId: String,
@@ -551,6 +561,7 @@ fun FreeBoardCommentSection(
     modifier: Modifier = Modifier,
     commentCount: Int = 0,
     comments: List<FreeBoardComment> = emptyList(),
+    onDeleteComment: (String, String) -> Unit = { _, _ -> },
     onLoadMore: () -> Unit = {},
     onMoreSubCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
     onCommentClick: (String, FreeBoardComment) -> Unit = { _, _ -> },
@@ -563,6 +574,7 @@ fun FreeBoardCommentSection(
     val scope = rememberCoroutineScope()
 
     val commentActionState = rememberModalBottomSheetState()
+    val selectedCommentId = remember { mutableStateOf("") }
 
     if (commentActionState.isVisible) {
         ModalBottomSheet(
@@ -597,6 +609,7 @@ fun FreeBoardCommentSection(
                             onClick = {
                                 scope.launch {
                                     commentActionState.hide()
+                                    onDeleteComment(postId, selectedCommentId.value)
                                 }
                             },
                         )
@@ -630,30 +643,37 @@ fun FreeBoardCommentSection(
             Spacer(modifier = Modifier.padding(LanPetDimensions.Spacing.small))
         } else {
             Column {
-                comments.forEach { comment ->
-                    FreeBoardCommentItem(
-                        freeBoardComment = comment,
-                        isOwner = comment.profile.nickname == nickname,
-                        onOwnerActionClick = {
-                            scope.launch {
-                                commentActionState.show()
-                            }
-                        },
-                        onMoreSubCommentClick = {
-                            onMoreSubCommentClick(
-                                postId,
-                                comment,
-                            )
-                        },
-                        onCommentClick = {
-                            onCommentClick(
-                                postId,
-                                comment,
-                            )
-                        },
-                        profileNickname = nickname,
-                        hasMoreSubComment = comment.subComments.size > 9,
-                    )
+                comments.forEachIndexed { index, comment ->
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                    ) {
+                        FreeBoardCommentItem(
+                            freeBoardComment = comment,
+                            isOwner = comment.profile.nickname == nickname,
+                            onOwnerActionClick = {
+                                scope.launch {
+                                    selectedCommentId.value = comment.id
+                                    commentActionState.show()
+                                }
+                            },
+                            onMoreSubCommentClick = {
+                                onMoreSubCommentClick(
+                                    postId,
+                                    comment,
+                                )
+                            },
+                            onCommentClick = {
+                                onCommentClick(
+                                    postId,
+                                    comment,
+                                )
+                            },
+                            profileNickname = nickname,
+                            hasMoreSubComment = comment.subComments.size > 9,
+                        )
+                    }
                 }
                 if (canLoadMore) {
                     Text(

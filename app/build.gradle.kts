@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.splashscreen)
+//    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

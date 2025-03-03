@@ -40,8 +40,6 @@ class RefreshTokenInterceptor
                     else -> throw SecurityException("socialAuthToken is required")
                 }
 
-            Timber.d("socialAuthToken: $socialAuthToken")
-
             assert(socialAuthToken?.accessToken != null) { "accessToken is required" }
 
             // 만료시간이 3분 이내로 남았을 경우 refreshToken을 사용하여 accessToken을 갱신한다.

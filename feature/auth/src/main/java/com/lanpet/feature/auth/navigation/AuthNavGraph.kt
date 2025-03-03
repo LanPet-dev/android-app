@@ -22,7 +22,6 @@ fun NavController.navigateToLoginScreen() {
                 inclusive = true // true: 시작 destination 도 제거, false: 시작 destination 유지
             }
             launchSingleTop = true // 중복 destination 방지
-            restoreState = false
         },
     )
 }

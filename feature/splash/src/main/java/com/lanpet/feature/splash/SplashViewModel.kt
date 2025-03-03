@@ -26,6 +26,11 @@ class SplashViewModel
     ) : ViewModel() {
         val startDestination: MutableStateFlow<Any?> = MutableStateFlow(null)
 
+        override fun onCleared() {
+            Timber.d("SplashViewModel onCleared")
+            super.onCleared()
+        }
+
         init {
             viewModelScope.launch {
                 // Android 12 이하에서는 3초간 스플래시 화면을 보여줍니다.
