@@ -40,7 +40,6 @@ class NavigationHandler(
                     navController.navigateToProfileCreateHasPet()
                 } else {
                     navController.navigateToMainScreen(
-                        idRes = navController.graph.startDestinationId,
                         bottomNavItem = BottomNavItem.MyPage,
                     )
                 }

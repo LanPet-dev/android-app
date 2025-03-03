@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -156,11 +155,7 @@ fun AppNavigation(
                     onNavigateToHumanAge = { navController.navigateToProfileCreateHumanAge() },
                     onNavigateToDone = { navController.navigateToProfileCreateDone() },
                     onNavigateToPreferPet = { navController.navigateToProfileCreatePreferPet() },
-                    onNavigateToMain = {
-                        navController.navigateToMainScreen(
-                            idRes = navController.graph.findStartDestination().id,
-                        )
-                    },
+                    onNavigateToMain = { navController.navigateToMainScreen() },
                     navController = navController,
                 )
 

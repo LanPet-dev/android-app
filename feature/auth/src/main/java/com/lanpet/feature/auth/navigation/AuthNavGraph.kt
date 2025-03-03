@@ -1,11 +1,13 @@
 package com.lanpet.feature.auth.navigation
 
+import android.annotation.SuppressLint
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.lanpet.feature.auth.LoginScreen
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 fun NavGraphBuilder.authNavGraph() {
     composable<Login> {
@@ -13,18 +15,23 @@ fun NavGraphBuilder.authNavGraph() {
     }
 }
 
+@SuppressLint("RestrictedApi")
 fun NavController.navigateToLoginScreen() {
-    this.navigate(
+    val startDestinationId = this.currentBackStack.value.first().destination.id
+
+    navigate(
         Login,
-        navOptions {
-            popUpTo(0) {
-                // 0은 시작 destination 을 의미
-                inclusive = true // true: 시작 destination 도 제거, false: 시작 destination 유지
-            }
-            launchSingleTop = true // 중복 destination 방지
-        },
+        navOptions =
+            navOptions {
+                popUpTo(startDestinationId) {
+                    inclusive = true
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            },
     )
 }
 
 @Serializable
-object Login
+data object Login

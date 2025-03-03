@@ -14,10 +14,11 @@ android {
         compose = true
     }
 
-    dependencies {
-        implementation(projects.domain.model)
-        implementation(projects.domain.usecase)
-        implementation(projects.core.auth)
-        implementation(libs.androidx.lifecycle.viewmodel.android)
-    }
+}
+
+dependencies {
+    implementation(projects.domain.model)
+    implementation(projects.domain.usecase)
+    implementation(projects.core.auth)
+    implementation(libs.androidx.lifecycle.viewmodel.android)
 }
