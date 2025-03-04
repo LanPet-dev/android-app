@@ -14,13 +14,15 @@
     <td><img src="https://github.com/user-attachments/assets/d30d21ab-f20d-4944-a3ed-650b787302aa" width="300" alt="사랑방 프로세스"></td>
     <td><img src="https://github.com/user-attachments/assets/098be209-2ba7-4a21-a170-283f4c3fcdcf" width="300" alt="프로필"></td>
   </tr>
-           <th>적응형 다크모드</th>  
-<tr>   
-    <td><img src="https://github.com/user-attachments/assets/a9bee07f-55eb-46bb-87ae-705cee5ccb66" width="300" alt="사랑방 리스트"></td>
-  </tr>
+   
 </table>
-
-
+<table>
+                  <th>적응형 다크모드</th>   <th>멀티해상도</th>
+<tr>   
+    <td><img src="https://github.com/user-attachments/assets/a9bee07f-55eb-46bb-87ae-705cee5ccb66" width="300" alt="적응형 다크모드"></td>
+                  <td><img src="https://github.com/user-attachments/assets/6cae6d40-4bb2-459c-b664-3f428bc2b09c" width="490" alt="멀티해상도"></td>                    
+          </tr>
+</table>
 
 
 
