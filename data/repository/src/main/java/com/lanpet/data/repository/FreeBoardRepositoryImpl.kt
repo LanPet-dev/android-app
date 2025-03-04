@@ -188,4 +188,33 @@ class FreeBoardRepositoryImpl
                     throw e
                 }
             }
+
+        override fun deleteComment(
+            postId: String,
+            commentId: String,
+        ): Flow<String> =
+            flow {
+                freeBoardApiService.deleteFreeBoardComment(postId, commentId)
+                emit(commentId)
+            }.flowOn(Dispatchers.IO)
+
+        override fun modifyComment(
+            postId: String,
+            commentId: String,
+            content: String,
+        ): Flow<String> =
+            flow {
+                val updateCommentResponse =
+                    freeBoardApiService.updateFreeBoardComment(postId, commentId, content)
+                emit(updateCommentResponse.id)
+            }.flowOn(Dispatchers.IO)
+
+        override fun getCommentDetail(
+            postId: String,
+            commentId: String,
+        ): Flow<FreeBoardComment> =
+            flow {
+                val commentDetail = freeBoardApiService.getCommentDetail(postId, commentId)
+                emit(commentDetail.toDomain())
+            }
     }

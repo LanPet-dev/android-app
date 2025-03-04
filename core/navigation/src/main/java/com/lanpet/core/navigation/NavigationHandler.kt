@@ -24,21 +24,11 @@ class NavigationHandler(
      * AuthState 가 변경되면, 이전 AuthState 와 비교하여 Screen 이동을 처리함.
      */
     fun handleNavigationByAuthState(currentAuthState: AuthState) {
-        Timber.d(
-            "previousAuthState: $previousAuthState, currentAuthState: $currentAuthState " +
-                "navigationHandleFlag: ${currentAuthState.navigationHandleFlag}",
-        )
-
+        Timber.i("currentAuthState :: $currentAuthState")
         // navigationHandleFlag 가 false 일 경우, Screen 이동 처리를 하지 않습니다.
         if (!currentAuthState.navigationHandleFlag) {
             return
         }
-
-        // navigationHandleFlag 로 처리하는것으로 변경되어, 더이상 이전 AuthState 와 비교할 필요가 없습니다.
-//        if (previousAuthState::class == currentAuthState::class ) {
-//            Timber.d("previousAuthState is same as currentAuthState")
-//            return
-//        }
 
         when (currentAuthState) {
             is AuthState.Initial -> {
@@ -46,13 +36,11 @@ class NavigationHandler(
             }
 
             is AuthState.Success -> {
-//                 only for test
-//                navController.navigateToProfileCreateHasPet()
                 if (currentAuthState.profile.isEmpty()) {
                     navController.navigateToProfileCreateHasPet()
                 } else {
                     navController.navigateToMainScreen(
-                        bottomNavItem = BottomNavItem.Wiki,
+                        bottomNavItem = BottomNavItem.MyPage,
                     )
                 }
             }

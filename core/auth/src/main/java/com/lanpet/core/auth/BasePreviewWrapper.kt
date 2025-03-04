@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.core.DataStore
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.manager.AuthStateHolder
 import com.lanpet.core.manager.CoilManager

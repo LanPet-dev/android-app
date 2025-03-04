@@ -1,5 +1,9 @@
 package com.lanpet.core.navigation
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -9,27 +13,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import androidx.navigation.navigation
+import com.lanpet.core.auth.BuildConfig
 import com.lanpet.core.auth.LocalAuthManager
 import com.lanpet.core.common.widget.BottomNavItem
 import com.lanpet.core.common.widget.LanPetBottomNavBar
 import com.lanpet.feature.auth.navigation.authNavGraph
 import com.lanpet.feature.auth.navigation.navigateToLoginScreen
-import com.lanpet.feature.landing.navigation.Landing
 import com.lanpet.feature.landing.navigation.landingNavGraph
 import com.lanpet.feature.myposts.navigation.myPostsNavGraph
 import com.lanpet.feature.myposts.navigation.navigateToMyPosts
@@ -38,6 +48,8 @@ import com.lanpet.feature.settings.navigation.navigateToMemberLeave
 import com.lanpet.feature.settings.navigation.navigateToMemberLeaveComplete
 import com.lanpet.feature.settings.navigation.navigateToSettings
 import com.lanpet.feature.settings.navigation.settingsNavGraph
+import com.lanpet.feature.splash.SplashScreen
+import com.lanpet.feature.splash.navigation.Splash
 import com.lanpet.free.navigation.FreeBoard
 import com.lanpet.free.navigation.freeNavGraph
 import com.lanpet.free.navigation.navigateToFreeBoardBaseRoute
@@ -68,19 +80,26 @@ import com.lanpet.profile.navigation.profileNavGraph
 import com.lanpet.wiki.navigation.Wiki
 import com.lanpet.wiki.navigation.navigateToWikiBaseRoute
 import com.lanpet.wiki.navigation.wikiNavGraph
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import timber.log.Timber
 
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    startDestination: Any = Landing,
+    navController: NavHostController = rememberNavController(),
 ) {
-    val navController = rememberNavController()
+    val context = LocalContext.current
     val authManager = LocalAuthManager.current
 
-    val authState = authManager.authState.collectAsState()
+    BackHandler {
+        authManager.finish()
+        (context as Activity).finishAffinity()
+    }
+
+    if (BuildConfig.BUILD_TYPE == "debug") {
+        DestinationLoggerHandler(navController)
+    }
+
+    val authState = authManager.authState.collectAsStateWithLifecycle()
 
     // Handling navigation by AuthState
     rememberNavigationHandler(navController, authState.value)
@@ -92,7 +111,7 @@ fun AppNavigation(
     }
 
     var navItem by rememberSaveable {
-        mutableStateOf(BottomNavItem.Wiki)
+        mutableStateOf<BottomNavItem?>(null)
     }
 
     Box {
@@ -103,9 +122,13 @@ fun AppNavigation(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination,
+                startDestination = Splash,
                 modifier = Modifier.weight(1f),
             ) {
+                composable<Splash> {
+                    SplashScreen(navController = navController)
+                }
+
                 landingNavGraph {
                     navController.navigateToLoginScreen()
                 }
@@ -248,19 +271,41 @@ fun AppNavigation(
                         ),
                 ),
         ) {
-            LanPetBottomNavBar(
-                selectedBottomNavItem = navItem,
-                bottomNavItemList =
-                    listOf(
-                        BottomNavItem.Wiki,
-                        BottomNavItem.Free,
-                        BottomNavItem.MyPage,
-                    ),
-                onItemSelect = { item ->
-                    Timber.d("selected bottom nav item: $item")
-                    navItem = item
-                },
-            )
+            if (navItem != null) {
+                LanPetBottomNavBar(
+                    selectedBottomNavItem = navItem!!,
+                    bottomNavItemList =
+                        listOf(
+                            BottomNavItem.Wiki,
+                            BottomNavItem.Free,
+                            BottomNavItem.MyPage,
+                        ),
+                    onItemSelect = { item ->
+                        Timber.d("selected bottom nav item: $item")
+                        navItem = item
+
+                        when (item) {
+                            BottomNavItem.Wiki -> {
+                                navController.navigateToWikiBaseRoute(
+                                    topLevelDestinationNavOptions(),
+                                )
+                            }
+
+                            BottomNavItem.Free -> {
+                                navController.navigateToFreeBoardBaseRoute(
+                                    topLevelDestinationNavOptions(),
+                                )
+                            }
+
+                            BottomNavItem.MyPage -> {
+                                navController.navigateToMyProfileBaseRoute(
+                                    topLevelDestinationNavOptions(),
+                                )
+                            }
+                        }
+                    },
+                )
+            }
         }
     }
 
@@ -283,43 +328,41 @@ fun AppNavigation(
                     true
                 }
 
-                toString(),
-                -> true
-
                 else -> false
             }
     }
+}
 
-    val topLevelDestinationNavOptions =
-        navOptions {
-            popUpTo(MainNavigationRoute(BottomNavItem.Wiki)) {
-                saveState = true
-            }
-
-            launchSingleTop = true
-            restoreState = true
+private fun topLevelDestinationNavOptions(): NavOptions =
+    navOptions {
+        popUpTo(MainNavigationRoute) {
+            saveState = true
+            inclusive = true
         }
 
-    // BottomNav의 item이 변경되면 해당 item에 맞는 화면으로 이동
-    LaunchedEffect(Unit) {
-        snapshotFlow { navItem }
-            .distinctUntilChanged()
-            .drop(1) // 초기 값은 스킵
-            .collect { newValue ->
-                // value가 변경될 때만 실행되는 로직
-                when (newValue) {
-                    BottomNavItem.Wiki -> {
-                        navController.navigateToWikiBaseRoute(topLevelDestinationNavOptions)
-                    }
+        launchSingleTop = true
+        restoreState = true
+    }
 
-                    BottomNavItem.Free -> {
-                        navController.navigateToFreeBoardBaseRoute(topLevelDestinationNavOptions)
-                    }
+@Composable
+private fun DestinationLoggerHandler(navController: NavHostController) {
+    @SuppressLint("RestrictedApi")
+    val destinationChangedListener: (NavController, NavDestination, Bundle?) -> Unit =
+        { controller, _, _ ->
+            val stack =
+                controller.currentBackStack.value
 
-                    BottomNavItem.MyPage -> {
-                        navController.navigateToMyProfileBaseRoute(topLevelDestinationNavOptions)
-                    }
-                }
-            }
+            // 각 항목을 "->"로 구분하여 보기 좋게 출력
+            val stackLog = stack.joinToString("\n") { "  $${it.destination.id}" }
+            Timber.i("previousBackStackEntry: ${controller.previousBackStackEntry}\n")
+            Timber.i("currentBackStackEntry: ${controller.currentBackStackEntry}\n")
+            Timber.d("Navigation Stack:\n====================\n$stackLog\n====================")
+        }
+
+    DisposableEffect(Unit) {
+        navController.addOnDestinationChangedListener(destinationChangedListener)
+        onDispose {
+            navController.removeOnDestinationChangedListener(destinationChangedListener)
+        }
     }
 }

@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.lanpet.core.designsystem.R
 import com.lanpet.core.designsystem.theme.LanPetAppTheme
 import com.lanpet.core.designsystem.theme.customColorScheme
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class BottomNavItem(
     val title: String,
     val selectedIcon: Int,

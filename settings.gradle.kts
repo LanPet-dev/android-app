@@ -32,6 +32,7 @@ include(":feature:free")
 include(":feature:wiki")
 include(":feature:settings")
 include(":feature:myposts")
+include(":feature:splash")
 
 // data
 include(":data:repository")

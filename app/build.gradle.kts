@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+//    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,13 +52,14 @@ dependencies {
     implementation(projects.feature.free)
     implementation(projects.feature.myprofile)
     implementation(projects.feature.wiki)
+    implementation(projects.feature.splash)
     implementation(projects.feature.myposts)
     implementation(projects.feature.settings)
     implementation(projects.core.designsystem)
     implementation(projects.domain.model)
+    implementation(projects.domain.repository)
 
     implementation(libs.hilt.android)
-    implementation(project(":domain:repository"))
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)

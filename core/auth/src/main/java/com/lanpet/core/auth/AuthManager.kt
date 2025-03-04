@@ -369,6 +369,14 @@ open class AuthManager
             )
         }
 
+        fun finish() {
+            authStateHolder.updateState(
+                AuthState.Loading(
+                    null,
+                ),
+            )
+        }
+
         companion object {
             val accessTokenKey = stringPreferencesKey("accessToken")
             val refreshTokenKey = stringPreferencesKey("refreshToken")

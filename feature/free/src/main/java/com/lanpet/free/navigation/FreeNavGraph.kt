@@ -11,7 +11,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.lanpet.domain.model.free.FreeBoardComment
 import com.lanpet.free.screen.FreeBoardCommentDetailScreen
@@ -19,7 +18,6 @@ import com.lanpet.free.screen.FreeBoardDetailScreen
 import com.lanpet.free.screen.FreeBoardScreen
 import com.lanpet.free.screen.FreeBoardWriteScreen
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
 
@@ -149,9 +147,9 @@ fun NavController.navigateToFreeBoardDetailScreen(
             .Builder()
             .setLaunchSingleTop(true)
             .apply {
-                navOptions?.let { options ->
-                    setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
-                }
+//                navOptions?.let { options ->
+//                    setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
+//                }
             }.build()
 
     navigate(

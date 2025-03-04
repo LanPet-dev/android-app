@@ -69,4 +69,20 @@ interface FreeBoardRepository {
         commentId: String,
         writeComment: FreeBoardWriteComment,
     ): Flow<String>
+
+    fun deleteComment(
+        postId: String,
+        commentId: String,
+    ): Flow<String>
+
+    fun modifyComment(
+        postId: String,
+        commentId: String,
+        content: String,
+    ): Flow<String>
+
+    fun getCommentDetail(
+        postId: String,
+        commentId: String,
+    ): Flow<FreeBoardComment>
 }

@@ -84,7 +84,7 @@ fun FreeBoardCommentItem(
                 Spacer(modifier = Modifier.size(LanPetDimensions.Spacing.xSmall))
                 Column(
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         freeBoardComment.profile.nickname,
@@ -329,22 +329,22 @@ private fun FreeBoardCommentItemPreview() {
                 ),
                 isOwner = true,
                 profileNickname = "1",
-                hasMoreSubComment = true
+                hasMoreSubComment = true,
             )
             FreeBoardCommentItem(
                 FreeBoardComment(
                     id = "1",
                     profile =
-                    Profile(
-                        nickname = "닉네임",
-                        profileImage = null,
-                    ),
+                        Profile(
+                            nickname = "닉네임",
+                            profileImage = null,
+                        ),
                     comment = loremIpsum(),
                     createdAt = "2025-01-19T06:27:18.022+00:00",
                 ),
                 isOwner = true,
                 profileNickname = "1",
-                hasMoreSubComment = true
+                hasMoreSubComment = true,
             )
             FreeBoardCommentItem(
                 FreeBoardComment(
@@ -371,7 +371,7 @@ private fun FreeBoardCommentItemPreview() {
                         ),
                 ),
                 profileNickname = "1",
-                hasMoreSubComment = true
+                hasMoreSubComment = true,
             )
         }
     }
