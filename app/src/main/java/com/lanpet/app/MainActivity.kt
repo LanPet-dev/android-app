@@ -46,6 +46,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroy() {
         Timber.e("MainActivity onDestroy")
         super.onDestroy()

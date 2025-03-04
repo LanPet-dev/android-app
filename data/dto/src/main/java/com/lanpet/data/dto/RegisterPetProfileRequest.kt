@@ -28,7 +28,7 @@ data class RegisterPetProfileRequest(
                     PetDto(
                         petType = petProfileCreate.pet.petCategory,
                         breed = petProfileCreate.pet.breed,
-                        feature = petProfileCreate.pet.feature.joinToString(","),
+                        feature = petProfileCreate.pet.feature?.joinToString(","),
                         weight = petProfileCreate.pet.weight,
                     ),
             )
@@ -44,7 +44,8 @@ data class RegisterPetProfileRequest(
                         PetDto(
                             petType = it.petCategory,
                             breed = petProfile.pet?.breed,
-                            feature = petProfile.pet?.feature?.joinToString(","),
+                            feature = null,
+//                            feature = petProfile.pet?.feature?.joinToString(","),
                             weight = petProfile.pet?.weight,
                         )
                     },

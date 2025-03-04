@@ -23,13 +23,13 @@ object Base64StringSerializer : KSerializer<String> {
         value: String,
     ) {
         val base64Encoded =
-            android.util.Base64.encode(value.toByteArray(), android.util.Base64.DEFAULT)
+            android.util.Base64.encode(value.toByteArray(), android.util.Base64.URL_SAFE)
         encoder.encodeString(String(base64Encoded))
     }
 
     override fun deserialize(decoder: Decoder): String {
         val base64Decoded =
-            android.util.Base64.decode(decoder.decodeString(), android.util.Base64.DEFAULT)
+            android.util.Base64.decode(decoder.decodeString(), android.util.Base64.URL_SAFE)
         return String(base64Decoded)
     }
 }

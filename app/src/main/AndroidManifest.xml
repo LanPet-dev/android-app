@@ -22,6 +22,7 @@
         <activity
             android:name=".OauthDeepLinkHandlerActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.LanPetApp">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,6 +44,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.LanPetApp">
             <meta-data
                 android:name="com.google.android.gms.version"

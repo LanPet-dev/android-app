@@ -52,7 +52,7 @@ class DomainPetToPetDtoMapper : Mapper<Pet, PetDto> {
         PetDto(
             petType = input.petCategory,
             breed = input.breed,
-            feature = input.feature.joinToString(","),
+            feature = input.feature?.joinToString(","),
             weight = input.weight,
             birthDate = input.birthDate,
         )

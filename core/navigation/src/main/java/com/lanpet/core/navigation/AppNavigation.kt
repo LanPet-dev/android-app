@@ -354,8 +354,8 @@ private fun DestinationLoggerHandler(navController: NavHostController) {
 
             // 각 항목을 "->"로 구분하여 보기 좋게 출력
             val stackLog = stack.joinToString("\n") { "  $${it.destination.id}" }
-            Timber.i("previousBackStackEntry: ${controller.previousBackStackEntry}\n")
-            Timber.i("currentBackStackEntry: ${controller.currentBackStackEntry}\n")
+            Timber.i("previousBackStackEntry: ${controller.previousBackStackEntry?.destination?.route}\n")
+            Timber.i("currentBackStackEntry: ${controller.currentBackStackEntry?.destination?.route}\n")
             Timber.d("Navigation Stack:\n====================\n$stackLog\n====================")
         }
 

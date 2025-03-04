@@ -75,7 +75,6 @@ fun MyProfileManageProfileScreen(
     val verticalScrollState = rememberScrollState()
 
     Scaffold(
-        modifier = Modifier.imePadding(),
         topBar = {
             LanPetTopAppBar(
                 navigationIcon = {
@@ -111,6 +110,8 @@ fun MyProfileManageProfileScreen(
             Column(
                 modifier =
                     Modifier
+                        .fillMaxSize()
+                        .imePadding()
                         .verticalScroll(
                             verticalScrollState,
                         ),

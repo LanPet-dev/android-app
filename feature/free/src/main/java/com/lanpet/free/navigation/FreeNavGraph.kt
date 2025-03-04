@@ -147,9 +147,9 @@ fun NavController.navigateToFreeBoardDetailScreen(
             .Builder()
             .setLaunchSingleTop(true)
             .apply {
-//                navOptions?.let { options ->
-//                    setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
-//                }
+                navOptions?.let { options ->
+                    setPopUpTo(options.popUpToId, options.isPopUpToInclusive())
+                }
             }.build()
 
     navigate(

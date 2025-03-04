@@ -205,7 +205,7 @@ class ManagePetProfileViewModel
                                                     profileDetail.pet?.petCategory
                                                         ?: PetCategory.OTHER,
                                                 breed = profileDetail.pet?.breed,
-                                                feature = profileDetail.pet?.feature ?: emptyList(),
+                                                feature = profileDetail.pet?.feature,
                                                 weight = profileDetail.pet?.weight,
                                                 birthDate = profileDetail.pet?.birthDate,
                                             ),
