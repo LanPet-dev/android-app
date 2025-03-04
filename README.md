@@ -1,5 +1,5 @@
 # LanPet android app
-
+### 반려동물을 좋아하는 사람들의 모임
 
 <table>
           <th>로그인</th>      <th>자동로그인</th>      <th>인증</th>
